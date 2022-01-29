@@ -1,21 +1,49 @@
 package nmania;
 
+import java.io.IOException;
+
+import javax.microedition.media.Manager;
+import javax.microedition.media.MediaException;
+import javax.microedition.media.Player;
+
 public final class AudioController {
-	public AudioController(Beatmap map) {
-		
+
+	public AudioController(Beatmap map) throws IOException, MediaException {
+		player = Manager.createPlayer(map.ToGlobalPath(map.audio));
+		player.realize();
+		player.prefetch();
 	}
-	
+
+	private final Player player;
+
 	public int Now() {
-		return 0;
+		return (int) (player.getMediaTime() / 1000);
 	}
-	
-	public void Play() {
-		
+
+	public boolean Play() {
+		try {
+			player.start();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
-	public void Pause() {
-		
+
+	public boolean Pause() {
+		try {
+			player.stop();
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
+
 	public void Stop() {
-		
+		try {
+			player.stop();
+		} catch (MediaException e) {
+		}
+		player.deallocate();
+		player.close();
 	}
 }
