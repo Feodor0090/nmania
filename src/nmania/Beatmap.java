@@ -42,6 +42,10 @@ public final class Beatmap {
 			notes[i] = new ManiaNote(n.getJSONArray(i));
 		}
 	}
+	
+	public String ToGlobalPath(String local) {
+		return set.wdPath+"/"+set.folderName+"/"+local;
+	}
 
 	public static final class ManiaNote implements IComparable {
 		int time;

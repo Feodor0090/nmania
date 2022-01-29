@@ -6,4 +6,6 @@ public final class BeatmapSet {
 	String mapper;
 	int id;
 	String image;
+	String wdPath;
+	String folderName;
 }
