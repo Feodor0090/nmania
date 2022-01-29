@@ -1,7 +1,7 @@
-MIDlet-1: NmaniaApp,,nmania.NmaniaApp
-MIDlet-Jar-URL: nmania.jar
-MIDlet-Name: nmania
 MIDlet-Vendor: Feodor0090
 MIDlet-Version: 0.0.1
 MicroEdition-Configuration: CLDC-1.1
+MIDlet-1: NmaniaApp,,nmania.NmaniaApp
+MIDlet-Name: nmania
 MicroEdition-Profile: MIDP-2.0
+MIDlet-Jar-URL: nmania.jar
