@@ -1,0 +1,5 @@
+/bin/
+/.settings/
+/.mtj.tmp/
+/deployed/
+*.bak
