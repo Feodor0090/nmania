@@ -3,6 +3,7 @@ package nmania;
 import java.io.IOException;
 import java.util.Vector;
 
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -69,6 +70,8 @@ public class Player extends GameCanvas {
 
 		// step 7: lock graphics
 		g = getGraphics();
+
+		System.gc();
 	}
 
 	final int columnsCount;
@@ -117,10 +120,15 @@ public class Player extends GameCanvas {
 	}
 
 	public final void Redraw() {
-		g.setClip(0, 0, scrW, scrH-Settings.keyboardHeight);
+		g.setClip(0, 0, scrW, scrH - Settings.keyboardHeight);
 		RedrawNotes();
 		g.setClip(0, 0, scrW, scrH);
+		RedrawHUD();
 		flushGraphics();
+	}
+
+	private void RedrawHUD() {
+		DrawNumberFromRight(score.maxHitScore, 0, true, 0);
 	}
 
 	private final void FillBg() {
@@ -169,6 +177,22 @@ public class Player extends GameCanvas {
 				if (lastY < 0)
 					break;
 			}
+		}
+	}
+
+	private final void DrawNumberFromRight(int num, int y, boolean fromTop, final int offset) {
+		Font f = Font.getFont(Font.SIZE_LARGE);
+		g.setFont(f);
+		g.setColor(-1);
+		int x = scrW - offset;
+		int anchor = (fromTop ? Graphics.TOP : Graphics.BOTTOM) | Graphics.RIGHT;
+		while (true) {
+			char c = (char) ((num % 10) + '0');
+			g.drawChar(c, x, y, anchor);
+			x -= f.charWidth(c);
+			if (num < 10)
+				return;
+			num /= 10;
 		}
 	}
 
