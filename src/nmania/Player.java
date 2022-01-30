@@ -28,7 +28,7 @@ public class Player extends GameCanvas {
 		_bg = ImageUtils.resize(_bg, scrW, scrH, true, false);
 		bg = ImageFxUtils.applyModifier(_bg, new PixelModifier() {
 			public int apply(int p, int x, int y) {
-				return ColorUtils.blend(p, 0xff000000, (int) ((1f-Settings.bgDim) * 255));
+				return ColorUtils.blend(p, 0xff000000, (int) ((1f - Settings.bgDim) * 255));
 			}
 		});
 
@@ -108,7 +108,8 @@ public class Player extends GameCanvas {
 	}
 
 	public final void Redraw() {
-
+		RedrawNotes();
+		flushGraphics();
 	}
 
 	private final void FillBg() {
@@ -125,9 +126,33 @@ public class Player extends GameCanvas {
 		g.drawLine(Settings.leftOffset, ky - 1, Settings.leftOffset + columnsCount * (Settings.columnWidth + 1),
 				ky - 1);
 	}
-	
+
 	private final void RedrawNotes() {
-		int y 
+		// TODO OPTIMIZATION!!11!1!!
+		int hitLineY = scrH - Settings.keyboardHeight;
+		int notesY = hitLineY + time;
+		System.out.println();
+		System.out.println("=== Redrawing notes. Base y: "+notesY);
+		for (int column = 0; column < columnsCount; column++) {
+			int x = Settings.leftOffset + (column * (Settings.columnWidth + 1));
+			int[] c = columns[column];
+			int lastY = hitLineY;
+			for (int i = currentNote[column]; i < c.length; i += 2) {
+				int noteY = c[i];
+				int dur = c[i + 1];
+				noteY += notesY;
+				System.out.println("Col "+column+"; note at "+noteY);
+				if (lastY > noteY) {
+					g.setColor(0);
+					g.fillRect(x, noteY, Settings.columnWidth, lastY - noteY);
+				}
+				g.setColor(255, 0, 0);
+				lastY = noteY - Settings.noteHeight;
+				g.fillRect(x, lastY, Settings.columnWidth, Settings.noteHeight);
+				if (lastY < 0)
+					break;
+			}
+		}
 	}
 
 }

@@ -16,4 +16,5 @@ public final class Settings {
 	public static int columnWidth = 50;
 	public static int holdWidth = 30;
 	public static int keyboardHeight = 100;
+	public static int noteHeight = 20;
 }
