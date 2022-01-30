@@ -131,17 +131,14 @@ public class Player extends GameCanvas {
 		// TODO OPTIMIZATION!!11!1!!
 		int hitLineY = scrH - Settings.keyboardHeight;
 		int notesY = hitLineY + time;
-		System.out.println();
-		System.out.println("=== Redrawing notes. Base y: "+notesY);
 		for (int column = 0; column < columnsCount; column++) {
-			int x = Settings.leftOffset + (column * (Settings.columnWidth + 1));
+			int x = Settings.leftOffset + 1 + (column * (Settings.columnWidth + 1));
 			int[] c = columns[column];
 			int lastY = hitLineY;
 			for (int i = currentNote[column]; i < c.length; i += 2) {
 				int noteY = c[i];
 				int dur = c[i + 1];
-				noteY += notesY;
-				System.out.println("Col "+column+"; note at "+noteY);
+				noteY = notesY - noteY;
 				if (lastY > noteY) {
 					g.setColor(0);
 					g.fillRect(x, noteY, Settings.columnWidth, lastY - noteY);
@@ -149,6 +146,13 @@ public class Player extends GameCanvas {
 				g.setColor(255, 0, 0);
 				lastY = noteY - Settings.noteHeight;
 				g.fillRect(x, lastY, Settings.columnWidth, Settings.noteHeight);
+				if (dur != 0) {
+					lastY -= dur;
+					g.setColor(0);
+					g.fillRect(x, lastY, Settings.columnWidth, dur);
+					g.setColor(0, 255, 0);
+					g.fillRect(x + (Settings.columnWidth - Settings.holdWidth) / 2, lastY, Settings.holdWidth, dur);
+				}
 				if (lastY < 0)
 					break;
 			}
