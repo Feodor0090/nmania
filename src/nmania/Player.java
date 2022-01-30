@@ -9,6 +9,7 @@ import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.media.MediaException;
 
 import symnovel.SNUtils;
+import tube42.lib.imagelib.ColorUtils;
 import tube42.lib.imagelib.ImageFxUtils;
 import tube42.lib.imagelib.ImageFxUtils.PixelModifier;
 import tube42.lib.imagelib.ImageUtils;
@@ -27,7 +28,7 @@ public class Player extends GameCanvas {
 		_bg = ImageUtils.resize(_bg, scrW, scrH, true, false);
 		bg = ImageFxUtils.applyModifier(_bg, new PixelModifier() {
 			public int apply(int p, int x, int y) {
-				return p;
+				return ColorUtils.blend(p, 0xff000000, (int) ((1f-Settings.bgDim) * 255));
 			}
 		});
 
@@ -49,10 +50,10 @@ public class Player extends GameCanvas {
 		// step 5: loading beatmap
 		SNUtils.sort(map.notes);
 		Vector[] _cols = new Vector[columnsCount];
-		for(int i=0; i<_cols.length;i++) 
+		for (int i = 0; i < _cols.length; i++)
 			_cols[i] = new Vector();
 		for (int i = 0; i < map.notes.length; i++) {
-			int c = map.notes[i].column-1;
+			int c = map.notes[i].column - 1;
 			_cols[c].addElement(new Integer(map.notes[i].time));
 			_cols[c].addElement(new Integer(map.notes[i].duration));
 		}
@@ -99,14 +100,15 @@ public class Player extends GameCanvas {
 	}
 
 	// drawing section
-	
+
 	public final void Refill() {
 		FillBg();
 		DrawBorders();
+		flushGraphics();
 	}
-	
+
 	public final void Redraw() {
-		
+
 	}
 
 	private final void FillBg() {
@@ -116,10 +118,16 @@ public class Player extends GameCanvas {
 	private final void DrawBorders() {
 		g.setColor(-1);
 		for (int i = 0; i <= columnsCount; i++) {
-			int x = 49 + (i * (Settings.columnWidth + 1));
+			int x = Settings.leftOffset + (i * (Settings.columnWidth + 1));
 			g.drawLine(x, 0, x, scrH);
 		}
+		int ky = scrH - Settings.keyboardHeight;
+		g.drawLine(Settings.leftOffset, ky - 1, Settings.leftOffset + columnsCount * (Settings.columnWidth + 1),
+				ky - 1);
 	}
 	
-	
+	private final void RedrawNotes() {
+		int y 
+	}
+
 }
