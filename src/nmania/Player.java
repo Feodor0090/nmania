@@ -74,6 +74,15 @@ public class Player extends GameCanvas {
 			int scoreH = fontL.getHeight();
 			scoreBg = ImageUtils.crop(bg, scrW - scoreW, 0, scrW - 1, scoreH + 1);
 		}
+		numsWidthCache = new int[10];
+		for (int i = 0; i < 10; i++) {
+			numsWidthCache[i] = fontL.charWidth((char) ('0' + i));
+		}
+		{
+			int scoreW = fontL.charsWidth(accText, 0, accText.length);
+			int scoreH = fontL.getHeight();
+			accBg = ImageUtils.crop(bg, scrW - scoreW, scrH - scoreH, scrW - 1, scrH - 1);
+		}
 
 		// step 7: lock graphics
 		g = getGraphics();
@@ -94,6 +103,9 @@ public class Player extends GameCanvas {
 	final int scrW, scrH;
 	final Font fontL;
 	final Image scoreBg;
+	final Image accBg;
+
+	final char[] accText = new char[] { '1', '0', '0', ',', '0', '0', '%' };
 
 	int time;
 	int rollingScore = 0;
@@ -138,20 +150,59 @@ public class Player extends GameCanvas {
 		RedrawNotes();
 		g.setClip(0, 0, scrW, scrH);
 		RedrawHUD();
+		{
+			g.setColor(0);
+			g.fillRect(0, 0, Settings.leftOffset, fontL.getHeight());
+			g.setColor(0, 255, 0);
+			g.drawString(String.valueOf(PlayerThread.fps), 0, 0, 0);
+		}
 		flushGraphics();
 	}
 
 	private void RedrawHUD() {
-		int realScore = score.maxHitScore;
-		if (realScore != rollingScore) {
-			rollingScore += (realScore - rollingScore) / 60 + 1;
+		g.setColor(-1);
+		// score
+		{
+			int realScore = score.maxHitScore;
+			if (realScore != rollingScore) {
+				rollingScore += (realScore - rollingScore) / 60 + 1;
+			}
+			g.drawImage(scoreBg, scrW, 0, Graphics.RIGHT | Graphics.TOP);
+			g.setFont(fontL);
+			int num = rollingScore;
+			int x1 = scrW - 0;
+			int anchor = Graphics.TOP | Graphics.RIGHT;
+			while (true) {
+				int d = num % 10;
+				g.drawChar((char) (d + '0'), x1, 0, anchor);
+				x1 -= numsWidthCache[d];
+				if (num < 10)
+					break;
+				num /= 10;
+			}
 		}
-		g.drawImage(scoreBg, scrW, 0, Graphics.RIGHT | Graphics.TOP);
-		DrawNumberFromRight(rollingScore, 0, true, 0);
-		
-		if(time-lastJudgementTime<400) {
-			g.setColor(-1);
-			g.drawString(judgements[lastJudgement], Settings.leftOffset+(Settings.columnWidth+1)*columnsCount/2, 50, Graphics.HCENTER|Graphics.TOP);
+		// acc
+		{
+			int accRaw = score.GetAccuracy();
+			accText[5] = (char) (accRaw % 10 + '0');
+			accRaw /= 10;
+			accText[4] = (char) (accRaw % 10 + '0');
+			accRaw /= 10;
+			accText[2] = (char) (accRaw % 10 + '0');
+			accRaw /= 10;
+			accText[1] = (char) (accRaw % 10 + '0');
+			accRaw /= 10;
+			accText[0] = accRaw == 0 ? ' ' : '1';
+			g.drawImage(accBg, scrW, scrH, 40);
+			g.drawChars(accText, 0, accText.length, scrW, scrH, 40);
+		}
+		// judgement
+		if (time - lastJudgementTime < 200) {
+			final int x = Settings.leftOffset + (Settings.columnWidth + 1) * columnsCount / 2;
+			g.drawString(judgements[lastJudgement], x + 1, 101, Graphics.HCENTER | Graphics.TOP);
+			g.drawString(judgements[lastJudgement], x - 1, 101, Graphics.HCENTER | Graphics.TOP);
+			g.setColor(judgementColors[lastJudgement]);
+			g.drawString(judgements[lastJudgement], x, 100, Graphics.HCENTER | Graphics.TOP);
 		}
 	}
 
@@ -204,22 +255,9 @@ public class Player extends GameCanvas {
 		}
 	}
 
-	private final void DrawNumberFromRight(int num, int y, boolean fromTop, final int offset) {
-		Font f = Font.getFont(Font.SIZE_LARGE);
-		g.setFont(f);
-		g.setColor(-1);
-		int x = scrW - offset;
-		int anchor = (fromTop ? Graphics.TOP : Graphics.BOTTOM) | Graphics.RIGHT;
-		while (true) {
-			char c = (char) ((num % 10) + '0');
-			g.drawChar(c, x, y, anchor);
-			x -= f.charWidth(c);
-			if (num < 10)
-				return;
-			num /= 10;
-		}
-	}
-
 	private final String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
+	private final int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
+			SNUtils.toARGB("0x3C3"), SNUtils.toARGB("0x0F0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x50F") };
+	private final int[] numsWidthCache;
 
 }
