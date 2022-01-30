@@ -78,7 +78,7 @@ public class Player extends GameCanvas {
 		fontL = Font.getFont(0, 0, 16);
 		int fontLh = fontL.getHeight();
 		{
-			int scoreW = fontL.stringWidth("0000000000");
+			int scoreW = fontL.stringWidth("000000000");
 			scoreBg = ImageUtils.crop(bg, scrW - scoreW, 0, scrW - 1, fontLh + 1);
 		}
 		numsWidthCache = new int[10];
@@ -145,13 +145,40 @@ public class Player extends GameCanvas {
 		// sync
 		time = track.Now();
 
-		// missing unpressed notes
-		for (int i = 0; i < columnsCount; i++) {
-			if (time - columns[i][currentNote[i]] > hitWindows[0]) {
+		// checking all columns
+		for (int column = 0; column < columnsCount; column++) {
+			
+			// diff between current time and note hit time.
+			// positive - it's late, negative - it's early.
+			final int diff = time - columns[column][currentNote[column]];
+			
+			// is it too early to handle?
+			if (diff < -hitWindows[0])
+				continue;
+			
+			// if we have input
+			if (holdKeys[column]) {
+				// absolute difference
+				final int adiff = Math.abs(diff);
+				// checking hitwindow
+				for (int j = 5; j > -1; j--) {
+					if (adiff < hitWindows[j]) {
+						score.CountHit(j);
+						lastJudgement = j;
+						lastJudgementTime = time;
+						currentNote[column] += 2;
+						break;
+					}
+				}
+				continue;
+			}
+			
+			// missing unpressed notes
+			if (diff > hitWindows[0]) {
 				score.CountHit(0);
 				lastJudgement = 0;
 				lastJudgementTime = time;
-				currentNote[i] += 2;
+				currentNote[column] += 2;
 				continue;
 			}
 		}
@@ -186,7 +213,7 @@ public class Player extends GameCanvas {
 		g.setColor(-1);
 		// score
 		{
-			int realScore = score.maxHitScore;
+			int realScore = score.currentHitScore;
 			if (realScore != rollingScore) {
 				rollingScore += (realScore - rollingScore) / 60 + 1;
 			}
@@ -298,7 +325,7 @@ public class Player extends GameCanvas {
 
 	private final String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
 	private final int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
-			SNUtils.toARGB("0x3C3"), SNUtils.toARGB("0x0F0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x50F") };
+			SNUtils.toARGB("0x494"), SNUtils.toARGB("0x0B0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x90F") };
 	private final int[] numsWidthCache;
 
 }
