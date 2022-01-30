@@ -76,24 +76,27 @@ public final class Player extends GameCanvas {
 		// step 6: cache data for HUD drawing
 		log.log("Caching service data");
 		fontL = Font.getFont(0, 0, 16);
-		int fontLh = fontL.getHeight();
+		fillCountersH = fontL.getHeight();
 		{
-			int scoreW = fontL.stringWidth("000000000");
-			scoreBg = ImageUtils.crop(bg, scrW - scoreW, 0, scrW - 1, fontLh + 1);
+			fillScoreW = fontL.stringWidth("000000000");
+			scoreBg = ImageUtils.crop(bg, scrW - fillScoreW, 0, scrW - 1, fillCountersH + 1);
 		}
 		numsWidthCache = new int[10];
 		for (int i = 0; i < 10; i++) {
 			numsWidthCache[i] = fontL.charWidth((char) ('0' + i));
 		}
 		{
-			int accW = fontL.charsWidth(accText, 0, accText.length);
-			accBg = ImageUtils.crop(bg, scrW - accW, scrH - fontLh, scrW - 1, scrH - 1);
+			fillAccW = fontL.charsWidth(accText, 0, accText.length);
+			accBg = ImageUtils.crop(bg, scrW - fillAccW, scrH - fillCountersH, scrW - 1, scrH - 1);
 		}
 		kbH = Settings.keyboardHeight;
 		kbY = scrH - kbH;
 		colWp1 = Settings.columnWidth + 1;
 		judgmentCenter = Settings.leftOffset + (Settings.columnWidth + 1) * columnsCount / 2;
 		localHoldX = (Settings.columnWidth - Settings.holdWidth) / 2;
+		fillColsW = Settings.leftOffset + 1 + (colWp1 * columnsCount);
+		fillAccX = scrW - fillAccW;
+		fillScoreX = scrW - fillScoreW;
 
 		// step 7: lock graphics
 		log.log("Locking graphics");
@@ -122,6 +125,7 @@ public final class Player extends GameCanvas {
 	private final int[] numsWidthCache;
 
 	private final int kbH, kbY, colWp1;
+	private final int fillColsW, fillCountersH, fillScoreW, fillAccW, fillScoreX, fillAccX;
 	private final int judgmentCenter;
 	private final int localHoldX;
 
@@ -172,14 +176,51 @@ public final class Player extends GameCanvas {
 			// positive - it's late, negative - it's early.
 			final int diff = time - columns[column][currentNote[column]];
 
+			// hold length
+			final int dur = columns[column][currentNote[column] + 1];
+
 			// is it too early to handle?
 			if (diff < -hitWindows[0])
 				continue;
 
 			// if we have input
 			if (holdKeys[column]) {
+				// it is a single note
+				if (dur == 0) {
+					// absolute difference
+					final int adiff = Math.abs(diff);
+					// checking hitwindow
+					for (int j = 5; j > -1; j--) {
+						if (adiff < hitWindows[j]) {
+							score.CountHit(j);
+							lastJudgement = j;
+							lastJudgementTime = time;
+							currentNote[column] += 2;
+							break;
+						}
+					}
+				} else {
+					// it is a hold
+					if (!lastHoldKeys[column]) {
+						// absolute difference
+						final int adiff = Math.abs(diff);
+						// checking hitwindow
+						for (int j = 5; j > -1; j--) {
+							if (adiff < hitWindows[j]) {
+								score.CountHit(j);
+								lastJudgement = j;
+								lastJudgementTime = time;
+								break;
+							}
+						}
+					} else {
+						// holding the hold!
+					}
+				}
+				continue;
+			} else if (lastHoldKeys[column] && dur != 0) {
 				// absolute difference
-				final int adiff = Math.abs(diff);
+				final int adiff = Math.abs(diff - dur);
 				// checking hitwindow
 				for (int j = 5; j > -1; j--) {
 					if (adiff < hitWindows[j]) {
@@ -190,18 +231,27 @@ public final class Player extends GameCanvas {
 						break;
 					}
 				}
+				if (adiff >= hitWindows[0]) {
+					score.CountHit(0);
+					lastJudgement = 0;
+					lastJudgementTime = time;
+					currentNote[column] += 2;
+				}
 				continue;
 			}
 
 			// missing unpressed notes
 			if (diff > hitWindows[0]) {
 				score.CountHit(0);
+				if (dur != 0)
+					score.CountHit(0);
 				lastJudgement = 0;
 				lastJudgementTime = time;
 				currentNote[column] += 2;
 				continue;
 			}
 		}
+		System.arraycopy(holdKeys, 0, lastHoldKeys, 0, columnsCount);
 	}
 
 	// drawing section
@@ -219,14 +269,18 @@ public final class Player extends GameCanvas {
 		g.setClip(0, 0, scrW, kbY);
 		RedrawNotes();
 		g.setClip(0, 0, scrW, scrH);
-		RedrawHUD();
 		{
 			g.setColor(0);
 			g.fillRect(0, 0, Settings.leftOffset, fontL.getHeight());
 			g.setColor(0, 255, 0);
 			g.drawString(String.valueOf(PlayerThread.fps), 0, 0, 0);
 		}
-		flushGraphics();
+		RedrawHUD();
+		// cols
+		flushGraphics(0, 0, fillColsW, scrH);
+		// score & acc
+		flushGraphics(fillScoreX, 0, fillScoreW, fillCountersH);
+		flushGraphics(fillAccX, scrH - fillCountersH, fillAccW, fillCountersH);
 	}
 
 	private void RedrawHUD() {
