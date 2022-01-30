@@ -17,132 +17,13 @@ import javax.microedition.lcdui.TextBox;
 import org.json.me.JSONArray;
 import org.json.me.JSONException;
 
+import nmania.NmaniaApp;
+
 public final class SNUtils {
-
-	public static void alertBlocking(String title, String text, AlertType type, final Displayable d)
-			throws InterruptedException {
-		final Alert a = new Alert(title, text, null, type);
-		a.setTimeout(Alert.FOREVER);
-		final Object gate = new Object();
-		final Command ok = new Command("Close", Command.OK, 0);
-		a.addCommand(ok);
-		a.setCommandListener(new CommandListener() {
-			public void commandAction(Command arg0, Displayable arg1) {
-				if (arg0 == ok) {
-					if (d != null)
-						Display.getDisplay(SymNovel.app).setCurrent(d);
-					synchronized (gate) {
-						gate.notifyAll();
-					}
-				}
-			}
-		});
-		Display.getDisplay(SymNovel.app).setCurrent(a);
-		SymNovel.log("Alert \"" + title + "\" shown.");
-		synchronized (gate) {
-			gate.wait();
-			Thread.sleep(50);
-		}
-	}
-
-	/**
-	 * Shows an async alert, that activates previous screen on dismiss.
-	 * 
-	 * @param title Title of the alert.
-	 * @param text  Text of the alert.
-	 * @param type  Alert type.
-	 */
-	public static void alertAsync(String title, String text, AlertType type) {
-		final Alert a = new Alert(title, text, null, type);
-		a.setTimeout(Alert.FOREVER);
-		Display.getDisplay(SymNovel.app).setCurrent(a);
-		SymNovel.log("Async alert \"" + title + "\" shown.");
-	}
-
-	public static boolean askYN(String title, String text) throws InterruptedException {
-		return ask(title, text, false, "Yes", "No", Display.getDisplay(SymNovel.app).getCurrent());
-	}
-
-	public static boolean ask(String title, String text, boolean warn, String ok, String cancel, final Displayable next)
-			throws InterruptedException {
-		if (next == null)
-			throw new IllegalArgumentException();
-		final Alert a = new Alert(title, text, null, warn ? AlertType.WARNING : AlertType.INFO);
-		a.setTimeout(Alert.FOREVER);
-		final Object gate = new Object();
-		final BoolContainer b = new BoolContainer();
-		final Command okCmd = new Command(ok, Command.OK, 0);
-		final Command cancelCmd = new Command(cancel, Command.CANCEL, 0);
-		a.addCommand(okCmd);
-		a.addCommand(cancelCmd);
-		a.setCommandListener(new CommandListener() {
-			public void commandAction(Command arg0, Displayable arg1) {
-				if (arg0 == okCmd || arg0 == cancelCmd) {
-					Display.getDisplay(SymNovel.app).setCurrent(next);
-					b.value = (arg0 == okCmd);
-					synchronized (gate) {
-						gate.notifyAll();
-					}
-				}
-			}
-		});
-		Display.getDisplay(SymNovel.app).setCurrent(a);
-		SymNovel.log("Ask \"" + title + "\" shown.");
-
-		synchronized (gate) {
-			gate.wait();
-			Thread.sleep(50);
-		}
-		return b.value;
-	}
-
-	/**
-	 * Inputs text via LCDUI textbox.
-	 * 
-	 * @param title    Title of the box.
-	 * @param curr     Initial content of the box.
-	 * @param max      Maximum length of the text.
-	 * @param password Are we entering password?
-	 * @return <b>Null</b> if input was canceled, string if anything was typed.
-	 * @throws InterruptedException If waiting was interrupted.
-	 */
-	public static String inputString(final String title, final String curr, final int max, final boolean password)
-			throws InterruptedException {
-		final Object gate = new Object();
-		final String[] s = new String[] { null };
-		final Command okCmd = new Command("OK", Command.OK, 0);
-		final Command cancelCmd = new Command("Cancel", Command.CANCEL, 0);
-		final Displayable screen = Display.getDisplay(SymNovel.app).getCurrent();
-		final TextBox textBox = new TextBox("", "", (max > 0) ? max : 1024, password ? 65536 : 0);
-		textBox.setTitle(title);
-		textBox.setString(curr);
-		textBox.addCommand(okCmd);
-		textBox.addCommand(cancelCmd);
-		textBox.setCommandListener(new CommandListener() {
-			public void commandAction(Command arg0, Displayable arg1) {
-				if (arg0 == okCmd || arg0 == cancelCmd) {
-					Display.getDisplay(SymNovel.app).setCurrent(screen);
-					s[0] = (arg0 == okCmd) ? textBox.getString() : null;
-					synchronized (gate) {
-						gate.notifyAll();
-					}
-				}
-			}
-		});
-		Display.getDisplay(SymNovel.app).setCurrent(textBox);
-		SymNovel.log("TextBox \"" + title + "\" shown.");
-
-		synchronized (gate) {
-			gate.wait();
-			Thread.sleep(50);
-		}
-
-		return s[0];
-	}
 
 	public static String readJARRes(String name, int cap) throws IOException {
 		char[] chars = new char[cap];
-		InputStream stream = SymNovel.app.getClass().getResourceAsStream(name);
+		InputStream stream = NmaniaApp.inst.getClass().getResourceAsStream(name);
 		if (stream == null)
 			throw new IOException();
 		InputStreamReader isr = new InputStreamReader(stream, "UTF-8");
