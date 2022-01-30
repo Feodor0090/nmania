@@ -17,7 +17,7 @@ public final class PlayerThread extends Thread {
 		player.Refill();
 		if (!player.track.Play())
 			throw new RuntimeException("Failed to start music!");
-		while (true) {
+		while (player.running) {
 			long t0 = System.currentTimeMillis();
 			if (t0 - lastTime > 1000) {
 				lastTime += 1000;

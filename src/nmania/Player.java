@@ -3,6 +3,7 @@ package nmania;
 import java.io.IOException;
 import java.util.Vector;
 
+import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -133,11 +134,14 @@ public final class Player extends GameCanvas {
 
 	private int time;
 	private int rollingScore = 0;
-	private int lastJudgementTime;
+	private int lastJudgementTime = Integer.MIN_VALUE;
 	private int lastJudgement;
 
-	private final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
-	private final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
+	public boolean isPaused;
+	public boolean running = true;
+
+	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
+	public final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
 			SNUtils.toARGB("0x494"), SNUtils.toARGB("0x0B0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x90F") };
 	private final int keyColorTop = SNUtils.toARGB("0x777");
 	private final int keyColorTopHold = SNUtils.toARGB("0x0FF");
@@ -169,9 +173,16 @@ public final class Player extends GameCanvas {
 		// sync
 		time = track.Now();
 
+		// is beatmap over?
+		int emptyColumns = 0;
+
 		// checking all columns
 		for (int column = 0; column < columnsCount; column++) {
 
+			if (currentNote[column] >= columns[column].length) {
+				emptyColumns++;
+				continue;
+			}
 			// diff between current time and note hit time.
 			// positive - it's late, negative - it's early.
 			final int diff = time - columns[column][currentNote[column]];
@@ -252,6 +263,26 @@ public final class Player extends GameCanvas {
 			}
 		}
 		System.arraycopy(holdKeys, 0, lastHoldKeys, 0, columnsCount);
+		if (emptyColumns == columnsCount) {
+			running = false;
+			final String j = "DIFFICULTY PASSED";
+			for (int i = 0; i < 5; i++) {
+				g.setColor(-1);
+				g.drawString(j, scrW / 2 + 1, 49, 17);
+				g.drawString(j, scrW / 2 - 1, 49, 17);
+				g.drawString(j, scrW / 2 + 1, 51, 17);
+				g.drawString(j, scrW / 2 - 1, 51, 17);
+				if (i % 2 == 0)
+					g.setColor(10, 240, 10);
+				g.drawString(j, scrW / 2, 50, 17);
+				flushGraphics();
+				try {
+					Thread.sleep(500);
+				} catch (Exception e) {
+				}
+			}
+			Display.getDisplay(NmaniaApp.inst).setCurrent(new ResultsScreen(score, track, bg));
+		}
 	}
 
 	// drawing section
@@ -400,6 +431,10 @@ public final class Player extends GameCanvas {
 				// are we above the screen?
 				if (lastY < 0)
 					break;
+			}
+			if (lastY > 0) {
+				g.setColor(0);
+				g.fillRect(x, 0, Settings.columnWidth, lastY);
 			}
 			x += colWp1;
 		}
