@@ -39,7 +39,12 @@ public final class NmaniaApp extends MIDlet implements ILogger {
 		if (running)
 			return;
 		try {
+			final int keys = 4;
 			a = new Alert("nmania", "Creating test data", null, AlertType.INFO);
+			KeyboardSetup ks = new KeyboardSetup(keys, a);
+			Display.getDisplay(inst).setCurrent(ks);
+			while(!(Display.getDisplay(inst).getCurrent() instanceof Alert)) 
+				Thread.sleep(100);
 			Display.getDisplay(inst).setCurrent(a);
 			BeatmapSet s = new BeatmapSet();
 			s.wdPath = "";
@@ -47,12 +52,10 @@ public final class NmaniaApp extends MIDlet implements ILogger {
 			Beatmap b = new Beatmap(new JSONObject(SNUtils.readJARRes("/test/map.json", 4096)));
 			b.set = s;
 			a.setString("Spawning notes");
-			b.columnsCount = 4;
+			b.columnsCount = keys;
 			b.notes = RandomNotes(400, b.columnsCount, 60000f / 160, 200);
 			a.setString("Running player");
 			Player p = new Player(b, this);
-			Thread.sleep(500);
-			Display.getDisplay(inst).setCurrent(p);
 			Thread t = new PlayerThread(p);
 			t.start();
 		} catch (Exception e) {
@@ -65,7 +68,7 @@ public final class NmaniaApp extends MIDlet implements ILogger {
 			throw new IllegalArgumentException("This generator can handle only 3-7 column maps.");
 		Random r = new Random();
 		Vector notes = new Vector();
-		for (int i = 0; i < c; i++) {
+		for (int i = 10; i < c; i++) {
 			int noteType = r.nextInt(100);
 			if (noteType > 80) {
 				// single hit
