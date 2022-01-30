@@ -3,6 +3,7 @@ package nmania;
 import java.io.IOException;
 import java.util.Vector;
 
+import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.media.MediaException;
@@ -17,8 +18,8 @@ public class Player extends GameCanvas {
 	protected Player(Beatmap map) throws IOException, MediaException {
 		super(false);
 
-		int scrW = getWidth();
-		int scrH = getHeight();
+		scrW = getWidth();
+		scrH = getHeight();
 
 		// step 1: loading background
 		Image _bg = Image.createImage(map.ToGlobalPath(map.image));
@@ -59,6 +60,9 @@ public class Player extends GameCanvas {
 
 		// step 6: cache background hot areas
 		// TODO
+
+		// step 7: lock graphics
+		g = getGraphics();
 	}
 
 	final int columnsCount;
@@ -69,6 +73,8 @@ public class Player extends GameCanvas {
 	final int[] hitWindows;
 	final AudioController track;
 	final Image bg;
+	final Graphics g;
+	final int scrW, scrH;
 
 	int time;
 
@@ -84,5 +90,19 @@ public class Player extends GameCanvas {
 
 	final void Update() {
 		time = track.Now();
+	}
+
+	// drawing section
+
+	private final void FillBg() {
+		g.drawImage(bg, 0, 0, 0);
+	}
+
+	private final void DrawBorders() {
+		g.setColor(-1);
+		for (int i = 0; i <= columnsCount; i++) {
+			int x = 49 + (i * (Settings.columnWidth + 1));
+			g.drawLine(x, 0, x, scrH);
+		}
 	}
 }
