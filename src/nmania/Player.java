@@ -35,6 +35,8 @@ public class Player extends GameCanvas {
 
 		// step 3: setup difficulty
 		// TODO
+		hitWindows = new int[6];
+		score = new ScoreController();
 
 		// step 4: setup configs
 		columnsCount = map.columnsCount;
@@ -71,6 +73,7 @@ public class Player extends GameCanvas {
 	final boolean[] holdKeys;
 	final int[] keyMappings;
 	final int[] hitWindows;
+	final ScoreController score;
 	final AudioController track;
 	final Image bg;
 	final Graphics g;
@@ -88,11 +91,20 @@ public class Player extends GameCanvas {
 
 	}
 
-	final void Update() {
+	public final void Update() {
 		time = track.Now();
 	}
 
 	// drawing section
+	
+	public final void Refill() {
+		FillBg();
+		DrawBorders();
+	}
+	
+	public final void Redraw() {
+		
+	}
 
 	private final void FillBg() {
 		g.drawImage(bg, 0, 0, 0);
@@ -105,4 +117,6 @@ public class Player extends GameCanvas {
 			g.drawLine(x, 0, x, scrH);
 		}
 	}
+	
+	
 }
