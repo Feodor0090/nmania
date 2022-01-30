@@ -37,7 +37,7 @@ public class Player extends GameCanvas {
 
 		// step 3: setup difficulty
 		// TODO
-		hitWindows = new int[6];
+		hitWindows = new int[] { 200, 150, 100, 50, 25, 10 };
 		score = new ScoreController();
 
 		// step 4: setup configs
@@ -96,7 +96,16 @@ public class Player extends GameCanvas {
 	}
 
 	public final void Update() {
+		// sync
 		time = track.Now();
+
+		// missing unpressed notes
+		for (int i = 0; i < columnsCount; i++) {
+			if (time - columns[i][currentNote[i]] > hitWindows[0]) {
+				score.CountHit(0);
+				currentNote[i] += 2;
+			}
+		}
 	}
 
 	// drawing section
@@ -108,7 +117,9 @@ public class Player extends GameCanvas {
 	}
 
 	public final void Redraw() {
+		g.setClip(0, 0, scrW, scrH-Settings.keyboardHeight);
 		RedrawNotes();
+		g.setClip(0, 0, scrW, scrH);
 		flushGraphics();
 	}
 
@@ -123,20 +134,21 @@ public class Player extends GameCanvas {
 			g.drawLine(x, 0, x, scrH);
 		}
 		int ky = scrH - Settings.keyboardHeight;
-		g.drawLine(Settings.leftOffset, ky - 1, Settings.leftOffset + columnsCount * (Settings.columnWidth + 1),
-				ky - 1);
+		g.drawLine(Settings.leftOffset, ky, Settings.leftOffset + columnsCount * (Settings.columnWidth + 1), ky);
 	}
+
+	private final int scrollDiv = 4;
 
 	private final void RedrawNotes() {
 		// TODO OPTIMIZATION!!11!1!!
 		int hitLineY = scrH - Settings.keyboardHeight;
-		int notesY = hitLineY + time;
+		int notesY = hitLineY + time / scrollDiv;
 		for (int column = 0; column < columnsCount; column++) {
 			int x = Settings.leftOffset + 1 + (column * (Settings.columnWidth + 1));
 			int[] c = columns[column];
 			int lastY = hitLineY;
 			for (int i = currentNote[column]; i < c.length; i += 2) {
-				int noteY = c[i];
+				int noteY = c[i] / scrollDiv;
 				int dur = c[i + 1];
 				noteY = notesY - noteY;
 				if (lastY > noteY) {
@@ -147,11 +159,12 @@ public class Player extends GameCanvas {
 				lastY = noteY - Settings.noteHeight;
 				g.fillRect(x, lastY, Settings.columnWidth, Settings.noteHeight);
 				if (dur != 0) {
-					lastY -= dur;
+					lastY = noteY - dur / scrollDiv;
 					g.setColor(0);
-					g.fillRect(x, lastY, Settings.columnWidth, dur);
+					g.fillRect(x, lastY, Settings.columnWidth, dur / scrollDiv - Settings.noteHeight);
 					g.setColor(0, 255, 0);
-					g.fillRect(x + (Settings.columnWidth - Settings.holdWidth) / 2, lastY, Settings.holdWidth, dur);
+					g.fillRect(x + (Settings.columnWidth - Settings.holdWidth) / 2, lastY, Settings.holdWidth,
+							dur / scrollDiv - Settings.noteHeight);
 				}
 				if (lastY < 0)
 					break;
