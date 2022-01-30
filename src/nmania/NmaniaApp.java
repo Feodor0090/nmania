@@ -5,7 +5,12 @@ import java.util.Vector;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.TextBox;
+import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
@@ -14,7 +19,7 @@ import org.json.me.JSONObject;
 import nmania.Beatmap.ManiaNote;
 import symnovel.SNUtils;
 
-public final class NmaniaApp extends MIDlet implements ILogger {
+public final class NmaniaApp extends MIDlet implements ILogger, CommandListener, Runnable {
 
 	public static NmaniaApp inst;
 	public boolean running;
@@ -34,16 +39,27 @@ public final class NmaniaApp extends MIDlet implements ILogger {
 		a.setString(s);
 	}
 
+	TextBox box;
+	
+	int keys;
+
 	protected void startApp() throws MIDletStateChangeException {
 		inst = this;
 		if (running)
 			return;
+		box = new TextBox("Number of keys (2-10):", "4", 2, TextField.NUMERIC);
+		final Command ok = new Command("Start", Command.OK, 1);
+		box.addCommand(ok);
+		box.setCommandListener(this);
+		Display.getDisplay(inst).setCurrent(box);
+	}
+
+	public void run() {
 		try {
-			final int keys = 4;
 			a = new Alert("nmania", "Creating test data", null, AlertType.INFO);
 			KeyboardSetup ks = new KeyboardSetup(keys, a);
 			Display.getDisplay(inst).setCurrent(ks);
-			while(!(Display.getDisplay(inst).getCurrent() instanceof Alert)) 
+			while (!(Display.getDisplay(inst).getCurrent() instanceof Alert))
 				Thread.sleep(100);
 			Display.getDisplay(inst).setCurrent(a);
 			BeatmapSet s = new BeatmapSet();
@@ -53,9 +69,10 @@ public final class NmaniaApp extends MIDlet implements ILogger {
 			b.set = s;
 			a.setString("Spawning notes");
 			b.columnsCount = keys;
-			b.notes = RandomNotes(400, b.columnsCount, 60000f / 160, 200);
+			b.notes = RandomNotes(40, b.columnsCount, 60000f / 160, 200);
 			a.setString("Running player");
 			Player p = new Player(b, this);
+			Display.getDisplay(inst).setCurrent(p);
 			Thread t = new PlayerThread(p);
 			t.start();
 		} catch (Exception e) {
@@ -64,8 +81,8 @@ public final class NmaniaApp extends MIDlet implements ILogger {
 	}
 
 	ManiaNote[] RandomNotes(int c, int cols, float beatLength, int offset) {
-		if (cols <= 2 || cols > 7)
-			throw new IllegalArgumentException("This generator can handle only 3-7 column maps.");
+		if (cols < 2)
+			throw new IllegalArgumentException("This generator can handle only 2+ column maps.");
 		Random r = new Random();
 		Vector notes = new Vector();
 		for (int i = 10; i < c; i++) {
@@ -117,6 +134,16 @@ public final class NmaniaApp extends MIDlet implements ILogger {
 		ManiaNote[] n = new ManiaNote[notes.size()];
 		notes.copyInto(n);
 		return n;
+	}
+
+	public void commandAction(Command arg0, Displayable arg1) {
+		int k = Integer.parseInt(box.getString());
+		if (k < 2)
+			throw new RuntimeException("2 keys minimum!");
+		if (k > 10)
+			throw new RuntimeException("10 keys maximum!");
+		keys = k;
+		(new Thread(this)).start();
 	}
 
 }

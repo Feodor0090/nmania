@@ -10,6 +10,9 @@ public final class Settings {
 			new int[] { 1,2,3,4,5},
 			new int[] { 1,2,3,4,5,6},
 			new int[] { 1,2,3,4,5,6,7},
+			new int[] { 1,2,3,4,5,6,7,8},
+			new int[] { 1,2,3,4,5,6,7,8,9},
+			new int[] { 1,2,3,4,5,6,7,8,9,10},
 	};
 	public static int pauseKey;
 	public static int leftOffset = 30;
