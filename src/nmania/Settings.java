@@ -2,7 +2,15 @@ package nmania;
 
 public final class Settings {
 	public static float bgDim = 0.5f;
-	public static int[][] keyLayout;
+	public static int[][] keyLayout = new int[][] {
+			new int[] { 1},
+			new int[] { 1,2},
+			new int[] { 1,2,3},
+			new int[] { 1,2,3,4},
+			new int[] { 1,2,3,4,5},
+			new int[] { 1,2,3,4,5,6},
+			new int[] { 1,2,3,4,5,6,7},
+	};
 	public static int pauseKey;
 	public static int columnWidth = 50;
 	public static int holdWidth = 30;

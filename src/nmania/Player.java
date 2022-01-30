@@ -17,6 +17,7 @@ public class Player extends GameCanvas {
 
 	protected Player(Beatmap map) throws IOException, MediaException {
 		super(false);
+		setFullScreenMode(true);
 
 		scrW = getWidth();
 		scrH = getHeight();
@@ -48,8 +49,10 @@ public class Player extends GameCanvas {
 		// step 5: loading beatmap
 		SNUtils.sort(map.notes);
 		Vector[] _cols = new Vector[columnsCount];
+		for(int i=0; i<_cols.length;i++) 
+			_cols[i] = new Vector();
 		for (int i = 0; i < map.notes.length; i++) {
-			int c = map.notes[i].column;
+			int c = map.notes[i].column-1;
 			_cols[c].addElement(new Integer(map.notes[i].time));
 			_cols[c].addElement(new Integer(map.notes[i].duration));
 		}
