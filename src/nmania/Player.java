@@ -47,7 +47,8 @@ public class Player extends GameCanvas {
 		columns = new int[columnsCount][];
 		currentNote = new int[columnsCount];
 		holdKeys = new boolean[columnsCount];
-		keyMappings = Settings.keyLayout[columnsCount];
+		lastHoldKeys = new boolean[columnsCount];
+		keyMappings = Settings.keyLayout[columnsCount - 1];
 
 		// step 5: loading beatmap
 		SNUtils.sort(map.notes);
@@ -93,6 +94,7 @@ public class Player extends GameCanvas {
 	final int columnsCount;
 	final int[][] columns;
 	final int[] currentNote;
+	final boolean[] lastHoldKeys;
 	final boolean[] holdKeys;
 	final int[] keyMappings;
 	final int[] hitWindows;
@@ -113,13 +115,23 @@ public class Player extends GameCanvas {
 	int lastJudgement;
 
 	protected final void keyPressed(int k) {
-		int column = -1;
-		for (int i = 0; i < columnsCount; i++)
-			if (keyMappings[i] == k)
-				column = i;
-		if (column == -1)
-			return;
+		for (int i = 0; i < columnsCount; i++) {
+			if (keyMappings[i] == k) {
+				holdKeys[i] = true;
+				DrawKey(i, true);
+				return;
+			}
+		}
+	}
 
+	protected void keyReleased(int k) {
+		for (int i = 0; i < columnsCount; i++) {
+			if (keyMappings[i] == k) {
+				holdKeys[i] = false;
+				DrawKey(i, false);
+				return;
+			}
+		}
 	}
 
 	public final void Update() {
@@ -133,6 +145,7 @@ public class Player extends GameCanvas {
 				lastJudgement = 0;
 				lastJudgementTime = time;
 				currentNote[i] += 2;
+				continue;
 			}
 		}
 	}
@@ -142,6 +155,9 @@ public class Player extends GameCanvas {
 	public final void Refill() {
 		FillBg();
 		DrawBorders();
+		for (int i = 0; i < columnsCount; i++) {
+			DrawKey(i, false);
+		}
 		flushGraphics();
 	}
 
@@ -219,6 +235,22 @@ public class Player extends GameCanvas {
 		int ky = scrH - Settings.keyboardHeight;
 		g.drawLine(Settings.leftOffset, ky, Settings.leftOffset + columnsCount * (Settings.columnWidth + 1), ky);
 	}
+
+	private final void DrawKey(int k, boolean hold) {
+		int x = Settings.leftOffset + 1 + (k * (Settings.columnWidth + 1));
+		int x2 = Settings.columnWidth + x - 1;
+		int topClr = hold ? keyColorTopHold : keyColorTop;
+		int y = scrH - Settings.keyboardHeight + 1;
+		for (int i = 0; i < Settings.keyboardHeight; i++) {
+			g.setColor(ColorUtils.blend(keyColorBottom, topClr, i * 255 / Settings.keyboardHeight));
+			g.drawLine(x, y, x2, y);
+			y++;
+		}
+	}
+
+	private final int keyColorTop = SNUtils.toARGB("0x777");
+	private final int keyColorTopHold = SNUtils.toARGB("0x0FF");
+	private final int keyColorBottom = SNUtils.toARGB("0x69D");
 
 	private final int scrollDiv = 4;
 
