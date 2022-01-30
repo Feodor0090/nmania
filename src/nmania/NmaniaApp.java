@@ -1,6 +1,7 @@
 package nmania;
 
 import java.util.Random;
+import java.util.Vector;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
@@ -26,9 +27,9 @@ public final class NmaniaApp extends MIDlet implements ILogger {
 
 	protected void pauseApp() {
 	}
-	
+
 	Alert a;
-	
+
 	public void log(String s) {
 		a.setString(s);
 	}
@@ -46,7 +47,8 @@ public final class NmaniaApp extends MIDlet implements ILogger {
 			Beatmap b = new Beatmap(new JSONObject(SNUtils.readJARRes("/test/map.json", 4096)));
 			b.set = s;
 			a.setString("Spawning notes");
-			b.notes = RandomNotes(1000, 4, 60000f / 160);
+			b.columnsCount = 4;
+			b.notes = RandomNotes(400, b.columnsCount, 60000f / 160, 200);
 			a.setString("Running player");
 			Player p = new Player(b, this);
 			Thread.sleep(500);
@@ -58,13 +60,59 @@ public final class NmaniaApp extends MIDlet implements ILogger {
 		}
 	}
 
-	ManiaNote[] RandomNotes(int c, int cols, float beatLength) {
+	ManiaNote[] RandomNotes(int c, int cols, float beatLength, int offset) {
+		if (cols <= 2 || cols > 7)
+			throw new IllegalArgumentException("This generator can handle only 3-7 column maps.");
 		Random r = new Random();
-		ManiaNote[] n = new ManiaNote[c];
+		Vector notes = new Vector();
 		for (int i = 0; i < c; i++) {
-			n[i] = new ManiaNote((int) (i * beatLength), r.nextInt(cols) + 1,
-					(int) (r.nextInt() % 2 == 1 ? beatLength / 2 : 0));
+			int noteType = r.nextInt(100);
+			if (noteType > 80) {
+				// single hit
+				notes.addElement(new ManiaNote(offset + (int) (i * beatLength * 2), r.nextInt(cols) + 1, 0));
+			} else if (noteType > 60) {
+				// double hit
+				int col = r.nextInt(cols) + 1;
+				notes.addElement(new ManiaNote(offset + (int) (i * beatLength * 2), col, 0));
+				int scol;
+				while ((scol = r.nextInt(cols) + 1) == col) {
+				}
+				notes.addElement(new ManiaNote(offset + (int) (i * beatLength * 2), scol, 0));
+			} else if (noteType > 40) {
+				// semi-ladder
+				int col = r.nextInt(cols) + 1;
+				notes.addElement(new ManiaNote(offset + (int) (i * beatLength * 2), col, 0));
+				int scol;
+				while ((scol = r.nextInt(cols) + 1) == col) {
+				}
+				notes.addElement(new ManiaNote(offset + (int) ((i * 2 + 1) * beatLength), scol, 0));
+			} else if (noteType > 20) {
+				// generic holds
+				int col = r.nextInt(cols) + 1;
+				notes.addElement(new ManiaNote(offset + (int) (i * beatLength * 2), col, (int) (beatLength * 2)));
+				int scol;
+				while ((scol = r.nextInt(cols) + 1) == col) {
+				}
+				notes.addElement(new ManiaNote(offset + (int) (i * beatLength * 2), scol,
+						r.nextFloat() > 0.5f ? 0 : (int) (beatLength * 2)));
+				i++;
+			} else {
+				// hold & tap
+				int col = r.nextInt(cols) + 1;
+				notes.addElement(new ManiaNote(offset + (int) (i * beatLength * 2), col, (int) (beatLength * 2)));
+				int scol;
+				while ((scol = r.nextInt(cols) + 1) == col) {
+				}
+				if (r.nextFloat() > 0.5f)
+					notes.addElement(new ManiaNote(offset + (int) (i * beatLength * 2), scol, 0));
+				while ((scol = r.nextInt(cols) + 1) == col) {
+				}
+				notes.addElement(new ManiaNote(offset + (int) ((i + 1) * beatLength * 2), scol, 0));
+				i++;
+			}
 		}
+		ManiaNote[] n = new ManiaNote[notes.size()];
+		notes.copyInto(n);
 		return n;
 	}
 
