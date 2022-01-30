@@ -196,4 +196,6 @@ public class Player extends GameCanvas {
 		}
 	}
 
+	private final String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
+
 }
