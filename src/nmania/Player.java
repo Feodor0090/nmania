@@ -72,7 +72,7 @@ public class Player extends GameCanvas {
 		{
 			int scoreW = fontL.stringWidth("0000000000");
 			int scoreH = fontL.getHeight();
-			scoreBg = ImageUtils.crop(bg, scrW - scoreW, 0, scoreW, scoreH);
+			scoreBg = ImageUtils.crop(bg, scrW - scoreW, 0, scrW - 1, scoreH + 1);
 		}
 
 		// step 7: lock graphics
@@ -96,6 +96,9 @@ public class Player extends GameCanvas {
 	final Image scoreBg;
 
 	int time;
+	int rollingScore = 0;
+	int lastJudgementTime;
+	int lastJudgement;
 
 	protected final void keyPressed(int k) {
 		int column = -1;
@@ -115,6 +118,8 @@ public class Player extends GameCanvas {
 		for (int i = 0; i < columnsCount; i++) {
 			if (time - columns[i][currentNote[i]] > hitWindows[0]) {
 				score.CountHit(0);
+				lastJudgement = 0;
+				lastJudgementTime = time;
 				currentNote[i] += 2;
 			}
 		}
@@ -137,8 +142,17 @@ public class Player extends GameCanvas {
 	}
 
 	private void RedrawHUD() {
+		int realScore = score.maxHitScore;
+		if (realScore != rollingScore) {
+			rollingScore += (realScore - rollingScore) / 60 + 1;
+		}
 		g.drawImage(scoreBg, scrW, 0, Graphics.RIGHT | Graphics.TOP);
-		DrawNumberFromRight(score.maxHitScore, 0, true, 0);
+		DrawNumberFromRight(rollingScore, 0, true, 0);
+		
+		if(time-lastJudgementTime<400) {
+			g.setColor(-1);
+			g.drawString(judgements[lastJudgement], Settings.leftOffset+(Settings.columnWidth+1)*columnsCount/2, 50, Graphics.HCENTER|Graphics.TOP);
+		}
 	}
 
 	private final void FillBg() {
