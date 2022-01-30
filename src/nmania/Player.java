@@ -32,6 +32,7 @@ public class Player extends GameCanvas {
 				return ColorUtils.blend(p, 0xff000000, (int) ((1f - Settings.bgDim) * 255));
 			}
 		});
+		_bg = null;
 
 		// step 2: loading music
 		track = new AudioController(map);
@@ -64,9 +65,15 @@ public class Player extends GameCanvas {
 				columns[i][j] = ((Integer) _cols[i].elementAt(j)).intValue();
 			}
 		}
+		_cols = null;
 
-		// step 6: cache background hot areas
-		// TODO
+		// step 6: cache data for HUD drawing
+		fontL = Font.getFont(Font.SIZE_LARGE);
+		{
+			int scoreW = fontL.stringWidth("0000000000");
+			int scoreH = fontL.getHeight();
+			scoreBg = ImageUtils.crop(bg, scrW - scoreW, 0, scoreW, scoreH);
+		}
 
 		// step 7: lock graphics
 		g = getGraphics();
@@ -85,6 +92,8 @@ public class Player extends GameCanvas {
 	final Image bg;
 	final Graphics g;
 	final int scrW, scrH;
+	final Font fontL;
+	final Image scoreBg;
 
 	int time;
 
@@ -128,6 +137,7 @@ public class Player extends GameCanvas {
 	}
 
 	private void RedrawHUD() {
+		g.drawImage(scoreBg, scrW, 0, Graphics.RIGHT | Graphics.TOP);
 		DrawNumberFromRight(score.maxHitScore, 0, true, 0);
 	}
 
