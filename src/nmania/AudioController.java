@@ -9,7 +9,8 @@ import javax.microedition.media.Player;
 public final class AudioController {
 
 	public AudioController(Beatmap map) throws IOException, MediaException {
-		player = Manager.createPlayer(map.ToGlobalPath(map.audio));
+		String file = map.ToGlobalPath(map.audio);
+		player = Manager.createPlayer(getClass().getResourceAsStream(file), "audio/mpeg");
 		player.realize();
 		player.prefetch();
 	}
