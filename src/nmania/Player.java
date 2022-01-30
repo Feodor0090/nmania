@@ -15,7 +15,7 @@ import tube42.lib.imagelib.ImageFxUtils;
 import tube42.lib.imagelib.ImageFxUtils.PixelModifier;
 import tube42.lib.imagelib.ImageUtils;
 
-public class Player extends GameCanvas {
+public final class Player extends GameCanvas {
 
 	protected Player(Beatmap map, ILogger log) throws IOException, MediaException {
 		super(false);
@@ -89,39 +89,59 @@ public class Player extends GameCanvas {
 			int accW = fontL.charsWidth(accText, 0, accText.length);
 			accBg = ImageUtils.crop(bg, scrW - accW, scrH - fontLh, scrW - 1, scrH - 1);
 		}
+		kbH = Settings.keyboardHeight;
+		kbY = scrH - kbH;
+		colWp1 = Settings.columnWidth + 1;
+		judgmentCenter = Settings.leftOffset + (Settings.columnWidth + 1) * columnsCount / 2;
+		localHoldX = (Settings.columnWidth - Settings.holdWidth) / 2;
 
 		// step 7: lock graphics
 		log.log("Locking graphics");
 		g = getGraphics();
+		g.setFont(fontL);
 
 		log.log("Ready.");
 		System.gc();
 	}
 
-	final int columnsCount;
-	final int[][] columns;
-	final int[] currentNote;
-	final boolean[] lastHoldKeys;
-	final boolean[] holdKeys;
-	final int[] keyMappings;
-	final int[] hitWindows;
-	final ScoreController score;
-	final AudioController track;
-	final Image bg;
-	final Graphics g;
-	final int scrW, scrH;
-	final Font fontL;
-	final Image scoreBg;
-	final Image accBg;
+	private final int columnsCount;
+	private final int[][] columns;
+	private final int[] currentNote;
+	private final boolean[] lastHoldKeys;
+	private final boolean[] holdKeys;
+	private final int[] keyMappings;
+	private final int[] hitWindows;
+	public final ScoreController score;
+	public final AudioController track;
+	private final Image bg;
+	private final Graphics g;
+	private final int scrW, scrH;
+	private final Font fontL;
+	private final Image scoreBg;
+	private final Image accBg;
+	private final int[] numsWidthCache;
 
-	final char[] accText = new char[] { '1', '0', '0', ',', '0', '0', '%' };
+	private final int kbH, kbY, colWp1;
+	private final int judgmentCenter;
+	private final int localHoldX;
 
-	int time;
-	int rollingScore = 0;
-	int lastJudgementTime;
-	int lastJudgement;
+	private final char[] accText = new char[] { '1', '0', '0', ',', '0', '0', '%' };
 
-	protected final void keyPressed(int k) {
+	private int time;
+	private int rollingScore = 0;
+	private int lastJudgementTime;
+	private int lastJudgement;
+
+	private final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
+	private final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
+			SNUtils.toARGB("0x494"), SNUtils.toARGB("0x0B0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x90F") };
+	private final int keyColorTop = SNUtils.toARGB("0x777");
+	private final int keyColorTopHold = SNUtils.toARGB("0x0FF");
+	private final int keyColorBottom = SNUtils.toARGB("0x69D");
+
+	private final static int scrollDiv = 4;
+
+	protected final void keyPressed(final int k) {
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
 				holdKeys[i] = true;
@@ -131,7 +151,7 @@ public class Player extends GameCanvas {
 		}
 	}
 
-	protected void keyReleased(int k) {
+	protected final void keyReleased(final int k) {
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
 				holdKeys[i] = false;
@@ -147,15 +167,15 @@ public class Player extends GameCanvas {
 
 		// checking all columns
 		for (int column = 0; column < columnsCount; column++) {
-			
+
 			// diff between current time and note hit time.
 			// positive - it's late, negative - it's early.
 			final int diff = time - columns[column][currentNote[column]];
-			
+
 			// is it too early to handle?
 			if (diff < -hitWindows[0])
 				continue;
-			
+
 			// if we have input
 			if (holdKeys[column]) {
 				// absolute difference
@@ -172,7 +192,7 @@ public class Player extends GameCanvas {
 				}
 				continue;
 			}
-			
+
 			// missing unpressed notes
 			if (diff > hitWindows[0]) {
 				score.CountHit(0);
@@ -196,7 +216,7 @@ public class Player extends GameCanvas {
 	}
 
 	public final void Redraw() {
-		g.setClip(0, 0, scrW, scrH - Settings.keyboardHeight);
+		g.setClip(0, 0, scrW, kbY);
 		RedrawNotes();
 		g.setClip(0, 0, scrW, scrH);
 		RedrawHUD();
@@ -213,18 +233,16 @@ public class Player extends GameCanvas {
 		g.setColor(-1);
 		// score
 		{
-			int realScore = score.currentHitScore;
+			final int realScore = score.currentHitScore;
 			if (realScore != rollingScore) {
 				rollingScore += (realScore - rollingScore) / 60 + 1;
 			}
-			g.drawImage(scoreBg, scrW, 0, Graphics.RIGHT | Graphics.TOP);
-			g.setFont(fontL);
+			g.drawImage(scoreBg, scrW, 0, 24);
 			int num = rollingScore;
 			int x1 = scrW - 0;
-			int anchor = Graphics.TOP | Graphics.RIGHT;
 			while (true) {
-				int d = num % 10;
-				g.drawChar((char) (d + '0'), x1, 0, anchor);
+				final int d = num % 10;
+				g.drawChar((char) (d + '0'), x1, 0, 24);
 				x1 -= numsWidthCache[d];
 				if (num < 10)
 					break;
@@ -244,17 +262,17 @@ public class Player extends GameCanvas {
 			accRaw /= 10;
 			accText[0] = accRaw == 0 ? ' ' : '1';
 			g.drawImage(accBg, scrW, scrH, 40);
-			g.drawChars(accText, 0, accText.length, scrW, scrH, 40);
+			g.drawChars(accText, 0, 7, scrW, scrH, 40);
 		}
 		// judgment
 		if (time - lastJudgementTime < 200) {
-			final int x = Settings.leftOffset + (Settings.columnWidth + 1) * columnsCount / 2;
-			g.drawString(judgements[lastJudgement], x + 1, 99, 17);
-			g.drawString(judgements[lastJudgement], x - 1, 99, 17);
-			g.drawString(judgements[lastJudgement], x + 1, 101, 17);
-			g.drawString(judgements[lastJudgement], x - 1, 101, 17);
+			final String j = judgements[lastJudgement];
+			g.drawString(j, judgmentCenter + 1, 99, 17);
+			g.drawString(j, judgmentCenter - 1, 99, 17);
+			g.drawString(j, judgmentCenter + 1, 101, 17);
+			g.drawString(j, judgmentCenter - 1, 101, 17);
 			g.setColor(judgementColors[lastJudgement]);
-			g.drawString(judgements[lastJudgement], x, 100, 17);
+			g.drawString(j, judgmentCenter, 100, 17);
 		}
 	}
 
@@ -264,68 +282,73 @@ public class Player extends GameCanvas {
 
 	private final void DrawBorders() {
 		g.setColor(-1);
+		int x = Settings.leftOffset;
 		for (int i = 0; i <= columnsCount; i++) {
-			int x = Settings.leftOffset + (i * (Settings.columnWidth + 1));
 			g.drawLine(x, 0, x, scrH);
+			x += colWp1;
 		}
-		int ky = scrH - Settings.keyboardHeight;
-		g.drawLine(Settings.leftOffset, ky, Settings.leftOffset + columnsCount * (Settings.columnWidth + 1), ky);
+		g.drawLine(Settings.leftOffset, kbY, Settings.leftOffset + columnsCount * colWp1, kbY);
 	}
 
-	private final void DrawKey(int k, boolean hold) {
-		int x = Settings.leftOffset + 1 + (k * (Settings.columnWidth + 1));
-		int x2 = Settings.columnWidth + x - 1;
-		int topClr = hold ? keyColorTopHold : keyColorTop;
-		int y = scrH - Settings.keyboardHeight + 1;
-		for (int i = 0; i < Settings.keyboardHeight; i++) {
-			g.setColor(ColorUtils.blend(keyColorBottom, topClr, i * 255 / Settings.keyboardHeight));
-			g.drawLine(x, y, x2, y);
+	private final void DrawKey(final int k, final boolean hold) {
+		final int x = Settings.leftOffset + 1 + (k * (Settings.columnWidth + 1));
+		final int x2 = Settings.columnWidth + x - 1;
+		final int topClr = hold ? keyColorTopHold : keyColorTop;
+		int y = kbY;
+		for (int i = 1; i < kbH; i++) {
 			y++;
+			g.setColor(ColorUtils.blend(keyColorBottom, topClr, i * 255 / kbH));
+			g.drawLine(x, y, x2, y);
 		}
 	}
-
-	private final int keyColorTop = SNUtils.toARGB("0x777");
-	private final int keyColorTopHold = SNUtils.toARGB("0x0FF");
-	private final int keyColorBottom = SNUtils.toARGB("0x69D");
-
-	private final int scrollDiv = 4;
 
 	private final void RedrawNotes() {
-		// TODO OPTIMIZATION!!11!1!!
-		int hitLineY = scrH - Settings.keyboardHeight;
-		int notesY = hitLineY + time / scrollDiv;
+
+		// current Y offset due to scroll
+		final int notesY = kbY + time / scrollDiv;
+
+		// column X
+		int x = Settings.leftOffset + 1;
+
 		for (int column = 0; column < columnsCount; column++) {
-			int x = Settings.leftOffset + 1 + (column * (Settings.columnWidth + 1));
-			int[] c = columns[column];
-			int lastY = hitLineY;
+
+			// current column
+			final int[] c = columns[column];
+
+			// y to which we can fill the column with black
+			int lastY = kbY;
+
+			// iterating through notes
 			for (int i = currentNote[column]; i < c.length; i += 2) {
-				int noteY = c[i] / scrollDiv;
-				int dur = c[i + 1];
-				noteY = notesY - noteY;
+				// the note Y
+				final int noteY = notesY - (c[i] / scrollDiv);
+				// hold duration
+				final int dur = c[i + 1];
+				// filling empty space
 				if (lastY > noteY) {
 					g.setColor(0);
 					g.fillRect(x, noteY, Settings.columnWidth, lastY - noteY);
 				}
+				// drawing note
 				g.setColor(255, 0, 0);
 				lastY = noteY - Settings.noteHeight;
 				g.fillRect(x, lastY, Settings.columnWidth, Settings.noteHeight);
+				// drawing hold
 				if (dur != 0) {
-					lastY = noteY - dur / scrollDiv;
+					final int holdLen = dur / scrollDiv;
+					final int holdH = holdLen - Settings.noteHeight;
+					lastY = noteY - holdLen;
 					g.setColor(0);
-					g.fillRect(x, lastY, Settings.columnWidth, dur / scrollDiv - Settings.noteHeight);
+					g.fillRect(x, lastY, Settings.columnWidth, holdH);
 					g.setColor(0, 255, 0);
-					g.fillRect(x + (Settings.columnWidth - Settings.holdWidth) / 2, lastY, Settings.holdWidth,
-							dur / scrollDiv - Settings.noteHeight);
+					g.fillRect(x + localHoldX, lastY, Settings.holdWidth, holdH);
 				}
+				// are we above the screen?
 				if (lastY < 0)
 					break;
 			}
+			x += colWp1;
 		}
 	}
-
-	private final String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
-	private final int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
-			SNUtils.toARGB("0x494"), SNUtils.toARGB("0x0B0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x90F") };
-	private final int[] numsWidthCache;
 
 }
