@@ -17,7 +17,7 @@ import tube42.lib.imagelib.ImageUtils;
 
 public class Player extends GameCanvas {
 
-	protected Player(Beatmap map) throws IOException, MediaException {
+	protected Player(Beatmap map, ILogger log) throws IOException, MediaException {
 		super(false);
 		setFullScreenMode(true);
 
@@ -25,6 +25,7 @@ public class Player extends GameCanvas {
 		scrH = getHeight();
 
 		// step 1: loading background
+		log.log("Loading map background");
 		Image _bg = Image.createImage(map.ToGlobalPath(map.image));
 		_bg = ImageUtils.resize(_bg, scrW, scrH, true, false);
 		bg = ImageFxUtils.applyModifier(_bg, new PixelModifier() {
@@ -35,14 +36,17 @@ public class Player extends GameCanvas {
 		_bg = null;
 
 		// step 2: loading music
+		log.log("Loading music");
 		track = new AudioController(map);
 
 		// step 3: setup difficulty
 		// TODO
+		log.log("Setting scoring up");
 		hitWindows = new int[] { 200, 150, 100, 50, 25, 10 };
 		score = new ScoreController();
 
 		// step 4: setup configs
+		log.log("Bootstrapping player");
 		columnsCount = map.columnsCount;
 		columns = new int[columnsCount][];
 		currentNote = new int[columnsCount];
@@ -51,6 +55,7 @@ public class Player extends GameCanvas {
 		keyMappings = Settings.keyLayout[columnsCount - 1];
 
 		// step 5: loading beatmap
+		log.log("Loading beatmap hitobjects");
 		SNUtils.sort(map.notes);
 		Vector[] _cols = new Vector[columnsCount];
 		for (int i = 0; i < _cols.length; i++)
@@ -69,25 +74,27 @@ public class Player extends GameCanvas {
 		_cols = null;
 
 		// step 6: cache data for HUD drawing
-		fontL = Font.getFont(Font.SIZE_LARGE);
+		log.log("Caching service data");
+		fontL = Font.getFont(0, 0, 16);
+		int fontLh = fontL.getHeight();
 		{
 			int scoreW = fontL.stringWidth("0000000000");
-			int scoreH = fontL.getHeight();
-			scoreBg = ImageUtils.crop(bg, scrW - scoreW, 0, scrW - 1, scoreH + 1);
+			scoreBg = ImageUtils.crop(bg, scrW - scoreW, 0, scrW - 1, fontLh + 1);
 		}
 		numsWidthCache = new int[10];
 		for (int i = 0; i < 10; i++) {
 			numsWidthCache[i] = fontL.charWidth((char) ('0' + i));
 		}
 		{
-			int scoreW = fontL.charsWidth(accText, 0, accText.length);
-			int scoreH = fontL.getHeight();
-			accBg = ImageUtils.crop(bg, scrW - scoreW, scrH - scoreH, scrW - 1, scrH - 1);
+			int accW = fontL.charsWidth(accText, 0, accText.length);
+			accBg = ImageUtils.crop(bg, scrW - accW, scrH - fontLh, scrW - 1, scrH - 1);
 		}
 
 		// step 7: lock graphics
+		log.log("Locking graphics");
 		g = getGraphics();
 
+		log.log("Ready.");
 		System.gc();
 	}
 
@@ -212,13 +219,15 @@ public class Player extends GameCanvas {
 			g.drawImage(accBg, scrW, scrH, 40);
 			g.drawChars(accText, 0, accText.length, scrW, scrH, 40);
 		}
-		// judgement
+		// judgment
 		if (time - lastJudgementTime < 200) {
 			final int x = Settings.leftOffset + (Settings.columnWidth + 1) * columnsCount / 2;
-			g.drawString(judgements[lastJudgement], x + 1, 101, Graphics.HCENTER | Graphics.TOP);
-			g.drawString(judgements[lastJudgement], x - 1, 101, Graphics.HCENTER | Graphics.TOP);
+			g.drawString(judgements[lastJudgement], x + 1, 99, 17);
+			g.drawString(judgements[lastJudgement], x - 1, 99, 17);
+			g.drawString(judgements[lastJudgement], x + 1, 101, 17);
+			g.drawString(judgements[lastJudgement], x - 1, 101, 17);
 			g.setColor(judgementColors[lastJudgement]);
-			g.drawString(judgements[lastJudgement], x, 100, Graphics.HCENTER | Graphics.TOP);
+			g.drawString(judgements[lastJudgement], x, 100, 17);
 		}
 	}
 
