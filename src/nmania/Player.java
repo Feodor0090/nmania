@@ -10,6 +10,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.media.MediaException;
 
+import nmania.ui.ResultsScreen;
 import symnovel.SNUtils;
 import tube42.lib.imagelib.ColorUtils;
 import tube42.lib.imagelib.ImageFxUtils;

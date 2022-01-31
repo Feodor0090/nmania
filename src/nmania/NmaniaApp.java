@@ -17,6 +17,8 @@ import javax.microedition.midlet.MIDletStateChangeException;
 import org.json.me.JSONObject;
 
 import nmania.Beatmap.ManiaNote;
+import nmania.ui.KeyboardSetup;
+import nmania.ui.MainScreen;
 import symnovel.SNUtils;
 
 public final class NmaniaApp extends MIDlet implements ILogger, CommandListener, Runnable {
@@ -48,6 +50,10 @@ public final class NmaniaApp extends MIDlet implements ILogger, CommandListener,
 		if (running)
 			return;
 		Display.getDisplay(inst).setCurrent(new MainScreen());
+	}
+	
+	public static void Push(Displayable d) {
+		Display.getDisplay(inst).setCurrent(d);
 	}
 
 	public void run() {

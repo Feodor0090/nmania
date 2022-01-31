@@ -1,10 +1,13 @@
-package nmania;
+package nmania.ui;
 
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+
+import nmania.NmaniaApp;
+import nmania.Settings;
 
 public final class KeyboardSetup extends Canvas {
 
