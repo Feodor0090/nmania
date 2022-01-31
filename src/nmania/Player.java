@@ -75,6 +75,19 @@ public final class Player extends GameCanvas {
 		_cols = null;
 
 		// step 6: cache data for HUD drawing
+		log.log("Loading samples");
+		if (Settings.gameplaySamples) {
+			combobreak = new Sample(true, "/sfx/miss.mp3", "audio/mpeg");
+		} else {
+			combobreak = null;
+		}
+		if (Settings.hitSamples) {
+			hitSounds = null;
+		} else {
+			hitSounds = null;
+		}
+
+		// step 7: cache data for HUD drawing
 		log.log("Caching service data");
 		fontL = Font.getFont(0, 0, 16);
 		fillCountersH = fontL.getHeight();
@@ -99,7 +112,7 @@ public final class Player extends GameCanvas {
 		fillAccX = scrW - fillAccW;
 		fillScoreX = scrW - fillScoreW;
 
-		// step 7: lock graphics
+		// step 8: lock graphics
 		log.log("Locking graphics");
 		g = getGraphics();
 		g.setFont(fontL);
@@ -143,6 +156,10 @@ public final class Player extends GameCanvas {
 	public boolean isPaused;
 	public boolean running = true;
 	public boolean failed = false;
+
+	private final Sample combobreak;
+
+	private final Sample[][][] hitSounds;
 
 	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
 	public final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
@@ -229,8 +246,8 @@ public final class Player extends GameCanvas {
 					// checking hitwindow
 					for (int j = 5; j > -1; j--) {
 						if (adiff < hitWindows[j]) {
+							CountHit(j);
 							score.CountHit(j);
-							ApplyToHealth(j);
 							lastJudgement = j;
 							lastJudgementTime = time;
 							currentNote[column] += 2;
@@ -245,8 +262,8 @@ public final class Player extends GameCanvas {
 						// checking hitwindow
 						for (int j = 5; j > -1; j--) {
 							if (adiff < hitWindows[j]) {
+								CountHit(j);
 								score.CountHit(j);
-								ApplyToHealth(j);
 								lastJudgement = j;
 								lastJudgementTime = time;
 								break;
@@ -263,8 +280,8 @@ public final class Player extends GameCanvas {
 				// checking hitwindow
 				for (int j = 5; j > -1; j--) {
 					if (adiff < hitWindows[j]) {
+						CountHit(j);
 						score.CountHit(j);
-						ApplyToHealth(j);
 						lastJudgement = j;
 						lastJudgementTime = time;
 						currentNote[column] += 2;
@@ -272,8 +289,8 @@ public final class Player extends GameCanvas {
 					}
 				}
 				if (adiff >= hitWindows[0]) {
+					CountHit(0);
 					score.CountHit(0);
-					ApplyToHealth(0);
 					lastJudgement = 0;
 					lastJudgementTime = time;
 					currentNote[column] += 2;
@@ -283,10 +300,10 @@ public final class Player extends GameCanvas {
 
 			// missing unpressed notes
 			if (diff > hitWindows[0]) {
+				CountHit(0); // holds decreasing health only once
 				score.CountHit(0);
 				if (dur != 0)
 					score.CountHit(0);
-				ApplyToHealth(0); // holds decreasing health only once
 				lastJudgement = 0;
 				lastJudgementTime = time;
 				currentNote[column] += 2;
@@ -316,7 +333,7 @@ public final class Player extends GameCanvas {
 		}
 	}
 
-	private final void ApplyToHealth(int j) {
+	private final void CountHit(int j) {
 		health += healthValues[j];
 		if (health > 1000)
 			health = 1000;
@@ -327,6 +344,8 @@ public final class Player extends GameCanvas {
 				health = 0;
 			}
 		}
+		if (j == 0 && !failed && score.currentCombo >= 20 && combobreak != null)
+			combobreak.Play();
 	}
 
 	// drawing section

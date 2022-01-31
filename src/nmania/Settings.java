@@ -20,4 +20,7 @@ public final class Settings {
 	public static int holdWidth = 20;
 	public static int keyboardHeight = 50;
 	public static int noteHeight = 20;
+	
+	public static boolean gameplaySamples = true;
+	public static boolean hitSamples = true;
 }
