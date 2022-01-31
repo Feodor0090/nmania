@@ -7,7 +7,7 @@ final class ScoreController {
 	public int maxCombo;
 	public int currentCombo;
 
-	private static final int[] scores = new int[] { 0, 50, 100, 200, 300, 300 };
+	private static final int[] scores = new int[] { 0, 50, 100, 200, 300, 305 };
 
 	public final void CountHit(int type) {
 		hits[type]++;
