@@ -82,7 +82,15 @@ public final class Player extends GameCanvas {
 			combobreak = null;
 		}
 		if (Settings.hitSamples) {
-			hitSounds = null;
+			String[] sets = new String[] { "normal", "soft", "drum" };
+			String[] types = new String[] { "normal", "whistle", "finish", "clap" };
+			hitSounds = new MultiSample[sets.length][];
+			for (int i = 0; i < sets.length; i++) {
+				hitSounds[i] = new MultiSample[types.length];
+				for (int j = 0; j < types.length; j++) {
+					hitSounds[i][j] = new MultiSample(true, "/sfx/" + sets[i] + "-hit" + types[j] + ".wav", "audio/wav", 4);
+				}
+			}
 		} else {
 			hitSounds = null;
 		}
@@ -159,7 +167,7 @@ public final class Player extends GameCanvas {
 
 	private final Sample combobreak;
 
-	private final Sample[][][] hitSounds;
+	private final MultiSample[][] hitSounds;
 
 	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
 	public final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
@@ -175,6 +183,8 @@ public final class Player extends GameCanvas {
 			if (keyMappings[i] == k) {
 				holdKeys[i] = true;
 				DrawKey(i, true);
+				if (hitSounds != null)
+					hitSounds[0][0].Play();
 				return;
 			}
 		}
@@ -275,6 +285,8 @@ public final class Player extends GameCanvas {
 				}
 				continue;
 			} else if (lastHoldKeys[column] && dur != 0) {
+				// released hold
+
 				// absolute difference
 				final int adiff = Math.abs(diff - dur);
 				// checking hitwindow
@@ -285,6 +297,8 @@ public final class Player extends GameCanvas {
 						lastJudgement = j;
 						lastJudgementTime = time;
 						currentNote[column] += 2;
+						if (hitSounds != null && j != 0)
+							hitSounds[0][2].Play();
 						break;
 					}
 				}
