@@ -3,12 +3,14 @@ package nmania;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
+import javax.microedition.lcdui.Image;
 
 public class BeatmapManager {
 
@@ -32,31 +34,41 @@ public class BeatmapManager {
 		BeatmapSet bms = new BeatmapSet();
 		bms.wdPath = directory;
 		bms.folderName = dir;
-		String fm;
+		String fm = null;
 		{
-			String[] maps = bakeEnum(bmsFc.list("*.osu", false));
-			if (maps.length == 0)
-				maps = bakeEnum(bmsFc.list("*.nmbm", false));
-			fm = getStringFromFS(maps[0]);
+			Enumeration bmsFiles = bmsFc.list();
+			while (bmsFiles.hasMoreElements()) {
+				String f = bmsFiles.nextElement().toString();
+				if (f.endsWith(".osu") || f.endsWith(".nmbm")) {
+					fm = getStringFromFS(directory + dir + f);
+					break;
+				}
+			}
 		}
 		if (fm.startsWith("osu file format")) {
 			// osu! beatmap
 			int metadataI = fm.indexOf("[Metadata]");
 			int eventsI = fm.indexOf("[Events]");
 
-			int titleI = fm.indexOf("\nTitle:", metadataI);
-			int artistI = fm.indexOf("\nArtist:", metadataI);
-			int creatorI = fm.indexOf("\nCreator:", metadataI);
-			int imageI = fm.indexOf("\n0,", eventsI);
-			
+			int titleI = fm.indexOf("\nTitle:", metadataI) + 7;
+			int artistI = fm.indexOf("\nArtist:", metadataI) + 8;
+			int creatorI = fm.indexOf("\nCreator:", metadataI) + 9;
+			int imageI = fm.indexOf("\n0,", eventsI) + 3;
+
 			bms.title = fm.substring(titleI, fm.indexOf('\n', titleI));
+			bms.artist = fm.substring(artistI, fm.indexOf('\n', artistI));
+			bms.mapper = fm.substring(creatorI, fm.indexOf('\n', creatorI));
+			bms.image = fm.substring(fm.indexOf(',', imageI) + 1, fm.indexOf('\n', imageI));
+			bms.image = bms.image.substring(0, bms.image.indexOf(','));
+			if (bms.image.charAt(0) == '\"')
+				bms.image = bms.image.substring(1, bms.image.length() - 1);
 		} else {
 			// nmania json beatmap
 		}
 
 		bms.files = bakeEnum(bmsFc.list());
 		bmsFc.close();
-		return null;
+		return bms;
 	}
 
 	public static final String getStringFromFS(String path) {
@@ -65,7 +77,7 @@ public class BeatmapManager {
 		ByteArrayOutputStream o = null;
 		try {
 			o = new ByteArrayOutputStream();
-			fcon = (FileConnection) Connector.open(path);
+			fcon = (FileConnection) Connector.open(path, Connector.READ);
 			if (!fcon.exists())
 				return null;
 			dis = fcon.openDataInputStream();
@@ -99,6 +111,35 @@ public class BeatmapManager {
 			try {
 				if (o != null)
 					o.close();
+			} catch (IOException e) {
+			}
+		}
+	}
+
+	public static Image getImgFromFS(String path) {
+		InputStream is = null;
+		FileConnection fcon = null;
+		try {
+			fcon = (FileConnection) Connector.open(path, Connector.READ);
+			if (!fcon.exists())
+				return null;
+			is = fcon.openInputStream();
+
+			Image img = Image.createImage(is);
+			try {
+				fcon.close();
+				fcon = null;
+			} catch (Exception e) {
+			}
+			return img;
+		} catch (RuntimeException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		} finally {
+			try {
+				if (fcon != null)
+					fcon.close();
 			} catch (IOException e) {
 			}
 		}

@@ -102,18 +102,20 @@ public class MainScreen extends GameCanvas implements Runnable {
 		default:
 			break;
 		}
+		needThread = false;
 	}
 
 	/**
 	 * Launches song select.
 	 */
 	private void Play() {
-		TextBox box = new TextBox("Number of keys (2-10):", "4", 2, TextField.NUMERIC);
-		Command ok = new Command("Start", Command.OK, 1);
-		box.addCommand(ok);
-		box.setCommandListener(Nmania.inst);
-		Nmania.inst.box = box;
-		Display.getDisplay(Nmania.inst).setCurrent(box);
+		try {
+			Nmania.LoadManager("file://root/");
+			Nmania.Push(new BeatmapSetsList(Nmania.bm));
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e.toString());
+		}
 	}
 
 	float mul;
@@ -223,6 +225,17 @@ public class MainScreen extends GameCanvas implements Runnable {
 				flushGraphics();
 				if (now - startTime > 500) {
 					Open();
+					// loading animation
+					startTime = System.currentTimeMillis();
+					while (needThread) {
+						now = System.currentTimeMillis();
+						g.setColor(0);
+						g.fillRect(0, 0, w, h);
+						g.setColor(-1);
+						g.fillArc(w / 2 - 20, h / 2 - 20, 40, 40, (int) now, 90);
+						g.fillArc(w / 2 - 20, h / 2 - 20, 40, 40, (int) now + 180, 90);
+						flushGraphics();
+					}
 					return;
 				}
 			}
