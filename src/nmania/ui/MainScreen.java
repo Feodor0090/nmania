@@ -15,7 +15,7 @@ import symnovel.SNUtils;
 
 public class MainScreen extends GameCanvas implements Runnable {
 
-	protected MainScreen() {
+	public MainScreen() {
 		super(false);
 		setFullScreenMode(true);
 		(new Thread(this)).start();
