@@ -1,5 +1,6 @@
 package nmania;
 
+import java.io.IOException;
 import java.util.Random;
 import java.util.Vector;
 
@@ -46,6 +47,11 @@ public final class Nmania extends MIDlet implements ILogger, CommandListener, Ru
 	int keys;
 	
 	public static BeatmapManager bm;
+	
+	public static void LoadManager(String dir) throws IOException {
+		bm = new BeatmapManager(dir);
+		bm.Init();
+	}
 
 	protected void startApp() throws MIDletStateChangeException {
 		inst = this;

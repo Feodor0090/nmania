@@ -19,6 +19,10 @@ public final class Beatmap {
 
 	public Beatmap() {
 	}
+	
+	public Beatmap(RawOsuBeatmap r) {
+		
+	}
 
 	public Beatmap(JSONObject j) {
 		id = j.getInt("id");
@@ -42,9 +46,9 @@ public final class Beatmap {
 			notes[i] = new ManiaNote(n.getJSONArray(i));
 		}
 	}
-	
+
 	public String ToGlobalPath(String local) {
-		return set.wdPath+set.folderName+local;
+		return set.wdPath + set.folderName + local;
 	}
 
 	public static final class ManiaNote implements IComparable {
@@ -88,5 +92,15 @@ public final class Beatmap {
 		public float GetBpm() {
 			return 60000f / msPerBeat;
 		}
+	}
+
+	public final static class RawOsuBeatmap {
+		public final String raw;
+
+		public RawOsuBeatmap(String raw) {
+			super();
+			this.raw = raw;
+		}
+
 	}
 }
