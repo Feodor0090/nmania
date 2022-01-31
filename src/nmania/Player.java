@@ -226,7 +226,7 @@ public final class Player extends GameCanvas {
 				} catch (Exception e) {
 				}
 			}
-			NmaniaApp.Push(new MainScreen());
+			Nmania.Push(new MainScreen());
 			return;
 		}
 
@@ -347,7 +347,7 @@ public final class Player extends GameCanvas {
 				} catch (Exception e) {
 				}
 			}
-			Display.getDisplay(NmaniaApp.inst).setCurrent(new ResultsScreen(score, track, bg));
+			Display.getDisplay(Nmania.inst).setCurrent(new ResultsScreen(score, track, bg));
 		}
 	}
 

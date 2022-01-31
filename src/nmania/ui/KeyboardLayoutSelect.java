@@ -5,7 +5,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
-import nmania.NmaniaApp;
+import nmania.Nmania;
 import nmania.Settings;
 
 public class KeyboardLayoutSelect extends Canvas {
@@ -45,10 +45,10 @@ public class KeyboardLayoutSelect extends Canvas {
 				selected = items.length - 1;
 		} else if (k == -5 || k == -6 || k == 32 || k == '5') {
 			if (selected == 0) {
-				NmaniaApp.Push(prev);
+				Nmania.Push(prev);
 				return;
 			} else {
-				NmaniaApp.Push(new KeyboardSetup(selected, this));
+				Nmania.Push(new KeyboardSetup(selected, this));
 			}
 		}
 		repaint();

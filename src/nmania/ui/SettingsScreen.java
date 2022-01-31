@@ -10,7 +10,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.lcdui.TextField;
 
-import nmania.NmaniaApp;
+import nmania.Nmania;
 import nmania.Settings;
 
 public class SettingsScreen extends Canvas implements CommandListener {
@@ -63,14 +63,14 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		} else if (k == -5 || k == -6 || k == 32 || k == '5') {
 			switch (selected) {
 			case 0:
-				NmaniaApp.Push(new KeyboardLayoutSelect(this));
+				Nmania.Push(new KeyboardLayoutSelect(this));
 				break;
 			case 1:
 				TextBox box = new TextBox("Dim level", "" + Math.min(99, (int) (Settings.bgDim * 100)), 2,
 						TextField.NUMERIC);
 				box.addCommand(new Command("OK", Command.OK, 1));
 				box.setCommandListener(this);
-				Display.getDisplay(NmaniaApp.inst).setCurrent(box);
+				Display.getDisplay(Nmania.inst).setCurrent(box);
 				break;
 			case 2:
 				Settings.hitSamples = !Settings.hitSamples;
@@ -79,7 +79,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Settings.gameplaySamples = !Settings.gameplaySamples;
 				break;
 			case 4:
-				NmaniaApp.Push(new MainScreen());
+				Nmania.Push(new MainScreen());
 				break;
 			default:
 				break;
@@ -95,7 +95,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	public void commandAction(Command arg0, Displayable d) {
 		if (d instanceof TextBox) {
 			Settings.bgDim = Integer.parseInt(((TextBox) d).getString()) / 100f;
-			NmaniaApp.Push(this);
+			Nmania.Push(this);
 		}
 	}
 

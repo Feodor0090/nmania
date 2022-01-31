@@ -6,7 +6,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import nmania.AudioController;
-import nmania.NmaniaApp;
+import nmania.Nmania;
 import nmania.Player;
 import nmania.ScoreController;
 
@@ -60,7 +60,7 @@ public final class ResultsScreen extends Canvas {
 
 	private final void Exit() {
 		music.Stop();
-		NmaniaApp.Push(new MainScreen());
+		Nmania.Push(new MainScreen());
 	}
 
 	protected void keyReleased(int arg0) {

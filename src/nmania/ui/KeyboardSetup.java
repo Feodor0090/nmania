@@ -6,7 +6,7 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
-import nmania.NmaniaApp;
+import nmania.Nmania;
 import nmania.Settings;
 
 public final class KeyboardSetup extends Canvas {
@@ -30,7 +30,7 @@ public final class KeyboardSetup extends Canvas {
 		currentColumn++;
 		if (currentColumn >= columns) {
 			Settings.keyLayout[columns - 1] = keys;
-			Display.getDisplay(NmaniaApp.inst).setCurrent(prev);
+			Display.getDisplay(Nmania.inst).setCurrent(prev);
 		} else
 			repaint();
 	}

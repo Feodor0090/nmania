@@ -10,7 +10,7 @@ import javax.microedition.lcdui.TextBox;
 import javax.microedition.lcdui.TextField;
 import javax.microedition.lcdui.game.GameCanvas;
 
-import nmania.NmaniaApp;
+import nmania.Nmania;
 import symnovel.SNUtils;
 
 public class MainScreen extends GameCanvas implements Runnable {
@@ -97,7 +97,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 			Play();
 			break;
 		case 2:
-			NmaniaApp.Push(new SettingsScreen());
+			Nmania.Push(new SettingsScreen());
 			break;
 		default:
 			break;
@@ -111,9 +111,9 @@ public class MainScreen extends GameCanvas implements Runnable {
 		TextBox box = new TextBox("Number of keys (2-10):", "4", 2, TextField.NUMERIC);
 		Command ok = new Command("Start", Command.OK, 1);
 		box.addCommand(ok);
-		box.setCommandListener(NmaniaApp.inst);
-		NmaniaApp.inst.box = box;
-		Display.getDisplay(NmaniaApp.inst).setCurrent(box);
+		box.setCommandListener(Nmania.inst);
+		Nmania.inst.box = box;
+		Display.getDisplay(Nmania.inst).setCurrent(box);
 	}
 
 	float mul;
@@ -236,7 +236,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 				g.fillRect(0, 0, (int) (w * (now - startTime) / 1000), h);
 				flushGraphics();
 				if (now - startTime > 1000) {
-					NmaniaApp.exit();
+					Nmania.exit();
 					return;
 				}
 			}
