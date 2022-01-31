@@ -10,13 +10,13 @@ import javax.microedition.lcdui.Font;
 import org.json.me.JSONArray;
 import org.json.me.JSONException;
 
-import nmania.NmaniaApp;
+import nmania.Nmania;
 
 public final class SNUtils {
 
 	public static String readJARRes(String name, int cap) throws IOException {
 		char[] chars = new char[cap];
-		InputStream stream = NmaniaApp.inst.getClass().getResourceAsStream(name);
+		InputStream stream = Nmania.inst.getClass().getResourceAsStream(name);
 		if (stream == null)
 			throw new IOException();
 		InputStreamReader isr = new InputStreamReader(stream, "UTF-8");

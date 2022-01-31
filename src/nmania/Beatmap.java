@@ -44,7 +44,7 @@ public final class Beatmap {
 	}
 	
 	public String ToGlobalPath(String local) {
-		return set.wdPath+"/"+set.folderName+"/"+local;
+		return set.wdPath+set.folderName+local;
 	}
 
 	public static final class ManiaNote implements IComparable {

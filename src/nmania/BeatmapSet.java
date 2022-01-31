@@ -1,11 +1,12 @@
 package nmania;
 
 public final class BeatmapSet {
+	int id;
 	String title;
 	String artist;
 	String mapper;
-	int id;
 	String image;
 	String wdPath;
 	String folderName;
+	String[] files;
 }

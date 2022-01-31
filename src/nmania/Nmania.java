@@ -21,12 +21,12 @@ import nmania.ui.KeyboardSetup;
 import nmania.ui.MainScreen;
 import symnovel.SNUtils;
 
-public final class NmaniaApp extends MIDlet implements ILogger, CommandListener, Runnable {
+public final class Nmania extends MIDlet implements ILogger, CommandListener, Runnable {
 
-	public static NmaniaApp inst;
+	public static Nmania inst;
 	public boolean running;
 
-	public NmaniaApp() {
+	public Nmania() {
 	}
 
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
@@ -44,6 +44,8 @@ public final class NmaniaApp extends MIDlet implements ILogger, CommandListener,
 	public TextBox box;
 	
 	int keys;
+	
+	public static BeatmapManager bm;
 
 	protected void startApp() throws MIDletStateChangeException {
 		inst = this;
@@ -66,7 +68,7 @@ public final class NmaniaApp extends MIDlet implements ILogger, CommandListener,
 			Display.getDisplay(inst).setCurrent(a);
 			BeatmapSet s = new BeatmapSet();
 			s.wdPath = "";
-			s.folderName = "test";
+			s.folderName = "/test/";
 			Beatmap b = new Beatmap(new JSONObject(SNUtils.readJARRes("/test/map.json", 4096)));
 			b.set = s;
 			a.setString("Spawning notes");
