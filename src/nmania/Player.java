@@ -10,6 +10,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.media.MediaException;
 
+import nmania.ui.MainScreen;
 import nmania.ui.ResultsScreen;
 import symnovel.SNUtils;
 import tube42.lib.imagelib.ColorUtils;
@@ -89,7 +90,8 @@ public final class Player extends GameCanvas {
 			for (int i = 0; i < sets.length; i++) {
 				hitSounds[i] = new MultiSample[types.length];
 				for (int j = 0; j < types.length; j++) {
-					hitSounds[i][j] = new MultiSample(true, "/sfx/" + sets[i] + "-hit" + types[j] + ".wav", "audio/wav", 4);
+					hitSounds[i][j] = new MultiSample(true, "/sfx/" + sets[i] + "-hit" + types[j] + ".wav", "audio/wav",
+							4);
 				}
 			}
 		} else {
@@ -224,6 +226,7 @@ public final class Player extends GameCanvas {
 				} catch (Exception e) {
 				}
 			}
+			NmaniaApp.Push(new MainScreen());
 			return;
 		}
 

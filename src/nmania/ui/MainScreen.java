@@ -35,6 +35,12 @@ public class MainScreen extends GameCanvas implements Runnable {
 		if (state == 2) {
 			if (k == -5) {
 				state = 4;
+				action = 1;
+				return;
+			}
+			if (k == -6) {
+				state = 4;
+				action = 2;
 				return;
 			}
 			if (k == -7) {
