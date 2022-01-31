@@ -1,4 +1,4 @@
-package nmania;
+package nmania.ui;
 
 import java.io.IOException;
 
@@ -10,6 +10,7 @@ import javax.microedition.lcdui.TextBox;
 import javax.microedition.lcdui.TextField;
 import javax.microedition.lcdui.game.GameCanvas;
 
+import nmania.NmaniaApp;
 import symnovel.SNUtils;
 
 public class MainScreen extends GameCanvas implements Runnable {
@@ -22,7 +23,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 
 	private Graphics g;
 	private boolean needThread;
-	private static int bgColor = SNUtils.toARGB("0xffbd55");
+	public static int bgColor = SNUtils.toARGB("0xffbd55");
 	private Image logo, menu;
 	int state = -2;
 
@@ -50,16 +51,27 @@ public class MainScreen extends GameCanvas implements Runnable {
 		}
 	}
 
+	int action = 0;
+
 	protected void pointerPressed(int x, int y) {
 		if (state == 2) {
 			x -= (getWidth() - menu.getWidth());
 			y -= (getHeight() - menu.getHeight());
 			x *= mul;
 			y *= mul;
-			if (x < 150) {
-
-			} else if (x > 640 - 150) {
-				if(y>180) {
+			if (x < 210) {
+				if (y > 180) {
+					// skin
+					action = 3;
+				} else {
+					// sets
+					action = 2;
+				}
+				state = 4;
+				return;
+			} else if (x > 640 - 210) {
+				if (y > 180) {
+					// exit
 					state = 5;
 					return;
 				} else {
@@ -67,8 +79,22 @@ public class MainScreen extends GameCanvas implements Runnable {
 				}
 			} else {
 				state = 4;
+				action = 1;
 				return;
 			}
+		}
+	}
+
+	private void Open() {
+		switch (action) {
+		case 1:
+			Play();
+			break;
+		case 2:
+			NmaniaApp.Push(new SettingsScreen());
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -181,9 +207,6 @@ public class MainScreen extends GameCanvas implements Runnable {
 			}
 			flushGraphics();
 		}
-		// menu
-		if (state == 3)
-			return;
 		if (state == 4) {
 			startTime = System.currentTimeMillis();
 			// play
@@ -193,7 +216,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 				g.fillRect(0, 0, w, (int) (h * (now - startTime) / 500));
 				flushGraphics();
 				if (now - startTime > 500) {
-					Play();
+					Open();
 					return;
 				}
 			}
