@@ -39,7 +39,7 @@ public final class NmaniaApp extends MIDlet implements ILogger, CommandListener,
 		a.setString(s);
 	}
 
-	TextBox box;
+	public TextBox box;
 	
 	int keys;
 
@@ -47,11 +47,7 @@ public final class NmaniaApp extends MIDlet implements ILogger, CommandListener,
 		inst = this;
 		if (running)
 			return;
-		box = new TextBox("Number of keys (2-10):", "4", 2, TextField.NUMERIC);
-		final Command ok = new Command("Start", Command.OK, 1);
-		box.addCommand(ok);
-		box.setCommandListener(this);
-		Display.getDisplay(inst).setCurrent(box);
+		Display.getDisplay(inst).setCurrent(new MainScreen());
 	}
 
 	public void run() {
@@ -144,6 +140,10 @@ public final class NmaniaApp extends MIDlet implements ILogger, CommandListener,
 			throw new RuntimeException("10 keys maximum!");
 		keys = k;
 		(new Thread(this)).start();
+	}
+
+	public static void exit() {
+		inst.notifyDestroyed();
 	}
 
 }
