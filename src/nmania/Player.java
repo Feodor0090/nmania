@@ -95,7 +95,7 @@ public final class Player extends GameCanvas {
 		colWp1 = Settings.columnWidth + 1;
 		judgmentCenter = Settings.leftOffset + (Settings.columnWidth + 1) * columnsCount / 2;
 		localHoldX = (Settings.columnWidth - Settings.holdWidth) / 2;
-		fillColsW = Settings.leftOffset + 1 + (colWp1 * columnsCount);
+		fillColsW = Settings.leftOffset + 1 + (colWp1 * columnsCount) + 6;
 		fillAccX = scrW - fillAccW;
 		fillScoreX = scrW - fillScoreW;
 
@@ -115,6 +115,7 @@ public final class Player extends GameCanvas {
 	private final boolean[] holdKeys;
 	private final int[] keyMappings;
 	private final int[] hitWindows;
+	private final int[] healthValues = new int[] { -100, -50, 0, 20, 60, 120 };
 	public final ScoreController score;
 	public final AudioController track;
 	private final Image bg;
@@ -136,9 +137,12 @@ public final class Player extends GameCanvas {
 	private int rollingScore = 0;
 	private int lastJudgementTime = Integer.MIN_VALUE;
 	private int lastJudgement;
+	private int health = 1000;
+	private int rollingHealth = 1000;
 
 	public boolean isPaused;
 	public boolean running = true;
+	public boolean failed = false;
 
 	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
 	public final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
@@ -173,6 +177,28 @@ public final class Player extends GameCanvas {
 		// sync
 		time = track.Now();
 
+		if (failed) {
+			running = false;
+			track.Stop();
+			final String j = "FAILED";
+			for (int i = 0; i < 5; i++) {
+				g.setColor(-1);
+				g.drawString(j, scrW / 2 + 1, 49, 17);
+				g.drawString(j, scrW / 2 - 1, 49, 17);
+				g.drawString(j, scrW / 2 + 1, 51, 17);
+				g.drawString(j, scrW / 2 - 1, 51, 17);
+				if (i % 2 == 0)
+					g.setColor(210, 0, 0);
+				g.drawString(j, scrW / 2, 50, 17);
+				flushGraphics();
+				try {
+					Thread.sleep(500);
+				} catch (Exception e) {
+				}
+			}
+			return;
+		}
+
 		// is beatmap over?
 		int emptyColumns = 0;
 
@@ -204,6 +230,7 @@ public final class Player extends GameCanvas {
 					for (int j = 5; j > -1; j--) {
 						if (adiff < hitWindows[j]) {
 							score.CountHit(j);
+							ApplyToHealth(j);
 							lastJudgement = j;
 							lastJudgementTime = time;
 							currentNote[column] += 2;
@@ -219,6 +246,7 @@ public final class Player extends GameCanvas {
 						for (int j = 5; j > -1; j--) {
 							if (adiff < hitWindows[j]) {
 								score.CountHit(j);
+								ApplyToHealth(j);
 								lastJudgement = j;
 								lastJudgementTime = time;
 								break;
@@ -236,6 +264,7 @@ public final class Player extends GameCanvas {
 				for (int j = 5; j > -1; j--) {
 					if (adiff < hitWindows[j]) {
 						score.CountHit(j);
+						ApplyToHealth(j);
 						lastJudgement = j;
 						lastJudgementTime = time;
 						currentNote[column] += 2;
@@ -244,6 +273,7 @@ public final class Player extends GameCanvas {
 				}
 				if (adiff >= hitWindows[0]) {
 					score.CountHit(0);
+					ApplyToHealth(0);
 					lastJudgement = 0;
 					lastJudgementTime = time;
 					currentNote[column] += 2;
@@ -256,6 +286,7 @@ public final class Player extends GameCanvas {
 				score.CountHit(0);
 				if (dur != 0)
 					score.CountHit(0);
+				ApplyToHealth(0); // holds decreasing health only once
 				lastJudgement = 0;
 				lastJudgementTime = time;
 				currentNote[column] += 2;
@@ -273,7 +304,7 @@ public final class Player extends GameCanvas {
 				g.drawString(j, scrW / 2 + 1, 51, 17);
 				g.drawString(j, scrW / 2 - 1, 51, 17);
 				if (i % 2 == 0)
-					g.setColor(10, 240, 10);
+					g.setColor(0, 190, 0);
 				g.drawString(j, scrW / 2, 50, 17);
 				flushGraphics();
 				try {
@@ -282,6 +313,19 @@ public final class Player extends GameCanvas {
 				}
 			}
 			Display.getDisplay(NmaniaApp.inst).setCurrent(new ResultsScreen(score, track, bg));
+		}
+	}
+
+	private final void ApplyToHealth(int j) {
+		health += healthValues[j];
+		if (health > 1000)
+			health = 1000;
+		if (health < 0) {
+			if (j == 0) {
+				failed = true;
+			} else {
+				health = 0;
+			}
 		}
 	}
 
@@ -358,6 +402,21 @@ public final class Player extends GameCanvas {
 			g.drawString(j, judgmentCenter - 1, 101, 17);
 			g.setColor(judgementColors[lastJudgement]);
 			g.drawString(j, judgmentCenter, 100, 17);
+		}
+		// health
+		{
+			if (health != rollingHealth) {
+				final int delta = (health - rollingHealth);
+				rollingHealth += delta / 10 + (delta > 0 ? 1 : -1);
+			}
+			g.setColor(0);
+			g.fillRect(fillColsW - 6, 0, 6, scrH);
+			if (rollingHealth > 0) {
+				int hh = scrH * rollingHealth / 1000;
+				final int clr = Math.min(255, rollingHealth / 2);
+				g.setColor(255, clr, clr);
+				g.fillRect(fillColsW - 6, scrH - hh, 6, hh);
+			}
 		}
 	}
 
