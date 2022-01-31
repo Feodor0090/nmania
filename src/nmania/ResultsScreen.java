@@ -36,7 +36,7 @@ public final class ResultsScreen extends Canvas {
 		int y = (h - th * 9) / 2;
 		drawRow(g, "Total score", -1, String.valueOf(score.currentHitScore), y, w);
 		y += th;
-		drawRow(g, "Max combo", -1, String.valueOf(score.maxCombo), y, w);
+		drawRow(g, "Max combo", -1, score.hits[0] == 0 ? "Full combo" : String.valueOf(score.maxCombo), y, w);
 		y += th;
 		drawRow(g, "Accuracy", -1, String.valueOf((score.GetAccuracy() / 100f) + "%"), y, w);
 		y += th;
