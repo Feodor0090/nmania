@@ -10,7 +10,8 @@ public final class AudioController {
 
 	public AudioController(Beatmap map) throws IOException, MediaException {
 		String file = map.ToGlobalPath(map.audio);
-		player = Manager.createPlayer(getClass().getResourceAsStream(file), "audio/mpeg");
+		player = file.startsWith("file://") ? Manager.createPlayer(file)
+				: Manager.createPlayer(getClass().getResourceAsStream(file), "audio/mpeg");
 		player.realize();
 		player.prefetch();
 	}
