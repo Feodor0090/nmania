@@ -1,6 +1,6 @@
 package nmania;
 
-final class ScoreController {
+public final class ScoreController {
 	public final int[] hits = new int[6];
 	public int maxHitScore;
 	public int currentHitScore;
