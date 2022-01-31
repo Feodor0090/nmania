@@ -29,7 +29,7 @@ public final class Player extends GameCanvas {
 
 		// step 1: loading background
 		log.log("Loading map background");
-		Image _bg = Image.createImage(map.ToGlobalPath(map.image));
+		Image _bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image));
 		_bg = ImageUtils.resize(_bg, scrW, scrH, true, false);
 		bg = ImageFxUtils.applyModifier(_bg, new PixelModifier() {
 			public int apply(int p, int x, int y) {
