@@ -14,7 +14,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 	public MainScreen() {
 		super(false);
 		setFullScreenMode(true);
-		(new Thread(this)).start();
+		(new Thread(this, "Main menu repainter")).start();
 	}
 
 	private Graphics g;
@@ -106,7 +106,14 @@ public class MainScreen extends GameCanvas implements Runnable {
 	 */
 	private void Play() {
 		try {
-			Nmania.LoadManager("file://root/");
+			String wd;
+			try {
+				Class.forName("emulator.Emulator");
+				wd = "file://root/";
+			} catch (Exception e) {
+				wd = "file:///C:/Data/nmania";
+			}
+			Nmania.LoadManager(wd);
 			Nmania.Push(new BeatmapSetsList(Nmania.bm));
 		} catch (Exception e) {
 			e.printStackTrace();
