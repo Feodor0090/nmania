@@ -111,7 +111,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 				Class.forName("emulator.Emulator");
 				wd = "file://root/";
 			} catch (Exception e) {
-				wd = "file:///C:/Data/nmania";
+				wd = "file:///C:/Data/Sounds/nmania/";
 			}
 			Nmania.LoadManager(wd);
 			Nmania.Push(new BeatmapSetsList(Nmania.bm));
