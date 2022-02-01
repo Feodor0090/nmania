@@ -363,7 +363,7 @@ public final class Player extends GameCanvas {
 					if (hitSounds != null)
 						hitSounds[0][0].Play();
 				} else {
-					if (diff + dur > 0) {
+					if (diff - dur > 0) {
 						holdKeys[column] = false;
 						CountHit(5);
 						score.CountHit(5);
