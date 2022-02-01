@@ -274,6 +274,8 @@ public final class Player extends GameCanvas {
 									lastJudgement = j;
 									lastJudgementTime = time;
 									currentNote[column] += 2;
+									if (hitSounds != null && j != 0)
+										hitSounds[0][0].Play();
 									break;
 								}
 							}
@@ -290,6 +292,8 @@ public final class Player extends GameCanvas {
 									score.CountHit(j);
 									lastJudgement = j;
 									lastJudgementTime = time;
+									if (hitSounds != null && j != 0)
+										hitSounds[0][0].Play();
 									break;
 								}
 							}
@@ -356,6 +360,8 @@ public final class Player extends GameCanvas {
 					lastJudgement = 5;
 					lastJudgementTime = time;
 					currentNote[column] += 2;
+					if (hitSounds != null)
+						hitSounds[0][0].Play();
 				} else {
 					if (diff + dur > 0) {
 						holdKeys[column] = false;
@@ -372,6 +378,8 @@ public final class Player extends GameCanvas {
 						score.CountHit(5);
 						lastJudgement = 5;
 						lastJudgementTime = time;
+						if (hitSounds != null)
+							hitSounds[0][0].Play();
 					}
 				}
 			}
