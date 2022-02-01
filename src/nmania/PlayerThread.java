@@ -3,6 +3,7 @@ package nmania;
 public final class PlayerThread extends Thread {
 
 	public PlayerThread(Player pl) {
+		super("Player update");
 		player = pl;
 	}
 

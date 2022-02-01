@@ -2,12 +2,8 @@ package nmania.ui;
 
 import java.io.IOException;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
-import javax.microedition.lcdui.TextBox;
-import javax.microedition.lcdui.TextField;
 import javax.microedition.lcdui.game.GameCanvas;
 
 import nmania.Nmania;
