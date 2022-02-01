@@ -8,6 +8,7 @@ import org.json.me.JSONObject;
 import nmania.Beatmap.RawOsuBeatmap;
 import nmania.ui.BeatmapSetPage;
 import nmania.ui.KeyboardLayoutSelect;
+import nmania.ui.KeyboardSetup;
 
 public class PlayerLoader extends Thread implements ILogger {
 
@@ -36,15 +37,15 @@ public class PlayerLoader extends Thread implements ILogger {
 			} else if (raw.charAt(0) == '{') {
 				b = new Beatmap(new JSONObject(raw));
 			} else
-				throw new IllegalArgumentException("Illiegal beatmap content");
+				throw new IllegalArgumentException("Illegal beatmap content");
 		}
 		b.set = set;
 		if (Settings.keyLayout[b.columnsCount - 1] == null) {
 			// no keyboard layout
-			KeyboardLayoutSelect kls = new KeyboardLayoutSelect(page);
-			Nmania.Push(kls);
+			KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, page);
+			Nmania.Push(kbs);
 			try {
-				Thread.sleep(100);
+				Thread.sleep(50);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
