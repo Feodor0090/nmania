@@ -4,25 +4,15 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.TextBox;
-import javax.microedition.lcdui.TextField;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import org.json.me.JSONObject;
-
 import nmania.Beatmap.ManiaNote;
-import nmania.ui.KeyboardSetup;
 import nmania.ui.MainScreen;
-import symnovel.SNUtils;
 
-public final class Nmania extends MIDlet implements ILogger, CommandListener, Runnable {
+public final class Nmania extends MIDlet {
 
 	public static Nmania inst;
 	public boolean running;
@@ -36,18 +26,8 @@ public final class Nmania extends MIDlet implements ILogger, CommandListener, Ru
 	protected void pauseApp() {
 	}
 
-	Alert a;
-
-	public void log(String s) {
-		a.setString(s);
-	}
-
-	public TextBox box;
-	
-	int keys;
-	
 	public static BeatmapManager bm;
-	
+
 	public static void LoadManager(String dir) throws IOException {
 		bm = new BeatmapManager(dir);
 		bm.Init();
@@ -60,35 +40,9 @@ public final class Nmania extends MIDlet implements ILogger, CommandListener, Ru
 		Settings.Load();
 		Display.getDisplay(inst).setCurrent(new MainScreen());
 	}
-	
+
 	public static void Push(Displayable d) {
 		Display.getDisplay(inst).setCurrent(d);
-	}
-
-	public void run() {
-		try {
-			a = new Alert("nmania", "Creating test data", null, AlertType.INFO);
-			KeyboardSetup ks = new KeyboardSetup(keys, a);
-			Display.getDisplay(inst).setCurrent(ks);
-			while (!(Display.getDisplay(inst).getCurrent() instanceof Alert))
-				Thread.sleep(100);
-			Display.getDisplay(inst).setCurrent(a);
-			BeatmapSet s = new BeatmapSet();
-			s.wdPath = "";
-			s.folderName = "/test/";
-			Beatmap b = new Beatmap(new JSONObject(SNUtils.readJARRes("/test/map.json", 4096)));
-			b.set = s;
-			a.setString("Spawning notes");
-			b.columnsCount = keys;
-			b.notes = RandomNotes(40, b.columnsCount, 60000f / 160, 200);
-			a.setString("Running player");
-			Player p = new Player(b, this);
-			Display.getDisplay(inst).setCurrent(p);
-			Thread t = new PlayerThread(p);
-			t.start();
-		} catch (Exception e) {
-			throw new RuntimeException(e.toString());
-		}
 	}
 
 	ManiaNote[] RandomNotes(int c, int cols, float beatLength, int offset) {
@@ -145,16 +99,6 @@ public final class Nmania extends MIDlet implements ILogger, CommandListener, Ru
 		ManiaNote[] n = new ManiaNote[notes.size()];
 		notes.copyInto(n);
 		return n;
-	}
-
-	public void commandAction(Command arg0, Displayable arg1) {
-		int k = Integer.parseInt(box.getString());
-		if (k < 2)
-			throw new RuntimeException("2 keys minimum!");
-		if (k > 10)
-			throw new RuntimeException("10 keys maximum!");
-		keys = k;
-		(new Thread(this)).start();
 	}
 
 	public static void exit() {
