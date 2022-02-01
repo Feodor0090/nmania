@@ -138,7 +138,12 @@ public final class Beatmap {
 			int imageI = raw.indexOf("\n0,", raw.indexOf("[Events]")) + 3;
 
 			String image = raw.substring(raw.indexOf(',', imageI) + 1, raw.indexOf('\n', imageI));
-			image = image.substring(0, image.indexOf(','));
+			int ci = image.indexOf('\r');
+			if (ci != -1)
+				image = image.substring(0, ci);
+			ci = image.indexOf(',');
+			if (ci != -1)
+				image = image.substring(0, ci);
 			if (image.charAt(0) == '\"')
 				image = image.substring(1, image.length() - 1);
 			return image;

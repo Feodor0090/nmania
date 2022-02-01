@@ -26,7 +26,6 @@ public final class Player extends GameCanvas {
 
 		scrW = getWidth();
 		scrH = getHeight();
-
 		// step 1: loading background
 		log.log("Loading map background");
 		Image _bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image));
@@ -238,7 +237,7 @@ public final class Player extends GameCanvas {
 
 		// is beatmap over?
 		int emptyColumns = 0;
-		
+
 		if (enableJudgements) {
 			// checking all columns
 			for (int column = 0; column < columnsCount; column++) {
@@ -386,8 +385,7 @@ public final class Player extends GameCanvas {
 		}
 		System.arraycopy(holdKeys, 0, lastHoldKeys, 0, columnsCount);
 
-		if (emptyColumns == columnsCount)
-		{
+		if (emptyColumns == columnsCount) {
 			running = false;
 			final String j = "DIFFICULTY PASSED";
 			for (int i = 0; i < 5; i++) {

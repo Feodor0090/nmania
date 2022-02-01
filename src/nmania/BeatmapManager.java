@@ -61,7 +61,9 @@ public class BeatmapManager {
 			bms.artist = deCR(fm.substring(artistI, fm.indexOf('\n', artistI)));
 			bms.mapper = deCR(fm.substring(creatorI, fm.indexOf('\n', creatorI)));
 			bms.image = fm.substring(fm.indexOf(',', imageI) + 1, fm.indexOf('\n', imageI));
-			bms.image = bms.image.substring(0, bms.image.indexOf(','));
+			int ci = bms.image.indexOf(',');
+			if(ci==-1) ci = bms.image.length()-1;
+			bms.image = bms.image.substring(0, ci);
 			if (bms.image.charAt(0) == '\"')
 				bms.image = bms.image.substring(1, bms.image.length() - 1);
 		} else {
