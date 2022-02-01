@@ -39,6 +39,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		g.drawString(((int) (Settings.bgDim * 100)) + "%", getWidth() - 10, y + th, Graphics.TOP | Graphics.RIGHT);
 		drawCheckbox(g, Settings.hitSamples, y + th * 2, th);
 		drawCheckbox(g, Settings.gameplaySamples, y + th * 3, th);
+		g.setColor(-1);
 		g.drawString("x" + Settings.speedDiv, getWidth() - 10, y + th * 4, Graphics.TOP | Graphics.RIGHT);
 	}
 
