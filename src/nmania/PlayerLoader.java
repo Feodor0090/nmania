@@ -2,23 +2,25 @@ package nmania;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.Display;
 
 import org.json.me.JSONObject;
 
 import nmania.Beatmap.RawOsuBeatmap;
-import symnovel.SNUtils;
+import nmania.ui.KeyboardLayoutSelect;
 
 public class PlayerLoader extends Thread implements ILogger {
 
-	public PlayerLoader(BeatmapSet set, String bmFileName) {
+	public PlayerLoader(BeatmapSet set, String bmFileName, BeatmapSetPage page) {
+		super("Player loader");
 		this.set = set;
 		this.bmfn = bmFileName;
+		this.page = page;
 	}
 
 	BeatmapSet set;
 	String bmfn;
 	Alert a;
+	BeatmapSetPage page;
 
 	public void run() {
 		a = new Alert("nmania", "Reading beatmap file", null, AlertType.INFO);
@@ -34,6 +36,21 @@ public class PlayerLoader extends Thread implements ILogger {
 				throw new IllegalArgumentException("Illiegal beatmap content");
 		}
 		b.set = set;
+		if (Settings.keyLayout[b.columnsCount - 1] == null) {
+			// no keyboard layout
+			KeyboardLayoutSelect kls = new KeyboardLayoutSelect(page);
+			Nmania.Push(kls);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			Alert a1 = new Alert("nmania", "There are no keybinds for this mode (" + b.columnsCount + "K). Set them.",
+					null, AlertType.WARNING);
+			Nmania.Push(a1);
+			return;
+		}
+		page = null;
 		try {
 			Player p = new Player(b, this);
 			Nmania.Push(p);

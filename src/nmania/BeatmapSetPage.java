@@ -1,8 +1,8 @@
 package nmania;
 
-import java.io.IOException;
-
 import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Gauge;
 import javax.microedition.lcdui.Image;
@@ -11,18 +11,24 @@ import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.StringItem;
 
+import nmania.ui.BeatmapSetsList;
 import tube42.lib.imagelib.ImageUtils;
 
-public class BeatmapSetPage extends Form implements Runnable, ItemCommandListener {
+public class BeatmapSetPage extends Form implements Runnable, ItemCommandListener, CommandListener {
 
 	BeatmapManager bm;
 	String dir;
 	BeatmapSet set;
 
-	public BeatmapSetPage(BeatmapManager bm, String dir) {
+	private BeatmapSetsList list;
+	private Command back = new Command("Back", Command.BACK, 1);
+
+	public BeatmapSetPage(BeatmapManager bm, String dir, BeatmapSetsList list) {
 		super("Beatmapset page");
 		this.bm = bm;
 		this.dir = dir;
+		this.list = list;
+		this.setCommandListener(this);
 		append(new Gauge("Parsing beatmaps", false, -1, Gauge.CONTINUOUS_RUNNING));
 		(new Thread(this)).start();
 	}
@@ -32,6 +38,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 			set = bm.FromBMSDirectory(dir + "/");
 			if (set == null) {
 				deleteAll();
+				addCommand(back);
 				append(new StringItem("Failed to read BMS",
 						"There must be at least one valid osu! / nmania beatmap in the folder. "
 								+ "Also, check folder name - it must not be too long or contain special characters."));
@@ -52,16 +59,18 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 					append(btn);
 				}
 			}
+			addCommand(back);
 		} catch (Exception e) {
 			e.printStackTrace();
 			deleteAll();
+			addCommand(back);
 			append(new StringItem("Failed to read BMS", e.toString()));
 		}
 	}
 
 	public void commandAction(Command c, Item arg1) {
 		if (c instanceof Difficulty) {
-			(new PlayerLoader(set, ((Difficulty) c).fileName)).start();
+			(new PlayerLoader(set, ((Difficulty) c).fileName, this)).start();
 		}
 	}
 
@@ -73,5 +82,10 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 
 		public final String fileName;
 
+	}
+
+	public void commandAction(Command c, Displayable arg1) {
+		if (c == back)
+			Nmania.Push(list);
 	}
 }
