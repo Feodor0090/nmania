@@ -57,9 +57,9 @@ public class BeatmapManager {
 			int creatorI = fm.indexOf("\nCreator:", metadataI) + 9;
 			int imageI = fm.indexOf("\n0,", eventsI) + 3;
 
-			bms.title = fm.substring(titleI, fm.indexOf('\n', titleI));
-			bms.artist = fm.substring(artistI, fm.indexOf('\n', artistI));
-			bms.mapper = fm.substring(creatorI, fm.indexOf('\n', creatorI));
+			bms.title = deCR(fm.substring(titleI, fm.indexOf('\n', titleI)));
+			bms.artist = deCR(fm.substring(artistI, fm.indexOf('\n', artistI)));
+			bms.mapper = deCR(fm.substring(creatorI, fm.indexOf('\n', creatorI)));
 			bms.image = fm.substring(fm.indexOf(',', imageI) + 1, fm.indexOf('\n', imageI));
 			bms.image = bms.image.substring(0, bms.image.indexOf(','));
 			if (bms.image.charAt(0) == '\"')
@@ -71,6 +71,12 @@ public class BeatmapManager {
 		bms.files = bakeEnum(bmsFc.list());
 		bmsFc.close();
 		return bms;
+	}
+
+	private final static String deCR(String s) {
+		if (s.charAt(s.length() - 1) == '\r')
+			return s.substring(0, s.length() - 1);
+		return s;
 	}
 
 	public static final String getStringFromFS(String path) {
