@@ -249,7 +249,9 @@ public class MainScreen extends GameCanvas implements Runnable {
 			while (true) {
 				long now = System.currentTimeMillis();
 				g.setColor(-1);
-				g.fillRect(0, 0, (int) (w * (now - startTime) / 1000), h);
+				int rw = (int) (w * (now - startTime) / 1000) / 2;
+				g.fillRect(0, 0, rw, h);
+				g.fillRect(w - rw, 0, rw, h);
 				flushGraphics();
 				if (now - startTime > 1000) {
 					Nmania.exit();
