@@ -241,7 +241,7 @@ public final class Player extends GameCanvas {
 				g.drawString(j, scrW / 2, 50, 17);
 				flushGraphics();
 				try {
-					Thread.sleep(400);
+					Thread.sleep(250);
 				} catch (Exception e) {
 				}
 			}
@@ -423,7 +423,7 @@ public final class Player extends GameCanvas {
 				g.drawString(j, scrW / 2, 50, 17);
 				flushGraphics();
 				try {
-					Thread.sleep(400);
+					Thread.sleep(250);
 				} catch (Exception e) {
 				}
 			}
