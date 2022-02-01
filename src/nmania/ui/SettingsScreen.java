@@ -39,8 +39,9 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		g.drawString(((int) (Settings.bgDim * 100)) + "%", getWidth() - 10, y + th, Graphics.TOP | Graphics.RIGHT);
 		drawCheckbox(g, Settings.hitSamples, y + th * 2, th);
 		drawCheckbox(g, Settings.gameplaySamples, y + th * 3, th);
+		drawCheckbox(g, Settings.gameplaySamples, y + th * 4, th);
 		g.setColor(-1);
-		g.drawString("x" + Settings.speedDiv, getWidth() - 10, y + th * 4, Graphics.TOP | Graphics.RIGHT);
+		g.drawString("x" + Settings.speedDiv, getWidth() - 10, y + th * 5, Graphics.TOP | Graphics.RIGHT);
 	}
 
 	void drawCheckbox(Graphics g, boolean ok, int y, int th) {
@@ -84,12 +85,15 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Settings.gameplaySamples = !Settings.gameplaySamples;
 				break;
 			case 4:
+				Settings.keepMenu = !Settings.keepMenu;
+				break;
+			case 5:
 				TextBox box1 = new TextBox("Speed", "" + Settings.speedDiv, 1, TextField.NUMERIC);
 				box1.addCommand(scrollOk);
 				box1.setCommandListener(this);
 				Display.getDisplay(Nmania.inst).setCurrent(box1);
 				break;
-			case 5:
+			case 6:
 				Settings.Save();
 				Nmania.Push(new MainScreen());
 				break;
@@ -102,7 +106,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 
 	int selected = 0;
 	String[] items = new String[] { "Gameplay bindings", "Background dim", "Enable hitsounds", "Enable feedback sounds",
-			"Scroll speed", "<<< back" };
+			"Keep UI during gameplay", "Scroll speed", "<<< back" };
 
 	public void commandAction(Command c, Displayable d) {
 		if (d instanceof TextBox) {

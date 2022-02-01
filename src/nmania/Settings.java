@@ -20,6 +20,8 @@ public final class Settings {
 
 	public static boolean gameplaySamples = true;
 	public static boolean hitSamples = true;
+	
+	public static boolean keepMenu = false;
 
 	public static final void Save() {
 		try {
@@ -41,6 +43,7 @@ public final class Settings {
 			j.accumulate("keys", keys);
 			j.accumulate("samples", new Boolean(gameplaySamples));
 			j.accumulate("hitsounds", new Boolean(hitSamples));
+			j.accumulate("keepmenu", new Boolean(keepMenu));
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -79,6 +82,7 @@ public final class Settings {
 			}
 			gameplaySamples = j.getBoolean("samples");
 			hitSamples = j.getBoolean("hitsounds");
+			keepMenu = j.getBoolean("keepmenu");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

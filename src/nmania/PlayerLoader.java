@@ -55,7 +55,7 @@ public class PlayerLoader extends Thread implements ILogger {
 		}
 		page = null;
 		try {
-			Player p = new Player(b, !auto, this);
+			Player p = new Player(b, !auto, this, Settings.keepMenu ? page : null);
 			Nmania.Push(p);
 			Thread t = new PlayerThread(p);
 			t.start();

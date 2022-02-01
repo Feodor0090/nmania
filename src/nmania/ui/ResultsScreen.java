@@ -1,6 +1,7 @@
 package nmania.ui;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -12,17 +13,19 @@ import nmania.ScoreController;
 
 public final class ResultsScreen extends Canvas {
 
-	public ResultsScreen(ScoreController score, AudioController music, Image bg) {
+	public ResultsScreen(ScoreController score, AudioController music, Image bg, Displayable next) {
 		super();
 		this.score = score;
 		this.music = music;
 		this.bg = bg;
+		this.next = next;
 		setFullScreenMode(true);
 	}
 
 	public final ScoreController score;
 	public final AudioController music;
 	public final Image bg;
+	public final Displayable next;
 
 	protected void paint(Graphics g) {
 		int w = getWidth();
@@ -60,7 +63,7 @@ public final class ResultsScreen extends Canvas {
 
 	private final void Exit() {
 		music.Stop();
-		Nmania.Push(new MainScreen());
+		Nmania.Push(next == null ? new MainScreen() : next);
 	}
 
 	protected void keyReleased(int arg0) {

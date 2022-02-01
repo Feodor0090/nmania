@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Display;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -20,12 +21,15 @@ import tube42.lib.imagelib.ImageUtils;
 
 public final class Player extends GameCanvas {
 
-	protected Player(Beatmap map, boolean enableJudgements, ILogger log) throws IOException, MediaException {
+	protected Player(Beatmap map, boolean enableJudgements, ILogger log, Displayable next)
+			throws IOException, MediaException {
 		super(false);
 		setFullScreenMode(true);
+		this.menu = next;
 
 		scrW = getWidth();
 		scrH = getHeight();
+
 		// step 1: loading background
 		log.log("Loading map background");
 		Image _bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image));
@@ -76,7 +80,7 @@ public final class Player extends GameCanvas {
 		}
 		_cols = null;
 
-		// step 6: cache data for HUD drawing
+		// step 6: samples
 		log.log("Loading samples");
 		if (Settings.gameplaySamples) {
 			combobreak = new Sample(true, "/sfx/miss.mp3", "audio/mpeg");
@@ -151,6 +155,7 @@ public final class Player extends GameCanvas {
 	private final Image scoreBg;
 	private final Image accBg;
 	private final int[] numsWidthCache;
+	private final Displayable menu;
 
 	private final int kbH, kbY, colWp1;
 	private final int fillColsW, fillCountersH, fillScoreW, fillAccW, fillScoreX, fillAccX;
@@ -242,7 +247,7 @@ public final class Player extends GameCanvas {
 			}
 			if (playOver != null)
 				playOver.Dispose();
-			Nmania.Push(new MainScreen());
+			Nmania.Push(menu == null ? new MainScreen() : menu);
 			return;
 		}
 
@@ -424,7 +429,7 @@ public final class Player extends GameCanvas {
 			}
 			if (playOver != null)
 				playOver.Dispose();
-			Display.getDisplay(Nmania.inst).setCurrent(new ResultsScreen(score, track, bg));
+			Display.getDisplay(Nmania.inst).setCurrent(new ResultsScreen(score, track, bg, menu));
 		}
 	}
 
