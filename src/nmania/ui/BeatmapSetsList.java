@@ -9,7 +9,6 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
 import nmania.BeatmapManager;
-import nmania.BeatmapSetPage;
 import nmania.Nmania;
 
 public class BeatmapSetsList extends List implements CommandListener {

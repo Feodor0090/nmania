@@ -6,6 +6,7 @@ import javax.microedition.lcdui.AlertType;
 import org.json.me.JSONObject;
 
 import nmania.Beatmap.RawOsuBeatmap;
+import nmania.ui.BeatmapSetPage;
 import nmania.ui.KeyboardLayoutSelect;
 
 public class PlayerLoader extends Thread implements ILogger {

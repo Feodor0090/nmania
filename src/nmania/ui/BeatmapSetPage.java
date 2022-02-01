@@ -1,4 +1,4 @@
-package nmania;
+package nmania.ui;
 
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
@@ -13,7 +13,10 @@ import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.StringItem;
 
-import nmania.ui.BeatmapSetsList;
+import nmania.BeatmapManager;
+import nmania.BeatmapSet;
+import nmania.Nmania;
+import nmania.PlayerLoader;
 import tube42.lib.imagelib.ImageUtils;
 
 public class BeatmapSetPage extends Form implements Runnable, ItemCommandListener, CommandListener {
