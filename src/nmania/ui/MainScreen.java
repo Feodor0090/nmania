@@ -81,7 +81,9 @@ public class MainScreen extends GameCanvas implements Runnable {
 					state = 5;
 					return;
 				} else {
-					// инфа
+					state = 4;
+					action = 4;
+					return;
 				}
 			} else {
 				state = 4;
@@ -98,6 +100,12 @@ public class MainScreen extends GameCanvas implements Runnable {
 			break;
 		case 2:
 			Nmania.Push(new SettingsScreen(lastInputIsTouch));
+			break;
+		case 3:
+			// skinning
+			break;
+		case 4:
+			Nmania.Push(new InfoScreen());
 			break;
 		default:
 			break;

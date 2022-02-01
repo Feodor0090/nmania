@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.midlet.MIDlet;
@@ -103,6 +104,16 @@ public final class Nmania extends MIDlet {
 
 	public static void exit() {
 		inst.notifyDestroyed();
+	}
+
+	public static void open(String link) {
+		try {
+			inst.platformRequest(link);
+		} catch (ConnectionNotFoundException e) {
+		}
+	}
+	public static String version() {
+		return inst.getAppProperty("MIDlet-Version");
 	}
 
 }
