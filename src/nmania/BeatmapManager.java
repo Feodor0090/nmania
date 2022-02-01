@@ -45,6 +45,8 @@ public class BeatmapManager {
 				}
 			}
 		}
+		if (fm == null)
+			return null;
 		if (fm.startsWith("osu file format")) {
 			// osu! beatmap
 			int metadataI = fm.indexOf("[Metadata]");

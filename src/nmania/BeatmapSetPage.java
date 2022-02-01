@@ -30,6 +30,12 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 	public void run() {
 		try {
 			set = bm.FromBMSDirectory(dir + "/");
+			if (set == null) {
+				deleteAll();
+				append(new StringItem("Failed to read BMS",
+						"There must be at least one valid osu! / nmania beatmap in the folder. "
+								+ "Also, check folder name - it must not be too long or contain special characters."));
+			}
 			Image img = BeatmapManager.getImgFromFS(set.wdPath + set.folderName + set.image);
 			img = ImageUtils.resize(img, 350, (int) (img.getHeight() / (img.getWidth() / 350f)), true, false);
 			deleteAll();
@@ -46,8 +52,10 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 					append(btn);
 				}
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
+			deleteAll();
+			append(new StringItem("Failed to read BMS", e.toString()));
 		}
 	}
 
