@@ -71,7 +71,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			selected++;
 			if (selected >= items.length)
 				selected = 0;
-		} else if (k == -5 || k == -6 || k == 32 || k == '5') {
+		} else if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
 			activateItem();
 		} else if (k == -7) {
 			Settings.Save();

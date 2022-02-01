@@ -42,13 +42,13 @@ public class KeyboardLayoutSelect extends Canvas {
 			// up
 			selected--;
 			if (selected < 0)
-				selected = 0;
+				selected = items.length - 1;
 		} else if (k == -2 || k == '8') {
 			// down
 			selected++;
 			if (selected >= items.length)
-				selected = items.length - 1;
-		} else if (k == -5 || k == -6 || k == 32 || k == '5') {
+				selected = 0;
+		} else if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
 			if (selected == 0) {
 				Settings.Save();
 				Nmania.Push(prev);
