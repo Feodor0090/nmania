@@ -119,9 +119,10 @@ public final class Player extends GameCanvas {
 		colWp1 = Settings.columnWidth + 1;
 		judgmentCenter = Settings.leftOffset + (Settings.columnWidth + 1) * columnsCount / 2;
 		localHoldX = (Settings.columnWidth - Settings.holdWidth) / 2;
-		fillColsW = Settings.leftOffset + 1 + (colWp1 * columnsCount) + 6;
+		fillColsW = 1 + (colWp1 * columnsCount) + 6;
 		fillAccX = scrW - fillAccW;
 		fillScoreX = scrW - fillScoreW;
+		healthX = Settings.leftOffset + 1 + (colWp1 * columnsCount);
 
 		// step 8: lock graphics
 		log.log("Locking graphics");
@@ -155,6 +156,7 @@ public final class Player extends GameCanvas {
 	private final int fillColsW, fillCountersH, fillScoreW, fillAccW, fillScoreX, fillAccX;
 	private final int judgmentCenter;
 	private final int localHoldX;
+	private final int healthX;
 
 	private final char[] accText = new char[] { '1', '0', '0', ',', '0', '0', '%' };
 
@@ -458,7 +460,7 @@ public final class Player extends GameCanvas {
 		g.setClip(0, 0, scrW, scrH);
 		RedrawHUD();
 		// cols
-		flushGraphics(0, 0, fillColsW, scrH);
+		flushGraphics(Settings.leftOffset, 0, fillColsW, scrH);
 		// score & acc
 		flushGraphics(fillScoreX, 0, fillScoreW, fillCountersH);
 		flushGraphics(fillAccX, scrH - fillCountersH, fillAccW, fillCountersH);
@@ -516,12 +518,12 @@ public final class Player extends GameCanvas {
 				rollingHealth += delta / 10 + (delta > 0 ? 1 : -1);
 			}
 			g.setColor(0);
-			g.fillRect(fillColsW - 6, 0, 6, scrH);
+			g.fillRect(healthX, 0, 6, scrH);
 			if (rollingHealth > 0) {
 				int hh = scrH * rollingHealth / 1000;
 				final int clr = Math.min(255, rollingHealth / 2);
 				g.setColor(255, clr, clr);
-				g.fillRect(fillColsW - 6, scrH - hh, 6, hh);
+				g.fillRect(healthX, scrH - hh, 6, hh);
 			}
 		}
 	}
