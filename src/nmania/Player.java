@@ -219,35 +219,7 @@ public final class Player extends GameCanvas {
 		time = track.Now();
 
 		if (failed) {
-			running = false;
-			track.Stop();
-			try {
-				if (Settings.gameplaySamples) {
-					playOver = new Sample(true, "/sfx/fail.mp3", "audio/mpeg");
-					playOver.Play();
-				}
-			} catch (IOException e1) {
-			} catch (MediaException e1) {
-			}
-			final String j = "FAILED";
-			for (int i = 0; i < 5; i++) {
-				g.setColor(-1);
-				g.drawString(j, scrW / 2 + 1, 49, 17);
-				g.drawString(j, scrW / 2 - 1, 49, 17);
-				g.drawString(j, scrW / 2 + 1, 51, 17);
-				g.drawString(j, scrW / 2 - 1, 51, 17);
-				if (i % 2 == 0)
-					g.setColor(210, 0, 0);
-				g.drawString(j, scrW / 2, 50, 17);
-				flushGraphics();
-				try {
-					Thread.sleep(250);
-				} catch (Exception e) {
-				}
-			}
-			if (playOver != null)
-				playOver.Dispose();
-			Nmania.Push(menu == null ? new MainScreen() : menu);
+			FailSequence();
 			return;
 		}
 
@@ -431,6 +403,48 @@ public final class Player extends GameCanvas {
 				playOver.Dispose();
 			Display.getDisplay(Nmania.inst).setCurrent(new ResultsScreen(score, track, bg, menu));
 		}
+	}
+
+	private void FailSequence() {
+		running = false;
+		track.Stop();
+		try {
+			if (Settings.gameplaySamples) {
+				playOver = new Sample(true, "/sfx/fail.mp3", "audio/mpeg");
+				playOver.Play();
+			}
+		} catch (IOException e1) {
+		} catch (MediaException e1) {
+		}
+		final String j = "FAILED";
+		final int length = 100;
+		for (int i = 0; i <= length; i++) {
+			int h1 = (int) (scrH * i / length) / 2;
+			int w1 = (int) (scrW * i / length) / 2;
+			// rects
+			g.setColor(0);
+			g.fillRect(0, 0, h1, scrW);
+			g.fillRect(scrH - h1, 0, h1, scrW);
+			g.fillRect(0, 0, scrH, w1);
+			g.fillRect(0, scrW - w1, scrH, w1);
+			// text
+			g.setColor(-1);
+			g.drawString(j, scrW / 2 + 1, 49, 17);
+			g.drawString(j, scrW / 2 - 1, 49, 17);
+			g.drawString(j, scrW / 2 + 1, 51, 17);
+			g.drawString(j, scrW / 2 - 1, 51, 17);
+			g.setColor(210, 0, 0);
+			g.drawString(j, scrW / 2, 50, 17);
+			// flush & wait
+			flushGraphics();
+			try {
+				Thread.sleep(10);
+			} catch (Exception e) {
+			}
+		}
+		if (playOver != null)
+			playOver.Dispose();
+		Nmania.Push(menu == null ? new MainScreen() : menu);
 	}
 
 	private final void CountHit(int j) {
