@@ -139,7 +139,7 @@ public final class Player extends GameCanvas {
 	private final boolean[] holdKeys;
 	private final int[] keyMappings;
 	private final int[] hitWindows;
-	private final int[] healthValues = new int[] { -100, -50, 0, 20, 60, 120 };
+	private final int[] healthValues = new int[] { -50, -10, 0, 20, 60, 120 };
 	public final ScoreController score;
 	public final AudioController track;
 	private final Image bg;
