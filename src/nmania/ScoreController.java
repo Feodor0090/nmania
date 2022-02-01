@@ -26,4 +26,14 @@ public final class ScoreController {
 			return 10000;
 		return currentHitScore * 10000 / maxHitScore;
 	}
+
+	public void Reset() {
+		for (int i = 0; i < hits.length; i++) {
+			hits[i] = 0;
+		}
+		maxHitScore = 0;
+		currentHitScore = 0;
+		maxCombo = 0;
+		currentCombo = 0;
+	}
 }

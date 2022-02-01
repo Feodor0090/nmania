@@ -48,4 +48,11 @@ public final class AudioController {
 		player.deallocate();
 		player.close();
 	}
+
+	public void Reset() {
+		try {
+			player.setMediaTime(0);
+		} catch (MediaException e) {
+		}
+	}
 }

@@ -172,9 +172,11 @@ public final class Player extends GameCanvas {
 	private int health = 1000;
 	private int rollingHealth = 1000;
 
-	public boolean isPaused;
+	public boolean isPaused = false;
 	public boolean running = true;
 	public boolean failed = false;
+	private boolean exitNow = false;
+	private int pauseItem = 0;
 
 	private final Sample combobreak;
 	private Sample playOver;
@@ -191,6 +193,45 @@ public final class Player extends GameCanvas {
 	private final int scrollDiv = Settings.speedDiv;
 
 	protected final void keyPressed(final int k) {
+		if (isPaused) {
+			if (k == -1 || k == '2') {
+				pauseItem--;
+				if (pauseItem < 0)
+					pauseItem = 2;
+			} else if (k == -2 || k == '8') {
+				pauseItem++;
+				if (pauseItem > 2)
+					pauseItem = 0;
+			} else if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
+				if (pauseItem == 0) {
+					isPaused = false;
+					track.Play();
+				} else if (pauseItem == 1) {
+					track.Reset();
+					rollingHealth = 1000;
+					health = 1000;
+					rollingScore = 0;
+					score.Reset();
+					for (int i = 0; i < currentNote.length; i++) {
+						currentNote[i] = 0;
+					}
+					isPaused = false;
+					track.Play();
+				} else if (pauseItem == 2) {
+					// order has meaning
+					exitNow = true;
+					failed = true;
+					isPaused = false;
+				}
+			}
+			return;
+		}
+		if (k == keyMappings[columnsCount]) {
+			isPaused = true;
+			track.Pause();
+			pauseItem = 0;
+			return;
+		}
 		if (!enableJudgements)
 			return;
 		for (int i = 0; i < columnsCount; i++) {
@@ -203,7 +244,7 @@ public final class Player extends GameCanvas {
 	}
 
 	protected final void keyReleased(final int k) {
-		if (!enableJudgements)
+		if (!enableJudgements || isPaused)
 			return;
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
@@ -218,8 +259,12 @@ public final class Player extends GameCanvas {
 		// sync
 		time = track.Now();
 
+		if (isPaused) {
+			PauseUpdateLoop();
+			time = track.Now();
+		}
 		if (failed) {
-			FailSequence();
+			FailSequence(true);
 			return;
 		}
 
@@ -405,9 +450,34 @@ public final class Player extends GameCanvas {
 		}
 	}
 
-	private void FailSequence() {
-		running = false;
-		track.Stop();
+	private void PauseUpdateLoop() {
+		String[] pauseText = new String[] { "Continue", "Retry", "Quit" };
+		while (isPaused) {
+			int sw3 = scrW / 3;
+			int sh5 = scrH / 5;
+			for (int i = 0; i < 3; i++) {
+				int ry = (scrH * 2 / 5 * (i + 1) / 4) + (sh5 * i);
+				g.setGrayScale(i == pauseItem ? 63 : 0);
+				g.fillRect(sw3, ry, sw3 - 1, sh5 - 1);
+				g.setColor((i == pauseItem ? 255 : 0), 0, 0);
+				g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
+				g.setColor(-1);
+				g.drawString(pauseText[i], scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
+			}
+			flushGraphics();
+			try {
+				Thread.sleep(30);
+			} catch (InterruptedException e) {
+				isPaused = false;
+				running = false;
+			}
+		}
+		Refill();
+		Redraw();
+	}
+
+	private void FailSequence(boolean exitAfter) {
+
 		try {
 			if (Settings.gameplaySamples) {
 				playOver = new Sample(true, "/sfx/fail.mp3", "audio/mpeg");
@@ -444,7 +514,11 @@ public final class Player extends GameCanvas {
 		}
 		if (playOver != null)
 			playOver.Dispose();
-		Nmania.Push(menu == null ? (new MainScreen()) : menu);
+		if (exitAfter) {
+			running = false;
+			track.Stop();
+			Nmania.Push(menu == null ? (new MainScreen()) : menu);
+		}
 	}
 
 	private final void CountHit(int j) {
