@@ -30,17 +30,27 @@ public class MainScreen extends GameCanvas implements Runnable {
 			return;
 		}
 		if (state == 2) {
-			if (k == -5) {
+			if (k == -5 || k == '5') {
 				state = 4;
 				action = 1;
 				return;
 			}
-			if (k == -6) {
+			if (k == -6 || k == '1') {
 				state = 4;
 				action = 2;
 				return;
 			}
-			if (k == -7) {
+			if (k == -3 || k == '7') {
+				state = 4;
+				action = 3;
+				return;
+			}
+			if (k == -4 || k == '3') {
+				state = 4;
+				action = 4;
+				return;
+			}
+			if (k == -7 || k == '9') {
 				state = 5;
 				return;
 			}

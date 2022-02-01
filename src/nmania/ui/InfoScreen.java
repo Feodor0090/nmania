@@ -43,9 +43,8 @@ public class InfoScreen extends List implements CommandListener {
 				f.append("\nTG chat: ");
 				f.append(new Link("https://t.me/nnmidletschat"));
 				f.append("\nCode & design by Feodor0090");
-				f.append("\nLibraries used: ");
+				f.append("\nLibraries used: org.json.me, ");
 				f.append(new Link("https://github.com/tube42/imagelib"));
-				f.append(", org.json.me");
 				break;
 			case 1:
 				f.append("1. Download beatmaps that you want from ");
@@ -78,7 +77,7 @@ public class InfoScreen extends List implements CommandListener {
 				f.append("\nMake sure nothing is downloading. Close browser, social clients, player, anything that can do something in background.");
 				f.append("\nDo not use bluetooth keyboard and/or headset. Their support is quite expensive in CPU resources.");
 				f.append("\nDisconnect all OTG/BT/etc. devices. Use native device's keyboard if possible. Disconnect from the internet. Disable cell network.");
-				f.append("\nDisable debug tools, if you have them running");
+				f.append("\nDisable debug tools, if you have them running.");
 				break;
 			case 4:
 				f.append(
@@ -107,7 +106,7 @@ public class InfoScreen extends List implements CommandListener {
 		f.append(ext);
 		f.append("\" will be ignored.");
 		f.append("\n" + (start + 1) + ". Open the game, go to \"play\" submenu. Here is list of your beatmapsets. ");
-		f.append("If some are missed, check their location, try to rename, etc.");
+		f.append(" If some are missed, check their location, try to rename, etc.");
 		f.append("\n" + (start + 2) + ". Open any to proceed to it's difficulties. Choose one to play it.");
 		f.append("\nIf you have troubles, read everything in this manual again. ");
 		f.append(

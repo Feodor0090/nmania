@@ -31,7 +31,7 @@ public class KeyboardLayoutSelect extends Canvas {
 		g.setColor(-1);
 		for (int i = 0; i < items.length; i++) {
 			g.drawString(items[i], 10, iy + th * i, 0);
-			if (Settings.keyLayout[i] == null) {
+			if (i > 0 && Settings.keyLayout[i - 1] == null) {
 				g.drawString("not set", getWidth() - 10, iy + th * i, 24);
 			}
 		}
