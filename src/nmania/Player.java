@@ -20,7 +20,7 @@ import tube42.lib.imagelib.ImageUtils;
 
 public final class Player extends GameCanvas {
 
-	protected Player(Beatmap map, ILogger log) throws IOException, MediaException {
+	protected Player(Beatmap map, boolean enableJudgements, ILogger log) throws IOException, MediaException {
 		super(false);
 		setFullScreenMode(true);
 
@@ -47,6 +47,7 @@ public final class Player extends GameCanvas {
 		log.log("Setting scoring up");
 		hitWindows = new int[] { 200, 150, 100, 50, 25, 10 };
 		score = new ScoreController();
+		this.enableJudgements = enableJudgements;
 
 		// step 4: setup configs
 		log.log("Bootstrapping player");
@@ -132,6 +133,7 @@ public final class Player extends GameCanvas {
 		System.gc();
 	}
 
+	private final boolean enableJudgements;
 	private final int columnsCount;
 	private final int[][] columns;
 	private final int[] currentNote;
@@ -182,6 +184,8 @@ public final class Player extends GameCanvas {
 	private final int scrollDiv = Settings.speedDiv;
 
 	protected final void keyPressed(final int k) {
+		if (!enableJudgements)
+			return;
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
 				holdKeys[i] = true;
@@ -194,6 +198,8 @@ public final class Player extends GameCanvas {
 	}
 
 	protected final void keyReleased(final int k) {
+		if (!enableJudgements)
+			return;
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
 				holdKeys[i] = false;
@@ -232,107 +238,148 @@ public final class Player extends GameCanvas {
 
 		// is beatmap over?
 		int emptyColumns = 0;
+		
+		if (enableJudgements) {
+			// checking all columns
+			for (int column = 0; column < columnsCount; column++) {
 
-		// checking all columns
-		for (int column = 0; column < columnsCount; column++) {
+				if (currentNote[column] >= columns[column].length) {
+					emptyColumns++;
+					continue;
+				}
+				// diff between current time and note hit time.
+				// positive - it's late, negative - it's early.
+				final int diff = time - columns[column][currentNote[column]];
 
-			if (currentNote[column] >= columns[column].length) {
-				emptyColumns++;
-				continue;
-			}
-			// diff between current time and note hit time.
-			// positive - it's late, negative - it's early.
-			final int diff = time - columns[column][currentNote[column]];
+				// hold length
+				final int dur = columns[column][currentNote[column] + 1];
 
-			// hold length
-			final int dur = columns[column][currentNote[column] + 1];
+				// is it too early to handle?
+				if (diff < -hitWindows[0])
+					continue;
 
-			// is it too early to handle?
-			if (diff < -hitWindows[0])
-				continue;
-
-			// if we have input
-			if (holdKeys[column]) {
-				// it is a single note
-				if (dur == 0) {
-					// we are waiting press, not hold
-					if (!lastHoldKeys[column]) {
-						// absolute difference
-						final int adiff = Math.abs(diff);
-						// checking hitwindow
-						for (int j = 5; j > -1; j--) {
-							if (adiff < hitWindows[j]) {
-								CountHit(j);
-								score.CountHit(j);
-								lastJudgement = j;
-								lastJudgementTime = time;
-								currentNote[column] += 2;
-								break;
-							}
-						}
-					}
-				} else {
-					// it is a hold
-					if (!lastHoldKeys[column]) {
-						// absolute difference
-						final int adiff = Math.abs(diff);
-						// checking hitwindow
-						for (int j = 5; j > -1; j--) {
-							if (adiff < hitWindows[j]) {
-								CountHit(j);
-								score.CountHit(j);
-								lastJudgement = j;
-								lastJudgementTime = time;
-								break;
+				// if we have input
+				if (holdKeys[column]) {
+					// it is a single note
+					if (dur == 0) {
+						// we are waiting press, not hold
+						if (!lastHoldKeys[column]) {
+							// absolute difference
+							final int adiff = Math.abs(diff);
+							// checking hitwindow
+							for (int j = 5; j > -1; j--) {
+								if (adiff < hitWindows[j]) {
+									CountHit(j);
+									score.CountHit(j);
+									lastJudgement = j;
+									lastJudgementTime = time;
+									currentNote[column] += 2;
+									break;
+								}
 							}
 						}
 					} else {
-						// holding the hold!
+						// it is a hold
+						if (!lastHoldKeys[column]) {
+							// absolute difference
+							final int adiff = Math.abs(diff);
+							// checking hitwindow
+							for (int j = 5; j > -1; j--) {
+								if (adiff < hitWindows[j]) {
+									CountHit(j);
+									score.CountHit(j);
+									lastJudgement = j;
+									lastJudgementTime = time;
+									break;
+								}
+							}
+						} else {
+							// holding the hold!
+						}
 					}
-				}
-				continue;
-			} else if (!holdKeys[column] && lastHoldKeys[column] && dur != 0) {
-				// released hold
+					continue;
+				} else if (!holdKeys[column] && lastHoldKeys[column] && dur != 0) {
+					// released hold
 
-				// absolute difference
-				final int adiff = Math.abs(diff - dur);
-				// checking hitwindow
-				for (int j = 5; j > -1; j--) {
-					if (adiff < hitWindows[j]) {
-						CountHit(j);
-						score.CountHit(j);
-						lastJudgement = j;
+					// absolute difference
+					final int adiff = Math.abs(diff - dur);
+					// checking hitwindow
+					for (int j = 5; j > -1; j--) {
+						if (adiff < hitWindows[j]) {
+							CountHit(j);
+							score.CountHit(j);
+							lastJudgement = j;
+							lastJudgementTime = time;
+							currentNote[column] += 2;
+							if (hitSounds != null && j != 0)
+								hitSounds[0][2].Play();
+							break;
+						}
+					}
+					if (adiff >= hitWindows[0]) {
+						CountHit(0);
+						score.CountHit(0);
+						lastJudgement = 0;
 						lastJudgementTime = time;
 						currentNote[column] += 2;
-						if (hitSounds != null && j != 0)
-							hitSounds[0][2].Play();
-						break;
 					}
+					continue;
 				}
-				if (adiff >= hitWindows[0]) {
-					CountHit(0);
+
+				// missing unpressed notes
+				if (diff > hitWindows[0]) {
+					CountHit(0); // holds decreasing health only once
 					score.CountHit(0);
+					if (dur != 0)
+						score.CountHit(0);
 					lastJudgement = 0;
 					lastJudgementTime = time;
 					currentNote[column] += 2;
+					continue;
 				}
-				continue;
 			}
+		} else {
+			// auto mode
+			for (int column = 0; column < columnsCount; column++) {
+				if (currentNote[column] >= columns[column].length) {
+					emptyColumns++;
+					continue;
+				}
+				final int diff = time - columns[column][currentNote[column]];
+				final int dur = columns[column][currentNote[column] + 1];
+				if (diff < 0)
+					continue;
 
-			// missing unpressed notes
-			if (diff > hitWindows[0]) {
-				CountHit(0); // holds decreasing health only once
-				score.CountHit(0);
-				if (dur != 0)
-					score.CountHit(0);
-				lastJudgement = 0;
-				lastJudgementTime = time;
-				currentNote[column] += 2;
-				continue;
+				if (dur == 0) {
+					CountHit(5);
+					score.CountHit(5);
+					lastJudgement = 5;
+					lastJudgementTime = time;
+					currentNote[column] += 2;
+				} else {
+					if (diff + dur > 0) {
+						holdKeys[column] = false;
+						CountHit(5);
+						score.CountHit(5);
+						lastJudgement = 5;
+						lastJudgementTime = time;
+						currentNote[column] += 2;
+						if (hitSounds != null)
+							hitSounds[0][2].Play();
+					} else if (!holdKeys[column]) {
+						holdKeys[column] = true;
+						CountHit(5);
+						score.CountHit(5);
+						lastJudgement = 5;
+						lastJudgementTime = time;
+					}
+				}
 			}
 		}
 		System.arraycopy(holdKeys, 0, lastHoldKeys, 0, columnsCount);
-		if (emptyColumns == columnsCount) {
+
+		if (emptyColumns == columnsCount)
+		{
 			running = false;
 			final String j = "DIFFICULTY PASSED";
 			for (int i = 0; i < 5; i++) {

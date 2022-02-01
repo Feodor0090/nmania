@@ -10,17 +10,19 @@ import nmania.ui.KeyboardLayoutSelect;
 
 public class PlayerLoader extends Thread implements ILogger {
 
-	public PlayerLoader(BeatmapSet set, String bmFileName, BeatmapSetPage page) {
+	public PlayerLoader(BeatmapSet set, String bmFileName, boolean auto, BeatmapSetPage page) {
 		super("Player loader");
 		this.set = set;
 		this.bmfn = bmFileName;
 		this.page = page;
+		this.auto = auto;
 	}
 
 	BeatmapSet set;
 	String bmfn;
 	Alert a;
 	BeatmapSetPage page;
+	boolean auto;
 
 	public void run() {
 		a = new Alert("nmania", "Reading beatmap file", null, AlertType.INFO);
@@ -52,7 +54,7 @@ public class PlayerLoader extends Thread implements ILogger {
 		}
 		page = null;
 		try {
-			Player p = new Player(b, this);
+			Player p = new Player(b, !auto, this);
 			Nmania.Push(p);
 			Thread t = new PlayerThread(p);
 			t.start();

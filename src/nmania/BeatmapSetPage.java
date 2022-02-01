@@ -1,5 +1,7 @@
 package nmania;
 
+import javax.microedition.lcdui.Choice;
+import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
@@ -19,6 +21,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 	BeatmapManager bm;
 	String dir;
 	BeatmapSet set;
+	ChoiceGroup mode = new ChoiceGroup("Play mode", Choice.EXCLUSIVE, new String[] { "Manual", "Demo" }, null);
 
 	private BeatmapSetsList list;
 	private Command back = new Command("Back", Command.BACK, 1);
@@ -59,6 +62,8 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 					append(btn);
 				}
 			}
+			mode.setSelectedIndex(0, true);
+			append(mode);
 			addCommand(back);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -70,7 +75,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 
 	public void commandAction(Command c, Item arg1) {
 		if (c instanceof Difficulty) {
-			(new PlayerLoader(set, ((Difficulty) c).fileName, this)).start();
+			(new PlayerLoader(set, ((Difficulty) c).fileName, mode.getSelectedIndex() == 1, this)).start();
 		}
 	}
 
