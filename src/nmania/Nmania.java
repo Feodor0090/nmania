@@ -57,6 +57,7 @@ public final class Nmania extends MIDlet implements ILogger, CommandListener, Ru
 		inst = this;
 		if (running)
 			return;
+		Settings.Load();
 		Display.getDisplay(inst).setCurrent(new MainScreen());
 	}
 	
