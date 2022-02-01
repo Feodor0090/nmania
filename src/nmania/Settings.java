@@ -29,6 +29,10 @@ public final class Settings {
 			JSONArray keys = new JSONArray();
 			for (int i = 0; i < keyLayout.length; i++) {
 				JSONArray layout = new JSONArray();
+				if (keyLayout[i] == null) {
+					keys.put(JSONObject.NULL);
+					continue;
+				}
 				for (int k = 0; k < keyLayout[i].length; k++) {
 					layout.put(keyLayout[i][k]);
 				}
@@ -69,6 +73,8 @@ public final class Settings {
 			speedDiv = j.getInt("speed");
 			JSONArray keys = j.getJSONArray("keys");
 			for (int i = 0; (i < keys.length() && i < keyLayout.length); i++) {
+				if (keys.isNull(i))
+					continue;
 				keyLayout[i] = SNUtils.json2intArray(keys.getJSONArray(i));
 			}
 			gameplaySamples = j.getBoolean("samples");
