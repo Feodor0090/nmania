@@ -456,12 +456,6 @@ public final class Player extends GameCanvas {
 		g.setClip(0, 0, scrW, kbY);
 		RedrawNotes();
 		g.setClip(0, 0, scrW, scrH);
-		{
-			g.setColor(0);
-			g.fillRect(0, 0, Settings.leftOffset, fontL.getHeight());
-			g.setColor(0, 255, 0);
-			g.drawString(String.valueOf(PlayerThread.fps), 0, 0, 0);
-		}
 		RedrawHUD();
 		// cols
 		flushGraphics(0, 0, fillColsW, scrH);
