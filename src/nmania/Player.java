@@ -179,7 +179,7 @@ public final class Player extends GameCanvas {
 	private final int keyColorTopHold = SNUtils.toARGB("0x0FF");
 	private final int keyColorBottom = SNUtils.toARGB("0x69D");
 
-	private final static int scrollDiv = Settings.speedDiv;
+	private final int scrollDiv = Settings.speedDiv;
 
 	protected final void keyPressed(final int k) {
 		for (int i = 0; i < columnsCount; i++) {
@@ -252,20 +252,23 @@ public final class Player extends GameCanvas {
 				continue;
 
 			// if we have input
-			if (holdKeys[column] && !lastHoldKeys[column]) {
+			if (holdKeys[column]) {
 				// it is a single note
 				if (dur == 0) {
-					// absolute difference
-					final int adiff = Math.abs(diff);
-					// checking hitwindow
-					for (int j = 5; j > -1; j--) {
-						if (adiff < hitWindows[j]) {
-							CountHit(j);
-							score.CountHit(j);
-							lastJudgement = j;
-							lastJudgementTime = time;
-							currentNote[column] += 2;
-							break;
+					// we are waiting press, not hold
+					if (!lastHoldKeys[column]) {
+						// absolute difference
+						final int adiff = Math.abs(diff);
+						// checking hitwindow
+						for (int j = 5; j > -1; j--) {
+							if (adiff < hitWindows[j]) {
+								CountHit(j);
+								score.CountHit(j);
+								lastJudgement = j;
+								lastJudgementTime = time;
+								currentNote[column] += 2;
+								break;
+							}
 						}
 					}
 				} else {
