@@ -24,6 +24,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 	int state = -2;
 
 	protected void keyPressed(int k) {
+		lastInputIsTouch = false;
 		if (state == 0) {
 			state = 1;
 			return;
@@ -47,6 +48,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 	}
 
 	protected void pointerReleased(int arg0, int arg1) {
+		lastInputIsTouch = true;
 		if (state == 0) {
 			state = 1;
 			return;
@@ -54,8 +56,10 @@ public class MainScreen extends GameCanvas implements Runnable {
 	}
 
 	int action = 0;
+	boolean lastInputIsTouch;
 
 	protected void pointerPressed(int x, int y) {
+		lastInputIsTouch = true;
 		if (state == 2) {
 			x -= (getWidth() - menu.getWidth());
 			y -= (getHeight() - menu.getHeight());
@@ -93,7 +97,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 			Play();
 			break;
 		case 2:
-			Nmania.Push(new SettingsScreen());
+			Nmania.Push(new SettingsScreen(lastInputIsTouch));
 			break;
 		default:
 			break;

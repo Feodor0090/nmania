@@ -16,19 +16,24 @@ public class KeyboardLayoutSelect extends Canvas {
 	}
 
 	private final Displayable prev;
+	int iy;
+	int th;
 
 	protected void paint(Graphics g) {
 		int h = getHeight();
 		Font f = Font.getFont(0, 0, 8);
-		int th = f.getHeight();
+		th = f.getHeight();
 		g.setColor(0);
 		g.fillRect(0, 0, getWidth(), h);
-		int y = (h - th * items.length) / 2;
+		iy = (h - th * items.length) / 2;
 		g.setColor(MainScreen.bgColor);
-		g.fillRect(5, y + th * selected, getWidth() - 10, th);
+		g.fillRect(5, iy + th * selected, getWidth() - 10, th);
 		g.setColor(-1);
 		for (int i = 0; i < items.length; i++) {
-			g.drawString(items[i], 10, y + th * i, 0);
+			g.drawString(items[i], 10, iy + th * i, 0);
+			if (Settings.keyLayout[i] == null) {
+				g.drawString("not set", getWidth() - 10, iy + th * i, 24);
+			}
 		}
 	}
 
@@ -53,6 +58,22 @@ public class KeyboardLayoutSelect extends Canvas {
 			}
 		}
 		repaint();
+	}
+
+	protected void pointerPressed(int x, int y) {
+		y -= iy;
+		if (y < th) {
+			Settings.Save();
+			Nmania.Push(prev);
+			return;
+		}
+		for (int i = 1; i <= 10; i++) {
+			y -= th;
+			if (y < th) {
+				Nmania.Push(new KeyboardSetup(i, this));
+				return;
+			}
+		}
 	}
 
 	int selected = 0;
