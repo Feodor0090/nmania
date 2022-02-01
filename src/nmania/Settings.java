@@ -82,7 +82,7 @@ public final class Settings {
 			}
 			gameplaySamples = j.getBoolean("samples");
 			hitSamples = j.getBoolean("hitsounds");
-			keepMenu = j.getBoolean("keepmenu");
+			keepMenu = j.optBoolean("keepmenu", false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
