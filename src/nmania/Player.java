@@ -423,10 +423,10 @@ public final class Player extends GameCanvas {
 			int w1 = (int) (scrW * i / length) / 2;
 			// rects
 			g.setColor(0);
-			g.fillRect(0, 0, h1, scrW);
-			g.fillRect(scrH - h1, 0, h1, scrW);
-			g.fillRect(0, 0, scrH, w1);
-			g.fillRect(0, scrW - w1, scrH, w1);
+			g.fillRect(0, 0, w1, scrH); // left
+			g.fillRect(scrW - w1, 0, w1, scrH); // right
+			g.fillRect(0, 0, scrW, h1); // top
+			g.fillRect(0, scrH - h1, scrW, h1); // bottom
 			// text
 			g.setColor(-1);
 			g.drawString(j, scrW / 2 + 1, 49, 17);
