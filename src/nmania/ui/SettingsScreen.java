@@ -60,12 +60,12 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			// up
 			selected--;
 			if (selected < 0)
-				selected = 0;
+				selected = items.length - 1;
 		} else if (k == -2 || k == '8') {
 			// down
 			selected++;
 			if (selected >= items.length)
-				selected = items.length - 1;
+				selected = 0;
 		} else if (k == -5 || k == -6 || k == 32 || k == '5') {
 			switch (selected) {
 			case 0:
@@ -100,6 +100,9 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			default:
 				break;
 			}
+		} else if (k == -7) {
+			Settings.Save();
+			Nmania.Push(new MainScreen());
 		}
 		repaint();
 	}
