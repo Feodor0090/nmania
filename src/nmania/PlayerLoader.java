@@ -7,7 +7,6 @@ import org.json.me.JSONObject;
 
 import nmania.Beatmap.RawOsuBeatmap;
 import nmania.ui.BeatmapSetPage;
-import nmania.ui.KeyboardLayoutSelect;
 import nmania.ui.KeyboardSetup;
 
 public class PlayerLoader extends Thread implements ILogger {
@@ -28,6 +27,7 @@ public class PlayerLoader extends Thread implements ILogger {
 
 	public void run() {
 		a = new Alert("nmania", "Reading beatmap file", null, AlertType.INFO);
+		a.setTimeout(Alert.FOREVER);
 		Nmania.Push(a);
 		Beatmap b;
 		{
