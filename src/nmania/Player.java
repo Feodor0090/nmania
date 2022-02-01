@@ -170,6 +170,7 @@ public final class Player extends GameCanvas {
 	public boolean failed = false;
 
 	private final Sample combobreak;
+	private Sample playOver;
 
 	private final MultiSample[][] hitSounds;
 
@@ -215,6 +216,14 @@ public final class Player extends GameCanvas {
 		if (failed) {
 			running = false;
 			track.Stop();
+			try {
+				if (Settings.gameplaySamples) {
+					playOver = new Sample(true, "/sfx/fail.mp3", "audio/mpeg");
+					playOver.Play();
+				}
+			} catch (IOException e1) {
+			} catch (MediaException e1) {
+			}
 			final String j = "FAILED";
 			for (int i = 0; i < 5; i++) {
 				g.setColor(-1);
@@ -227,10 +236,12 @@ public final class Player extends GameCanvas {
 				g.drawString(j, scrW / 2, 50, 17);
 				flushGraphics();
 				try {
-					Thread.sleep(500);
+					Thread.sleep(400);
 				} catch (Exception e) {
 				}
 			}
+			if (playOver != null)
+				playOver.Dispose();
 			Nmania.Push(new MainScreen());
 			return;
 		}
@@ -387,6 +398,14 @@ public final class Player extends GameCanvas {
 
 		if (emptyColumns == columnsCount) {
 			running = false;
+			try {
+				if (Settings.gameplaySamples) {
+					playOver = new Sample(true, "/sfx/pass.mp3", "audio/mpeg");
+					playOver.Play();
+				}
+			} catch (IOException e1) {
+			} catch (MediaException e1) {
+			}
 			final String j = "DIFFICULTY PASSED";
 			for (int i = 0; i < 5; i++) {
 				g.setColor(-1);
@@ -399,10 +418,12 @@ public final class Player extends GameCanvas {
 				g.drawString(j, scrW / 2, 50, 17);
 				flushGraphics();
 				try {
-					Thread.sleep(500);
+					Thread.sleep(400);
 				} catch (Exception e) {
 				}
 			}
+			if (playOver != null)
+				playOver.Dispose();
 			Display.getDisplay(Nmania.inst).setCurrent(new ResultsScreen(score, track, bg));
 		}
 	}
