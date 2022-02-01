@@ -190,8 +190,6 @@ public final class Player extends GameCanvas {
 			if (keyMappings[i] == k) {
 				holdKeys[i] = true;
 				DrawKey(i, true);
-				if (hitSounds != null)
-					hitSounds[0][0].Play();
 				return;
 			}
 		}
