@@ -46,8 +46,8 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 			Image img = BeatmapManager.getImgFromFS(set.wdPath + set.folderName + set.image);
 			img = ImageUtils.resize(img, 350, (int) (img.getHeight() / (img.getWidth() / 350f)), true, false);
 			deleteAll();
-			append(new ImageItem(set.artist + " - " + set.title + " (" + set.mapper + ")", img, Item.LAYOUT_CENTER,
-					null));
+			append(new ImageItem(null, img, Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER, null));
+			append(set.artist + " - " + set.title + " (" + set.mapper + ")");
 			for (int i = 0; i < set.files.length; i++) {
 				String f = set.files[i];
 				if (f.endsWith(".osu") || f.endsWith(".nmbm")) {
@@ -55,7 +55,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 							StringItem.BUTTON);
 					btn.setLayout(Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_BEFORE | Item.LAYOUT_NEWLINE_AFTER);
 					btn.setItemCommandListener(this);
-					btn.addCommand(new Difficulty(f));
+					btn.setDefaultCommand(new Difficulty(f));
 					append(btn);
 				}
 			}
