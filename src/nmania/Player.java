@@ -179,7 +179,7 @@ public final class Player extends GameCanvas {
 	private final int keyColorTopHold = SNUtils.toARGB("0x0FF");
 	private final int keyColorBottom = SNUtils.toARGB("0x69D");
 
-	private final static int scrollDiv = 4;
+	private final static int scrollDiv = Settings.speedDiv;
 
 	protected final void keyPressed(final int k) {
 		for (int i = 0; i < columnsCount; i++) {

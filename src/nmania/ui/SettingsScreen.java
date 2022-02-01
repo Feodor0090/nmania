@@ -19,6 +19,9 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		setFullScreenMode(true);
 	}
 
+	private final Command dimOk = new Command("OK", Command.OK, 1);
+	private final Command scrollOk = new Command("OK", Command.OK, 1);
+
 	protected void paint(Graphics g) {
 		int h = getHeight();
 		Font f = Font.getFont(0, 0, 8);
@@ -36,6 +39,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		g.drawString(((int) (Settings.bgDim * 100)) + "%", getWidth() - 10, y + th, Graphics.TOP | Graphics.RIGHT);
 		drawCheckbox(g, Settings.hitSamples, y + th * 2, th);
 		drawCheckbox(g, Settings.gameplaySamples, y + th * 3, th);
+		g.drawString("x" + Settings.speedDiv, getWidth() - 10, y + th * 4, Graphics.TOP | Graphics.RIGHT);
 	}
 
 	void drawCheckbox(Graphics g, boolean ok, int y, int th) {
@@ -68,7 +72,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			case 1:
 				TextBox box = new TextBox("Dim level", "" + Math.min(99, (int) (Settings.bgDim * 100)), 2,
 						TextField.NUMERIC);
-				box.addCommand(new Command("OK", Command.OK, 1));
+				box.addCommand(dimOk);
 				box.setCommandListener(this);
 				Display.getDisplay(Nmania.inst).setCurrent(box);
 				break;
@@ -79,6 +83,13 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Settings.gameplaySamples = !Settings.gameplaySamples;
 				break;
 			case 4:
+				TextBox box1 = new TextBox("Speed", "" + Settings.speedDiv, 1, TextField.NUMERIC);
+				box1.addCommand(scrollOk);
+				box1.setCommandListener(this);
+				Display.getDisplay(Nmania.inst).setCurrent(box1);
+				break;
+			case 5:
+				Settings.Save();
 				Nmania.Push(new MainScreen());
 				break;
 			default:
@@ -90,11 +101,15 @@ public class SettingsScreen extends Canvas implements CommandListener {
 
 	int selected = 0;
 	String[] items = new String[] { "Gameplay bindings", "Background dim", "Enable hitsounds", "Enable feedback sounds",
-			"<<< back" };
+			"Scroll speed", "<<< back" };
 
-	public void commandAction(Command arg0, Displayable d) {
+	public void commandAction(Command c, Displayable d) {
 		if (d instanceof TextBox) {
-			Settings.bgDim = Integer.parseInt(((TextBox) d).getString()) / 100f;
+			if (c == dimOk) {
+				Settings.bgDim = Integer.parseInt(((TextBox) d).getString()) / 100f;
+			} else if (c == scrollOk) {
+				Settings.speedDiv = Integer.parseInt(((TextBox) d).getString());
+			}
 			Nmania.Push(this);
 		}
 	}
