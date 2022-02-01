@@ -252,7 +252,7 @@ public final class Player extends GameCanvas {
 				continue;
 
 			// if we have input
-			if (holdKeys[column]) {
+			if (holdKeys[column] && !lastHoldKeys[column]) {
 				// it is a single note
 				if (dur == 0) {
 					// absolute difference
@@ -288,7 +288,7 @@ public final class Player extends GameCanvas {
 					}
 				}
 				continue;
-			} else if (lastHoldKeys[column] && dur != 0) {
+			} else if (!holdKeys[column] && lastHoldKeys[column] && dur != 0) {
 				// released hold
 
 				// absolute difference
