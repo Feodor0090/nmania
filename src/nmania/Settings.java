@@ -10,7 +10,6 @@ import symnovel.SNUtils;
 public final class Settings {
 	public static float bgDim = 0.75f;
 	public static int[][] keyLayout = new int[10][];
-	public static int pauseKey;
 	public static int leftOffset = 30;
 	public static int columnWidth = 30;
 	public static int holdWidth = 20;

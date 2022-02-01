@@ -13,7 +13,7 @@ public final class KeyboardSetup extends Canvas {
 
 	public KeyboardSetup(int columns, Displayable prev) {
 		this.columns = columns;
-		keys = new int[columns];
+		keys = new int[columns + 1];
 		this.prev = prev;
 		setFullScreenMode(true);
 	}
@@ -28,7 +28,7 @@ public final class KeyboardSetup extends Canvas {
 			return;
 		keys[currentColumn] = k;
 		currentColumn++;
-		if (currentColumn >= columns) {
+		if (currentColumn > columns) {
 			Settings.keyLayout[columns - 1] = keys;
 			Display.getDisplay(Nmania.inst).setCurrent(prev);
 		} else
@@ -49,23 +49,28 @@ public final class KeyboardSetup extends Canvas {
 		g.setColor(-1);
 		g.setFont(large);
 		g.drawString("keybinds setup (" + columns + "K)", w / 2, 0, 17);
-		String col;
+		String keyCapt;
 		switch (currentColumn) {
 		case 0:
-			col = "1st";
+			keyCapt = "1st";
 			break;
 		case 1:
-			col = "2nd";
+			keyCapt = "2nd";
 			break;
 		case 2:
-			col = "3rd";
+			keyCapt = "3rd";
 			break;
 		default:
-			col = (currentColumn + 1) + "th";
+			keyCapt = (currentColumn + 1) + "th";
 			break;
 		}
+		if (currentColumn == columns) {
+			keyCapt = "pause/exit";
+		} else {
+			keyCapt = keyCapt + " column";
+		}
 		g.setFont(small);
-		g.drawString("press a key for the " + col + " column", w / 2, large.getHeight(), 17);
+		g.drawString("press a key for the " + keyCapt, w / 2, large.getHeight(), 17);
 
 		// cols
 		int colW = w / columns;
@@ -95,6 +100,10 @@ public final class KeyboardSetup extends Canvas {
 				g.setColor(255, 255, 0);
 				g.fillRect(i * colW + 1, h - sfh * 3 + 1, colW - 1, sfh * 3 - 1);
 			}
+		}
+		if(currentColumn == columns) {
+			g.setColor(255, 255, 0);
+			g.fillRect(0, h - sfh * 4, w, sfh);
 		}
 	}
 
