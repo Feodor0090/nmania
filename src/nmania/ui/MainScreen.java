@@ -105,20 +105,24 @@ public class MainScreen extends GameCanvas implements Runnable {
 	 * Launches song select.
 	 */
 	private void Play() {
-		try {
-			String wd;
-			try {
-				Class.forName("emulator.Emulator");
-				wd = "file://root/";
-			} catch (Exception e) {
-				wd = "file:///C:/Data/Sounds/nmania/";
+		(new Thread(new Runnable() {
+			public void run() {
+				try {
+					String wd;
+					try {
+						Class.forName("emulator.Emulator");
+						wd = "file://root/";
+					} catch (Exception e) {
+						wd = "file:///C:/Data/Sounds/nmania/";
+					}
+					Nmania.LoadManager(wd);
+					Nmania.Push(new BeatmapSetsList(Nmania.bm));
+				} catch (Exception e) {
+					e.printStackTrace();
+					throw new RuntimeException(e.toString());
+				}
 			}
-			Nmania.LoadManager(wd);
-			Nmania.Push(new BeatmapSetsList(Nmania.bm));
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.toString());
-		}
+		}, "BMSL loader")).start();
 	}
 
 	float mul;
@@ -154,6 +158,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 			e.printStackTrace();
 		}
 
+		// - > LOGO
 		long startTime = System.currentTimeMillis();
 		while (needThread) {
 			long now = System.currentTimeMillis();
@@ -188,13 +193,14 @@ public class MainScreen extends GameCanvas implements Runnable {
 				break;
 		}
 		state = 0;
+		// LOGO
 		while (needThread && state == 0) {
-			long now = System.currentTimeMillis();
 			g.setColor(bgColor);
 			g.fillRect(0, 0, w, h);
 			g.drawImage(logo, w / 2, h / 2, 3);
 			flushGraphics();
 		}
+		// LOGO > MENU
 		startTime = System.currentTimeMillis();
 		while (needThread) {
 			long now = System.currentTimeMillis();
@@ -205,6 +211,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 			if (now - startTime > 500)
 				break;
 		}
+		// MENU
 		state = 2;
 		startTime = System.currentTimeMillis();
 		while (needThread && state == 2) {
@@ -214,19 +221,25 @@ public class MainScreen extends GameCanvas implements Runnable {
 			g.drawImage(menu, w / 2, h / 2, 3);
 			if (now - startTime < 1000) {
 				g.setColor(-1);
-				g.fillRect(0, 0, w, (int) (h * (1000 - (now - startTime)) / 1000));
+				int h1 = (int) (h * (1000 - (now - startTime)) / 1000) / 2;
+				g.fillRect(0, 0, w, h1);
+				g.fillRect(0, h - h1, w, h1);
 			}
 			flushGraphics();
 		}
+		// MENU > SUBMENU
 		if (state == 4) {
 			startTime = System.currentTimeMillis();
 			// play
 			while (true) {
+				int length = 500;
 				long now = System.currentTimeMillis();
 				g.setColor(0);
-				g.fillRect(0, 0, w, (int) (h * (now - startTime) / 500));
+				int h1 = (int) (h * (now - startTime) / length);
+				g.fillRect(0, 0, w, h1);
+				g.fillRect(0, h - h1, w, h1);
 				flushGraphics();
-				if (now - startTime > 500) {
+				if (now - startTime > length) {
 					Open();
 					// loading animation
 					startTime = System.currentTimeMillis();
@@ -238,11 +251,17 @@ public class MainScreen extends GameCanvas implements Runnable {
 						g.fillArc(w / 2 - 20, h / 2 - 20, 40, 40, (int) now, 90);
 						g.fillArc(w / 2 - 20, h / 2 - 20, 40, 40, (int) now + 180, 90);
 						flushGraphics();
+						try {
+							Thread.sleep(30);
+						} catch (InterruptedException e) {
+							return;
+						}
 					}
 					return;
 				}
 			}
 		}
+		// MENU > EXIT
 		if (state == 5) {
 			startTime = System.currentTimeMillis();
 			// exit
@@ -250,8 +269,11 @@ public class MainScreen extends GameCanvas implements Runnable {
 				long now = System.currentTimeMillis();
 				g.setColor(-1);
 				int rw = (int) (w * (now - startTime) / 1000) / 2;
+
 				g.fillRect(0, 0, rw, h);
 				g.fillRect(w - rw, 0, rw, h);
+				int arcSize = (int) (h * (now - startTime) / 1000) / 2;
+				g.fillArc(w / 2 - arcSize, h / 2 - arcSize, arcSize * 2, arcSize * 2, 0, 360);
 				flushGraphics();
 				if (now - startTime > 1000) {
 					Nmania.exit();
