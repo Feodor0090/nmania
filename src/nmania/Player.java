@@ -417,7 +417,7 @@ public final class Player extends GameCanvas {
 		} catch (MediaException e1) {
 		}
 		final String j = "FAILED";
-		final int length = 100;
+		final int length = 50;
 		for (int i = 0; i <= length; i++) {
 			int h1 = (int) (scrH * i / length) / 2;
 			int w1 = (int) (scrW * i / length) / 2;
@@ -444,7 +444,7 @@ public final class Player extends GameCanvas {
 		}
 		if (playOver != null)
 			playOver.Dispose();
-		Nmania.Push(menu == null ? new MainScreen() : menu);
+		Nmania.Push(menu == null ? (new MainScreen()) : menu);
 	}
 
 	private final void CountHit(int j) {

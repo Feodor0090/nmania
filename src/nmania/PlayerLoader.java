@@ -19,11 +19,11 @@ public class PlayerLoader extends Thread implements ILogger {
 		this.auto = auto;
 	}
 
-	BeatmapSet set;
-	String bmfn;
-	Alert a;
+	final BeatmapSet set;
+	final String bmfn;
 	BeatmapSetPage page;
-	boolean auto;
+	final boolean auto;
+	Alert a;
 
 	public void run() {
 		a = new Alert("nmania", "Reading beatmap file", null, AlertType.INFO);
@@ -53,9 +53,11 @@ public class PlayerLoader extends Thread implements ILogger {
 			Nmania.Push(a1);
 			return;
 		}
-		page = null;
+		if (!Settings.keepMenu) {
+			page = null;
+		}
 		try {
-			Player p = new Player(b, !auto, this, Settings.keepMenu ? page : null);
+			Player p = new Player(b, !auto, this, page);
 			Nmania.Push(p);
 			Thread t = new PlayerThread(p);
 			t.start();
