@@ -15,7 +15,8 @@ import nmania.Nmania;
 public class BeatmapSetsList extends List implements CommandListener {
 
 	private BeatmapManager bm;
-
+	private Command back = new Command("Back", Command.BACK, 1);
+	
 	public BeatmapSetsList(BeatmapManager bm) throws IOException {
 		super("Beatmapset select", List.IMPLICIT);
 		setCommandListener(this);
@@ -27,11 +28,14 @@ public class BeatmapSetsList extends List implements CommandListener {
 				continue;
 			append(s.substring(0, s.length() - 1), null);
 		}
+		addCommand(back);
 	}
 
 	public void commandAction(Command c, Displayable arg1) {
 		if (c == List.SELECT_COMMAND) {
-			Nmania.Push(new BeatmapSetPage(bm, getString(getSelectedIndex())));
+			Nmania.Push(new BeatmapSetPage(bm, getString(getSelectedIndex()), this));
+		} else if(c == back) {
+			Nmania.Push(new MainScreen());
 		}
 	}
 
