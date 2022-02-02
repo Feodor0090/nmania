@@ -7,12 +7,15 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 import nmania.Nmania;
+import nmania.Skin;
 import tube42.lib.imagelib.ColorUtils;
 
 public class SkinSelect extends Canvas {
 
 	public SkinSelect() {
 		setFullScreenMode(true);
+		if (Nmania.skin == null)
+			Nmania.skin = new Skin();
 		repaint();
 	}
 
@@ -76,7 +79,7 @@ public class SkinSelect extends Canvas {
 	void drawRichSkinIcon(Graphics g, int x, int y) {
 		for (int i = x - 50; i < x + 49; i++) {
 			int bl = Math.abs(i - x);
-			g.setColor(ColorUtils.blend(0,MainScreen.bgColor, bl * 255 / 50));
+			g.setColor(ColorUtils.blend(0, MainScreen.bgColor, bl * 255 / 50));
 			g.drawLine(i, y - 50, i, y + 50);
 		}
 	}
