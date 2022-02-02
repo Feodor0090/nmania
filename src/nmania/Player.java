@@ -35,8 +35,12 @@ public final class Player extends GameCanvas {
 		Image _bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image));
 		_bg = ImageUtils.resize(_bg, scrW, scrH, true, false);
 		bg = ImageFxUtils.applyModifier(_bg, new PixelModifier() {
-			public int apply(int p, int x, int y) {
-				return ColorUtils.blend(p, 0xff000000, (int) ((1f - Settings.bgDim) * 255));
+			final int blendLevel = (int) ((1f - Settings.bgDim) * 255);
+
+			public void apply(int[] p, int[] o, int count, int y) {
+				for (int i = 0; i < p.length; i++) {
+					o[i] = ColorUtils.blend(p[i], 0xff000000, blendLevel);
+				}
 			}
 		});
 		_bg = null;
