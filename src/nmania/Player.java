@@ -193,7 +193,7 @@ public final class Player extends GameCanvas {
 	private final int scrollDiv = Settings.speedDiv;
 
 	protected final void keyPressed(final int k) {
-		if (isPaused) {
+		if (isPaused && !failed) {
 			if (k == -1 || k == '2') {
 				pauseItem--;
 				if (pauseItem < 0)
@@ -222,6 +222,31 @@ public final class Player extends GameCanvas {
 					exitNow = true;
 					failed = true;
 					isPaused = false;
+				}
+			}
+			return;
+		}
+		if (isPaused && failed) {
+			if (k == -1 || k == '2' || k == -2 || k == '8') {
+				pauseItem = pauseItem == 0 ? 1 : 0;
+			} else if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
+				if (pauseItem == 0) {
+					track.Reset();
+					rollingHealth = 1000;
+					health = 1000;
+					rollingScore = 0;
+					score.Reset();
+					for (int i = 0; i < currentNote.length; i++) {
+						currentNote[i] = 0;
+					}
+					isPaused = false;
+					failed = false;
+					track.Play();
+				} else if (pauseItem == 1) {
+					running = false;
+					isPaused = false;
+					track.Stop();
+					Nmania.Push(menu == null ? (new MainScreen()) : menu);
 				}
 			}
 			return;
@@ -264,7 +289,7 @@ public final class Player extends GameCanvas {
 			time = track.Now();
 		}
 		if (failed) {
-			FailSequence(true);
+			FailSequence(exitNow);
 			return;
 		}
 
@@ -477,8 +502,8 @@ public final class Player extends GameCanvas {
 	}
 
 	private void FailSequence(boolean exitAfter) {
-
 		try {
+			track.Pause();
 			if (Settings.gameplaySamples) {
 				playOver = new Sample(true, "/sfx/fail.mp3", "audio/mpeg");
 				playOver.Play();
@@ -518,6 +543,31 @@ public final class Player extends GameCanvas {
 			running = false;
 			track.Stop();
 			Nmania.Push(menu == null ? (new MainScreen()) : menu);
+		} else {
+			track.Pause();
+			isPaused = true;
+			while (isPaused) {
+				int sw3 = scrW / 3;
+				int sh5 = scrH / 5;
+				for (int i = 0; i < 2; i++) {
+					int ry = sh5 * (i * 2 + 1);
+					g.setGrayScale(i == pauseItem ? 63 : 0);
+					g.fillRect(sw3, ry, sw3 - 1, sh5 - 1);
+					g.setColor((i == pauseItem ? 255 : 0), 0, 0);
+					g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
+					g.setColor(-1);
+					g.drawString(i == 0 ? "Retry" : "Quit", scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
+				}
+				flushGraphics();
+				try {
+					Thread.sleep(30);
+				} catch (InterruptedException e) {
+					isPaused = false;
+					running = false;
+				}
+			}
+			Refill();
+			Redraw();
 		}
 	}
 
