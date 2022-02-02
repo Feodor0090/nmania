@@ -141,6 +141,8 @@ public final class Player extends GameCanvas {
 		fillScoreX = scrW - fillScoreW;
 		healthX = s.leftOffset + 1 + (colWp1 * columnsCount);
 		leftOffset = s.leftOffset;
+		noteH = s.noteHeight;
+		holdW = s.holdWidth;
 		Thread.sleep(1);
 
 		// step 8: lock graphics
@@ -172,13 +174,14 @@ public final class Player extends GameCanvas {
 	private final int[] numsWidthCache;
 	private final Displayable menu;
 
-	private final int kbH, kbY, colWp1;
+	private final int kbH, kbY, colW, colWp1;
 	private final int fillColsW, fillCountersH, fillScoreW, fillAccW, fillScoreX, fillAccX;
 	private final int judgmentCenter;
 	private final int localHoldX;
 	private final int healthX;
 	private final int leftOffset;
-	private final int colW;
+	private final int noteH;
+	private final int holdW;
 
 	private final char[] accText = new char[] { '1', '0', '0', ',', '0', '0', '%' };
 
@@ -759,17 +762,17 @@ public final class Player extends GameCanvas {
 				}
 				// drawing note
 				g.setColor(255, 0, 0);
-				lastY = noteY - Settings.noteHeight;
-				g.fillRect(x, lastY, colW, Settings.noteHeight);
+				lastY = noteY - noteH;
+				g.fillRect(x, lastY, colW, noteH);
 				// drawing hold
 				if (dur != 0) {
 					final int holdLen = dur / scrollDiv;
-					final int holdH = holdLen - Settings.noteHeight;
+					final int holdH = holdLen - noteH;
 					lastY = noteY - holdLen;
 					g.setColor(0);
 					g.fillRect(x, lastY, colW, holdH);
 					g.setColor(0, 255, 0);
-					g.fillRect(x + localHoldX, lastY, Settings.holdWidth, holdH);
+					g.fillRect(x + localHoldX, lastY, holdW, holdH);
 				}
 				// are we above the screen?
 				if (lastY < 0)
