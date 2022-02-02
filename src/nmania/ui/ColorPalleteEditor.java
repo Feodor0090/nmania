@@ -39,7 +39,7 @@ public class ColorPalleteEditor extends Form implements CommandListener {
 		int i = 0;
 		try {
 			for (i = 0; i < colors.length; i++) {
-				colors[i] = SNUtils.toARGB(fields[i].getString());
+				colors[i] = SNUtils.toARGB("0x"+fields[i].getString());
 			}
 			if (c == back)
 				Nmania.Push(prev);
