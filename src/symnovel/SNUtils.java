@@ -176,53 +176,51 @@ public final class SNUtils {
 	}
 
 	public static int toARGB(String text) {
-		try {
-			int l = text.length();
-			// hex
-			if (text.startsWith("0x")) {
-				// 0xRGB
-				if (l == 5) {
-					int r = hex2int(text.charAt(2));
-					int g = hex2int(text.charAt(3));
-					int b = hex2int(text.charAt(4));
-					return (255 << 24) | ((r * 16 + r) << 16) | ((g * 16 + g) << 8) | (b * 16 + b);
-				}
-				// 0xARGB
-				if (l == 6) {
-					int a = hex2int(text.charAt(2));
-					int r = hex2int(text.charAt(3));
-					int g = hex2int(text.charAt(4));
-					int b = hex2int(text.charAt(5));
-					return ((a * 16 + a) << 24) | ((r * 16 + r) << 16) | ((g * 16 + g) << 8) | (b * 16 + b);
-				}
-				// 0xRRGGBB
-				if (l == 8) {
-					return (255 << 24) | ((hex2int(text.charAt(2)) * 16 + hex2int(text.charAt(3))) << 16)
-							| ((hex2int(text.charAt(4)) * 16 + hex2int(text.charAt(5))) << 8)
-							| (hex2int(text.charAt(6)) * 16 + hex2int(text.charAt(7)));
-				}
-				// 0xAARRGGBB
-				if (l == 10) {
-					return ((hex2int(text.charAt(2)) * 16 + hex2int(text.charAt(3))) << 24)
-							| ((hex2int(text.charAt(4)) * 16 + hex2int(text.charAt(5))) << 16)
-							| ((hex2int(text.charAt(6)) * 16 + hex2int(text.charAt(7))) << 8)
-							| (hex2int(text.charAt(8)) * 16 + hex2int(text.charAt(9)));
-				}
+		int l = text.length();
+		// hex
+		if (text.startsWith("0x")) {
+			// 0xRGB
+			if (l == 5) {
+				int r = hex2int(text.charAt(2));
+				int g = hex2int(text.charAt(3));
+				int b = hex2int(text.charAt(4));
+				return (255 << 24) | ((r * 16 + r) << 16) | ((g * 16 + g) << 8) | (b * 16 + b);
 			}
-			// code
-			if (text.charAt(l - 1) >= '0' && text.charAt(l - 1) <= '9') {
-				return Integer.parseInt(text);
+			// 0xARGB
+			if (l == 6) {
+				int a = hex2int(text.charAt(2));
+				int r = hex2int(text.charAt(3));
+				int g = hex2int(text.charAt(4));
+				int b = hex2int(text.charAt(5));
+				return ((a * 16 + a) << 24) | ((r * 16 + r) << 16) | ((g * 16 + g) << 8) | (b * 16 + b);
 			}
-			// words
-			/*
-			 * text = text.toLowerCase(); if(text.equals("white")) return toARGB("0xFFF");
-			 * if(text.equals("trwhite")) return toARGB("0x0FFF"); if(text.equals("white"))
-			 * return toARGB("0xFFF");
-			 */
-			// won't support
-		} catch (NumberFormatException e) {
+			// 0xRRGGBB
+			if (l == 8) {
+				return (255 << 24) | ((hex2int(text.charAt(2)) * 16 + hex2int(text.charAt(3))) << 16)
+						| ((hex2int(text.charAt(4)) * 16 + hex2int(text.charAt(5))) << 8)
+						| (hex2int(text.charAt(6)) * 16 + hex2int(text.charAt(7)));
+			}
+			// 0xAARRGGBB
+			if (l == 10) {
+				return ((hex2int(text.charAt(2)) * 16 + hex2int(text.charAt(3))) << 24)
+						| ((hex2int(text.charAt(4)) * 16 + hex2int(text.charAt(5))) << 16)
+						| ((hex2int(text.charAt(6)) * 16 + hex2int(text.charAt(7))) << 8)
+						| (hex2int(text.charAt(8)) * 16 + hex2int(text.charAt(9)));
+			}
 		}
-		return 0;
+		// code
+		if (text.charAt(l - 1) >= '0' && text.charAt(l - 1) <= '9') {
+			return Integer.parseInt(text);
+		}
+		// words
+		/*
+		 * text = text.toLowerCase(); if(text.equals("white")) return toARGB("0xFFF");
+		 * if(text.equals("trwhite")) return toARGB("0x0FFF"); if(text.equals("white"))
+		 * return toARGB("0xFFF");
+		 */
+		// won't support
+		
+		throw new NumberFormatException();
 	}
 
 	public static int hex2int(char c) {
