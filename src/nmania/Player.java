@@ -280,6 +280,22 @@ public final class Player extends GameCanvas {
 		}
 	}
 
+	protected final void pointerPressed(int x, int y) {
+		if (isPaused) {
+			if (failed) {
+				pauseItem = (int) Math.floor(y * 2f / scrH);
+			} else {
+				pauseItem = (int) Math.floor(y * 3f / scrH);
+			}
+			keyPressed(-5);
+		} else {
+			isPaused = true;
+			track.Pause();
+			pauseItem = 0;
+			return;
+		}
+	}
+
 	public final void Update() {
 		// sync
 		time = track.Now();
