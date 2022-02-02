@@ -22,7 +22,7 @@ import tube42.lib.imagelib.ImageUtils;
 public final class Player extends GameCanvas {
 
 	protected Player(Beatmap map, boolean enableJudgements, ILogger log, Displayable next)
-			throws IOException, MediaException {
+			throws IOException, MediaException, InterruptedException {
 		super(false);
 		setFullScreenMode(true);
 		this.menu = next;
@@ -33,7 +33,9 @@ public final class Player extends GameCanvas {
 		// step 1: loading background
 		log.log("Loading map background");
 		Image _bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image));
+		Thread.sleep(1);
 		_bg = ImageUtils.resize(_bg, scrW, scrH, true, false);
+		Thread.sleep(1);
 		bg = ImageFxUtils.applyModifier(_bg, new PixelModifier() {
 			final int blendLevel = (int) ((1f - Settings.bgDim) * 255);
 
@@ -44,10 +46,12 @@ public final class Player extends GameCanvas {
 			}
 		});
 		_bg = null;
+		Thread.sleep(1);
 
 		// step 2: loading music
 		log.log("Loading music");
 		track = new AudioController(map);
+		Thread.sleep(1);
 
 		// step 3: setup difficulty
 		// TODO
@@ -64,6 +68,7 @@ public final class Player extends GameCanvas {
 		holdKeys = new boolean[columnsCount];
 		lastHoldKeys = new boolean[columnsCount];
 		keyMappings = Settings.keyLayout[columnsCount - 1];
+		Thread.sleep(1);
 
 		// step 5: loading beatmap
 		log.log("Loading beatmap hitobjects");
@@ -76,6 +81,7 @@ public final class Player extends GameCanvas {
 			_cols[c].addElement(new Integer(map.notes[i].time));
 			_cols[c].addElement(new Integer(map.notes[i].duration));
 		}
+		Thread.sleep(1);
 		for (int i = 0; i < columnsCount; i++) {
 			columns[i] = new int[_cols[i].size()];
 			for (int j = 0; j < _cols[i].size(); j++) {
@@ -83,6 +89,7 @@ public final class Player extends GameCanvas {
 			}
 		}
 		_cols = null;
+		Thread.sleep(1);
 
 		// step 6: samples
 		log.log("Loading samples");
@@ -100,6 +107,7 @@ public final class Player extends GameCanvas {
 				for (int j = 0; j < types.length; j++) {
 					hitSounds[i][j] = new MultiSample(true, "/sfx/" + sets[i] + "-hit" + types[j] + ".wav", "audio/wav",
 							4);
+					Thread.sleep(1);
 				}
 			}
 		} else {
@@ -131,6 +139,7 @@ public final class Player extends GameCanvas {
 		fillAccX = scrW - fillAccW;
 		fillScoreX = scrW - fillScoreW;
 		healthX = Settings.leftOffset + 1 + (colWp1 * columnsCount);
+		Thread.sleep(1);
 
 		// step 8: lock graphics
 		log.log("Locking graphics");

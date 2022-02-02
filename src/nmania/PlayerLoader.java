@@ -2,14 +2,18 @@ package nmania;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
 
 import org.json.me.JSONObject;
 
 import nmania.Beatmap.RawOsuBeatmap;
 import nmania.ui.BeatmapSetPage;
 import nmania.ui.KeyboardSetup;
+import nmania.ui.MainScreen;
 
-public class PlayerLoader extends Thread implements ILogger {
+public class PlayerLoader extends Thread implements ILogger, CommandListener {
 
 	public PlayerLoader(BeatmapSet set, String bmFileName, boolean auto, BeatmapSetPage page) {
 		super("Player loader");
@@ -21,13 +25,16 @@ public class PlayerLoader extends Thread implements ILogger {
 
 	final BeatmapSet set;
 	final String bmfn;
-	BeatmapSetPage page;
+	Displayable page;
 	final boolean auto;
 	Alert a;
+	Command cancelCmd = new Command("Cancel", Command.STOP, 1);
 
 	public void run() {
 		a = new Alert("nmania", "Reading beatmap file", null, AlertType.INFO);
 		a.setTimeout(Alert.FOREVER);
+		a.addCommand(cancelCmd);
+		a.setCommandListener(this);
 		Nmania.Push(a);
 		Beatmap b;
 		{
@@ -40,6 +47,11 @@ public class PlayerLoader extends Thread implements ILogger {
 				throw new IllegalArgumentException("Illegal beatmap content");
 		}
 		b.set = set;
+		try {
+			Thread.sleep(1);
+		} catch (InterruptedException e) {
+			Nmania.Push(page);
+		}
 		if (Settings.keyLayout[b.columnsCount - 1] == null) {
 			// no keyboard layout
 			KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, page);
@@ -62,6 +74,9 @@ public class PlayerLoader extends Thread implements ILogger {
 			Nmania.Push(p);
 			Thread t = new PlayerThread(p);
 			t.start();
+		} catch (InterruptedException e) {
+			Displayable next = page == null ? new MainScreen() : page;
+			Nmania.Push(next);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException(e.toString());
@@ -70,5 +85,10 @@ public class PlayerLoader extends Thread implements ILogger {
 
 	public void log(String s) {
 		a.setString(s);
+	}
+
+	public void commandAction(Command arg0, Displayable arg1) {
+		if (arg0 == cancelCmd)
+			this.interrupt();
 	}
 }
