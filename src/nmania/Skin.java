@@ -32,6 +32,7 @@ public class Skin {
 			noteColors = SNUtils.json2intArray(j.getJSONArray("notecolors"));
 			holdColors = SNUtils.json2intArray(j.getJSONArray("holdcolors"));
 			keyColors = SNUtils.json2intArray(j.getJSONArray("keycolors"));
+			holdKeyColors = SNUtils.json2intArray(j.getJSONArray("holdkeycolors"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -46,6 +47,7 @@ public class Skin {
 	public int[] noteColors;
 	public int[] holdColors;
 	public int[] keyColors;
+	public int[] holdKeyColors;
 
 	public int GetColumnWidth() {
 		return columnWidth;
