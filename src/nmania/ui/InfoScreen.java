@@ -19,7 +19,8 @@ public class InfoScreen extends List implements CommandListener {
 
 	public InfoScreen() {
 		super("Information", Choice.IMPLICIT, new String[] { "About this app", "How to load osu!mania beatmaps",
-				"How to load nmania beatmaps", "Low FPS troubleshooting", "Lagspikes troubleshooting" }, null);
+				"How to load nmania beatmaps", "Skinning", "Low FPS troubleshooting", "Lagspikes troubleshooting" },
+				null);
 		this.addCommand(toMenu);
 		this.setCommandListener(this);
 	}
@@ -71,26 +72,63 @@ public class InfoScreen extends List implements CommandListener {
 				AppendHowToPlayFooter(f, 4, "nmbm");
 				break;
 			case 3:
+				f.append(new StringItem("Vector skin",
+						"Skin, where you can define set of numeric parameters and colors. "
+								+ "Nmania will draw your game using LCDUI graphic primitives (lines, rects, etc.) keeping in mind "
+								+ "your sizes/colors. This skin type is recommended for middle-tier devices."));
+				f.append(new StringItem("Rich skin",
+						"Skin, where you can provide a set of images. Nmania will draw them on place "
+								+ "of gameplay elements. This lets you customize the look of the game more, but spends more system resources. "
+								+ "Can be used on high-end devices."));
+				f.append(new StringItem("Column width, left offset",
+						"Defines, how wide in pixels is each column and space between stage and left side of the screen."));
+				f.append(new StringItem("Keyboard height",
+						"Defines height of synthesizer's keys in the bottom of the screen in pixels. Width is equal to column's width."));
+				f.append(new StringItem("Hold trail width",
+						"Defines width of hold's body in pixels. This value should be less then column's width, otherwise holds will cause graphical artefacts."));
+				f.append(new StringItem("Note height",
+						"Defines note's height. Note's width is equal to column's width."));
+				f.append(new StringItem("Notes pallete",
+						"Each pair of colors define notes' colors in different columns. The first pair will be used in non-odd columns, the second in odd, the third in central column. "
+								+ "If two colors in a pair are equal, notes will be solid. If colors are different, gradient will be drawn. See \"Use vertical gradient\" description for further information."));
+				f.append(new StringItem("Holds pallete",
+						"The 2nd, 4th and 6th colors will be used for hold bodies in non-odd, odd and central columns accordingly. "
+								+ "If different palletes usage is enabled, this pallete also will be used to color hold's head notes (instead of generic notes pallete). Colors mapping and gradient type is equal to generic notes pallete."));
+				f.append(new StringItem("Use vertical gradient",
+						"If enabled, gradients will be vertical. The 1st color is used for bottom, the 2nd for top.\n"
+								+ "If disabled, gradients will be horizontal. The 1st color is used for center, the 2nd for left/right sides."));
+				f.append(new StringItem("Use different palletes for notes and hold heads",
+						"See \"Holds pallete\" description."));
+				// f.append(new StringItem("", ""));
+				break;
+			case 4:
 				f.append(
 						"If your phone does not meet minimal system requirements, just accept it and try to play as is.\n\n");
 				f.append("Some advices:");
-				f.append("\nMake sure nothing is downloading. Close browser, social clients, player, anything that can do something in background.");
-				f.append("\nDo not use bluetooth keyboard and/or headset. Their support is quite expensive in CPU resources.");
-				f.append("\nDisconnect all OTG/BT/etc. devices. Use native device's keyboard if possible. Disconnect from the internet. Disable cell network.");
+				f.append(
+						"\nMake sure nothing is downloading. Close browser, social clients, player, anything that can do something in background.");
+				f.append(
+						"\nDo not use bluetooth keyboard and/or headset. Their support is quite expensive in CPU resources.");
+				f.append(
+						"\nDisconnect all OTG/BT/etc. devices. Use native device's keyboard if possible. Disconnect from the internet. Disable cell network.");
 				f.append("\nDisable debug tools, if you have them running.");
 				break;
-			case 4:
+			case 5:
 				f.append(
 						"If your phone does not meet minimal system requirements, just accept it and try to play as is.\n\n");
 				f.append("For the first, disable hitsounds and feedback samples. See if this helps.\n\n");
 				f.append(
 						"The cause of lagspikes are short high-priority tasks, that your phone runs sometimes in the background while you are playing.");
 				f.append("\nA list of common ones:");
-				f.append("\nJava GC: try to free up more RAM for the game by closing apps, disabling UI keeping and HUD. This reduces allocated memory and makes GC to run less often.");
-				f.append("\nMedia subloading: try to move beatmaps to a faster storage (internal memory is usually better than SD cards / USB flash disks). Disable hitsounds and samples. Try to compress music track.");
-				f.append("\nKeyboard handler: try to adjust skin settings related to keys, switch to another skin type. If something is wrong there, it may make handling code running too long causing lagspikes.");
+				f.append(
+						"\nJava GC: try to free up more RAM for the game by closing apps, disabling UI keeping and HUD. This reduces allocated memory and makes GC to run less often.");
+				f.append(
+						"\nMedia subloading: try to move beatmaps to a faster storage (internal memory is usually better than SD cards / USB flash disks). Disable hitsounds and samples. Try to compress music track.");
+				f.append(
+						"\nKeyboard handler: try to adjust skin settings related to keys, switch to another skin type. If something is wrong there, it may make handling code running too long causing lagspikes.");
 				f.append("\nBackground apps refreshes: close everything that you can. Disconnect from the internet.");
-				f.append("\nSystem tasks: disable any system reaction for input (keyboard sounds, etc.). Disable cell network. Make sure nothing is downloading/etc.");
+				f.append(
+						"\nSystem tasks: disable any system reaction for input (keyboard sounds, etc.). Disable cell network. Make sure nothing is downloading/etc.");
 				break;
 			}
 			Nmania.Push(f);
