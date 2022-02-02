@@ -24,7 +24,9 @@ public final class ScoreController {
 	public final int GetAccuracy() {
 		if (maxHitScore == 0)
 			return 10000;
-		return currentHitScore * 10000 / maxHitScore;
+		if(currentHitScore<200000)
+			return currentHitScore * 10000 / maxHitScore;
+		return (int) ((long)currentHitScore * 10000l / (long)maxHitScore);
 	}
 
 	public void Reset() {
