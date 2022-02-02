@@ -47,10 +47,14 @@ public class Skin {
 	public int columnWidth = 30;
 	public int holdWidth = 20;
 	public int noteHeight = 20;
-	public int[] noteColors;
-	public int[] holdColors;
+	public int[] noteColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0x000"), SNUtils.toARGB("0x0F0"),
+			SNUtils.toARGB("0x000"), SNUtils.toARGB("0x00F"), SNUtils.toARGB("0x000") };
+	public int[] holdColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0x700"), SNUtils.toARGB("0x0F0"),
+			SNUtils.toARGB("0x070"), SNUtils.toARGB("0x00F"), SNUtils.toARGB("0x007") };
 	public int[] keyColors;
 	public int[] holdKeyColors;
+	public boolean verticalGradientOnNotes = true;
+	public boolean holdsHaveOwnColors = true;
 
 	public int GetColumnWidth() {
 		return columnWidth;
@@ -78,16 +82,16 @@ public class Skin {
 			return new int[] { s[4], s[5] };
 		} else {
 			for (int i = 0; i < cols / 2; i++) {
-				int c1 = cols % 2 == 0 ? s[0] : s[2];
-				int c2 = cols % 2 == 0 ? s[1] : s[3];
+				int c1 = i % 2 == 0 ? s[0] : s[2];
+				int c2 = i % 2 == 0 ? s[1] : s[3];
 				c[i * 2] = c1;
 				c[i * 2 + 1] = c2;
 				c[(cols - i - 1) * 2] = c1;
 				c[(cols - i - 1) * 2 + 1] = c2;
 			}
 			if (cols % 2 == 1) {
-				c[((cols / 2) + 1) * 2] = s[4];
-				c[((cols / 2) + 1) * 2 + 1] = s[5];
+				c[(cols / 2) * 2] = s[4];
+				c[(cols / 2) * 2 + 1] = s[5];
 			}
 		}
 		return c;

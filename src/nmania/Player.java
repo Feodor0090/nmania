@@ -143,6 +143,19 @@ public final class Player extends GameCanvas {
 		leftOffset = s.leftOffset;
 		noteH = s.noteHeight;
 		holdW = s.holdWidth;
+		notesColors = s.GetNoteColors(columnsCount);
+		notesWithGr = new boolean[columnsCount];
+		for (int i = 0; i < columnsCount; i++) {
+			notesWithGr[i] = notesColors[i * 2] != notesColors[i * 2 + 1];
+		}
+		holdsColors = s.GetHoldColors(columnsCount);
+		holdsWithGr = new boolean[columnsCount];
+		for (int i = 0; i < columnsCount; i++) {
+			holdsWithGr[i] = holdsColors[i * 2] != holdsColors[i * 2 + 1];
+		}
+		colorHoldHeadsAsHolds = s.holdsHaveOwnColors;
+		verticalGr = s.verticalGradientOnNotes;
+
 		Thread.sleep(1);
 
 		// step 8: lock graphics
@@ -173,6 +186,12 @@ public final class Player extends GameCanvas {
 	private final Image accBg;
 	private final int[] numsWidthCache;
 	private final Displayable menu;
+	private final int[] notesColors;
+	private final boolean[] notesWithGr;
+	private final int[] holdsColors;
+	private final boolean[] holdsWithGr;
+	private final boolean verticalGr;
+	private final boolean colorHoldHeadsAsHolds;
 
 	private final int kbH, kbY, colW, colWp1;
 	private final int fillColsW, fillCountersH, fillScoreW, fillAccW, fillScoreX, fillAccX;
@@ -745,6 +764,7 @@ public final class Player extends GameCanvas {
 
 			// current column
 			final int[] c = columns[column];
+			final int column2 = column + column;
 
 			// y to which we can fill the column with black
 			int lastY = kbY;
@@ -761,9 +781,31 @@ public final class Player extends GameCanvas {
 					g.fillRect(x, noteY, colW, lastY - noteY);
 				}
 				// drawing note
-				g.setColor(255, 0, 0);
 				lastY = noteY - noteH;
-				g.fillRect(x, lastY, colW, noteH);
+				final boolean[] haveGr = (dur != 0 && colorHoldHeadsAsHolds) ? holdsWithGr : notesWithGr;
+				final int[] noteClr = (dur != 0 && colorHoldHeadsAsHolds) ? holdsColors : notesColors;
+				if (haveGr[column]) {
+					if (verticalGr) {
+						int ly = lastY;
+						int x2 = x + colW - 1;
+						for (int j = 0; j < noteH; j++) {
+							g.setColor(ColorUtils.blend(noteClr[column2], noteClr[column2 + 1], 255 * j / noteH));
+							g.drawLine(x, ly, x2, ly);
+							ly++;
+						}
+					} else {
+						int lx = x;
+						for (int j = 0; j < colW; j++) {
+							g.setColor(ColorUtils.blend(noteClr[column2], noteClr[column2 + 1],
+									Math.abs((255 * 2 * j / colW) - 255)));
+							g.drawLine(lx, lastY, lx, lastY + noteH - 1);
+							lx++;
+						}
+					}
+				} else {
+					g.setColor(noteClr[column2]);
+					g.fillRect(x, lastY, colW, noteH);
+				}
 				// drawing hold
 				if (dur != 0) {
 					final int holdLen = dur / scrollDiv;
@@ -771,7 +813,7 @@ public final class Player extends GameCanvas {
 					lastY = noteY - holdLen;
 					g.setColor(0);
 					g.fillRect(x, lastY, colW, holdH);
-					g.setColor(0, 255, 0);
+					g.setColor(holdsColors[column2 + 1]);
 					g.fillRect(x + localHoldX, lastY, holdW, holdH);
 				}
 				// are we above the screen?
