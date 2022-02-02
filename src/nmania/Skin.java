@@ -31,6 +31,8 @@ public class Skin {
 			columnWidth = j.getInt("columnwidth");
 			holdWidth = j.getInt("holdwidth");
 			noteHeight = j.getInt("noteheight");
+			verticalGradientOnNotes = j.getBoolean("verticalgradients");
+			holdsHaveOwnColors = j.getBoolean("holdsdiffcolors");
 
 			noteColors = SNUtils.json2intArray(j.getJSONArray("notecolors"));
 			holdColors = SNUtils.json2intArray(j.getJSONArray("holdcolors"));
@@ -51,8 +53,8 @@ public class Skin {
 			SNUtils.toARGB("0x000"), SNUtils.toARGB("0xFF0"), SNUtils.toARGB("0x000") };
 	public int[] holdColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0x700"), SNUtils.toARGB("0x0F0"),
 			SNUtils.toARGB("0x070"), SNUtils.toARGB("0xFF0"), SNUtils.toARGB("0x770") };
-	public int[] keyColors;
-	public int[] holdKeyColors;
+	public int[] keyColors = new int[] { -1, -1, -1, -1, -1, -1 };
+	public int[] holdKeyColors = new int[] { 0, -1, 0, -1, 0, -1 };
 	public boolean verticalGradientOnNotes = true;
 	public boolean holdsHaveOwnColors = true;
 
@@ -71,6 +73,7 @@ public class Skin {
 	public int[] GetNoteColors(int columns) {
 		return composeColorsFor(noteColors, columns);
 	}
+
 	public int[] GetHoldColors(int columns) {
 		return composeColorsFor(holdColors, columns);
 	}
@@ -111,12 +114,38 @@ public class Skin {
 			j.accumulate("columnwidth", new Integer(columnWidth));
 			j.accumulate("holdwidth", new Integer(holdWidth));
 			j.accumulate("noteheight", new Integer(noteHeight));
+			j.accumulate("verticalgradients", new Boolean(verticalGradientOnNotes));
+			j.accumulate("holdsdiffcolors", new Boolean(holdsHaveOwnColors));
 
-			{Vector v = new Vector();for(int i=0;i<noteColors.length;i++) {v.addElement(new Integer(noteColors[i]));}j.accumulate("notecolors", new JSONArray(v));}
-			{Vector v = new Vector();for(int i=0;i<holdColors.length;i++) {v.addElement(new Integer(holdColors[i]));}j.accumulate("holdcolors", new JSONArray(v));}
-			{Vector v = new Vector();for(int i=0;i<keyColors.length;i++) {v.addElement(new Integer(keyColors[i]));}j.accumulate("keycolors", new JSONArray(v));}
-			{Vector v = new Vector();for(int i=0;i<holdKeyColors.length;i++) {v.addElement(new Integer(holdKeyColors[i]));}j.accumulate("holdkeycolors", new JSONArray(v));}
-			
+			{
+				Vector v = new Vector();
+				for (int i = 0; i < noteColors.length; i++) {
+					v.addElement(new Integer(noteColors[i]));
+				}
+				j.accumulate("notecolors", new JSONArray(v));
+			}
+			{
+				Vector v = new Vector();
+				for (int i = 0; i < holdColors.length; i++) {
+					v.addElement(new Integer(holdColors[i]));
+				}
+				j.accumulate("holdcolors", new JSONArray(v));
+			}
+			{
+				Vector v = new Vector();
+				for (int i = 0; i < keyColors.length; i++) {
+					v.addElement(new Integer(keyColors[i]));
+				}
+				j.accumulate("keycolors", new JSONArray(v));
+			}
+			{
+				Vector v = new Vector();
+				for (int i = 0; i < holdKeyColors.length; i++) {
+					v.addElement(new Integer(holdKeyColors[i]));
+				}
+				j.accumulate("holdkeycolors", new JSONArray(v));
+			}
+
 			// writing
 			byte[] d = j.toString().getBytes();
 			RecordStore r = RecordStore.openRecordStore("nmania_skin", true);
