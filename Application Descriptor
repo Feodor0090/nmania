@@ -1,5 +1,5 @@
 MIDlet-Vendor: Feodor0090
-MIDlet-Version: 0.1.2
+MIDlet-Version: 0.1.3
 MicroEdition-Configuration: CLDC-1.1
 MIDlet-1: nmania,/ui/nmania-logo-0.25x.png,nmania.Nmania
 MIDlet-Name: nmania
