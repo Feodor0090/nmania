@@ -112,7 +112,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 			Nmania.Push(new SettingsScreen(lastInputIsTouch));
 			break;
 		case 3:
-			// skinning
+			Nmania.Push(new SkinSelect());
 			break;
 		case 4:
 			Nmania.Push(new InfoScreen());
