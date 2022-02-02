@@ -70,7 +70,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 			page = null;
 		}
 		try {
-			Player p = new Player(b, !auto, this, page);
+			Player p = new Player(b, !auto, Nmania.skin, this, page);
 			Nmania.Push(p);
 			Thread t = new PlayerThread(p);
 			t.start();

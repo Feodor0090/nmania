@@ -21,7 +21,7 @@ import tube42.lib.imagelib.ImageUtils;
 
 public final class Player extends GameCanvas {
 
-	protected Player(Beatmap map, boolean enableJudgements, ILogger log, Displayable next)
+	protected Player(Beatmap map, boolean enableJudgements, Skin s, ILogger log, Displayable next)
 			throws IOException, MediaException, InterruptedException {
 		super(false);
 		setFullScreenMode(true);
@@ -130,15 +130,17 @@ public final class Player extends GameCanvas {
 			fillAccW = fontL.charsWidth(accText, 0, accText.length);
 			accBg = ImageUtils.crop(bg, scrW - fillAccW, scrH - fillCountersH, scrW - 1, scrH - 1);
 		}
-		kbH = Settings.keyboardHeight;
+		kbH = s.keyboardHeight;
 		kbY = scrH - kbH;
-		colWp1 = Settings.columnWidth + 1;
-		judgmentCenter = Settings.leftOffset + (Settings.columnWidth + 1) * columnsCount / 2;
-		localHoldX = (Settings.columnWidth - Settings.holdWidth) / 2;
+		colW = s.GetColumnWidth();
+		colWp1 = colW + 1;
+		judgmentCenter = s.leftOffset + colWp1 * columnsCount / 2;
+		localHoldX = (colW - s.holdWidth) / 2;
 		fillColsW = 1 + (colWp1 * columnsCount) + 6;
 		fillAccX = scrW - fillAccW;
 		fillScoreX = scrW - fillScoreW;
-		healthX = Settings.leftOffset + 1 + (colWp1 * columnsCount);
+		healthX = s.leftOffset + 1 + (colWp1 * columnsCount);
+		leftOffset = s.leftOffset;
 		Thread.sleep(1);
 
 		// step 8: lock graphics
@@ -175,6 +177,8 @@ public final class Player extends GameCanvas {
 	private final int judgmentCenter;
 	private final int localHoldX;
 	private final int healthX;
+	private final int leftOffset;
+	private final int colW;
 
 	private final char[] accText = new char[] { '1', '0', '0', ',', '0', '0', '%' };
 
@@ -632,7 +636,7 @@ public final class Player extends GameCanvas {
 		g.setClip(0, 0, scrW, scrH);
 		RedrawHUD();
 		// cols
-		flushGraphics(Settings.leftOffset, 0, fillColsW, scrH);
+		flushGraphics(leftOffset, 0, fillColsW, scrH);
 		// score & acc
 		flushGraphics(fillScoreX, 0, fillScoreW, fillCountersH);
 		flushGraphics(fillAccX, scrH - fillCountersH, fillAccW, fillCountersH);
@@ -706,17 +710,17 @@ public final class Player extends GameCanvas {
 
 	private final void DrawBorders() {
 		g.setColor(-1);
-		int x = Settings.leftOffset;
+		int x = leftOffset;
 		for (int i = 0; i <= columnsCount; i++) {
 			g.drawLine(x, 0, x, scrH);
 			x += colWp1;
 		}
-		g.drawLine(Settings.leftOffset, kbY, Settings.leftOffset + columnsCount * colWp1, kbY);
+		g.drawLine(leftOffset, kbY, leftOffset + columnsCount * colWp1, kbY);
 	}
 
 	private final void DrawKey(final int k, final boolean hold) {
-		final int x = Settings.leftOffset + 1 + (k * (Settings.columnWidth + 1));
-		final int x2 = Settings.columnWidth + x - 1;
+		final int x = leftOffset + 1 + (k * colWp1);
+		final int x2 = colW + x - 1;
 		final int topClr = hold ? keyColorTopHold : keyColorTop;
 		int y = kbY;
 		for (int i = 1; i < kbH; i++) {
@@ -732,7 +736,7 @@ public final class Player extends GameCanvas {
 		final int notesY = kbY + time / scrollDiv;
 
 		// column X
-		int x = Settings.leftOffset + 1;
+		int x = leftOffset + 1;
 
 		for (int column = 0; column < columnsCount; column++) {
 
@@ -751,19 +755,19 @@ public final class Player extends GameCanvas {
 				// filling empty space
 				if (lastY > noteY) {
 					g.setColor(0);
-					g.fillRect(x, noteY, Settings.columnWidth, lastY - noteY);
+					g.fillRect(x, noteY, colW, lastY - noteY);
 				}
 				// drawing note
 				g.setColor(255, 0, 0);
 				lastY = noteY - Settings.noteHeight;
-				g.fillRect(x, lastY, Settings.columnWidth, Settings.noteHeight);
+				g.fillRect(x, lastY, colW, Settings.noteHeight);
 				// drawing hold
 				if (dur != 0) {
 					final int holdLen = dur / scrollDiv;
 					final int holdH = holdLen - Settings.noteHeight;
 					lastY = noteY - holdLen;
 					g.setColor(0);
-					g.fillRect(x, lastY, Settings.columnWidth, holdH);
+					g.fillRect(x, lastY, colW, holdH);
 					g.setColor(0, 255, 0);
 					g.fillRect(x + localHoldX, lastY, Settings.holdWidth, holdH);
 				}
@@ -773,7 +777,7 @@ public final class Player extends GameCanvas {
 			}
 			if (lastY > 0) {
 				g.setColor(0);
-				g.fillRect(x, 0, Settings.columnWidth, lastY);
+				g.fillRect(x, 0, colW, lastY);
 			}
 			x += colWp1;
 		}

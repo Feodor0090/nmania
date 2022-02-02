@@ -28,6 +28,7 @@ public final class Nmania extends MIDlet {
 	}
 
 	public static BeatmapManager bm;
+	public static Skin skin;
 
 	public static void LoadManager(String dir) throws IOException {
 		bm = new BeatmapManager(dir);

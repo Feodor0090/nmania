@@ -10,10 +10,25 @@ import symnovel.SNUtils;
 public final class Settings {
 	public static float bgDim = 0.75f;
 	public static int[][] keyLayout = new int[10][];
+	/**
+	 * @deprecated
+	 */
 	public static int leftOffset = 30;
+	/**
+	 * @deprecated
+	 */
 	public static int columnWidth = 30;
+	/**
+	 * @deprecated
+	 */
 	public static int holdWidth = 20;
+	/**
+	 * @deprecated
+	 */
 	public static int keyboardHeight = 50;
+	/**
+	 * @deprecated
+	 */
 	public static int noteHeight = 20;
 	public static int speedDiv = 3;
 

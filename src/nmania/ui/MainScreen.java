@@ -7,6 +7,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 
 import nmania.Nmania;
+import nmania.Skin;
 import symnovel.SNUtils;
 
 public class MainScreen extends GameCanvas implements Runnable {
@@ -138,6 +139,9 @@ public class MainScreen extends GameCanvas implements Runnable {
 						wd = "file:///C:/Data/Sounds/nmania/";
 					}
 					Nmania.LoadManager(wd);
+					if (Nmania.skin == null) {
+						Nmania.skin = new Skin();
+					}
 					Nmania.Push(new BeatmapSetsList(Nmania.bm));
 				} catch (Exception e) {
 					e.printStackTrace();
