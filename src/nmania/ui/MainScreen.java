@@ -225,6 +225,11 @@ public class MainScreen extends GameCanvas implements Runnable {
 			g.fillRect(0, 0, w, h);
 			g.drawImage(logo, w / 2, h / 2, 3);
 			flushGraphics();
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				return;
+			}
 		}
 		// LOGO > MENU
 		startTime = System.currentTimeMillis();
@@ -250,6 +255,12 @@ public class MainScreen extends GameCanvas implements Runnable {
 				int h1 = (int) (h * (1000 - (now - startTime)) / 1000) / 2;
 				g.fillRect(0, 0, w, h1);
 				g.fillRect(0, h - h1, w, h1);
+			} else {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					return;
+				}
 			}
 			flushGraphics();
 		}
