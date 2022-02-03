@@ -49,8 +49,8 @@ public class Skin {
 	public int columnWidth = 30;
 	public int holdWidth = 20;
 	public int noteHeight = 20;
-	public int[] noteColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0x000"), SNUtils.toARGB("0x0F0"),
-			SNUtils.toARGB("0x000"), SNUtils.toARGB("0xFF0"), SNUtils.toARGB("0x000") };
+	public int[] noteColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0x200"), SNUtils.toARGB("0x0F0"),
+			SNUtils.toARGB("0x020"), SNUtils.toARGB("0xFF0"), SNUtils.toARGB("0x022") };
 	public int[] holdColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0x700"), SNUtils.toARGB("0x0F0"),
 			SNUtils.toARGB("0x070"), SNUtils.toARGB("0xFF0"), SNUtils.toARGB("0x770") };
 	public int[] keyColors = new int[] { -1, -1, -1, -1, -1, -1 };
