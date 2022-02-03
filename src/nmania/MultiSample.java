@@ -38,7 +38,7 @@ public final class MultiSample {
 		}
 	}
 
-	private final byte[] raw;
+	private byte[] raw;
 	private final ByteArrayInputStream[] streams;
 	private final Player[] pool;
 	private final int poolSize;
@@ -60,6 +60,12 @@ public final class MultiSample {
 			pool[i].deallocate();
 			pool[i].close();
 			pool[i] = null;
+			try {
+				streams[i].close();
+			} catch (IOException e) {
+			}
+			streams[i] = null;
 		}
+		raw = null;
 	}
 }

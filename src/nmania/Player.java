@@ -3,7 +3,6 @@ package nmania;
 import java.io.IOException;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -119,8 +118,10 @@ public final class Player extends GameCanvas {
 		log.log("Loading samples");
 		if (Settings.gameplaySamples) {
 			combobreak = new Sample(true, "/sfx/miss.mp3", "audio/mpeg");
+			restart = new Sample(true, "/sfx/restart.wav", "audio/wav");
 		} else {
 			combobreak = null;
+			restart = null;
 		}
 		if (Settings.hitSamples) {
 			String[] sets = new String[] { "normal", "soft", "drum" };
@@ -246,7 +247,7 @@ public final class Player extends GameCanvas {
 
 	private final Sample combobreak;
 	private Sample playOver;
-
+	private final Sample restart;
 	private final MultiSample[][] hitSounds;
 
 	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
@@ -254,6 +255,23 @@ public final class Player extends GameCanvas {
 			SNUtils.toARGB("0x494"), SNUtils.toARGB("0x0B0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x90F") };
 
 	private final int scrollDiv = Settings.speedDiv;
+
+	/**
+	 * Clears allocated samples.
+	 */
+	public final void Dispose() {
+		if (hitSounds != null) {
+			for (int i = 0; i < hitSounds.length; i++) {
+				for (int j = 0; j < hitSounds[i].length; j++) {
+					hitSounds[i][j].Dispose();
+				}
+			}
+		}
+		if (restart != null)
+			restart.Dispose();
+		if (combobreak != null)
+			combobreak.Dispose();
+	}
 
 	protected final void keyPressed(final int k) {
 		if (isPaused && !failed) {
@@ -270,6 +288,8 @@ public final class Player extends GameCanvas {
 					isPaused = false;
 					track.Play();
 				} else if (pauseItem == 1) {
+					if (restart != null)
+						restart.Play();
 					track.Reset();
 					rollingHealth = 1000;
 					health = 1000;
@@ -294,6 +314,8 @@ public final class Player extends GameCanvas {
 				pauseItem = pauseItem == 0 ? 1 : 0;
 			} else if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
 				if (pauseItem == 0) {
+					if (restart != null)
+						restart.Play();
 					track.Reset();
 					rollingHealth = 1000;
 					health = 1000;
@@ -309,6 +331,7 @@ public final class Player extends GameCanvas {
 					running = false;
 					isPaused = false;
 					track.Stop();
+					Dispose();
 					Nmania.Push(menu == null ? (new MainScreen()) : menu);
 				}
 			}
@@ -550,7 +573,8 @@ public final class Player extends GameCanvas {
 			}
 			if (playOver != null)
 				playOver.Dispose();
-			Display.getDisplay(Nmania.inst).setCurrent(new ResultsScreen(score, track, bg, menu));
+			Dispose();
+			Nmania.Push(new ResultsScreen(score, track, bg, menu));
 		}
 	}
 
@@ -621,6 +645,7 @@ public final class Player extends GameCanvas {
 		if (exitAfter) {
 			running = false;
 			track.Stop();
+			Dispose();
 			Nmania.Push(menu == null ? (new MainScreen()) : menu);
 		} else {
 			track.Pause();
