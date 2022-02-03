@@ -7,9 +7,10 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Gauge;
 
-import org.json.me.JSONObject;
-
-import nmania.Beatmap.RawOsuBeatmap;
+import nmania.formats.IRawBeatmap;
+import nmania.formats.InvalidBeatmapTypeException;
+import nmania.formats.RawNmaniaBeatmap;
+import nmania.formats.RawOsuBeatmap;
 import nmania.ui.BeatmapSetPage;
 import nmania.ui.KeyboardSetup;
 import nmania.ui.MainScreen;
@@ -39,14 +40,26 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 		a.setCommandListener(this);
 		Nmania.Push(a);
 		Beatmap b;
-		{
+		try {
 			String raw = BeatmapManager.getStringFromFS(set.wdPath + set.folderName + bmfn);
+			IRawBeatmap rb;
 			if (raw.startsWith("osu file format")) {
-				b = new Beatmap(new RawOsuBeatmap(raw));
+				rb = new RawOsuBeatmap(raw);
 			} else if (raw.charAt(0) == '{') {
-				b = new Beatmap(new JSONObject(raw));
+				rb = new RawNmaniaBeatmap(raw);
 			} else
-				throw new IllegalArgumentException("Illegal beatmap content");
+				throw new InvalidBeatmapTypeException("This is not osu! nor nmania beatmap. Is the file damaged?");
+			Thread.sleep(1);
+			b = rb.ToBeatmap();
+		} catch (InvalidBeatmapTypeException e) {
+			PushWaitPush(page, new Alert("Beatmap is invalid", e.getMessage(), null, AlertType.ERROR));
+			return;
+		} catch (InterruptedException e) {
+			Nmania.Push(page);
+			return;
+		} catch (Exception e) {
+			PushWaitPush(page, new Alert("Failed to parse beatmap", e.toString(), null, AlertType.ERROR));
+			return;
 		}
 		b.set = set;
 		try {
@@ -57,15 +70,9 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 		if (Settings.keyLayout[b.columnsCount - 1] == null) {
 			// no keyboard layout
 			KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, page);
-			Nmania.Push(kbs);
-			try {
-				Thread.sleep(50);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			Alert a1 = new Alert("nmania", "There are no keybinds for this mode (" + b.columnsCount + "K). Set them.",
-					null, AlertType.WARNING);
-			Nmania.Push(a1);
+			PushWaitPush(kbs,
+					new Alert("nmania", "There are no keybinds for this mode (" + b.columnsCount + "K). Set them.",
+							null, AlertType.WARNING));
 			return;
 		}
 		if (!Settings.keepMenu) {
@@ -83,6 +90,17 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 			e.printStackTrace();
 			throw new RuntimeException(e.toString());
 		}
+	}
+
+	private final void PushWaitPush(Displayable s1, Alert s2) {
+		Nmania.Push(s1);
+		try {
+			Thread.sleep(50);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Nmania.Push(s2);
+		return;
 	}
 
 	public void log(String s) {
