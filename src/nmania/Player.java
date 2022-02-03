@@ -789,6 +789,7 @@ public final class Player extends GameCanvas {
 			// current column
 			final int[] c = columns[column];
 			final int column2 = column + column;
+			final int column21 = column2+1;
 
 			// y to which we can fill the column with black
 			int lastY = kbY;
@@ -811,17 +812,17 @@ public final class Player extends GameCanvas {
 				if (haveGr[column]) {
 					if (verticalGr) {
 						int ly = lastY;
-						int x2 = x + colW - 1;
+						final int x2 = x + colW - 1;
 						for (int j = 0; j < noteH; j++) {
-							g.setColor(ColorUtils.blend(noteClr[column2], noteClr[column2 + 1], 255 * j / noteH));
+							g.setColor(ColorUtils.blend(noteClr[column2], noteClr[column21], 255 * j / noteH));
 							g.drawLine(x, ly, x2, ly);
 							ly++;
 						}
 					} else {
 						int lx = x;
 						for (int j = 0; j < colW; j++) {
-							g.setColor(ColorUtils.blend(noteClr[column2], noteClr[column2 + 1],
-									Math.abs((255 * 2 * j / colW) - 255)));
+							g.setColor(ColorUtils.blend(noteClr[column2], noteClr[column21],
+									Math.abs((510 * j / colW) - 255)));
 							g.drawLine(lx, lastY, lx, lastY + noteH - 1);
 							lx++;
 						}
@@ -837,7 +838,7 @@ public final class Player extends GameCanvas {
 					lastY = noteY - holdLen;
 					g.setColor(0);
 					g.fillRect(x, lastY, colW, holdH);
-					g.setColor(holdsColors[column2 + 1]);
+					g.setColor(holdsColors[column21]);
 					g.fillRect(x + localHoldX, lastY, holdW, holdH);
 				}
 				// are we above the screen?
