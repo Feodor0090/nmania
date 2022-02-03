@@ -739,11 +739,17 @@ public final class Player extends GameCanvas {
 		RedrawNotes();
 		g.setClip(0, 0, scrW, scrH);
 		RedrawHUD();
-		// cols
-		flushGraphics(leftOffset, 0, fillColsW, scrH);
-		// score & acc
-		flushGraphics(fillScoreX, 0, fillScoreW, fillCountersH);
-		flushGraphics(fillAccX, scrH - fillCountersH, fillAccW, fillCountersH);
+		if (Settings.fullScreenFlush) {
+			flushGraphics();
+		} else {
+			// cols
+			flushGraphics(leftOffset, 0, fillColsW, scrH);
+			// score & acc
+			if (Settings.drawCounters) {
+				flushGraphics(fillScoreX, 0, fillScoreW, fillCountersH);
+				flushGraphics(fillAccX, scrH - fillCountersH, fillAccW, fillCountersH);
+			}
+		}
 	}
 
 	/**
@@ -751,8 +757,8 @@ public final class Player extends GameCanvas {
 	 */
 	private void RedrawHUD() {
 		g.setColor(-1);
-		// score
-		{
+		// score & acc
+		if (Settings.drawCounters) {
 			final int realScore = score.currentHitScore;
 			if (realScore != rollingScore) {
 				rollingScore += (realScore - rollingScore) / 60 + 1;
@@ -768,9 +774,7 @@ public final class Player extends GameCanvas {
 					break;
 				num /= 10;
 			}
-		}
-		// acc
-		{
+
 			int accRaw = score.GetAccuracy();
 			accText[5] = (char) (accRaw % 10 + '0');
 			accRaw /= 10;
