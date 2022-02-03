@@ -382,6 +382,9 @@ public final class Player extends GameCanvas {
 		}
 	}
 
+	/**
+	 * Method that is called by update loop each frame. Contains gameplay logic.
+	 */
 	public final void Update() {
 		// sync
 		time = track.Now();
@@ -578,6 +581,9 @@ public final class Player extends GameCanvas {
 		}
 	}
 
+	/**
+	 * Loop method, that handles pause menu redrawing.
+	 */
 	private void PauseUpdateLoop() {
 		String[] pauseText = new String[] { "Continue", "Retry", "Quit" };
 		while (isPaused) {
@@ -594,7 +600,7 @@ public final class Player extends GameCanvas {
 			}
 			flushGraphics();
 			try {
-				Thread.sleep(30);
+				Thread.sleep(40);
 			} catch (InterruptedException e) {
 				isPaused = false;
 				running = false;
@@ -604,6 +610,12 @@ public final class Player extends GameCanvas {
 		Redraw();
 	}
 
+	/**
+	 * Method that handles failing/exiting.
+	 * 
+	 * @param exitAfter If false, player will be paused and show retry-quit menu
+	 *                  instead of destroying.
+	 */
 	private void FailSequence(boolean exitAfter) {
 		try {
 			track.Pause();
@@ -675,6 +687,11 @@ public final class Player extends GameCanvas {
 		}
 	}
 
+	/**
+	 * Adjusts health and plays miss sfx if needed.
+	 * 
+	 * @param j Type of hit to count
+	 */
 	private final void CountHit(int j) {
 		health += healthValues[j];
 		if (health > 1000)
@@ -690,8 +707,9 @@ public final class Player extends GameCanvas {
 			combobreak.Play();
 	}
 
-	// drawing section
-
+	/**
+	 * Fully redraws the game.
+	 */
 	public final void Refill() {
 		FillBg();
 		DrawBorders();
@@ -701,6 +719,9 @@ public final class Player extends GameCanvas {
 		flushGraphics();
 	}
 
+	/**
+	 * Method to redraw hot areas. Called by update loop.
+	 */
 	public final void Redraw() {
 		g.setClip(0, 0, scrW, kbY);
 		RedrawNotes();
@@ -713,6 +734,9 @@ public final class Player extends GameCanvas {
 		flushGraphics(fillAccX, scrH - fillCountersH, fillAccW, fillCountersH);
 	}
 
+	/**
+	 * Redraws score, acc, health and judgment.
+	 */
 	private void RedrawHUD() {
 		g.setColor(-1);
 		// score
@@ -775,10 +799,16 @@ public final class Player extends GameCanvas {
 		}
 	}
 
+	/**
+	 * Draws bg image.
+	 */
 	private final void FillBg() {
 		g.drawImage(bg, 0, 0, 0);
 	}
 
+	/**
+	 * Draws borders around columns.
+	 */
 	private final void DrawBorders() {
 		g.setColor(-1);
 		int x = leftOffset;
@@ -789,6 +819,12 @@ public final class Player extends GameCanvas {
 		g.drawLine(leftOffset, kbY, leftOffset + columnsCount * colWp1, kbY);
 	}
 
+	/**
+	 * Draws synthesizer's key.
+	 * 
+	 * @param k    Key index.
+	 * @param hold Is it held down?
+	 */
 	private final void DrawKey(final int k, final boolean hold) {
 		final int x = leftOffset + 1 + (k * colWp1);
 		final int x2 = colW + x - 1;
@@ -802,6 +838,9 @@ public final class Player extends GameCanvas {
 		}
 	}
 
+	/**
+	 * Redraws notes.
+	 */
 	private final void RedrawNotes() {
 
 		// current Y offset due to scroll
