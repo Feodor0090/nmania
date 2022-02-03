@@ -348,7 +348,6 @@ public final class Player extends GameCanvas {
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
 				holdKeys[i] = true;
-				DrawKey(i, true);
 				return;
 			}
 		}
@@ -360,7 +359,6 @@ public final class Player extends GameCanvas {
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
 				holdKeys[i] = false;
-				DrawKey(i, false);
 				return;
 			}
 		}
@@ -406,6 +404,10 @@ public final class Player extends GameCanvas {
 			for (int column = 0; column < columnsCount; column++) {
 
 				if (currentNote[column] >= columns[column].length) {
+					if (holdKeys[column] && !holdKeys[column])
+						DrawKey(column, true);
+					else if (!holdKeys[column] && holdKeys[column])
+						DrawKey(column, false);
 					emptyColumns++;
 					continue;
 				}
@@ -417,8 +419,13 @@ public final class Player extends GameCanvas {
 				final int dur = columns[column][currentNote[column] + 1];
 
 				// is it too early to handle?
-				if (diff < -hitWindows[0])
+				if (diff < -hitWindows[0]) {
+					if (holdKeys[column] && !lastHoldKeys[column])
+						DrawKey(column, true);
+					else if (!holdKeys[column] && lastHoldKeys[column])
+						DrawKey(column, false);
 					continue;
+				}
 
 				// if we have input
 				if (holdKeys[column]) {
@@ -426,6 +433,7 @@ public final class Player extends GameCanvas {
 					if (dur == 0) {
 						// we are waiting press, not hold
 						if (!lastHoldKeys[column]) {
+							DrawKey(column, true);
 							// absolute difference
 							final int adiff = Math.abs(diff);
 							// checking hitwindow
@@ -445,6 +453,7 @@ public final class Player extends GameCanvas {
 					} else {
 						// it is a hold
 						if (!lastHoldKeys[column]) {
+							DrawKey(column, true);
 							// absolute difference
 							final int adiff = Math.abs(diff);
 							// checking hitwindow
@@ -464,32 +473,35 @@ public final class Player extends GameCanvas {
 						}
 					}
 					continue;
-				} else if (!holdKeys[column] && lastHoldKeys[column] && dur != 0) {
-					// released hold
+				} else if (!holdKeys[column] && lastHoldKeys[column]) {
+					DrawKey(column, false);
+					if (dur != 0) {
+						// released hold
 
-					// absolute difference
-					final int adiff = Math.abs(diff - dur);
-					// checking hitwindow
-					for (int j = 5; j > -1; j--) {
-						if (adiff < hitWindows[j]) {
-							CountHit(j);
-							score.CountHit(j);
-							lastJudgement = j;
+						// absolute difference
+						final int adiff = Math.abs(diff - dur);
+						// checking hitwindow
+						for (int j = 5; j > -1; j--) {
+							if (adiff < hitWindows[j]) {
+								CountHit(j);
+								score.CountHit(j);
+								lastJudgement = j;
+								lastJudgementTime = time;
+								currentNote[column] += 2;
+								if (hitSounds != null && j != 0)
+									hitSounds[0][2].Play();
+								break;
+							}
+						}
+						if (adiff >= hitWindows[0]) {
+							CountHit(0);
+							score.CountHit(0);
+							lastJudgement = 0;
 							lastJudgementTime = time;
 							currentNote[column] += 2;
-							if (hitSounds != null && j != 0)
-								hitSounds[0][2].Play();
-							break;
 						}
+						continue;
 					}
-					if (adiff >= hitWindows[0]) {
-						CountHit(0);
-						score.CountHit(0);
-						lastJudgement = 0;
-						lastJudgementTime = time;
-						currentNote[column] += 2;
-					}
-					continue;
 				}
 
 				// missing unpressed notes
