@@ -19,8 +19,7 @@ public class InfoScreen extends List implements CommandListener {
 
 	public InfoScreen() {
 		super("Information", Choice.IMPLICIT, new String[] { "About this app", "How to load osu!mania beatmaps",
-				"How to load nmania beatmaps", "Skinning", "Low FPS troubleshooting", "Lagspikes troubleshooting" },
-				null);
+				"How to load nmania beatmaps", "Skinning", "Low FPS & lags troubleshooting" }, null);
 		this.addCommand(toMenu);
 		this.setCommandListener(this);
 	}
@@ -102,33 +101,20 @@ public class InfoScreen extends List implements CommandListener {
 				// f.append(new StringItem("", ""));
 				break;
 			case 4:
+				f.append("If your phone doesn't meet system requirements, just accept it and try to play as is.");
+				f.append("\n\nFor the first, disable hitsounds and feedback samples. See if this helps.\n\n");
+				f.append("Some advices:\n");
+				f.append("Make sure nothing is downloading.\n");
+				f.append("Close browser, social clients, player, anything that can do something in background.");
+				f.append("\nTry to disable menus keeping is settings.");
+				f.append("\nUse vector skin. Modify color pallete to use solid fills, not gradients.");
 				f.append(
-						"If your phone does not meet minimal system requirements, just accept it and try to play as is.\n\n");
-				f.append("Some advices:");
-				f.append(
-						"\nMake sure nothing is downloading. Close browser, social clients, player, anything that can do something in background.");
-				f.append(
-						"\nDo not use bluetooth keyboard and/or headset. Their support is quite expensive in CPU resources.");
-				f.append(
-						"\nDisconnect all OTG/BT/etc. devices. Use native device's keyboard if possible. Disconnect from the internet. Disable cell network.");
-				f.append("\nDisable debug tools, if you have them running.");
-				break;
-			case 5:
-				f.append(
-						"If your phone does not meet minimal system requirements, just accept it and try to play as is.\n\n");
-				f.append("For the first, disable hitsounds and feedback samples. See if this helps.\n\n");
-				f.append(
-						"The cause of lagspikes are short high-priority tasks, that your phone runs sometimes in the background while you are playing.");
-				f.append("\nA list of common ones:");
-				f.append(
-						"\nJava GC: try to free up more RAM for the game by closing apps, disabling UI keeping and HUD. This reduces allocated memory and makes GC to run less often.");
-				f.append(
-						"\nMedia subloading: try to move beatmaps to a faster storage (internal memory is usually better than SD cards / USB flash disks). Disable hitsounds and samples. Try to compress music track.");
-				f.append(
-						"\nKeyboard handler: try to adjust skin settings related to keys, switch to another skin type. If something is wrong there, it may make handling code running too long causing lagspikes.");
-				f.append("\nBackground apps refreshes: close everything that you can. Disconnect from the internet.");
-				f.append(
-						"\nSystem tasks: disable any system reaction for input (keyboard sounds, etc.). Disable cell network. Make sure nothing is downloading/etc.");
+						"\nDo not use bluetooth keyboard and/or headset. Their support is expensive in CPU resources.");
+				f.append("\nDisconnect all OTG/BT/etc. devices. Use native device's keyboard if possible.");
+				f.append("\nDisconnect from the internet. Disable cell network.");
+				f.append("\nDisable any system reaction for input (keyboard sounds, etc.)");
+				f.append("\nTry to uninstall apps that modify the system (custom bars, etc.)");
+				f.append("\nDisable debug tools, if you have them running (PerfMon, emulator's utils, etc.).");
 				break;
 			}
 			Nmania.Push(f);
