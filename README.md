@@ -16,6 +16,12 @@ Open source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps.
 - Enough perfomance. In case of Symbian, ~450mhz CPU is okay (f.e., OMAP 2430/31), but it depends on JVM implementation and CPU capatibilities.
 ### Recommended devices
 9.3 or ^3 Symbian device with keyboard is recommended (E5, E6, E7, E72).
+### Emulators
+- `J2ME Loader` has major problems with native UI, but playable. Use OTG or BT keyboard, 640x360 is recommended. Your working folder is likely `/storage/emulated/0/Data/Sounds/nmania/`.
+- `KEmulator` is not compatible due to broken multimedia API.
+- [`KEmulator nnmod`](http://nnproject.cc/kem/) is partially playable. Skin settings are not functional, multihold is not propertly supported.
+### Devices compatibility tracker
+_coming soon_
 
 ## Join our chat in TG!
 https://t.me/nnmidletschat
