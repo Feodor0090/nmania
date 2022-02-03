@@ -53,8 +53,10 @@ public class Skin {
 			SNUtils.toARGB("0x020"), SNUtils.toARGB("0xFF0"), SNUtils.toARGB("0x022") };
 	public int[] holdColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0x700"), SNUtils.toARGB("0x0F0"),
 			SNUtils.toARGB("0x070"), SNUtils.toARGB("0xFF0"), SNUtils.toARGB("0x770") };
-	public int[] keyColors = new int[] { -1, -1, -1, -1, -1, -1 };
-	public int[] holdKeyColors = new int[] { 0, -1, 0, -1, 0, -1 };
+	public int[] keyColors = new int[] { SNUtils.toARGB("0x777"), SNUtils.toARGB("0x69D"), SNUtils.toARGB("0x777"),
+			SNUtils.toARGB("0x69D"), SNUtils.toARGB("0x777"), SNUtils.toARGB("0x69D") };
+	public int[] holdKeyColors = new int[] { SNUtils.toARGB("0x0FF"), SNUtils.toARGB("0x69D"), SNUtils.toARGB("0x0FF"),
+			SNUtils.toARGB("0x69D"), SNUtils.toARGB("0x0FF"), SNUtils.toARGB("0x69D") };
 	public boolean verticalGradientOnNotes = true;
 	public boolean holdsHaveOwnColors = true;
 
@@ -76,6 +78,14 @@ public class Skin {
 
 	public int[] GetHoldColors(int columns) {
 		return composeColorsFor(holdColors, columns);
+	}
+
+	public int[] GetKeyColors(int columns) {
+		return composeColorsFor(keyColors, columns);
+	}
+
+	public int[] GetHoldKeyColors(int columns) {
+		return composeColorsFor(holdKeyColors, columns);
 	}
 
 	private int[] composeColorsFor(int[] s, int cols) {

@@ -179,6 +179,8 @@ public final class Player extends GameCanvas {
 		}
 		colorHoldHeadsAsHolds = s.holdsHaveOwnColors;
 		verticalGr = s.verticalGradientOnNotes;
+		keysColors = s.GetKeyColors(columnsCount);
+		holdKeysColors = s.GetHoldKeyColors(columnsCount);
 
 		Thread.sleep(1);
 
@@ -214,6 +216,7 @@ public final class Player extends GameCanvas {
 	private final boolean[] notesWithGr;
 	private final int[] holdsColors;
 	private final boolean[] holdsWithGr;
+	private final int[] keysColors, holdKeysColors;
 	private final boolean verticalGr;
 	private final boolean colorHoldHeadsAsHolds;
 
@@ -249,9 +252,6 @@ public final class Player extends GameCanvas {
 	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
 	public final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
 			SNUtils.toARGB("0x494"), SNUtils.toARGB("0x0B0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x90F") };
-	private final int keyColorTop = SNUtils.toARGB("0x777");
-	private final int keyColorTopHold = SNUtils.toARGB("0x0FF");
-	private final int keyColorBottom = SNUtils.toARGB("0x69D");
 
 	private final int scrollDiv = Settings.speedDiv;
 
@@ -767,11 +767,12 @@ public final class Player extends GameCanvas {
 	private final void DrawKey(final int k, final boolean hold) {
 		final int x = leftOffset + 1 + (k * colWp1);
 		final int x2 = colW + x - 1;
-		final int topClr = hold ? keyColorTopHold : keyColorTop;
+		final int topClr = (hold ? holdKeysColors : keysColors)[k * 2];
+		final int btmClr = (hold ? holdKeysColors : keysColors)[k * 2 + 1];
 		int y = kbY;
 		for (int i = 1; i < kbH; i++) {
 			y++;
-			g.setColor(ColorUtils.blend(keyColorBottom, topClr, i * 255 / kbH));
+			g.setColor(ColorUtils.blend(btmClr, topClr, i * 255 / kbH));
 			g.drawLine(x, y, x2, y);
 		}
 	}
@@ -789,7 +790,7 @@ public final class Player extends GameCanvas {
 			// current column
 			final int[] c = columns[column];
 			final int column2 = column + column;
-			final int column21 = column2+1;
+			final int column21 = column2 + 1;
 
 			// y to which we can fill the column with black
 			int lastY = kbY;
