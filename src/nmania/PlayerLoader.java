@@ -5,6 +5,7 @@ import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Gauge;
 
 import org.json.me.JSONObject;
 
@@ -34,6 +35,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 		a = new Alert("nmania", "Reading beatmap file", null, AlertType.INFO);
 		a.setTimeout(Alert.FOREVER);
 		a.addCommand(cancelCmd);
+		a.setIndicator(new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING));
 		a.setCommandListener(this);
 		Nmania.Push(a);
 		Beatmap b;
