@@ -43,11 +43,13 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			g.drawString(items[i], 10, iy + th * i, 0);
 		}
 		g.drawString(((int) (Settings.bgDim * 100)) + "%", getWidth() - 10, iy + th, Graphics.TOP | Graphics.RIGHT);
-		drawCheckbox(g, Settings.hitSamples, iy + th * 2, th);
-		drawCheckbox(g, Settings.gameplaySamples, iy + th * 3, th);
-		drawCheckbox(g, Settings.keepMenu, iy + th * 4, th);
 		g.setColor(-1);
-		g.drawString("x" + Settings.speedDiv, getWidth() - 10, iy + th * 5, Graphics.TOP | Graphics.RIGHT);
+		g.drawString("x" + Settings.speedDiv, getWidth() - 10, iy + th * 2, Graphics.TOP | Graphics.RIGHT);
+		drawCheckbox(g, Settings.hitSamples, iy + th * 3, th);
+		drawCheckbox(g, Settings.gameplaySamples, iy + th * 4, th);
+		drawCheckbox(g, Settings.keepMenu, iy + th * 5, th);
+		drawCheckbox(g, Settings.drawCounters, iy + th * 6, th);
+		drawCheckbox(g, Settings.fullScreenFlush, iy + th * 7, th);
 	}
 
 	void drawCheckbox(Graphics g, boolean ok, int y, int th) {
@@ -109,19 +111,19 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			Display.getDisplay(Nmania.inst).setCurrent(box);
 			break;
 		case 2:
-			Settings.hitSamples = !Settings.hitSamples;
-			break;
-		case 3:
-			Settings.gameplaySamples = !Settings.gameplaySamples;
-			break;
-		case 4:
-			Settings.keepMenu = !Settings.keepMenu;
-			break;
-		case 5:
 			TextBox box1 = new TextBox("Speed", "" + Settings.speedDiv, 1, TextField.NUMERIC);
 			box1.addCommand(scrollOk);
 			box1.setCommandListener(this);
 			Display.getDisplay(Nmania.inst).setCurrent(box1);
+			break;
+		case 3:
+			Settings.hitSamples = !Settings.hitSamples;
+			break;
+		case 4:
+			Settings.gameplaySamples = !Settings.gameplaySamples;
+			break;
+		case 5:
+			Settings.keepMenu = !Settings.keepMenu;
 			break;
 		case 6:
 			Settings.drawCounters = !Settings.drawCounters;
@@ -145,8 +147,8 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	}
 
 	int selected = 0;
-	String[] items = new String[] { "Gameplay bindings", "Background dim", "Enable hitsounds", "Enable feedback sounds",
-			"Keep UI during gameplay", "Scroll speed", "Draw counters", "Fullscreen flush", "Folder location",
+	String[] items = new String[] { "Gameplay bindings", "Background dim", "Scroll speed", "Enable hitsounds",
+			"Enable feedback sounds", "Keep UI during gameplay", "Draw counters", "Fullscreen flush", "Folder location",
 			"<<< back" };
 
 	public void commandAction(Command c, Displayable d) {
