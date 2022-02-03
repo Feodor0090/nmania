@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
+import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -255,11 +256,16 @@ public class MainScreen extends GameCanvas implements Runnable {
 		// MENU
 		state = 2;
 		startTime = System.currentTimeMillis();
+		Font f = Font.getFont(0, 0, 8);
+		g.setFont(f);
 		while (needThread && state == 2) {
 			long now = System.currentTimeMillis();
 			g.setColor(bgColor);
 			g.fillRect(0, 0, w, h);
 			g.drawImage(menu, w / 2, h / 2, 3);
+			g.setColor(0);
+			g.drawString("github.com/Feodor0090/nmania", w / 2, 0, 17);
+			g.drawString("v" + Nmania.version(), w / 2, h, 33);
 			if (now - startTime < 1000) {
 				g.setColor(-1);
 				int h1 = (int) (h * (1000 - (now - startTime)) / 1000) / 2;

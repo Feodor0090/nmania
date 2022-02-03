@@ -35,15 +35,12 @@ public class InfoScreen extends List implements CommandListener {
 			f.addCommand(toList);
 			switch (getSelectedIndex()) {
 			case 0:
-				f.append("nmania\nver. ");
-				f.append(Nmania.version());
-				f.append("\nOpen source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps.");
-				f.append("\nGitHub: ");
-				f.append(new Link("https://github.com/Feodor0090/nmania"));
-				f.append("\nTG chat: ");
-				f.append(new Link("https://t.me/nnmidletschat"));
-				f.append("\nCode & design by Feodor0090");
-				f.append("\nLibraries used: org.json.me, ");
+				f.append(new StringItem("nmania v" + Nmania.version(),
+						"Open source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps."));
+				f.append(new Link("GitHub", "https://github.com/Feodor0090/nmania"));
+				f.append(new Link("TG chat", "https://t.me/nnmidletschat"));
+				f.append(new StringItem("Code & design", "Feodor0090"));
+				f.append("\n\nLibraries used: org.json.me, ");
 				f.append(new Link("https://github.com/tube42/imagelib"));
 				break;
 			case 1:
@@ -149,6 +146,12 @@ public class InfoScreen extends List implements CommandListener {
 
 		public Link(String text) {
 			super(null, text, StringItem.HYPERLINK);
+			this.setItemCommandListener(this);
+			this.addCommand(open);
+		}
+
+		public Link(String label, String text) {
+			super(label, text, StringItem.HYPERLINK);
 			this.setItemCommandListener(this);
 			this.addCommand(open);
 		}
