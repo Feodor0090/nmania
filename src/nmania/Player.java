@@ -234,7 +234,7 @@ public final class Player extends GameCanvas {
 
 	private int time;
 	private int rollingScore = 0;
-	private int lastJudgementTime = Integer.MIN_VALUE;
+	private int lastJudgementTime = -100000;
 	private int lastJudgement;
 	private int health = 1000;
 	private int rollingHealth = 1000;
