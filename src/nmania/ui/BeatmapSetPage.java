@@ -24,7 +24,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 	BeatmapManager bm;
 	String dir;
 	BeatmapSet set;
-	ChoiceGroup mode = new ChoiceGroup("Play mode", Choice.EXCLUSIVE, new String[] { "Manual", "Demo" }, null);
+	ChoiceGroup mode = new ChoiceGroup("Mode", Choice.EXCLUSIVE, new String[] { "Normal play", "Automated demo" }, null);
 
 	private BeatmapSetsList list;
 	private Command back = new Command("Back", Command.BACK, 1);
@@ -50,14 +50,16 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 								+ "Also, check folder name - it must not be too long or contain special characters."));
 			}
 			Image img = BeatmapManager.getImgFromFS(set.wdPath + set.folderName + set.image);
-			img = ImageUtils.resize(img, 350, (int) (img.getHeight() / (img.getWidth() / 350f)), true, false);
+			if (img != null)
+				img = ImageUtils.resize(img, 350, (int) (img.getHeight() / (img.getWidth() / 350f)), true, false);
 			deleteAll();
-			append(new ImageItem(null, img, Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER, null));
+			append(new ImageItem(img == null ? "Failed to read beatmap's background." : null, img,
+					Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER, null));
 			append(set.artist + " - " + set.title + " (" + set.mapper + ")");
 			for (int i = 0; i < set.files.length; i++) {
 				String f = set.files[i];
 				if (f.endsWith(".osu") || f.endsWith(".nmbm")) {
-					StringItem btn = new StringItem(null, f.substring(f.indexOf('[') + 1, f.indexOf(']')),
+					StringItem btn = new StringItem(null, f.substring(f.indexOf('[') + 1, f.lastIndexOf(']')),
 							StringItem.BUTTON);
 					btn.setLayout(Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_BEFORE | Item.LAYOUT_NEWLINE_AFTER);
 					btn.setItemCommandListener(this);
