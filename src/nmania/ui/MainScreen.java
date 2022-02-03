@@ -265,7 +265,8 @@ public class MainScreen extends GameCanvas implements Runnable {
 			g.drawImage(menu, w / 2, h / 2, 3);
 			g.setColor(0);
 			g.drawString("github.com/Feodor0090/nmania", w / 2, 0, 17);
-			g.drawString("v" + Nmania.version(), w / 2, h, 33);
+			g.drawString("v" + Nmania.version(), w / 2, f.getHeight(), 17);
+			g.drawString("use 1,7,5,3,9 keys", w / 2, h, 33);
 			if (now - startTime < 1000) {
 				g.setColor(-1);
 				int h1 = (int) (h * (1000 - (now - startTime)) / 1000) / 2;
