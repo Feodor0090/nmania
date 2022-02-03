@@ -1,5 +1,6 @@
 package nmania.ui;
 
+import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
@@ -32,11 +33,13 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 		holdColors.setItemCommandListener(this);
 		holdColors.setDefaultCommand(edit);
 		append(holdColors);
+		noteFillOptions.setSelectedIndex(0, skin.verticalGradientOnNotes);
+		noteFillOptions.setSelectedIndex(1, skin.holdsHaveOwnColors);
 		append(noteFillOptions);
 		append("No more settings can be changed for now. Check this menu later.");
 	}
 
-	private final Command back = new Command("Back", Command.BACK, 1);
+	private final Command back = new Command("Back", Command.BACK, 2);
 	private final Command edit = new Command("Edit", Command.ITEM, 1);
 	final SkinSelect prev;
 	final Skin skin = Nmania.skin;
@@ -57,6 +60,8 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 		skin.leftOffset = leftO.getValue();
 		skin.holdWidth = holdW.getValue();
 		skin.noteHeight = noteH.getValue();
+		skin.verticalGradientOnNotes = noteFillOptions.isSelected(0);
+		skin.holdsHaveOwnColors = noteFillOptions.isSelected(1);
 	}
 
 	public void commandAction(Command c, Displayable arg1) {
@@ -70,15 +75,13 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 
 	public void commandAction(Command c, Item i) {
 		if (c == edit) {
-			int[] pallete;
 			if (i == noteColors) {
-				pallete = skin.noteColors;
+				Nmania.Push(new ColorPalleteEditor(skin.noteColors, this));
 			} else if (i == holdColors) {
-				pallete = skin.holdColors;
+				Nmania.Push(new ColorPalleteEditor(skin.holdColors, this));
 			} else {
-				return;
+				Nmania.Push(new Alert(i.toString()));
 			}
-			Nmania.Push(new ColorPalleteEditor(pallete, this));
 		}
 	}
 }

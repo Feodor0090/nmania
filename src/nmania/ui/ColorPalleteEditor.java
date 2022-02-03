@@ -18,21 +18,24 @@ public class ColorPalleteEditor extends Form implements CommandListener {
 	public ColorPalleteEditor(int[] colors, Displayable prev) {
 		super("Pallete editor");
 		this.prev = prev;
+		this.colors = colors;
 		fields = new TextField[colors.length];
 		for (int i = 0; i < colors.length; i++) {
 			String curr = Integer.toHexString(colors[i]);
-			while (curr.length() < 6)
+			while (curr.length() < 8)
 				curr = "0" + curr;
-			fields[i] = new TextField("Color " + (i + 1) + " (HEX value):", curr, 6, 0);
+			fields[i] = new TextField("Color " + (i + 1) + " (HEX value):", curr, 8, 0);
+			append(fields[i]);
 		}
 		setCommandListener(this);
 		addCommand(back);
+		addCommand(view);
 	}
 
 	private final Command back = new Command("Back", Command.BACK, 1);
-	private final Command view = new Command("Check", Command.SCREEN, 1);
+	private final Command view = new Command("Check", Command.SCREEN, 2);
 	final Displayable prev;
-	public int[] colors;
+	public final int[] colors;
 	TextField[] fields;
 
 	public void commandAction(Command c, Displayable arg1) {
@@ -46,6 +49,7 @@ public class ColorPalleteEditor extends Form implements CommandListener {
 			if (c == view)
 				Nmania.Push(new ColorPalletePreview(this));
 		} catch (Exception e) {
+			e.printStackTrace();
 			Nmania.Push(new Alert("Pallete editor", "Color " + (i + 1) + " is invalid. Check the field.", null,
 					AlertType.ERROR));
 		}
