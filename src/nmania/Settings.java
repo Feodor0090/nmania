@@ -14,9 +14,8 @@ public final class Settings {
 	public static int speedDiv = 3;
 
 	public static boolean gameplaySamples = true;
-	public static boolean hitSamples = true;
-	
-	public static boolean keepMenu = false;
+	public static boolean hitSamples = false;
+	public static boolean keepMenu = true;
 
 	public static final void Save() {
 		try {
