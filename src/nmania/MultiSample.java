@@ -1,6 +1,9 @@
 package nmania;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
@@ -11,19 +14,32 @@ public final class MultiSample {
 	public MultiSample(boolean local, String file, String type, int count) throws IOException, MediaException {
 		poolSize = count;
 		pool = new Player[count];
+		streams = new ByteArrayInputStream[count];
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		InputStream data;
+		if (local) {
+			data = getClass().getResourceAsStream(file);
+		} else {
+			throw new IllegalArgumentException("Remote samples are not supported yet!");
+		}
+		byte[] buf = new byte[2048];
+		int r;
+		while ((r = data.read(buf)) != -1) {
+			os.write(buf, 0, r);
+		}
+		raw = os.toByteArray();
 		for (int i = 0; i < count; i++) {
+			streams[i] = new ByteArrayInputStream(raw);
 			Player player;
-			if (local) {
-				player = Manager.createPlayer(getClass().getResourceAsStream(file), type);
-			} else {
-				throw new IllegalArgumentException("Remote samples are not supported yet!");
-			}
+			player = Manager.createPlayer(streams[i], type);
 			player.realize();
 			player.prefetch();
 			pool[i] = player;
 		}
 	}
 
+	private final byte[] raw;
+	private final ByteArrayInputStream[] streams;
 	private final Player[] pool;
 	private final int poolSize;
 	private int next;
