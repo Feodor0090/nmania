@@ -50,7 +50,7 @@ public final class Player extends GameCanvas {
 				th = scrH;
 				tw = (int) (th * bgAR);
 			}
-			_bg = ImageUtils.resize(_bg, tw, th, true, false);
+			_bg = ImageUtils.resize(_bg, tw, th, Settings.bgDim <= 0.95f, false);
 			Thread.sleep(1);
 			if (tw != scrW || th != scrH) {
 				int x0 = (tw - scrW) / 2;
@@ -58,15 +58,19 @@ public final class Player extends GameCanvas {
 				_bg = ImageUtils.crop(_bg, x0, y0, x0 + scrW, y0 + scrH);
 			}
 			Thread.sleep(1);
-			bg = ImageFxUtils.applyModifier(_bg, new PixelModifier() {
-				final int blendLevel = (int) ((1f - Settings.bgDim) * 255);
+			if (Settings.bgDim <= 0.01f) {
+				bg = _bg;
+			} else {
+				bg = ImageFxUtils.applyModifier(_bg, new PixelModifier() {
+					final int blendLevel = (int) ((1f - Settings.bgDim) * 255);
 
-				public void apply(int[] p, int[] o, int count, int y) {
-					for (int i = 0; i < p.length; i++) {
-						o[i] = ColorUtils.blend(p[i], 0xff000000, blendLevel);
+					public void apply(int[] p, int[] o, int count, int y) {
+						for (int i = 0; i < p.length; i++) {
+							o[i] = ColorUtils.blend(p[i], 0xff000000, blendLevel);
+						}
 					}
-				}
-			});
+				});
+			}
 			_bg = null;
 			Thread.sleep(1);
 		}
