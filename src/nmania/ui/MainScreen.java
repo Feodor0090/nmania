@@ -2,6 +2,8 @@ package nmania.ui;
 
 import java.io.IOException;
 
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
@@ -15,6 +17,9 @@ public class MainScreen extends GameCanvas implements Runnable {
 	public MainScreen() {
 		super(false);
 		setFullScreenMode(true);
+		g = getGraphics();
+		g.setColor(0);
+		g.fillRect(0, 0, getWidth(), getHeight());
 		(new Thread(this, "Main menu repainter")).start();
 	}
 
@@ -145,7 +150,12 @@ public class MainScreen extends GameCanvas implements Runnable {
 					Nmania.Push(new BeatmapSetsList(Nmania.bm));
 				} catch (Exception e) {
 					e.printStackTrace();
-					throw new RuntimeException(e.toString());
+					Nmania.Push(new InfoScreen());
+					Thread.yield();
+					Thread.yield();
+					Nmania.Push(new Alert("nmania",
+							"Failed to start game. Check if you have working folder (C:/Data/Sounds/nmania/). Refer to help sections to get more information.",
+							null, AlertType.ERROR));
 				}
 			}
 		}, "BMSL loader")).start();
@@ -285,8 +295,8 @@ public class MainScreen extends GameCanvas implements Runnable {
 						g.setColor(0);
 						g.fillRect(0, 0, w, h);
 						g.setColor(-1);
-						g.fillArc(w / 2 - 20, h / 2 - 20, 40, 40, (int) now, 90);
-						g.fillArc(w / 2 - 20, h / 2 - 20, 40, 40, (int) now + 180, 90);
+						g.fillArc(w / 2 - 20, h / 2 - 20, 40, 40, ((int) now) % 360, 90);
+						g.fillArc(w / 2 - 20, h / 2 - 20, 40, 40, ((int) now) % 360 + 180, 90);
 						flushGraphics();
 						try {
 							Thread.sleep(30);

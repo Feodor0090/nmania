@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.microedition.io.Connection;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Image;
@@ -22,7 +21,10 @@ public class BeatmapManager {
 	FileConnection fc;
 
 	public void Init() throws IOException {
-		fc = (FileConnection) Connector.open(directory, Connector.READ);
+		fc = (FileConnection) Connector.open(directory, Connector.READ_WRITE);
+		if (!fc.exists()) {
+			fc.mkdir();
+		}
 	}
 
 	public Enumeration list() throws IOException {
@@ -62,7 +64,8 @@ public class BeatmapManager {
 			bms.mapper = deCR(fm.substring(creatorI, fm.indexOf('\n', creatorI)));
 			bms.image = fm.substring(fm.indexOf(',', imageI) + 1, fm.indexOf('\n', imageI));
 			int ci = bms.image.indexOf(',');
-			if(ci==-1) ci = bms.image.length()-1;
+			if (ci == -1)
+				ci = bms.image.length() - 1;
 			bms.image = bms.image.substring(0, ci);
 			if (bms.image.charAt(0) == '\"')
 				bms.image = bms.image.substring(1, bms.image.length() - 1);
