@@ -138,7 +138,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 		(new Thread(new Runnable() {
 			public void run() {
 				try {
-					Nmania.LoadManager(Settings.dirLocation);
+					Nmania.LoadManager(Settings.workingFolder);
 					if (Nmania.skin == null) {
 						Nmania.skin = new Skin();
 					}

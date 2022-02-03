@@ -21,7 +21,7 @@ public final class Settings {
 	public static boolean keepMenu = true;
 	public static boolean drawCounters = true;
 	public static boolean fullScreenFlush = false;
-	public static String dirLocation = defaultFL;
+	public static String workingFolder = defaultFL;
 
 	public static final void Save() {
 		try {
@@ -46,7 +46,7 @@ public final class Settings {
 			j.accumulate("keepmenu", new Boolean(keepMenu));
 			j.accumulate("drawcounters", new Boolean(drawCounters));
 			j.accumulate("fullscreenflush", new Boolean(fullScreenFlush));
-			j.accumulate("dir", dirLocation);
+			j.accumulate("dir", workingFolder);
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -88,7 +88,7 @@ public final class Settings {
 			keepMenu = j.optBoolean("keepmenu", false);
 			drawCounters = j.optBoolean("drawcounters", true);
 			fullScreenFlush = j.optBoolean("fullscreenflush", false);
-			dirLocation = j.optString("dir", defaultFL);
+			workingFolder = j.optString("dir", defaultFL);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

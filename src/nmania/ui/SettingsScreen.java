@@ -22,6 +22,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 
 	private final Command dimOk = new Command("OK", Command.OK, 1);
 	private final Command scrollOk = new Command("OK", Command.OK, 1);
+	private final Command dirOk = new Command("OK", Command.OK, 1);
 
 	int iy;
 	int th;
@@ -123,6 +124,18 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			Display.getDisplay(Nmania.inst).setCurrent(box1);
 			break;
 		case 6:
+			Settings.drawCounters = !Settings.drawCounters;
+			break;
+		case 7:
+			Settings.fullScreenFlush = !Settings.fullScreenFlush;
+			break;
+		case 8:
+			TextBox box2 = new TextBox("Folder location", Settings.workingFolder, 100, TextField.ANY);
+			box2.addCommand(dirOk);
+			box2.setCommandListener(this);
+			Nmania.Push(box2);
+			break;
+		case 9:
 			Settings.Save();
 			Nmania.Push(new MainScreen());
 			break;
@@ -133,7 +146,8 @@ public class SettingsScreen extends Canvas implements CommandListener {
 
 	int selected = 0;
 	String[] items = new String[] { "Gameplay bindings", "Background dim", "Enable hitsounds", "Enable feedback sounds",
-			"Keep UI during gameplay", "Scroll speed", "<<< back" };
+			"Keep UI during gameplay", "Scroll speed", "Draw counters", "Fullscreen flush", "Folder location",
+			"<<< back" };
 
 	public void commandAction(Command c, Displayable d) {
 		if (d instanceof TextBox) {
@@ -141,6 +155,8 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Settings.bgDim = Integer.parseInt(((TextBox) d).getString()) / 100f;
 			} else if (c == scrollOk) {
 				Settings.speedDiv = Integer.parseInt(((TextBox) d).getString());
+			} else if (c == dirOk) {
+				Settings.workingFolder = ((TextBox) d).getString();
 			}
 			Nmania.Push(this);
 		}
