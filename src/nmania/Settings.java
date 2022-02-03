@@ -8,9 +8,12 @@ import org.json.me.JSONObject;
 import symnovel.SNUtils;
 
 public final class Settings {
+
+	public static final String defaultFL = "file:///C:/Data/Sounds/nmania/";
+
 	public static float bgDim = 0.75f;
 	public static int[][] keyLayout = new int[10][];
-	
+
 	public static int speedDiv = 3;
 
 	public static boolean gameplaySamples = true;
@@ -18,6 +21,7 @@ public final class Settings {
 	public static boolean keepMenu = true;
 	public static boolean drawCounters = true;
 	public static boolean fullScreenFlush = false;
+	public static String dirLocation = defaultFL;
 
 	public static final void Save() {
 		try {
@@ -42,6 +46,7 @@ public final class Settings {
 			j.accumulate("keepmenu", new Boolean(keepMenu));
 			j.accumulate("drawcounters", new Boolean(drawCounters));
 			j.accumulate("fullscreenflush", new Boolean(fullScreenFlush));
+			j.accumulate("dir", dirLocation);
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -83,6 +88,7 @@ public final class Settings {
 			keepMenu = j.optBoolean("keepmenu", false);
 			drawCounters = j.optBoolean("drawcounters", true);
 			fullScreenFlush = j.optBoolean("fullscreenflush", false);
+			dirLocation = j.optString("dir", defaultFL);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

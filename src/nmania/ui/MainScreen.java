@@ -10,6 +10,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 
 import nmania.Nmania;
+import nmania.Settings;
 import nmania.Skin;
 import symnovel.SNUtils;
 
@@ -137,14 +138,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 		(new Thread(new Runnable() {
 			public void run() {
 				try {
-					String wd;
-					try {
-						Class.forName("emulator.Emulator");
-						wd = "file://root/";
-					} catch (Exception e) {
-						wd = "file:///C:/Data/Sounds/nmania/";
-					}
-					Nmania.LoadManager(wd);
+					Nmania.LoadManager(Settings.dirLocation);
 					if (Nmania.skin == null) {
 						Nmania.skin = new Skin();
 					}
