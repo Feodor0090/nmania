@@ -95,6 +95,10 @@ public class InfoScreen extends List implements CommandListener {
 								+ "If disabled, gradients will be horizontal. The 1st color is used for center, the 2nd for left/right sides."));
 				f.append(new StringItem("Use different palletes for notes and hold heads",
 						"See \"Holds pallete\" description."));
+				f.append(new StringItem("Keys pallete",
+						"Colors for synthesizer's keys. The 1st&2nd, 3rd&4th and 5th&6th colors will be used for keys in non-odd, odd and central columns accordingly. The 1st color in each pair is for key's top, the 2nd for bottom."));
+				f.append(new StringItem("Hold keys pallete",
+						"Colors for synthesizer's holded keys. See \"Keys pallete\" to learn about colors roles."));
 				// f.append(new StringItem("", ""));
 				break;
 			case 4:

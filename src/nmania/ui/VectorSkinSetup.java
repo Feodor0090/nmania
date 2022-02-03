@@ -36,7 +36,12 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 		noteFillOptions.setSelectedIndex(0, skin.verticalGradientOnNotes);
 		noteFillOptions.setSelectedIndex(1, skin.holdsHaveOwnColors);
 		append(noteFillOptions);
-		append("No more settings can be changed for now. Check this menu later.");
+		keyColors.setItemCommandListener(this);
+		keyColors.setDefaultCommand(edit);
+		append(keyColors);
+		holdKeyColors.setItemCommandListener(this);
+		holdKeyColors.setDefaultCommand(edit);
+		append(holdKeyColors);
 	}
 
 	private final Command back = new Command("Back", Command.BACK, 2);
@@ -53,6 +58,8 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 	StringItem holdColors = new StringItem(null, "Holds pallete", StringItem.BUTTON);
 	ChoiceGroup noteFillOptions = new ChoiceGroup("Note fill options", Choice.MULTIPLE,
 			new String[] { "Use vertical gradient", "Use different palletes for notes and hold heads" }, null);
+	StringItem keyColors = new StringItem(null, "Keys pallete", StringItem.BUTTON);
+	StringItem holdKeyColors = new StringItem(null, "Holded keys pallete", StringItem.BUTTON);
 
 	void Apply() {
 		skin.columnWidth = colW.getValue();
@@ -79,6 +86,10 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 				Nmania.Push(new ColorPalleteEditor(skin.noteColors, this));
 			} else if (i == holdColors) {
 				Nmania.Push(new ColorPalleteEditor(skin.holdColors, this));
+			} else if (i == keyColors) {
+				Nmania.Push(new ColorPalleteEditor(skin.keyColors, this));
+			} else if (i == holdKeyColors) {
+				Nmania.Push(new ColorPalleteEditor(skin.holdKeyColors, this));
 			} else {
 				Nmania.Push(new Alert(i.toString()));
 			}
