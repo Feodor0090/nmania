@@ -1,7 +1,10 @@
 MIDlet-Vendor: Feodor0090
-MIDlet-Version: 0.2.0
+MIDlet-Version: 0.3.0
+MIDlet-Info-URL: https://github.com/Feodor0090/nmania
 MicroEdition-Configuration: CLDC-1.1
 MIDlet-1: nmania,/ui/nmania-logo-0.25x.png,nmania.Nmania
 MIDlet-Name: nmania
+MIDlet-Description: Open source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps
 MicroEdition-Profile: MIDP-2.0
 MIDlet-Jar-URL: nmania.jar
+Nokia-MIDlet-On-Screen-Keypad: no
