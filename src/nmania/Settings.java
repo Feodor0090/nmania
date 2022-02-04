@@ -18,6 +18,7 @@ public final class Settings {
 
 	public static boolean gameplaySamples = true;
 	public static boolean hitSamples = false;
+	public static boolean useBmsSamples = true;
 	public static boolean keepMenu = true;
 	public static boolean drawCounters = true;
 	public static boolean fullScreenFlush = false;
@@ -56,6 +57,7 @@ public final class Settings {
 			j.accumulate("fullscreenflush", new Boolean(fullScreenFlush));
 			j.accumulate("dir", workingFolder);
 			j.accumulate("gameplayoffset", new Integer(gameplayOffset));
+			j.accumulate("usebmssamples", new Boolean(useBmsSamples));
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -101,6 +103,7 @@ public final class Settings {
 					device.indexOf("platform=S60") != -1 && device.indexOf("platform_version=5") != -1);
 			workingFolder = j.optString("dir", defaultWF);
 			gameplayOffset = j.optInt("gameplayoffset", 0);
+			useBmsSamples = j.optBoolean("usebmssamples", true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

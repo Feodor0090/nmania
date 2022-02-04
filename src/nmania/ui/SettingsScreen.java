@@ -246,12 +246,14 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Settings.gameplaySamples = !Settings.gameplaySamples;
 				break;
 			case 2:
+				Settings.useBmsSamples = !Settings.useBmsSamples;
+			case 3:
 				TextBox box = new TextBox("Dim level", String.valueOf(Settings.gameplayOffset), 4, TextField.NUMERIC);
 				box.addCommand(offsetOk);
 				box.setCommandListener(_this);
 				Nmania.Push(box);
 				break;
-			case 3:
+			case 4:
 				Switch(main);
 				break;
 			}
@@ -262,14 +264,16 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		}
 
 		public String[] GetItems() {
-			return new String[] { "Enable hitsounds", "Enable feedback sounds", "Gameplay clock offset", "<<< back" };
+			return new String[] { "Enable hitsounds", "Enable feedback sounds", "Use beatmap samples",
+					"Gameplay clock offset", "<<< back" };
 		}
 
 		public void paint(Graphics g, int y, int sw) {
 			drawCheckbox(g, Settings.hitSamples, y, th);
 			drawCheckbox(g, Settings.gameplaySamples, y + th, th);
+			drawCheckbox(g, Settings.useBmsSamples, y + th * 2, th);
 			g.setColor(-1);
-			g.drawString(Settings.gameplayOffset + "ms", getWidth() - 10, y + th * 2, 24);
+			g.drawString(Settings.gameplayOffset + "ms", getWidth() - 10, y + th * 3, 24);
 		}
 	};
 	final SettingsSection system = new SettingsSection() {
