@@ -9,7 +9,7 @@ import symnovel.SNUtils;
 
 public final class Settings {
 
-	public static final String defaultFL = "file:///C:/Data/Sounds/nmania/";
+	public static final String defaultWF = "file:///C:/Data/Sounds/nmania/";
 
 	public static float bgDim = 0.75f;
 	public static int[][] keyLayout = new int[10][];
@@ -21,7 +21,7 @@ public final class Settings {
 	public static boolean keepMenu = true;
 	public static boolean drawCounters = true;
 	public static boolean fullScreenFlush = false;
-	public static String workingFolder = defaultFL;
+	public static String workingFolder = defaultWF;
 
 	public static final void Save() {
 		try {
@@ -88,7 +88,7 @@ public final class Settings {
 			keepMenu = j.optBoolean("keepmenu", false);
 			drawCounters = j.optBoolean("drawcounters", true);
 			fullScreenFlush = j.optBoolean("fullscreenflush", false);
-			workingFolder = j.optString("dir", defaultFL);
+			workingFolder = j.optString("dir", defaultWF);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

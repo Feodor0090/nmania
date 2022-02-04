@@ -148,9 +148,11 @@ public class MainScreen extends GameCanvas implements Runnable {
 					Nmania.Push(new InfoScreen());
 					Thread.yield();
 					Thread.yield();
-					Nmania.Push(new Alert("nmania",
-							"Failed to start game. Check if you have working folder (C:/Data/Sounds/nmania/). Refer to help sections to get more information.",
-							null, AlertType.ERROR));
+					Alert a = new Alert("nmania",
+							"Failed to start game. Check if you have working folder (default one is C:/Data/Sounds/nmania/). Refer to help sections to get more information.",
+							null, AlertType.ERROR);
+					a.setTimeout(Alert.FOREVER);
+					Nmania.Push(a);
 				}
 			}
 		}, "BMSL loader")).start();

@@ -11,6 +11,7 @@ import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.StringItem;
 
 import nmania.Nmania;
+import nmania.Settings;
 
 public class InfoScreen extends List implements CommandListener {
 
@@ -139,8 +140,12 @@ public class InfoScreen extends List implements CommandListener {
 	}
 
 	public static final void AppendWD(Form f, int n) {
-		f.append("\n" + n + ". Game's working folder is ");
-		f.append(new Link("file:///C:/Data/Sounds/nmania/"));
+		f.append("\n" + n + ". Game's current working folder is ");
+		f.append(new Link(Settings.workingFolder));
+		if (!Settings.workingFolder.equals(Settings.defaultWF)) {
+			f.append(". Default one was ");
+			f.append(new Link(Settings.defaultWF));
+		}
 		f.append(". If there is no one, create it on EXACT path.");
 	}
 
