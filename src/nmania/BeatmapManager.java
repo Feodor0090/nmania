@@ -36,52 +36,36 @@ public class BeatmapManager {
 	}
 
 	public BeatmapSet FromBMSDirectory(String dir) throws IOException, InvalidBeatmapTypeException {
-		FileConnection bmsFc = (FileConnection) Connector.open(directory + dir, Connector.READ);
-		BeatmapSet bms = new BeatmapSet();
-		bms.wdPath = directory;
-		bms.folderName = dir;
-		String fm = null;
-		{
-			Enumeration bmsFiles = bmsFc.list();
-			while (bmsFiles.hasMoreElements()) {
-				String f = bmsFiles.nextElement().toString();
-				if (f.endsWith(".osu") || f.endsWith(".nmbm")) {
-					fm = getStringFromFS(directory + dir + f);
-					break;
+		FileConnection bmsFc = null;
+		try {
+			bmsFc = (FileConnection) Connector.open(directory + dir, Connector.READ);
+			BeatmapSet bms = new BeatmapSet();
+			bms.wdPath = directory;
+			bms.folderName = dir;
+			String fm = null;
+			{
+				Enumeration bmsFiles = bmsFc.list();
+				while (bmsFiles.hasMoreElements()) {
+					String f = bmsFiles.nextElement().toString();
+					if (RawBeatmapConverter.CanReadFile(f)) {
+						fm = getStringFromFS(directory + dir + f);
+						break;
+					}
 				}
 			}
+			if (fm == null)
+				return null;
+			IRawBeatmap bm = RawBeatmapConverter.FromText(fm);
+			bms.image = bm.GetImage();
+			bms.title = bm.GetTitle();
+			bms.artist = bm.GetArtist();
+			bms.mapper = bm.GetMapper();
+			bms.files = bakeEnum(bmsFc.list());
+			bmsFc.close();
+			return bms;
+		} finally {
+			bmsFc.close();
 		}
-		if (fm == null)
-			return null;
-		IRawBeatmap bm = RawBeatmapConverter.FromText(fm);
-		bms.image = bm.GetImage();
-		if (fm.startsWith("osu file format")) {
-			// osu! beatmap
-			int metadataI = fm.indexOf("[Metadata]");
-			int eventsI = fm.indexOf("[Events]");
-
-			int titleI = fm.indexOf("\nTitle:", metadataI) + 7;
-			int artistI = fm.indexOf("\nArtist:", metadataI) + 8;
-			int creatorI = fm.indexOf("\nCreator:", metadataI) + 9;
-			
-			bms.title = deCR(fm.substring(titleI, fm.indexOf('\n', titleI)));
-			bms.artist = deCR(fm.substring(artistI, fm.indexOf('\n', artistI)));
-			bms.mapper = deCR(fm.substring(creatorI, fm.indexOf('\n', creatorI)));
-		} else {
-			bms.title = "todo";
-			bms.artist = "todo";
-			bms.mapper = "todo";
-		}
-
-		bms.files = bakeEnum(bmsFc.list());
-		bmsFc.close();
-		return bms;
-	}
-
-	private final static String deCR(String s) {
-		if (s.charAt(s.length() - 1) == '\r')
-			return s.substring(0, s.length() - 1);
-		return s;
 	}
 
 	public static final String getStringFromFS(String path) {
