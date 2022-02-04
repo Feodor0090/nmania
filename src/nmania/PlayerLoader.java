@@ -10,8 +10,6 @@ import javax.microedition.lcdui.Gauge;
 import nmania.formats.IRawBeatmap;
 import nmania.formats.InvalidBeatmapTypeException;
 import nmania.formats.RawBeatmapConverter;
-import nmania.formats.RawNmaniaBeatmap;
-import nmania.formats.RawOsuBeatmap;
 import nmania.ui.BeatmapSetPage;
 import nmania.ui.KeyboardSetup;
 import nmania.ui.MainScreen;

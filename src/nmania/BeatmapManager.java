@@ -11,6 +11,10 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Image;
 
+import nmania.formats.IRawBeatmap;
+import nmania.formats.InvalidBeatmapTypeException;
+import nmania.formats.RawBeatmapConverter;
+
 public class BeatmapManager {
 
 	public BeatmapManager(String wd) {
@@ -31,7 +35,7 @@ public class BeatmapManager {
 		return fc.list();
 	}
 
-	public BeatmapSet FromBMSDirectory(String dir) throws IOException {
+	public BeatmapSet FromBMSDirectory(String dir) throws IOException, InvalidBeatmapTypeException {
 		FileConnection bmsFc = (FileConnection) Connector.open(directory + dir, Connector.READ);
 		BeatmapSet bms = new BeatmapSet();
 		bms.wdPath = directory;
@@ -50,6 +54,7 @@ public class BeatmapManager {
 		if (fm == null)
 			return null;
 		if (fm.startsWith("osu file format")) {
+			IRawBeatmap osu = RawBeatmapConverter.FromText(fm);
 			// osu! beatmap
 			int metadataI = fm.indexOf("[Metadata]");
 			int eventsI = fm.indexOf("[Events]");
@@ -57,20 +62,16 @@ public class BeatmapManager {
 			int titleI = fm.indexOf("\nTitle:", metadataI) + 7;
 			int artistI = fm.indexOf("\nArtist:", metadataI) + 8;
 			int creatorI = fm.indexOf("\nCreator:", metadataI) + 9;
-			int imageI = fm.indexOf("\n0,", eventsI) + 3;
-
+			
 			bms.title = deCR(fm.substring(titleI, fm.indexOf('\n', titleI)));
 			bms.artist = deCR(fm.substring(artistI, fm.indexOf('\n', artistI)));
 			bms.mapper = deCR(fm.substring(creatorI, fm.indexOf('\n', creatorI)));
-			bms.image = fm.substring(fm.indexOf(',', imageI) + 1, fm.indexOf('\n', imageI));
-			int ci = bms.image.indexOf(',');
-			if (ci == -1)
-				ci = bms.image.length() - 1;
-			bms.image = bms.image.substring(0, ci);
-			if (bms.image.charAt(0) == '\"')
-				bms.image = bms.image.substring(1, bms.image.length() - 1);
+			bms.image = osu.GetImage();
 		} else {
-			// nmania json beatmap
+			bms.title = "todo";
+			bms.artist = "todo";
+			bms.mapper = "todo";
+			bms.image = "todo";
 		}
 
 		bms.files = bakeEnum(bmsFc.list());
