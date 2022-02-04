@@ -17,23 +17,44 @@ public class SkinSelect extends Canvas {
 		if (Nmania.skin == null)
 			Nmania.skin = new Skin();
 		repaint();
+		(new Thread() {
+			public void run() {
+				try {
+					while (introTimer > 0) {
+						repaint();
+						Thread.sleep(10);
+						introTimer--;
+					}
+					repaint();
+				} catch (Exception e) {
+					return;
+				}
+			}
+		}).start();
 	}
 
 	boolean useRich = false;
 	boolean selectionFocused = true;
+	int th = 80;
+	int introTimer = 30;
+	int outroTimer = 0;
 
 	protected void paint(Graphics g) {
 		int w = getWidth();
 		int h = getHeight();
 		Font f = Font.getFont(0, 0, 8);
-		int th = f.getHeight();
+		th = f.getHeight();
 		g.setColor(0);
 		g.fillRect(0, 0, w, h);
 		g.setColor(-1);
 
-		g.drawString("Choose skin type", w / 2, 0, 17);
+		g.drawString("Choose skin type", w / 2, -outroTimer, 17);
 		int x1 = w / 4;
 		int x2 = w * 3 / 4;
+		if (outroTimer != 0) {
+			x1 -= (w / 4 + 120) * outroTimer / 30;
+			x2 += (w / 4 + 120) * outroTimer / 30;
+		}
 
 		g.drawString("Vector skin", x1, h / 2 - 55, 33);
 		g.drawString("Rich skin", x2, h / 2 - 55, 33);
@@ -56,10 +77,16 @@ public class SkinSelect extends Canvas {
 		g.drawString("settings", (useRich ? x2 : x1), h / 2 + 55, 17);
 		g.setColor(MainScreen.bgColor);
 
-		if (!selectionFocused)
+		if (!selectionFocused && outroTimer == 0)
 			g.fillRect(5, h - th - 5, w - 10, th);
 		g.setColor(-1);
-		g.drawString("Save & exit", w / 2, h - 5, 33);
+		g.drawString("Save & exit", w / 2, h - 5 + outroTimer, 33);
+
+		if (introTimer > 0) {
+			g.setColor(-1);
+			int rw = w * introTimer / 60;
+			g.fillRect(w / 2 - rw, 0, rw * 2, h);
+		}
 
 	}
 
@@ -106,12 +133,50 @@ public class SkinSelect extends Canvas {
 					Nmania.Push(new VectorSkinSetup(this));
 				}
 			} else {
-				if (useRich) {
-					Nmania.Push(new Alert("nmania", "Rich skin is not available yet. Check newer versions of the game.",
-							null, AlertType.ERROR));
+				Exit();
+			}
+		}
+	}
+
+	void Exit() {
+		if (useRich) {
+			Nmania.Push(new Alert("nmania", "Rich skin is not available yet. Check newer versions of the game.", null,
+					AlertType.ERROR));
+			return;
+		}
+		(new Thread() {
+			public void run() {
+				try {
+					while (outroTimer <= 30) {
+						repaint();
+						Thread.sleep(10);
+						outroTimer++;
+					}
+					repaint();
+					Nmania.Push(new MainScreen());
+				} catch (Exception e) {
 					return;
 				}
-				Nmania.Push(new MainScreen());
+			}
+		}).start();
+	}
+
+	protected void pointerPressed(int x, int y) {
+		if (y > getHeight() - th * 2) {
+			Exit();
+		}
+		if (x < getWidth() / 2) {
+			if (useRich) {
+				useRich = false;
+			} else {
+				Nmania.Push(new VectorSkinSetup(this));
+			}
+		} else {
+			if (useRich) {
+				Nmania.Push(new Alert("nmania", "Rich skin is not available yet. Check newer versions of the game.",
+						null, AlertType.ERROR));
+			} else {
+				useRich = true;
 			}
 		}
 	}

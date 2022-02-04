@@ -292,7 +292,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 			while (true) {
 				int length = 400;
 				long now = System.currentTimeMillis();
-				g.setColor(0);
+				g.setColor(action == 3 ? -1 : 0);
 				int h1 = (int) (h * (now - startTime) / length);
 				g.fillRect(0, 0, w, h1);
 				g.fillRect(0, h - h1, w, h1);
