@@ -74,4 +74,16 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		return b;
 	}
 
+	public String GetTitle() {
+		return getValue("Title");
+	}
+
+	public String GetArtist() {
+		return getValue("Artist");
+	}
+
+	public String GetMapper() {
+		return getValue("Creator");
+	}
+
 }

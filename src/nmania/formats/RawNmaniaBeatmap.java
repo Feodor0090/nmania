@@ -43,4 +43,16 @@ public class RawNmaniaBeatmap extends JSONObject implements IRawBeatmap {
 		return b;
 	}
 
+	public String GetTitle() {
+		return optString("title");
+	}
+
+	public String GetArtist() {
+		return optString("artist");
+	}
+
+	public String GetMapper() {
+		return optString("author");
+	}
+
 }
