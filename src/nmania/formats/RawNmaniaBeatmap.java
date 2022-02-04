@@ -13,12 +13,16 @@ public class RawNmaniaBeatmap extends JSONObject implements IRawBeatmap {
 	public RawNmaniaBeatmap(String text) {
 		super(text);
 	}
+	
+	public String GetImage() {
+		return getString("image");
+	}
 
 	public Beatmap ToBeatmap() {
 		Beatmap b = new Beatmap();
 		b.id = getInt("id");
 		b.diffName = getString("name");
-		b.image = getString("image");
+		b.image = GetImage();
 		b.audio = getString("audio");
 		b.columnsCount = getInt("columns");
 		b.difficulty = Float.parseFloat(getString("difficulty"));

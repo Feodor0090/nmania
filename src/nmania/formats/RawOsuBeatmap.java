@@ -23,7 +23,7 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		return data.trim();
 	}
 
-	public final String getImage() {
+	public final String GetImage() {
 		int imageI = raw.indexOf("\n0,", raw.indexOf("[Events]")) + 3;
 
 		String image = raw.substring(raw.indexOf(',', imageI) + 1, raw.indexOf('\n', imageI));
@@ -55,7 +55,7 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		b.difficulty = Float.parseFloat(getValue("OverallDifficulty"));
 		b.points = new TimingPoint[0];
 		b.audio = getValue("AudioFilename");
-		b.image = getImage();
+		b.image = GetImage();
 		String[] rawObjs = hitObjects();
 		Vector notes = new Vector();
 		for (int i = 0; i < rawObjs.length; i++) {

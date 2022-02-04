@@ -9,6 +9,7 @@ import javax.microedition.lcdui.Gauge;
 
 import nmania.formats.IRawBeatmap;
 import nmania.formats.InvalidBeatmapTypeException;
+import nmania.formats.RawBeatmapConverter;
 import nmania.formats.RawNmaniaBeatmap;
 import nmania.formats.RawOsuBeatmap;
 import nmania.ui.BeatmapSetPage;
@@ -42,13 +43,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 		Beatmap b;
 		try {
 			String raw = BeatmapManager.getStringFromFS(set.wdPath + set.folderName + bmfn);
-			IRawBeatmap rb;
-			if (raw.startsWith("osu file format")) {
-				rb = new RawOsuBeatmap(raw);
-			} else if (raw.charAt(0) == '{') {
-				rb = new RawNmaniaBeatmap(raw);
-			} else
-				throw new InvalidBeatmapTypeException("This is not osu! nor nmania beatmap. Is the file damaged?");
+			IRawBeatmap rb = RawBeatmapConverter.FromText(raw);
 			Thread.sleep(1);
 			b = rb.ToBeatmap();
 		} catch (InvalidBeatmapTypeException e) {

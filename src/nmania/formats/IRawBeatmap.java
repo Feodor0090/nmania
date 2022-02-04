@@ -4,4 +4,5 @@ import nmania.Beatmap;
 
 public interface IRawBeatmap {
 	Beatmap ToBeatmap() throws InvalidBeatmapTypeException;
+	String GetImage();
 }
