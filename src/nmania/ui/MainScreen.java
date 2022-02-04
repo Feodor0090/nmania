@@ -158,6 +158,9 @@ public class MainScreen extends GameCanvas implements Runnable {
 
 	float mul;
 
+	/**
+	 * Thread responsible for animations.
+	 */
 	public void run() {
 		state = -1;
 		needThread = true;
@@ -194,20 +197,21 @@ public class MainScreen extends GameCanvas implements Runnable {
 		while (needThread) {
 			long now = System.currentTimeMillis();
 			g.setColor(bgColor);
-			int arcSize = (int) ((now - startTime) * l / 500);
+			int arcSize = (int) ((now - startTime) * l / 400);
 			g.fillArc(w / 2 - arcSize, h / 2 - arcSize, arcSize * 2, arcSize * 2, 0, 360);
 			flushGraphics();
-			if (now - startTime > 500)
+			if (now - startTime > 400)
 				break;
 		}
 		startTime = System.currentTimeMillis();
 		while (needThread) {
 			long now = System.currentTimeMillis();
 			g.setColor(-1);
-			int arcSize = (int) ((now - startTime) * Math.min(w, h) / 500) / 2;
-			g.fillArc(w / 2 - arcSize, h / 2 - arcSize, arcSize * 2, arcSize * 2, 0, 360);
+			int rw = (int) (w * (now - startTime) / 800);
+			g.fillRect(0, 0, rw, h);
+			g.fillRect(w - rw, 0, rw, h);
 			flushGraphics();
-			if (now - startTime > 500)
+			if (now - startTime > 400)
 				break;
 		}
 		startTime = System.currentTimeMillis();
@@ -217,15 +221,18 @@ public class MainScreen extends GameCanvas implements Runnable {
 			g.fillRect(0, 0, w, h);
 			g.drawImage(logo, w / 2, h / 2, 3);
 			g.setColor(-1);
-			int arcSize = (int) ((500 - (now - startTime)) * Math.min(w, h) / 500) / 2;
+			int arcSize = (int) ((400 - (now - startTime)) * Math.sqrt(w * w + h * h) / 400) / 2;
 			g.fillArc(w / 2 - arcSize, h / 2 - arcSize, arcSize * 2, arcSize * 2, 0, 360);
 			flushGraphics();
-			if (now - startTime > 500)
+			if (now - startTime > 400)
 				break;
 		}
 		state = 0;
 		// LOGO
 		while (needThread && state == 0) {
+			w = getWidth();
+			h = getHeight();
+			g = getGraphics();
 			g.setColor(bgColor);
 			g.fillRect(0, 0, w, h);
 			g.drawImage(logo, w / 2, h / 2, 3);
@@ -244,7 +251,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 			int arcSize = (int) ((now - startTime) * l / 500);
 			g.fillArc(w / 2 - arcSize, h / 2 - arcSize, arcSize * 2, arcSize * 2, 0, 360);
 			flushGraphics();
-			if (now - startTime > 500)
+			if (now - startTime > 400)
 				break;
 		}
 		// MENU
@@ -253,6 +260,9 @@ public class MainScreen extends GameCanvas implements Runnable {
 		Font f = Font.getFont(0, 0, 8);
 		g.setFont(f);
 		while (needThread && state == 2) {
+			w = getWidth();
+			h = getHeight();
+			g = getGraphics();
 			long now = System.currentTimeMillis();
 			g.setColor(bgColor);
 			g.fillRect(0, 0, w, h);
@@ -261,9 +271,9 @@ public class MainScreen extends GameCanvas implements Runnable {
 			g.drawString("github.com/Feodor0090/nmania", w / 2, 0, 17);
 			g.drawString("v" + Nmania.version(), w / 2, f.getHeight(), 17);
 			g.drawString("use 1,7,5,3,9 keys", w / 2, h, 33);
-			if (now - startTime < 1000) {
+			if (now - startTime < 600) {
 				g.setColor(-1);
-				int h1 = (int) (h * (1000 - (now - startTime)) / 1000) / 2;
+				int h1 = (int) (h * (600 - (now - startTime)) / 600) / 2;
 				g.fillRect(0, 0, w, h1);
 				g.fillRect(0, h - h1, w, h1);
 			} else {
@@ -280,7 +290,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 			startTime = System.currentTimeMillis();
 			// play
 			while (true) {
-				int length = 500;
+				int length = 400;
 				long now = System.currentTimeMillis();
 				g.setColor(0);
 				int h1 = (int) (h * (now - startTime) / length);
