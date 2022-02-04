@@ -30,6 +30,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 	public static int bgColor = SNUtils.toARGB("0xffbd55");
 	private Image logo, menu;
 	int state = -2;
+	int selected = 0;
 
 	protected void keyPressed(int k) {
 		lastInputIsTouch = false;
@@ -38,27 +39,48 @@ public class MainScreen extends GameCanvas implements Runnable {
 			return;
 		}
 		if (state == 2) {
-			if (k == -5 || k == '5') {
+			if (k == -3) {
+				selected--;
+				if (selected < -2)
+					selected = 2;
+				return;
+			}
+			if (k == -4) {
+				selected++;
+				if (selected > 2)
+					selected = -2;
+				return;
+			}
+			if (k == -5 || k == 10 || k == 32) {
+				if (selected == 2) {
+					state = 5;
+				} else {
+					state = 4;
+					action = (new int[] { 3, 2, 1, 4 })[selected + 2];
+				}
+				return;
+			}
+			if (k == '5') {
 				state = 4;
 				action = 1;
 				return;
 			}
-			if (k == -6 || k == '1') {
+			if (k == '1') {
 				state = 4;
 				action = 2;
 				return;
 			}
-			if (k == -3 || k == '7') {
+			if (k == '7') {
 				state = 4;
 				action = 3;
 				return;
 			}
-			if (k == -4 || k == '3') {
+			if (k == '3') {
 				state = 4;
 				action = 4;
 				return;
 			}
-			if (k == -7 || k == '9') {
+			if (k == '9') {
 				state = 5;
 				return;
 			}
@@ -115,7 +137,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 		switch (action) {
 		case 1:
 			Play();
-			break;
+			return;
 		case 2:
 			Nmania.Push(new SettingsScreen(lastInputIsTouch));
 			break;
@@ -137,13 +159,16 @@ public class MainScreen extends GameCanvas implements Runnable {
 	private void Play() {
 		(new Thread(new Runnable() {
 			public void run() {
+				Thread.yield();
 				try {
 					Nmania.LoadManager(Settings.workingFolder);
 					if (Nmania.skin == null) {
 						Nmania.skin = new Skin();
 					}
 					Nmania.Push(new BeatmapSetsList(Nmania.bm));
+					needThread = false;
 				} catch (Exception e) {
+					needThread = false;
 					e.printStackTrace();
 					Nmania.Push(new InfoScreen());
 					Thread.yield();
@@ -268,11 +293,30 @@ public class MainScreen extends GameCanvas implements Runnable {
 			long now = System.currentTimeMillis();
 			g.setColor(bgColor);
 			g.fillRect(0, 0, w, h);
+			if (!lastInputIsTouch) {
+				g.setColor(255, 0, 0);
+				if (selected == 0) {
+					int s = (int) (236 / mul);
+					int s2 = s / 2;
+					g.fillArc(w / 2 - s2, h / 2 - s2, s, s, 0, 360);
+				} else {
+					int s = (int) (164 / mul);
+					if (selected == -1) {
+						// 53; 18
+						g.fillArc((int) (w / 2 - (320 - 53) / mul), (int) (h / 2 - (180 - 18) / mul), s, s, 0, 360);
+					} else if (selected == -2) {
+						g.fillArc((int) (w / 2 - (320 - 53) / mul), (int) (h / 2 - (180 - 178) / mul), s, s, 0, 360);
+					} else if (selected == 1) {
+						g.fillArc((int) (w / 2 + 103 / mul), (int) (h / 2 - (180 - 18) / mul), s, s, 0, 360);
+					} else if (selected == 2) {
+						g.fillArc((int) (w / 2 + 103 / mul), (int) (h / 2 - (180 - 178) / mul), s, s, 0, 360);
+					}
+				}
+			}
 			g.drawImage(menu, w / 2, h / 2, 3);
 			g.setColor(0);
 			g.drawString("github.com/Feodor0090/nmania", w / 2, 0, 17);
-			g.drawString("v" + Nmania.version(), w / 2, f.getHeight(), 17);
-			g.drawString("use 1,7,5,3,9 keys", w / 2, h, 33);
+			g.drawString("v" + Nmania.version(), w / 2, h, 33);
 			if (now - startTime < 500) {
 				g.setColor(-1);
 				int h1 = (int) (h * (500 - (now - startTime)) / 500) / 2;
@@ -280,7 +324,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 				g.fillRect(0, h - h1, w, h1);
 			} else {
 				try {
-					Thread.sleep(100);
+					Thread.sleep(40);
 				} catch (InterruptedException e) {
 					return;
 				}
@@ -308,8 +352,8 @@ public class MainScreen extends GameCanvas implements Runnable {
 						g.setColor(0);
 						g.fillRect(0, 0, w, h);
 						g.setColor(-1);
-						g.fillArc(w / 2 - 20, h / 2 - 20, 40, 40, ((int) now) % 360, 90);
-						g.fillArc(w / 2 - 20, h / 2 - 20, 40, 40, ((int) now) % 360 + 180, 90);
+						g.fillArc(w / 2 - 30, h / 2 - 30, 60, 60, -((int) now / 2) % 360, 90);
+						g.fillArc(w / 2 - 30, h / 2 - 30, 60, 60, -((int) now / 2) % 360 + 180, 90);
 						flushGraphics();
 						try {
 							Thread.sleep(30);
