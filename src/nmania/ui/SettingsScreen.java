@@ -182,7 +182,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		public void OnSelect(int i) {
 			switch (i) {
 			case 0:
-				Nmania.Push(new KeyboardLayoutSelect(_this));
+				Switch(binds);
 				break;
 			case 1:
 				Switch(audio);
@@ -292,6 +292,34 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			drawCheckbox(g, Settings.keepMenu, y, th);
 			drawCheckbox(g, Settings.drawCounters, y + th, th);
 			drawCheckbox(g, Settings.fullScreenFlush, iy + th * 2, th);
+		}
+	};
+	SettingsSection binds = new SettingsSection() {
+
+		final String[] items = new String[] { "1K", "2K", "3K", "4K", "5K", "6K", "7K", "8K", "9K", "10K", "<<< back" };
+
+		public void OnSelect(int i) {
+			if (i >= 0 && i <= 9) {
+				Nmania.Push(new KeyboardSetup(i + 1, _this));
+			} else if (i == 10) {
+				Switch(main);
+			}
+		}
+
+		public String GetTitle() {
+			return "";
+		}
+
+		public String[] GetItems() {
+			return items;
+		}
+
+		public void paint(Graphics g, int y, int sw) {
+			for (int i = 0; i < 10; i++) {
+				if (i > 0 && Settings.keyLayout[i] == null) {
+					g.drawString("not set", getWidth() - 10, y + th * i, 24);
+				}
+			}
 		}
 	};
 
