@@ -3,6 +3,7 @@ package nmania.ui;
 import java.io.IOException;
 import java.util.Enumeration;
 
+import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
@@ -17,7 +18,7 @@ public class BeatmapSetsList extends List implements CommandListener {
 	private Command back = new Command("Back", Command.BACK, 1);
 	
 	public BeatmapSetsList(BeatmapManager bm) throws IOException {
-		super("Beatmapset select", List.IMPLICIT);
+		super("Beatmapset select", Choice.IMPLICIT);
 		setCommandListener(this);
 		this.bm = bm;
 		Enumeration e = bm.list();

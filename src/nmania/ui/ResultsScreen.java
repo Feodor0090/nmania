@@ -54,7 +54,7 @@ public final class ResultsScreen extends Canvas {
 		}
 	}
 
-	private final void drawRow(Graphics g, String title, int titleColor, String value, int y, int w) {
+	private final static void drawRow(Graphics g, String title, int titleColor, String value, int y, int w) {
 		g.setColor(titleColor);
 		g.drawString(title, 10, y, 0);
 		g.setColor(-1);

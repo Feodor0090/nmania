@@ -26,7 +26,7 @@ public final class ScoreController {
 			return 10000;
 		if(currentHitScore<200000)
 			return currentHitScore * 10000 / maxHitScore;
-		return (int) ((long)currentHitScore * 10000l / (long)maxHitScore);
+		return (int) (currentHitScore * 10000l / maxHitScore);
 	}
 
 	public void Reset() {

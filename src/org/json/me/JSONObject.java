@@ -99,17 +99,6 @@ public class JSONObject {
 
         public Null() { }
 
-
-		/**
-         * There is only intended to be a single instance of the NULL object,
-         * so the clone method returns itself.
-         * @return     NULL.
-         */
-        public final Object clone() {
-            return this;
-        }
-
-
         /**
          * A Null object is equal to the null value and to itself.
          * @param object    An object to test for nullness.
@@ -128,6 +117,10 @@ public class JSONObject {
         public String toString() {
             return "null";
         }
+
+		public int hashCode() {
+			return 1;
+		}
     }
 
 

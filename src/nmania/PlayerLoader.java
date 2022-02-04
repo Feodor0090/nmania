@@ -85,7 +85,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 		}
 	}
 
-	private final void PushWaitPush(Displayable s1, Alert s2) {
+	private final static void PushWaitPush(Displayable s1, Alert s2) {
 		Nmania.Push(s1);
 		try {
 			Thread.sleep(50);

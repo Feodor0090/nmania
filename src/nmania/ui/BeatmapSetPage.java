@@ -67,7 +67,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 				String f = set.files[i];
 				if (f.endsWith(".osu") || f.endsWith(".nmbm")) {
 					StringItem btn = new StringItem(null, f.substring(f.indexOf('[') + 1, f.lastIndexOf(']')),
-							StringItem.BUTTON);
+							Item.BUTTON);
 					btn.setLayout(Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_BEFORE | Item.LAYOUT_NEWLINE_AFTER);
 					btn.setItemCommandListener(this);
 					btn.setDefaultCommand(new Difficulty(f));

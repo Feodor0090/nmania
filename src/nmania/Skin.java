@@ -88,24 +88,23 @@ public class Skin {
 		return composeColorsFor(holdKeyColors, columns);
 	}
 
-	private int[] composeColorsFor(int[] s, int cols) {
+	private static final int[] composeColorsFor(final int[] s, final int cols) {
 		int[] c = new int[cols * 2];
 		// odd odd nonodd nonodd sp sp
 		if (cols == 1) {
 			return new int[] { s[4], s[5] };
-		} else {
-			for (int i = 0; i < cols / 2; i++) {
-				int c1 = i % 2 == 0 ? s[0] : s[2];
-				int c2 = i % 2 == 0 ? s[1] : s[3];
-				c[i * 2] = c1;
-				c[i * 2 + 1] = c2;
-				c[(cols - i - 1) * 2] = c1;
-				c[(cols - i - 1) * 2 + 1] = c2;
-			}
-			if (cols % 2 == 1) {
-				c[(cols / 2) * 2] = s[4];
-				c[(cols / 2) * 2 + 1] = s[5];
-			}
+		}
+		for (int i = 0; i < cols / 2; i++) {
+			final int c1 = i % 2 == 0 ? s[0] : s[2];
+			final int c2 = i % 2 == 0 ? s[1] : s[3];
+			c[i * 2] = c1;
+			c[i * 2 + 1] = c2;
+			c[(cols - i - 1) * 2] = c1;
+			c[(cols - i - 1) * 2 + 1] = c2;
+		}
+		if (cols % 2 == 1) {
+			c[(cols / 2) * 2] = s[4];
+			c[(cols / 2) * 2 + 1] = s[5];
 		}
 		return c;
 	}

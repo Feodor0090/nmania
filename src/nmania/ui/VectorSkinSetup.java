@@ -54,12 +54,12 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 	Gauge leftO = new Gauge("Left offset", true, 800, skin.leftOffset);
 	Gauge holdW = new Gauge("Hold trail width", true, 150, skin.holdWidth);
 	Gauge noteH = new Gauge("Note height", true, 100, skin.noteHeight);
-	StringItem noteColors = new StringItem(null, "Notes pallete", StringItem.BUTTON);
-	StringItem holdColors = new StringItem(null, "Holds pallete", StringItem.BUTTON);
+	StringItem noteColors = new StringItem(null, "Notes pallete", Item.BUTTON);
+	StringItem holdColors = new StringItem(null, "Holds pallete", Item.BUTTON);
 	ChoiceGroup noteFillOptions = new ChoiceGroup("Note fill options", Choice.MULTIPLE,
 			new String[] { "Use vertical gradient", "Use different palletes for notes and hold heads" }, null);
-	StringItem keyColors = new StringItem(null, "Keys pallete", StringItem.BUTTON);
-	StringItem holdKeyColors = new StringItem(null, "Holded keys pallete", StringItem.BUTTON);
+	StringItem keyColors = new StringItem(null, "Keys pallete", Item.BUTTON);
+	StringItem holdKeyColors = new StringItem(null, "Holded keys pallete", Item.BUTTON);
 
 	void Apply() {
 		skin.columnWidth = colW.getValue();

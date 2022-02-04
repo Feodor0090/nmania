@@ -64,7 +64,8 @@ public class BeatmapManager {
 			bmsFc.close();
 			return bms;
 		} finally {
-			bmsFc.close();
+			if (bmsFc != null)
+				bmsFc.close();
 		}
 	}
 

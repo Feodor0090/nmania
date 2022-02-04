@@ -154,13 +154,13 @@ public class InfoScreen extends List implements CommandListener {
 		private static Command open = new Command("Go to", Command.ITEM, 1);
 
 		public Link(String text) {
-			super(null, text, StringItem.HYPERLINK);
+			super(null, text, Item.HYPERLINK);
 			this.setItemCommandListener(this);
 			this.addCommand(open);
 		}
 
 		public Link(String label, String text) {
-			super(label, text, StringItem.HYPERLINK);
+			super(label, text, Item.HYPERLINK);
 			this.setItemCommandListener(this);
 			this.addCommand(open);
 		}

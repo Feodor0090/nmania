@@ -26,7 +26,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 	}
 
 	private Graphics g;
-	private boolean needThread;
+	boolean needThread;
 	public static int bgColor = SNUtils.toARGB("0xffbd55");
 	private Image logo, menu;
 	int state = -2;
@@ -106,25 +106,25 @@ public class MainScreen extends GameCanvas implements Runnable {
 			x *= mul;
 			y *= mul;
 			if (x < 210) {
+				state = 4;
 				if (y > 180) {
 					// skin
 					action = 3;
-				} else {
-					// sets
-					action = 2;
+					return;
 				}
-				state = 4;
+				// sets
+				action = 2;
 				return;
 			} else if (x > 640 - 210) {
 				if (y > 180) {
 					// exit
 					state = 5;
 					return;
-				} else {
-					state = 4;
-					action = 4;
-					return;
 				}
+				// info
+				state = 4;
+				action = 4;
+				return;
 			} else {
 				state = 4;
 				action = 1;

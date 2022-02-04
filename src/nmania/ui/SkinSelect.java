@@ -90,7 +90,7 @@ public class SkinSelect extends Canvas {
 
 	}
 
-	void drawVectorSkinIcon(Graphics g, int x, int y) {
+	static void drawVectorSkinIcon(Graphics g, int x, int y) {
 		g.setColor(MainScreen.bgColor);
 		g.fillRect(x - 50, y - 45, 50, 20);
 		g.fillRect(x, y - 15, 50, 20);
@@ -103,7 +103,7 @@ public class SkinSelect extends Canvas {
 
 	}
 
-	void drawRichSkinIcon(Graphics g, int x, int y) {
+	static void drawRichSkinIcon(Graphics g, int x, int y) {
 		for (int i = x - 50; i < x + 49; i++) {
 			int bl = Math.abs(i - x);
 			g.setColor(ColorUtils.blend(0, MainScreen.bgColor, bl * 255 / 50));

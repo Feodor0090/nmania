@@ -26,10 +26,10 @@ public class SettingsScreen extends Canvas implements CommandListener {
 
 	final SettingsScreen _this;
 
-	private final Command dimOk = new Command("OK", Command.OK, 1);
-	private final Command scrollOk = new Command("OK", Command.OK, 1);
-	private final Command dirOk = new Command("OK", Command.OK, 1);
-	private final Command offsetOk = new Command("OK", Command.OK, 1);
+	final Command dimOk = new Command("OK", Command.OK, 1);
+	final Command scrollOk = new Command("OK", Command.OK, 1);
+	final Command dirOk = new Command("OK", Command.OK, 1);
+	final Command offsetOk = new Command("OK", Command.OK, 1);
 
 	int iy;
 	int th;

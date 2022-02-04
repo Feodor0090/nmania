@@ -645,8 +645,8 @@ public final class Player extends GameCanvas {
 		final String j = "FAILED";
 		final int length = 50;
 		for (int i = 0; i <= length; i++) {
-			int h1 = (int) (scrH * i / length) / 2;
-			int w1 = (int) (scrW * i / length) / 2;
+			int h1 = scrH * i / length / 2;
+			int w1 = scrW * i / length / 2;
 			// rects
 			g.setColor(0);
 			g.fillRect(0, 0, w1, scrH); // left
