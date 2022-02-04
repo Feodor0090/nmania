@@ -18,7 +18,13 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	public SettingsScreen(boolean touch) {
 		setFullScreenMode(true);
 		selected = touch ? -1 : 0;
+		_this = this;
+		Switch(main);
+		repaint();
+		this.touch = touch;
 	}
+
+	final SettingsScreen _this;
 
 	private final Command dimOk = new Command("OK", Command.OK, 1);
 	private final Command scrollOk = new Command("OK", Command.OK, 1);
@@ -27,29 +33,48 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	int iy;
 	int th;
 
+	SettingsSection curr = null;
+	SettingsSection prev;
+	boolean switching;
+	int switchOffset = 0;
+	boolean touch;
+
 	protected void paint(Graphics g) {
-		int h = getHeight();
+		g.setColor(0);
+		g.fillRect(0, 0, getWidth(), getHeight());
 		Font f = Font.getFont(0, 0, 8);
 		th = f.getHeight();
-		g.setColor(0);
-		g.fillRect(0, 0, getWidth(), h);
+		g.setFont(f);
+		if (switching) {
+			int x = (getWidth() * (40 - switchOffset)) / 20;
+			g.translate(-x, 0);
+			if (prev != null)
+				paintSection(g, prev);
+			g.translate(getWidth(), 0);
+			g.setColor(MainScreen.bgColor);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			g.translate(getWidth(), 0);
+			if (curr != null)
+				paintSection(g, curr);
+			g.translate(-g.getTranslateX(), 0);
+		} else {
+			paintSection(g, curr);
+		}
+	}
+
+	private void paintSection(Graphics g, SettingsSection s) {
+		int h = getHeight();
+		String[] items = s.GetItems();
 		iy = (h - th * items.length) / 2;
 		g.setColor(MainScreen.bgColor);
-		if (selected >= 0)
+		if (selected >= 0 && !switching)
 			g.fillRect(5, iy + th * selected, getWidth() - 10, th);
 		g.setColor(-1);
-		g.drawString("nmania settings", getWidth() / 2, 0, Graphics.HCENTER | Graphics.TOP);
+		g.drawString(s.GetTitle(), getWidth() / 2, 0, Graphics.HCENTER | Graphics.TOP);
 		for (int i = 0; i < items.length; i++) {
 			g.drawString(items[i], 10, iy + th * i, 0);
 		}
-		g.drawString(((int) (Settings.bgDim * 100)) + "%", getWidth() - 10, iy + th, Graphics.TOP | Graphics.RIGHT);
-		g.setColor(-1);
-		g.drawString("x" + Settings.speedDiv, getWidth() - 10, iy + th * 2, Graphics.TOP | Graphics.RIGHT);
-		drawCheckbox(g, Settings.hitSamples, iy + th * 3, th);
-		drawCheckbox(g, Settings.gameplaySamples, iy + th * 4, th);
-		drawCheckbox(g, Settings.keepMenu, iy + th * 5, th);
-		drawCheckbox(g, Settings.drawCounters, iy + th * 6, th);
-		drawCheckbox(g, Settings.fullScreenFlush, iy + th * 7, th);
+		s.paint(g, iy, getWidth());
 	}
 
 	void drawCheckbox(Graphics g, boolean ok, int y, int th) {
@@ -64,15 +89,18 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	}
 
 	protected void keyPressed(int k) {
+		touch = false;
+		if (curr == null || switching)
+			return;
 		if (k == -1 || k == '2') {
 			// up
 			selected--;
 			if (selected < 0)
-				selected = items.length - 1;
+				selected = curr.GetItems().length - 1;
 		} else if (k == -2 || k == '8') {
 			// down
 			selected++;
-			if (selected >= items.length)
+			if (selected >= curr.GetItems().length)
 				selected = 0;
 		} else if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
 			activateItem();
@@ -84,10 +112,13 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	}
 
 	protected void pointerPressed(int x, int y) {
+		touch = true;
+		if (curr == null || switching)
+			return;
 		y -= iy;
 		if (y < 0)
 			return;
-		for (int i = 0; i < items.length; i++) {
+		for (int i = 0; i < curr.GetItems().length; i++) {
 			if (y < th) {
 				selected = i;
 				activateItem();
@@ -99,57 +130,11 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	}
 
 	private void activateItem() {
-		switch (selected) {
-		case 0:
-			Nmania.Push(new KeyboardLayoutSelect(this));
-			break;
-		case 1:
-			TextBox box = new TextBox("Dim level", "" + Math.min(99, (int) (Settings.bgDim * 100)), 2,
-					TextField.NUMERIC);
-			box.addCommand(dimOk);
-			box.setCommandListener(this);
-			Display.getDisplay(Nmania.inst).setCurrent(box);
-			break;
-		case 2:
-			TextBox box1 = new TextBox("Speed", "" + Settings.speedDiv, 1, TextField.NUMERIC);
-			box1.addCommand(scrollOk);
-			box1.setCommandListener(this);
-			Display.getDisplay(Nmania.inst).setCurrent(box1);
-			break;
-		case 3:
-			Settings.hitSamples = !Settings.hitSamples;
-			break;
-		case 4:
-			Settings.gameplaySamples = !Settings.gameplaySamples;
-			break;
-		case 5:
-			Settings.keepMenu = !Settings.keepMenu;
-			break;
-		case 6:
-			Settings.drawCounters = !Settings.drawCounters;
-			break;
-		case 7:
-			Settings.fullScreenFlush = !Settings.fullScreenFlush;
-			break;
-		case 8:
-			TextBox box2 = new TextBox("Folder location", Settings.workingFolder, 100, TextField.ANY);
-			box2.addCommand(dirOk);
-			box2.setCommandListener(this);
-			Nmania.Push(box2);
-			break;
-		case 9:
-			Settings.Save();
-			Nmania.Push(new MainScreen());
-			break;
-		default:
-			break;
-		}
+		if (!switching)
+			curr.OnSelect(selected);
 	}
 
 	int selected = 0;
-	String[] items = new String[] { "Gameplay bindings", "Background dim", "Scroll speed", "Enable hitsounds",
-			"Enable feedback sounds", "Keep UI during gameplay", "Draw counters", "Fullscreen flush", "Folder location",
-			"<<< back" };
 
 	public void commandAction(Command c, Displayable d) {
 		if (d instanceof TextBox) {
@@ -161,6 +146,163 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Settings.workingFolder = ((TextBox) d).getString();
 			}
 			Nmania.Push(this);
+		}
+	}
+
+	public void Switch(final SettingsSection ss) {
+		switching = true;
+		prev = curr;
+		curr = ss;
+		switchOffset = 40;
+		(new Thread() {
+			public void run() {
+				try {
+					while (switchOffset > 0) {
+						repaint();
+						Thread.sleep(10);
+						switchOffset--;
+					}
+					selected = touch ? -1 : 0;
+					if (ss == null)
+						Nmania.Push(new MainScreen());
+					else {
+						switching = false;
+						repaint();
+					}
+
+				} catch (Exception e) {
+					return;
+				}
+			}
+		}).start();
+	}
+
+	SettingsSection main = new SettingsSection() {
+
+		public void OnSelect(int i) {
+			switch (i) {
+			case 0:
+				Nmania.Push(new KeyboardLayoutSelect(_this));
+				break;
+			case 1:
+				Switch(audio);
+				break;
+			case 2:
+				Switch(system);
+				break;
+			case 3:
+				TextBox box = new TextBox("Dim level", "" + Math.min(99, (int) (Settings.bgDim * 100)), 2,
+						TextField.NUMERIC);
+				box.addCommand(dimOk);
+				box.setCommandListener(_this);
+				Display.getDisplay(Nmania.inst).setCurrent(box);
+				break;
+			case 4:
+				TextBox box1 = new TextBox("Speed", "" + Settings.speedDiv, 1, TextField.NUMERIC);
+				box1.addCommand(scrollOk);
+				box1.setCommandListener(_this);
+				Display.getDisplay(Nmania.inst).setCurrent(box1);
+				break;
+			case 5:
+				TextBox box2 = new TextBox("Folder location", Settings.workingFolder, 100, TextField.ANY);
+				box2.addCommand(dirOk);
+				box2.setCommandListener(_this);
+				Nmania.Push(box2);
+				break;
+			case 6:
+				Settings.Save();
+				Switch(null);
+				break;
+			}
+		}
+
+		public String[] GetItems() {
+			return new String[] { "Gameplay bindings", "Audio settings", "System settings", "Background dim",
+					"Scroll speed", "Folder location", "<<< back" };
+		}
+
+		public String GetTitle() {
+			return "nmania settings";
+		}
+
+		public void paint(Graphics g, int y, int sw) {
+			g.setColor(-1);
+			g.drawString(((int) (Settings.bgDim * 100)) + "%", getWidth() - 10, y + th * 3,
+					Graphics.TOP | Graphics.RIGHT);
+			g.drawString("x" + Settings.speedDiv, getWidth() - 10, y + th * 4, Graphics.TOP | Graphics.RIGHT);
+		}
+	};
+	SettingsSection audio = new SettingsSection() {
+
+		public void OnSelect(int i) {
+			switch (i) {
+			case 0:
+				Settings.hitSamples = !Settings.hitSamples;
+				break;
+			case 1:
+				Settings.gameplaySamples = !Settings.gameplaySamples;
+				break;
+			case 2:
+				Switch(main);
+				break;
+			}
+		}
+
+		public String GetTitle() {
+			return "Audio";
+		}
+
+		public String[] GetItems() {
+			return new String[] { "Enable hitsounds", "Enable feedback sounds", "<<< back" };
+		}
+
+		public void paint(Graphics g, int y, int sw) {
+			drawCheckbox(g, Settings.hitSamples, y, th);
+			drawCheckbox(g, Settings.gameplaySamples, y + th, th);
+		}
+	};
+	SettingsSection system = new SettingsSection() {
+
+		public void OnSelect(int i) {
+			switch (i) {
+			case 0:
+				Settings.keepMenu = !Settings.keepMenu;
+				break;
+			case 1:
+				Settings.drawCounters = !Settings.drawCounters;
+				break;
+			case 2:
+				Settings.fullScreenFlush = !Settings.fullScreenFlush;
+				break;
+			case 3:
+				Switch(main);
+				break;
+			}
+		}
+
+		public String GetTitle() {
+			return "System";
+		}
+
+		public String[] GetItems() {
+			return new String[] { "Keep UI during gameplay", "Draw counters", "Fullscreen flush", "<<< back" };
+		}
+
+		public void paint(Graphics g, int y, int sw) {
+			drawCheckbox(g, Settings.keepMenu, y, th);
+			drawCheckbox(g, Settings.drawCounters, y + th, th);
+			drawCheckbox(g, Settings.fullScreenFlush, iy + th * 2, th);
+		}
+	};
+
+	public abstract class SettingsSection {
+		public abstract String GetTitle();
+
+		public abstract String[] GetItems();
+
+		public abstract void OnSelect(int i);
+
+		public void paint(Graphics g, int y, int sw) {
 		}
 	}
 
