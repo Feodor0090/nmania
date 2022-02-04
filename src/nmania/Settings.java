@@ -96,7 +96,9 @@ public final class Settings {
 			hitSamples = j.getBoolean("hitsounds");
 			keepMenu = j.optBoolean("keepmenu", false);
 			drawCounters = j.optBoolean("drawcounters", true);
-			fullScreenFlush = j.optBoolean("fullscreenflush", false);
+			final String device = Nmania.GetDevice();
+			fullScreenFlush = j.optBoolean("fullscreenflush",
+					device.indexOf("platform=S60") != -1 && device.indexOf("platform_version=5") != -1);
 			workingFolder = j.optString("dir", defaultWF);
 			gameplayOffset = j.optInt("gameplayoffset", 0);
 		} catch (Exception e) {

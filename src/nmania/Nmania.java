@@ -58,5 +58,9 @@ public final class Nmania extends MIDlet {
 	public static String version() {
 		return inst.getAppProperty("MIDlet-Version");
 	}
+	
+	public static String GetDevice() {
+		return System.getProperty("microedition.platform");
+	}
 
 }
