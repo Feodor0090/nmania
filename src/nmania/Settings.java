@@ -76,26 +76,31 @@ public final class Settings {
 	public static final void Load() {
 		try {
 			RecordStore r = RecordStore.openRecordStore("nmania_prefs", true);
-
-			if (r.getNumRecords() < 1) {
-				r.closeRecordStore();
-				throw new RuntimeException("No saved settings");
+			byte[] d = null;
+			if (r.getNumRecords() > 0) {
+				d = r.getRecord(1);
 			}
-			byte[] d = r.getRecord(1);
 			r.closeRecordStore();
 
 			// parse
-			JSONObject j = new JSONObject(new String(d));
-			bgDim = Float.parseFloat(j.getString("bgdim"));
-			speedDiv = j.getInt("speed");
-			JSONArray keys = j.getJSONArray("keys");
-			for (int i = 0; (i < keys.length() && i < keyLayout.length); i++) {
-				if (keys.isNull(i))
-					continue;
-				keyLayout[i] = SNUtils.json2intArray(keys.getJSONArray(i));
+			JSONObject j;
+			if (d == null) {
+				j = new JSONObject();
+			} else {
+				j = new JSONObject(new String(d));
 			}
-			gameplaySamples = j.getBoolean("samples");
-			hitSamples = j.getBoolean("hitsounds");
+			bgDim = Float.parseFloat(j.optString("bgdim", "0.90"));
+			speedDiv = j.optInt("speed", 3);
+			JSONArray keys = j.optJSONArray("keys");
+			if (keys != null) {
+				for (int i = 0; (i < keys.length() && i < keyLayout.length); i++) {
+					if (keys.isNull(i))
+						continue;
+					keyLayout[i] = SNUtils.json2intArray(keys.getJSONArray(i));
+				}
+			}
+			gameplaySamples = j.optBoolean("samples", true);
+			hitSamples = j.optBoolean("hitsounds", false);
 			keepMenu = j.optBoolean("keepmenu", false);
 			drawCounters = j.optBoolean("drawcounters", true);
 			final String device = Nmania.GetDevice();
