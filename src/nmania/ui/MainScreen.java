@@ -207,11 +207,11 @@ public class MainScreen extends GameCanvas implements Runnable {
 		while (needThread) {
 			long now = System.currentTimeMillis();
 			g.setColor(-1);
-			int rw = (int) (w * (now - startTime) / 800);
+			int rw = (int) (w * (now - startTime) / 400);
 			g.fillRect(0, 0, rw, h);
 			g.fillRect(w - rw, 0, rw, h);
 			flushGraphics();
-			if (now - startTime > 400)
+			if (now - startTime > 200)
 				break;
 		}
 		startTime = System.currentTimeMillis();
@@ -271,9 +271,9 @@ public class MainScreen extends GameCanvas implements Runnable {
 			g.drawString("github.com/Feodor0090/nmania", w / 2, 0, 17);
 			g.drawString("v" + Nmania.version(), w / 2, f.getHeight(), 17);
 			g.drawString("use 1,7,5,3,9 keys", w / 2, h, 33);
-			if (now - startTime < 600) {
+			if (now - startTime < 500) {
 				g.setColor(-1);
-				int h1 = (int) (h * (600 - (now - startTime)) / 600) / 2;
+				int h1 = (int) (h * (500 - (now - startTime)) / 500) / 2;
 				g.fillRect(0, 0, w, h1);
 				g.fillRect(0, h - h1, w, h1);
 			} else {
