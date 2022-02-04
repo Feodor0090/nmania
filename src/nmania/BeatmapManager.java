@@ -53,8 +53,9 @@ public class BeatmapManager {
 		}
 		if (fm == null)
 			return null;
+		IRawBeatmap bm = RawBeatmapConverter.FromText(fm);
+		bms.image = bm.GetImage();
 		if (fm.startsWith("osu file format")) {
-			IRawBeatmap osu = RawBeatmapConverter.FromText(fm);
 			// osu! beatmap
 			int metadataI = fm.indexOf("[Metadata]");
 			int eventsI = fm.indexOf("[Events]");
@@ -66,12 +67,10 @@ public class BeatmapManager {
 			bms.title = deCR(fm.substring(titleI, fm.indexOf('\n', titleI)));
 			bms.artist = deCR(fm.substring(artistI, fm.indexOf('\n', artistI)));
 			bms.mapper = deCR(fm.substring(creatorI, fm.indexOf('\n', creatorI)));
-			bms.image = osu.GetImage();
 		} else {
 			bms.title = "todo";
 			bms.artist = "todo";
 			bms.mapper = "todo";
-			bms.image = "todo";
 		}
 
 		bms.files = bakeEnum(bmsFc.list());
