@@ -121,10 +121,27 @@ public final class Player extends GameCanvas {
 		// step 6: samples
 		log.log("Loading samples");
 		if (Settings.gameplaySamples) {
-			combobreak = new Sample("/sfx/miss.mp3", "audio/mpeg");
+			String sn;
+			if (Settings.useBmsSamples && (sn = map.set.findFile("combobreak")) != null) {
+				combobreak = new Sample(map.ToGlobalPath(sn), null);
+			} else {
+				combobreak = new Sample("/sfx/miss.mp3", "audio/mpeg");
+			}
+			if (Settings.useBmsSamples && (sn = map.set.findFile("applause")) != null) {
+				sectionPass = new Sample(map.ToGlobalPath(sn), null);
+			} else {
+				sectionPass = new Sample("/sfx/pass.mp3", "audio/mpeg");
+			}
+			if (Settings.useBmsSamples && (sn = map.set.findFile("failsound")) != null) {
+				sectionFail = new Sample(map.ToGlobalPath(sn), null);
+			} else {
+				sectionFail = new Sample("/sfx/fail.mp3", "audio/mpeg");
+			}
 			restart = new Sample("/sfx/restart.wav", "audio/wav");
 		} else {
 			combobreak = null;
+			sectionPass = null;
+			sectionFail = null;
 			restart = null;
 		}
 		if (Settings.hitSamples) {
@@ -250,7 +267,9 @@ public final class Player extends GameCanvas {
 	private int pauseItem = 0;
 
 	private final Sample combobreak;
-	private Sample playOver;
+	private final Sample sectionPass;
+	private final Sample sectionFail;
+	private final Sample fail = null;
 	private final Sample restart;
 	private final MultiSample[][] hitSounds;
 
@@ -275,6 +294,12 @@ public final class Player extends GameCanvas {
 			restart.Dispose();
 		if (combobreak != null)
 			combobreak.Dispose();
+		if (sectionPass != null)
+			sectionPass.Dispose();
+		if (sectionFail != null)
+			sectionFail.Dispose();
+		if (fail != null)
+			fail.Dispose();
 	}
 
 	protected final void keyPressed(final int k) {
@@ -566,14 +591,9 @@ public final class Player extends GameCanvas {
 
 		if (emptyColumns == columnsCount) {
 			running = false;
-			try {
-				if (Settings.gameplaySamples) {
-					playOver = new Sample("/sfx/pass.mp3", "audio/mpeg");
-					playOver.Play();
-				}
-			} catch (IOException e1) {
-			} catch (MediaException e1) {
-			}
+			if (sectionPass != null)
+				sectionPass.Play();
+
 			final String j = "DIFFICULTY PASSED";
 			for (int i = 0; i < 5; i++) {
 				g.setColor(-1);
@@ -590,8 +610,6 @@ public final class Player extends GameCanvas {
 				} catch (Exception e) {
 				}
 			}
-			if (playOver != null)
-				playOver.Dispose();
 			Dispose();
 			Nmania.Push(new ResultsScreen(score, track, bg, menu));
 		}
@@ -633,14 +651,9 @@ public final class Player extends GameCanvas {
 	 *                  instead of destroying.
 	 */
 	private void FailSequence(boolean exitAfter) {
-		try {
-			track.Pause();
-			if (Settings.gameplaySamples) {
-				playOver = new Sample("/sfx/fail.mp3", "audio/mpeg");
-				playOver.Play();
-			}
-		} catch (IOException e1) {
-		} catch (MediaException e1) {
+		track.Pause();
+		if (sectionFail != null) {
+			sectionFail.Play();
 		}
 		final String j = "FAILED";
 		final int length = 50;
@@ -668,8 +681,6 @@ public final class Player extends GameCanvas {
 			} catch (Exception e) {
 			}
 		}
-		if (playOver != null)
-			playOver.Dispose();
 		if (exitAfter) {
 			running = false;
 			track.Stop();
