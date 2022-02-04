@@ -23,6 +23,14 @@ public final class Settings {
 	public static boolean fullScreenFlush = false;
 	public static String workingFolder = defaultWF;
 
+	/**
+	 * Audio/gameplay clocks offset. <br>
+	 * <br>
+	 * Positive - gameplay is faster than music. <br>
+	 * Negative - gameplay is behind the music.
+	 */
+	public static int gameplayOffset = 0;
+
 	public static final void Save() {
 		try {
 			JSONObject j = new JSONObject();
@@ -47,6 +55,7 @@ public final class Settings {
 			j.accumulate("drawcounters", new Boolean(drawCounters));
 			j.accumulate("fullscreenflush", new Boolean(fullScreenFlush));
 			j.accumulate("dir", workingFolder);
+			j.accumulate("gameplayoffset", new Integer(gameplayOffset));
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -89,6 +98,7 @@ public final class Settings {
 			drawCounters = j.optBoolean("drawcounters", true);
 			fullScreenFlush = j.optBoolean("fullscreenflush", false);
 			workingFolder = j.optString("dir", defaultWF);
+			gameplayOffset = j.optInt("gameplayoffset", 0);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

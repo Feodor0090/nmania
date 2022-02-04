@@ -14,12 +14,14 @@ public final class AudioController {
 				: Manager.createPlayer(getClass().getResourceAsStream(file), "audio/mpeg");
 		player.realize();
 		player.prefetch();
+		offset = Settings.gameplayOffset;
 	}
 
 	private final Player player;
+	private final int offset;
 
 	public int Now() {
-		return (int) (player.getMediaTime() / 1000);
+		return offset+(int) (player.getMediaTime() / 1000);
 	}
 
 	public boolean Play() {

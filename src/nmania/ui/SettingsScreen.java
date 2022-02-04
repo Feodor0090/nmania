@@ -29,6 +29,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	private final Command dimOk = new Command("OK", Command.OK, 1);
 	private final Command scrollOk = new Command("OK", Command.OK, 1);
 	private final Command dirOk = new Command("OK", Command.OK, 1);
+	private final Command offsetOk = new Command("OK", Command.OK, 1);
 
 	int iy;
 	int th;
@@ -144,6 +145,8 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Settings.speedDiv = Integer.parseInt(((TextBox) d).getString());
 			} else if (c == dirOk) {
 				Settings.workingFolder = ((TextBox) d).getString();
+			} else if (c == offsetOk) {
+				Settings.gameplayOffset = Integer.parseInt(((TextBox) d).getString());
 			}
 			Nmania.Push(this);
 		}
@@ -177,7 +180,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		}).start();
 	}
 
-	SettingsSection main = new SettingsSection() {
+	final SettingsSection main = new SettingsSection() {
 
 		public void OnSelect(int i) {
 			switch (i) {
@@ -232,7 +235,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			g.drawString("x" + Settings.speedDiv, getWidth() - 10, y + th * 4, Graphics.TOP | Graphics.RIGHT);
 		}
 	};
-	SettingsSection audio = new SettingsSection() {
+	final SettingsSection audio = new SettingsSection() {
 
 		public void OnSelect(int i) {
 			switch (i) {
@@ -243,6 +246,12 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Settings.gameplaySamples = !Settings.gameplaySamples;
 				break;
 			case 2:
+				TextBox box = new TextBox("Dim level", String.valueOf(Settings.gameplayOffset), 4, TextField.NUMERIC);
+				box.addCommand(offsetOk);
+				box.setCommandListener(_this);
+				Nmania.Push(box);
+				break;
+			case 3:
 				Switch(main);
 				break;
 			}
@@ -253,15 +262,17 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		}
 
 		public String[] GetItems() {
-			return new String[] { "Enable hitsounds", "Enable feedback sounds", "<<< back" };
+			return new String[] { "Enable hitsounds", "Enable feedback sounds", "Gameplay clock offset", "<<< back" };
 		}
 
 		public void paint(Graphics g, int y, int sw) {
 			drawCheckbox(g, Settings.hitSamples, y, th);
 			drawCheckbox(g, Settings.gameplaySamples, y + th, th);
+			g.setColor(-1);
+			g.drawString(Settings.gameplayOffset + "ms", getWidth() - 10, y + th * 2, 24);
 		}
 	};
-	SettingsSection system = new SettingsSection() {
+	final SettingsSection system = new SettingsSection() {
 
 		public void OnSelect(int i) {
 			switch (i) {
@@ -294,7 +305,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			drawCheckbox(g, Settings.fullScreenFlush, iy + th * 2, th);
 		}
 	};
-	SettingsSection binds = new SettingsSection() {
+	final SettingsSection binds = new SettingsSection() {
 
 		final String[] items = new String[] { "1K", "2K", "3K", "4K", "5K", "6K", "7K", "8K", "9K", "10K", "<<< back" };
 
