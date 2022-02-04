@@ -121,8 +121,8 @@ public final class Player extends GameCanvas {
 		// step 6: samples
 		log.log("Loading samples");
 		if (Settings.gameplaySamples) {
-			combobreak = new Sample(true, "/sfx/miss.mp3", "audio/mpeg");
-			restart = new Sample(true, "/sfx/restart.wav", "audio/wav");
+			combobreak = new Sample("/sfx/miss.mp3", "audio/mpeg");
+			restart = new Sample("/sfx/restart.wav", "audio/wav");
 		} else {
 			combobreak = null;
 			restart = null;
@@ -568,7 +568,7 @@ public final class Player extends GameCanvas {
 			running = false;
 			try {
 				if (Settings.gameplaySamples) {
-					playOver = new Sample(true, "/sfx/pass.mp3", "audio/mpeg");
+					playOver = new Sample("/sfx/pass.mp3", "audio/mpeg");
 					playOver.Play();
 				}
 			} catch (IOException e1) {
@@ -636,7 +636,7 @@ public final class Player extends GameCanvas {
 		try {
 			track.Pause();
 			if (Settings.gameplaySamples) {
-				playOver = new Sample(true, "/sfx/fail.mp3", "audio/mpeg");
+				playOver = new Sample("/sfx/fail.mp3", "audio/mpeg");
 				playOver.Play();
 			}
 		} catch (IOException e1) {

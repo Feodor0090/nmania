@@ -7,19 +7,19 @@ import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 
 public final class Sample {
-	
-	public Sample(boolean local, String file, String type) throws IOException, MediaException {
-		if(local) {
-			player = Manager.createPlayer(getClass().getResourceAsStream(file), type);
+
+	public Sample(String file, String type) throws IOException, MediaException {
+		if (file.startsWith("file://")) {
+			player = Manager.createPlayer(file);
 		} else {
-			throw new IllegalArgumentException("Remote samples are not supported yet!");
+			player = Manager.createPlayer(getClass().getResourceAsStream(file), type);
 		}
 		player.realize();
 		player.prefetch();
 	}
-	
+
 	private final Player player;
-	
+
 	public final void Play() {
 		try {
 			player.stop();
@@ -28,7 +28,7 @@ public final class Sample {
 		} catch (MediaException e) {
 		}
 	}
-	
+
 	public final void Dispose() {
 		player.deallocate();
 		player.close();
