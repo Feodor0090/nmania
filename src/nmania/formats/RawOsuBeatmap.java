@@ -48,26 +48,43 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 
 	public Beatmap ToBeatmap() throws InvalidBeatmapTypeException {
 		Beatmap b = new Beatmap();
-		if (!getValue("Mode").equals("3"))
-			throw new InvalidBeatmapTypeException("This is osu! beatmap, not osu!mania.");
+
 		b.diffName = getValue("Version");
-		b.columnsCount = (int) Float.parseFloat(getValue("CircleSize"));
 		b.difficulty = Float.parseFloat(getValue("OverallDifficulty"));
 		b.points = new TimingPoint[0];
 		b.audio = getValue("AudioFilename");
 		b.image = GetImage();
 		String[] rawObjs = hitObjects();
 		Vector notes = new Vector();
-		for (int i = 0; i < rawObjs.length; i++) {
-			if (rawObjs[i].length() < 4)
-				continue;
-			String[] values = SNUtils.splitFull(SNUtils.split2(rawObjs[i], ':')[0], ',');
-			float x = Float.parseFloat(values[0]);
-			int type = Integer.parseInt(values[3]);
-			int time = Integer.parseInt(values[2]);
-			int dur = ((type & 128) == 0) ? 0 : Integer.parseInt(values[5]) - time;
-			int column = (int) Math.floor(x * b.columnsCount / 512);
-			notes.addElement(new ManiaNote(time, column + 1, dur));
+		if (getValue("Mode").equals("3")) {
+			b.columnsCount = (int) Float.parseFloat(getValue("CircleSize"));
+			for (int i = 0; i < rawObjs.length; i++) {
+				if (rawObjs[i].length() < 4)
+					continue;
+				String[] values = SNUtils.splitFull(SNUtils.split2(rawObjs[i], ':')[0], ',');
+				float x = Float.parseFloat(values[0]);
+				int type = Integer.parseInt(values[3]);
+				int time = Integer.parseInt(values[2]);
+				int dur = ((type & 128) == 0) ? 0 : Integer.parseInt(values[5]) - time;
+				int column = (int) Math.floor(x * b.columnsCount / 512);
+				notes.addElement(new ManiaNote(time, column + 1, dur));
+			}
+		} else {
+			if (getValue("Mode").equals("1"))
+				throw new InvalidBeatmapTypeException("This is an osu!taiko beatmap. They are not supported.");
+			if (getValue("Mode").equals("2"))
+				throw new InvalidBeatmapTypeException("This is an osu!catch beatmap. They are not supported.");
+			b.columnsCount = 2;
+			for (int i = 0; i < rawObjs.length; i++) {
+				if (rawObjs[i].length() < 4)
+					continue;
+				String[] values = SNUtils.splitFull(SNUtils.split2(rawObjs[i], ':')[0], ',');
+				//int type = Integer.parseInt(values[3]);
+				int time = Integer.parseInt(values[2]);
+				// sliders are not supported yet
+				//int dur = ((type & 2) == 0) ? 0 : Integer.parseInt(values[5]) - time;
+				notes.addElement(new ManiaNote(time, i%2 + 1, 0));
+			}
 		}
 		b.notes = new ManiaNote[notes.size()];
 		notes.copyInto(b.notes);
