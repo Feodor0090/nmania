@@ -1,0 +1,5 @@
+Enable hitsounds
+Enable feedback sounds
+Use beatmap samples
+Gameplay clock offset
+<<< back

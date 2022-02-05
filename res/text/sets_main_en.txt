@@ -1,0 +1,7 @@
+Gameplay bindings
+Audio settings
+System settings
+Background dim
+Scroll speed
+Folder location
+<<< back

@@ -1,0 +1,9 @@
+Mode
+Normal play
+Automated demo
+Back
+Parsing beatmaps
+Failed to read BMS
+There must be at least one valid osu! / nmania beatmap in the folder. Also, check folder name - it must not be too long or contain special characters.
+Failed to read beatmap's background.
+Failed to read BMS

@@ -21,14 +21,14 @@ import tube42.lib.imagelib.ImageUtils;
 
 public class BeatmapSetPage extends Form implements Runnable, ItemCommandListener, CommandListener {
 
+	String[] text = Nmania.getStrings("bms_page");
 	BeatmapManager bm;
 	String dir;
 	BeatmapSet set;
-	ChoiceGroup mode = new ChoiceGroup("Mode", Choice.EXCLUSIVE, new String[] { "Normal play", "Automated demo" },
-			null);
+	ChoiceGroup mode = new ChoiceGroup(text[0], Choice.EXCLUSIVE, new String[] { text[1], text[2] }, null);
 
 	private BeatmapSetsList list;
-	private Command back = new Command("Back", Command.BACK, 1);
+	private Command back = new Command(text[3], Command.BACK, 1);
 
 	public BeatmapSetPage(BeatmapManager bm, String dir, BeatmapSetsList list) {
 		super("Beatmapset page");
@@ -36,7 +36,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 		this.dir = dir;
 		this.list = list;
 		this.setCommandListener(this);
-		append(new Gauge("Parsing beatmaps", false, -1, Gauge.CONTINUOUS_RUNNING));
+		append(new Gauge(text[4], false, -1, Gauge.CONTINUOUS_RUNNING));
 		(new Thread(this)).start();
 	}
 
@@ -46,9 +46,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 			if (set == null) {
 				deleteAll();
 				addCommand(back);
-				append(new StringItem("Failed to read BMS",
-						"There must be at least one valid osu! / nmania beatmap in the folder. "
-								+ "Also, check folder name - it must not be too long or contain special characters."));
+				append(new StringItem(text[5], text[6]));
 				return;
 			}
 			Image img = null;
@@ -60,7 +58,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 			if (img != null)
 				img = ImageUtils.resize(img, 350, (int) (img.getHeight() / (img.getWidth() / 350f)), true, false);
 			deleteAll();
-			append(new ImageItem(img == null ? "Failed to read beatmap's background." : null, img,
+			append(new ImageItem(img == null ? text[7] : null, img,
 					Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER, null));
 			append(set.artist + " - " + set.title + " (" + set.mapper + ")");
 			for (int i = 0; i < set.files.length; i++) {
@@ -83,7 +81,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 			e.printStackTrace();
 			deleteAll();
 			addCommand(back);
-			append(new StringItem("Failed to read BMS", e.toString()));
+			append(new StringItem(text[8], e.toString()));
 		}
 	}
 

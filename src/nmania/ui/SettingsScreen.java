@@ -194,20 +194,20 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Switch(system);
 				break;
 			case 3:
-				TextBox box = new TextBox("Dim level", "" + Math.min(99, (int) (Settings.bgDim * 100)), 2,
+				TextBox box = new TextBox(items[3], "" + Math.min(99, (int) (Settings.bgDim * 100)), 2,
 						TextField.NUMERIC);
 				box.addCommand(dimOk);
 				box.setCommandListener(_this);
 				Display.getDisplay(Nmania.inst).setCurrent(box);
 				break;
 			case 4:
-				TextBox box1 = new TextBox("Speed", "" + Settings.speedDiv, 1, TextField.NUMERIC);
+				TextBox box1 = new TextBox(items[4], "" + Settings.speedDiv, 1, TextField.NUMERIC);
 				box1.addCommand(scrollOk);
 				box1.setCommandListener(_this);
 				Display.getDisplay(Nmania.inst).setCurrent(box1);
 				break;
 			case 5:
-				TextBox box2 = new TextBox("Folder location", Settings.workingFolder, 100, TextField.ANY);
+				TextBox box2 = new TextBox(items[5], Settings.workingFolder, 100, TextField.ANY);
 				box2.addCommand(dirOk);
 				box2.setCommandListener(_this);
 				Nmania.Push(box2);
@@ -218,10 +218,11 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				break;
 			}
 		}
+		
+		final String[] items = Nmania.getStrings("sets_main");
 
 		public String[] GetItems() {
-			return new String[] { "Gameplay bindings", "Audio settings", "System settings", "Background dim",
-					"Scroll speed", "Folder location", "<<< back" };
+			return items;
 		}
 
 		public String GetTitle() {
@@ -248,7 +249,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			case 2:
 				Settings.useBmsSamples = !Settings.useBmsSamples;
 			case 3:
-				TextBox box = new TextBox("Dim level", String.valueOf(Settings.gameplayOffset), 4, TextField.NUMERIC);
+				TextBox box = new TextBox(items[3], String.valueOf(Settings.gameplayOffset), 4, TextField.NUMERIC);
 				box.addCommand(offsetOk);
 				box.setCommandListener(_this);
 				Nmania.Push(box);
@@ -263,9 +264,10 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			return "Audio";
 		}
 
+		final String[] items = Nmania.getStrings("sets_audio");
+
 		public String[] GetItems() {
-			return new String[] { "Enable hitsounds", "Enable feedback sounds", "Use beatmap samples",
-					"Gameplay clock offset", "<<< back" };
+			return items;
 		}
 
 		public void paint(Graphics g, int y, int sw) {
@@ -299,8 +301,10 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			return "System";
 		}
 
+		final String[] items = Nmania.getStrings("sets_system");
+
 		public String[] GetItems() {
-			return new String[] { "Keep UI during gameplay", "Draw counters", "Fullscreen flush", "<<< back" };
+			return items;
 		}
 
 		public void paint(Graphics g, int y, int sw) {
