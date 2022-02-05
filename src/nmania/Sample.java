@@ -29,6 +29,13 @@ public final class Sample {
 		}
 	}
 
+	public final int GetLength() {
+		long dur = player.getDuration();
+		if (dur == Player.TIME_UNKNOWN)
+			return -1;
+		return (int) (dur / 1000);
+	}
+
 	public final void Dispose() {
 		player.deallocate();
 		player.close();
