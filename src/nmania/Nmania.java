@@ -1,6 +1,8 @@
 package nmania;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.lcdui.Display;
@@ -9,6 +11,7 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import nmania.ui.MainScreen;
+import symnovel.SNUtils;
 
 public final class Nmania extends MIDlet {
 
@@ -58,9 +61,37 @@ public final class Nmania extends MIDlet {
 	public static String version() {
 		return inst.getAppProperty("MIDlet-Version");
 	}
-	
+
 	public static String GetDevice() {
 		return System.getProperty("microedition.platform");
+	}
+
+	/**
+	 * Loads localization file.
+	 * 
+	 * @param cat    Category of strings.
+	 * @param locale Language code to use.
+	 * @return List of strings to use.
+	 */
+	public static String[] getStrings(String cat) {
+		try {
+			String locale = System.getProperty("microedition.locale").toLowerCase().substring(0, 2);
+			InputStream s = Nmania.class.getResourceAsStream("/text/" + cat + "_" + locale + ".txt");
+			if (s == null)
+				s = Nmania.class.getResourceAsStream("/text/" + cat + "_en.txt");
+
+			char[] buf = new char[32 * 1024];
+			InputStreamReader isr = new InputStreamReader(s, "UTF-8");
+			int l = isr.read(buf);
+			isr.close();
+			String r = new String(buf, 0, l).replace('\r', ' ');
+			return SNUtils.splitFull(r, '\n');
+		} catch (Exception e) {
+			e.printStackTrace();
+			// null is returned to avoid massive try-catch constructions near every call.
+			// Normally, it always returns english file.
+			return null;
+		}
 	}
 
 }
