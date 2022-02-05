@@ -12,6 +12,9 @@ public final class Sample {
 		if (file.startsWith("file://")) {
 			player = Manager.createPlayer(file);
 		} else {
+			if (type == null) {
+				type = "audio/" + file.substring(file.lastIndexOf('.') + 1, file.length());
+			}
 			player = Manager.createPlayer(getClass().getResourceAsStream(file), type);
 		}
 		player.realize();
