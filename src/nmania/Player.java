@@ -127,7 +127,7 @@ public final class Player extends GameCanvas {
 			} else {
 				combobreak = new Sample("/sfx/miss.mp3", "audio/mpeg");
 			}
-			if (Settings.useBmsSamples && (sn = map.set.findFile("applause")) != null) {
+			if (Settings.useBmsSamples && (sn = map.set.findFile("sectionpass")) != null) {
 				sectionPass = new Sample(map.ToGlobalPath(sn), null);
 			} else {
 				sectionPass = new Sample("/sfx/pass.mp3", "audio/mpeg");
@@ -137,12 +137,18 @@ public final class Player extends GameCanvas {
 			} else {
 				sectionFail = new Sample("/sfx/fail.mp3", "audio/mpeg");
 			}
+			if (Settings.useBmsSamples && (sn = map.set.findFile("applause")) != null) {
+				applause = map.ToGlobalPath(sn);
+			} else {
+				applause = "/sfx/applause.wav";
+			}
 			restart = new Sample("/sfx/restart.wav", "audio/wav");
 		} else {
 			combobreak = null;
 			sectionPass = null;
 			sectionFail = null;
 			restart = null;
+			applause = null;
 		}
 		if (Settings.hitSamples) {
 			String[] sets = new String[] { "normal", "soft", "drum" };
@@ -272,6 +278,7 @@ public final class Player extends GameCanvas {
 	private final Sample fail = null;
 	private final Sample restart;
 	private final MultiSample[][] hitSounds;
+	private final String applause;
 
 	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
 	public final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
@@ -590,29 +597,37 @@ public final class Player extends GameCanvas {
 		System.arraycopy(holdKeys, 0, lastHoldKeys, 0, columnsCount);
 
 		if (emptyColumns == columnsCount) {
-			running = false;
-			if (sectionPass != null)
-				sectionPass.Play();
-
-			final String j = "DIFFICULTY PASSED";
-			for (int i = 0; i < 5; i++) {
-				g.setColor(-1);
-				g.drawString(j, scrW / 2 + 1, 49, 17);
-				g.drawString(j, scrW / 2 - 1, 49, 17);
-				g.drawString(j, scrW / 2 + 1, 51, 17);
-				g.drawString(j, scrW / 2 - 1, 51, 17);
-				if (i % 2 == 0)
-					g.setColor(0, 190, 0);
-				g.drawString(j, scrW / 2, 50, 17);
-				flushGraphics();
-				try {
-					Thread.sleep(250);
-				} catch (Exception e) {
-				}
-			}
-			Dispose();
-			Nmania.Push(new ResultsScreen(score, track, bg, menu));
+			PassSequence();
 		}
+	}
+
+	private void PassSequence() {
+		running = false;
+		final String j = "DIFFICULTY PASSED";
+		final int w2 = scrW / 2;
+		final int h2 = scrH / 2;
+		final int ty = h2 - g.getFont().getHeight() / 2;
+		int len = 30;
+		final int maxS = (int) Math.sqrt(w2 * w2 + h2 * h2);
+		for (int i = 0; i < len; i++) {
+			g.setColor(-1);
+			int arcS = maxS * i / len;
+			g.fillArc(w2 - arcS, h2 - arcS, arcS * 2, arcS * 2, 0, 360);
+			g.setColor(0);
+			g.drawString(j, w2 + 1, ty - 1, 17);
+			g.drawString(j, w2 - 1, ty - 1, 17);
+			g.drawString(j, w2 + 1, ty + 1, 17);
+			g.drawString(j, w2 - 1, ty + 1, 17);
+			g.setColor(20, 255, 20);
+			g.drawString(j, w2, ty, 17);
+			flushGraphics();
+			try {
+				Thread.sleep(13);
+			} catch (Exception e) {
+			}
+		}
+		Dispose();
+		Nmania.Push(new ResultsScreen(score, track, bg, menu, applause));
 	}
 
 	/**
