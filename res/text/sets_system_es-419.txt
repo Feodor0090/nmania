@@ -1,0 +1,4 @@
+Mostrar interfaz durante el juego
+Mostrar contadores
+Pantalla completa
+<<< atrás

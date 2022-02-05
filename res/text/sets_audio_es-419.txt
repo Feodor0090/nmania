@@ -1,0 +1,5 @@
+Activar sonidos de impacto
+Activar la retroalimentación
+Usar muestras de beatmap
+Velocidad de sonido
+<<< atrás
