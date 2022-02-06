@@ -321,6 +321,7 @@ public final class Player extends GameCanvas {
 					pauseItem = 0;
 			} else if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
 				if (pauseItem == 0) {
+					System.gc();
 					isPaused = false;
 					track.Play();
 				} else if (pauseItem == 1) {
@@ -335,6 +336,7 @@ public final class Player extends GameCanvas {
 					for (int i = 0; i < currentNote.length; i++) {
 						currentNote[i] = 0;
 					}
+					System.gc();
 					isPaused = false;
 					track.Play();
 				} else if (pauseItem == 2) {
@@ -362,6 +364,7 @@ public final class Player extends GameCanvas {
 					for (int i = 0; i < currentNote.length; i++) {
 						currentNote[i] = 0;
 					}
+					System.gc();
 					isPaused = false;
 					failed = false;
 					track.Play();
