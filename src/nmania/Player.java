@@ -261,12 +261,21 @@ public final class Player extends GameCanvas {
 
 	private final char[] accText = new char[] { '1', '0', '0', ',', '0', '0', '%' };
 
+	/**
+	 * Gameplay time.
+	 */
 	private int time;
 	private int rollingScore = 0;
 	private int lastJudgementTime = -10000;
 	private int lastJudgement;
 	private int health = 1000;
 	private int rollingHealth = 1000;
+	/**
+	 * Totally processed frames.
+	 */
+	private int framesPassed = 0;
+	// profiler temps
+	private int _lastFrames, _lastTime, _lastMem, _lastFps;
 
 	public boolean isPaused = false;
 	public boolean running = true;
@@ -427,6 +436,7 @@ public final class Player extends GameCanvas {
 	 * Method that is called by update loop each frame. Contains gameplay logic.
 	 */
 	public final void Update() {
+		framesPassed++;
 		// sync
 		time = track.Now();
 
@@ -959,6 +969,50 @@ public final class Player extends GameCanvas {
 				final int clr = Math.min(255, rollingHealth / 2);
 				g.setColor(255, clr, clr);
 				g.fillRect(healthX, scrH - hh, 6, hh);
+			}
+		}
+		// profiler
+		if (Settings.profiler) {
+			// recount
+			{
+				if (time < _lastTime) {
+					_lastTime = 0;
+				} else if (time - _lastTime > 1000) {
+					_lastTime += 1000;
+					_lastFps = framesPassed - _lastFrames;
+					_lastFrames = framesPassed;
+					Runtime r = Runtime.getRuntime();
+					_lastMem = (int) (r.totalMemory() - r.freeMemory()) / 1024;
+				}
+			}
+			g.setColor(0, 255, 0);
+			// fps
+			{
+				int num = _lastFps;
+				int x1 = leftOffset + columnsCount * colW;
+				while (true) {
+					final int d = num % 10;
+					g.drawChar((char) (d + '0'), x1, fillCountersH, 24);
+					x1 -= numsWidthCache[d];
+					if (num < 10)
+						break;
+					num /= 10;
+				}
+			}
+			// mem
+			{
+				int num = _lastMem;
+				int x1 = leftOffset + columnsCount * colW;
+				g.drawString("kb", x1, 0, 24);
+				x1 -= fontL.stringWidth("kb");
+				while (true) {
+					final int d = num % 10;
+					g.drawChar((char) (d + '0'), x1, 0, 24);
+					x1 -= numsWidthCache[d];
+					if (num < 10)
+						break;
+					num /= 10;
+				}
 			}
 		}
 	}
