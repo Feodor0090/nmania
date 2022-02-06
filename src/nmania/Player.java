@@ -840,7 +840,7 @@ public final class Player extends GameCanvas {
 		int combo = score.currentCombo;
 		// This shit was written because we mustn't allocate strings during gameplay. Do
 		// not try to touch something here, i even don't know how this works...
-		if (combo > 0) {
+		if (Settings.drawCounters && combo > 0) {
 			if (combo < 10) {
 				final char c = (char) ('0' + combo);
 				g.setColor(-1);
