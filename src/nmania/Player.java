@@ -261,7 +261,7 @@ public final class Player extends GameCanvas {
 
 	private int time;
 	private int rollingScore = 0;
-	private int lastJudgementTime = -100000;
+	private int lastJudgementTime = -10000;
 	private int lastJudgement;
 	private int health = 1000;
 	private int rollingHealth = 1000;
@@ -330,6 +330,7 @@ public final class Player extends GameCanvas {
 					rollingHealth = 1000;
 					health = 1000;
 					rollingScore = 0;
+					lastJudgementTime = -10000;
 					score.Reset();
 					for (int i = 0; i < currentNote.length; i++) {
 						currentNote[i] = 0;
@@ -356,6 +357,7 @@ public final class Player extends GameCanvas {
 					rollingHealth = 1000;
 					health = 1000;
 					rollingScore = 0;
+					lastJudgementTime = -10000;
 					score.Reset();
 					for (int i = 0; i < currentNote.length; i++) {
 						currentNote[i] = 0;
