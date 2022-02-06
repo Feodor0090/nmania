@@ -1,4 +1,5 @@
 Keep UI during gameplay
 Draw counters
 Fullscreen flush
+Enable profiler
 <<< back

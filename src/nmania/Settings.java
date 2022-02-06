@@ -22,6 +22,7 @@ public final class Settings {
 	public static boolean keepMenu = true;
 	public static boolean drawCounters = true;
 	public static boolean fullScreenFlush = false;
+	public static boolean profiler = false;
 	public static String workingFolder = defaultWF;
 
 	/**
@@ -58,6 +59,7 @@ public final class Settings {
 			j.accumulate("dir", workingFolder);
 			j.accumulate("gameplayoffset", new Integer(gameplayOffset));
 			j.accumulate("usebmssamples", new Boolean(useBmsSamples));
+			j.accumulate("profiler", new Boolean(profiler));
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -109,6 +111,7 @@ public final class Settings {
 			workingFolder = j.optString("dir", defaultWF);
 			gameplayOffset = j.optInt("gameplayoffset", 0);
 			useBmsSamples = j.optBoolean("usebmssamples", true);
+			profiler = j.optBoolean("profiler", false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -292,6 +292,9 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Settings.fullScreenFlush = !Settings.fullScreenFlush;
 				break;
 			case 3:
+				Settings.profiler = !Settings.profiler;
+				break;
+			case 4:
 				Switch(main);
 				break;
 			}
@@ -311,6 +314,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			drawCheckbox(g, Settings.keepMenu, y, th);
 			drawCheckbox(g, Settings.drawCounters, y + th, th);
 			drawCheckbox(g, Settings.fullScreenFlush, iy + th * 2, th);
+			drawCheckbox(g, Settings.profiler, iy + th * 3, th);
 		}
 	};
 	final SettingsSection binds = new SettingsSection() {
