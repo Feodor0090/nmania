@@ -181,6 +181,11 @@ public final class Player extends GameCanvas {
 		// step 7: cache data for HUD drawing
 		log.log("Caching service data");
 		fontL = Font.getFont(0, 0, 16);
+		if (s.richSkin == null) {
+
+		} else {
+			
+		}
 		fillCountersH = fontL.getHeight();
 		{
 			fillScoreW = fontL.stringWidth("000000000");
@@ -275,7 +280,7 @@ public final class Player extends GameCanvas {
 	private final int noteH;
 	private final int holdW;
 	private final int zeroW;
-	private final RichSkin rich = null;
+	private final Image[] rich = null;
 
 	/**
 	 * Gameplay time.
