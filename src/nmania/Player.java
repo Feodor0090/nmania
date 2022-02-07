@@ -86,6 +86,7 @@ public final class Player extends GameCanvas {
 		log.log("Setting scoring up");
 		hitWindows = new int[] { (int) (188 - 3 * od), (int) (151 - 3 * od), (int) (127 - 3 * od), (int) (97 - 3 * od),
 				(int) (64 - 3 * od), 16 };
+		healthValues = new int[] { -100, -10, 0, 20, 40, 50 };
 		score = new ScoreController();
 		this.enableJudgements = enableJudgements;
 
@@ -232,7 +233,7 @@ public final class Player extends GameCanvas {
 	private final boolean[] holdKeys;
 	private final int[] keyMappings;
 	private final int[] hitWindows;
-	private final int[] healthValues = new int[] { -50, -10, 0, 20, 60, 120 };
+	private final int[] healthValues;
 	public final ScoreController score;
 	public final AudioController track;
 	private final Image bg;
