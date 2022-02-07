@@ -24,6 +24,6 @@ body:
     attributes:
       label: Description
       description: Attach here screenshots or a video. Write what is wrong. Explain what did you do to break the game.
-      placeholder: These buttons don't work: VID1296000.mp4
+      placeholder: These buttons don't work - VID1296000.mp4
     validations:
       required: true
