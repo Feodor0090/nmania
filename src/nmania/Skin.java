@@ -17,7 +17,7 @@ public class Skin {
 
 			if (r.getNumRecords() < 1) {
 				r.closeRecordStore();
-				throw new RuntimeException("No saved settings");
+				return;
 			}
 			byte[] d = r.getRecord(1);
 			r.closeRecordStore();
@@ -39,7 +39,6 @@ public class Skin {
 			keyColors = SNUtils.json2intArray(j.getJSONArray("keycolors"));
 			holdKeyColors = SNUtils.json2intArray(j.getJSONArray("holdkeycolors"));
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 

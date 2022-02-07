@@ -51,6 +51,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 			Nmania.Push(page);
 			return;
 		} catch (Exception e) {
+			e.printStackTrace();
 			PushWaitPush(page, new Alert("Failed to parse beatmap", e.toString(), null, AlertType.ERROR));
 			return;
 		}

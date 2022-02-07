@@ -56,7 +56,52 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		b.image = GetImage();
 		String[] rawObjs = hitObjects();
 		Vector notes = new Vector();
-		if (getValue("Mode").equals("3")) {
+		if (getValue("Mode").equals("1")) {
+			// taiko
+			b.columnsCount = 3;
+			for (int i = 0; i < rawObjs.length; i++) {
+				if (rawObjs[i].length() < 4)
+					continue;
+				String[] values = SNUtils.splitFull(rawObjs[i], ',');
+				/*
+				 * System.out.println("Raw obj " + i + ", vals count " + values.length);
+				 * System.out.println(rawObjs[i]); System.out.println(values[values.length -
+				 * 1]);
+				 */
+				int time = Integer.parseInt(SNUtils.split2(values[2], '.')[0]);
+				int type = Integer.parseInt(values[3]);
+				if ((type & 8) != 0) {
+					// spinner
+					int dur = Integer.parseInt(SNUtils.split2(values[5], '.')[0]) - time;
+					for (int j = 1; j <= 3; j++) {
+						notes.addElement(new ManiaNote(time, j, dur));
+					}
+				} else {
+					// something else
+					int sound = Integer.parseInt(values[4]);
+					if ((type & 2) == 0) {
+						// don / kat
+						if ((sound & 8) == 0) {
+							notes.addElement(new ManiaNote(time, 1, 0));
+						} else {
+							notes.addElement(new ManiaNote(time, 3, 0));
+						}
+						if ((sound & 4) != 0)
+							notes.addElement(new ManiaNote(time, 2, 0));
+					} else {
+						// drumroll
+						int dur = Integer.parseInt(SNUtils.split2(values[7], '.')[0]);
+						if ((sound & 4) == 0) {
+							notes.addElement(new ManiaNote(time, 2, dur));
+						} else {
+							notes.addElement(new ManiaNote(time, 1, dur));
+							notes.addElement(new ManiaNote(time, 3, dur));
+						}
+					}
+				}
+			}
+		} else if (getValue("Mode").equals("3")) {
+			// mania
 			b.columnsCount = (int) Float.parseFloat(getValue("CircleSize"));
 			for (int i = 0; i < rawObjs.length; i++) {
 				if (rawObjs[i].length() < 4)
@@ -64,26 +109,26 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 				String[] values = SNUtils.splitFull(SNUtils.split2(rawObjs[i], ':')[0], ',');
 				float x = Float.parseFloat(values[0]);
 				int type = Integer.parseInt(values[3]);
-				int time = Integer.parseInt(values[2]);
-				int dur = ((type & 128) == 0) ? 0 : Integer.parseInt(values[5]) - time;
+				int time = Integer.parseInt(SNUtils.split2(values[2], '.')[0]);
+				int dur = ((type & 128) == 0) ? 0 : Integer.parseInt(SNUtils.split2(values[5], '.')[0]) - time;
 				int column = (int) Math.floor(x * b.columnsCount / 512);
 				notes.addElement(new ManiaNote(time, column + 1, dur));
 			}
 		} else {
-			if (getValue("Mode").equals("1"))
-				throw new InvalidBeatmapTypeException("This is an osu!taiko beatmap. They are not supported.");
+			// catch
 			if (getValue("Mode").equals("2"))
 				throw new InvalidBeatmapTypeException("This is an osu!catch beatmap. They are not supported.");
+			// std
 			b.columnsCount = 2;
 			for (int i = 0; i < rawObjs.length; i++) {
 				if (rawObjs[i].length() < 4)
 					continue;
 				String[] values = SNUtils.splitFull(SNUtils.split2(rawObjs[i], ':')[0], ',');
-				//int type = Integer.parseInt(values[3]);
+				// int type = Integer.parseInt(values[3]);
 				int time = Integer.parseInt(values[2]);
 				// sliders are not supported yet
-				//int dur = ((type & 2) == 0) ? 0 : Integer.parseInt(values[5]) - time;
-				notes.addElement(new ManiaNote(time, i%2 + 1, 0));
+				// int dur = ((type & 2) == 0) ? 0 : Integer.parseInt(values[5]) - time;
+				notes.addElement(new ManiaNote(time, i % 2 + 1, 0));
 			}
 		}
 		b.notes = new ManiaNote[notes.size()];
