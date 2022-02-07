@@ -26,10 +26,10 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 	BeatmapManager bm;
 	String dir;
 	BeatmapSet set;
-	ChoiceGroup daMod = new ChoiceGroup("Difficulty adjustment", Choice.POPUP,
-			new String[] { "Normal", "Hard Rock", "Easy" }, null);
-	ChoiceGroup mode = new ChoiceGroup("Play mode", Choice.POPUP,
-			new String[] { "Normal", "Sudden Death", "No Fail", "Automated demo" }, null);
+	ChoiceGroup daMod = new ChoiceGroup(text[9], Choice.POPUP,
+			new String[] { text[1], "Hard Rock", "Easy" }, null);
+	ChoiceGroup mode = new ChoiceGroup(text[0], Choice.POPUP,
+			new String[] { text[1], "Sudden Death", "No Fail", text[2] }, null);
 
 	private BeatmapSetsList list;
 	private Command back = new Command(text[3], Command.BACK, 1);
