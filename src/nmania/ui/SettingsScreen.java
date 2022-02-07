@@ -42,24 +42,30 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	boolean touch;
 
 	protected void paint(Graphics g) {
-		g.setColor(0);
-		g.fillRect(0, 0, getWidth(), getHeight());
 		Font f = Font.getFont(0, 0, 8);
 		th = f.getHeight();
 		g.setFont(f);
 		if (switching) {
 			int x = (getWidth() * (40 - switchOffset)) / 20;
-			g.translate(-x, 0);
-			if (prev != null)
-				paintSection(g, prev);
-			g.translate(getWidth(), 0);
+			g.setColor(0);
+			g.fillRect(0, 0, getWidth()-x, getHeight());
 			g.setColor(MainScreen.bgColor);
-			g.fillRect(0, 0, getWidth(), getHeight());
+			g.fillRect(getWidth()-x, 0, Math.min(x, getWidth()), getHeight());
+			g.translate(-x, 0);
+			if (prev != null) {
+				paintSection(g, prev);
+			}
+			g.translate(getWidth()*2, 0);
 			g.translate(getWidth(), 0);
-			if (curr != null)
+			if (curr != null) {
+				g.setColor(0);
+				g.fillRect(0, 0, getWidth(), getHeight());
 				paintSection(g, curr);
+			}
 			g.translate(-g.getTranslateX(), 0);
 		} else {
+			g.setColor(0);
+			g.fillRect(0, 0, getWidth(), getHeight());
 			paintSection(g, curr);
 		}
 	}
