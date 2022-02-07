@@ -1,0 +1,27 @@
+Atrás
+Seleccionar Beatmaps
+Editar colores
+Comprobar
+Configuración de teclas
+Pausar/Salir
+Columna
+Presione una tecla para
+Cancelar
+No selecciono teclas para este modo
+Registrar.
+RESULTADOS
+cualquier tecla para continuar
+Editar
+Puntaje total
+Combo máximo
+Precisión
+Combos completados
+Guardar y salir
+Seleccionar temas
+Configuración
+Audio
+Sistema
+cancelar
+Continuar
+Reintentar
+Cerrar
