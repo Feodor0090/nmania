@@ -20,7 +20,7 @@ import tube42.lib.imagelib.ImageUtils;
 
 public final class Player extends GameCanvas {
 
-	protected Player(Beatmap map, PlayOptions opts, Skin s, ILogger log, Displayable next)
+	public Player(Beatmap map, PlayOptions opts, Skin s, ILogger log, Displayable next)
 			throws IOException, MediaException, InterruptedException {
 		super(false);
 		setFullScreenMode(true);
@@ -190,8 +190,9 @@ public final class Player extends GameCanvas {
 		for (int i = 0; i < 10; i++) {
 			numsWidthCache[i] = fontL.charWidth((char) ('0' + i));
 		}
+		accText = score.currentAcc; // chaining
 		{
-			fillAccW = fontL.charsWidth(accText, 0, accText.length);
+			fillAccW = fontL.charsWidth(accText, 0, 7);
 			accBg = ImageUtils.crop(bg, scrW - fillAccW, scrH - fillCountersH, scrW - 1, scrH - 1);
 		}
 		zeroW = fontL.charWidth('0');
@@ -264,7 +265,7 @@ public final class Player extends GameCanvas {
 	private final int[] keysColors, holdKeysColors;
 	private final boolean verticalGr;
 	private final boolean colorHoldHeadsAsHolds;
-
+	private final char[] accText;
 	private final int kbH, kbY, colW, colWp1;
 	private final int fillColsW, fillCountersH, fillScoreW, fillAccW, fillScoreX, fillAccX;
 	private final int judgmentCenter;
@@ -274,8 +275,6 @@ public final class Player extends GameCanvas {
 	private final int noteH;
 	private final int holdW;
 	private final int zeroW;
-
-	private final char[] accText = new char[] { '1', '0', '0', ',', '0', '0', '%' };
 
 	/**
 	 * Gameplay time.
@@ -432,12 +431,12 @@ public final class Player extends GameCanvas {
 		}
 	}
 
-	protected final void pointerPressed(int x, int y) {
+	protected final void pointerPressed(final int x, final int y) {
 		if (isPaused) {
 			if (failed) {
-				pauseItem = (int) Math.floor(y * 2f / scrH);
+				pauseItem = (y << 1) / scrH;
 			} else {
-				pauseItem = (int) Math.floor(y * 3f / scrH);
+				pauseItem = y * 3 / scrH;
 			}
 			keyPressed(-5);
 		} else {
@@ -634,7 +633,7 @@ public final class Player extends GameCanvas {
 		}
 	}
 
-	private void PassSequence() {
+	private final void PassSequence() {
 		running = false;
 		final String j = "DIFFICULTY PASSED";
 		final int w2 = scrW / 2;
@@ -666,7 +665,7 @@ public final class Player extends GameCanvas {
 	/**
 	 * Loop method, that handles pause menu redrawing.
 	 */
-	private void PauseUpdateLoop() {
+	private final void PauseUpdateLoop() {
 		while (isPaused) {
 			int sw3 = scrW / 3;
 			int sh5 = scrH / 5;
@@ -697,7 +696,7 @@ public final class Player extends GameCanvas {
 	 * @param exitAfter If false, player will be paused and show retry-quit menu
 	 *                  instead of destroying.
 	 */
-	private void FailSequence(boolean exitAfter) {
+	private final void FailSequence(final boolean exitAfter) {
 		track.Pause();
 		if (sectionFail != null) {
 			sectionFail.Play();
@@ -766,7 +765,7 @@ public final class Player extends GameCanvas {
 	 * 
 	 * @param j Type of hit to count
 	 */
-	private final void CountHit(int j) {
+	private final void CountHit(final int j) {
 		health += healthValues[j];
 		if (health > 1000)
 			health = 1000;
@@ -820,7 +819,7 @@ public final class Player extends GameCanvas {
 	/**
 	 * Redraws score, acc, health and judgment.
 	 */
-	private void RedrawHUD() {
+	private final void RedrawHUD() {
 		g.setColor(-1);
 		// score & acc
 		if (Settings.drawCounters) {
@@ -840,16 +839,6 @@ public final class Player extends GameCanvas {
 				num /= 10;
 			}
 
-			int accRaw = score.GetAccuracy();
-			accText[5] = (char) (accRaw % 10 + '0');
-			accRaw /= 10;
-			accText[4] = (char) (accRaw % 10 + '0');
-			accRaw /= 10;
-			accText[2] = (char) (accRaw % 10 + '0');
-			accRaw /= 10;
-			accText[1] = (char) (accRaw % 10 + '0');
-			accRaw /= 10;
-			accText[0] = accRaw == 0 ? ' ' : '1';
 			g.drawImage(accBg, scrW, scrH, 40);
 			g.drawChars(accText, 0, 7, scrW, scrH, 40);
 		}
@@ -897,7 +886,7 @@ public final class Player extends GameCanvas {
 				g.drawChar(c2, judgmentCenter, 98, 40);
 			} else if (combo < 1000) {
 				char c = (char) ('0' + combo % 10);
-				int zw2 = zeroW / 2;
+				int zw2 = zeroW >> 1;
 				g.setColor(-1);
 				g.drawChar(c, judgmentCenter + 1 + zw2, 99, 36);
 				g.drawChar(c, judgmentCenter - 1 + zw2, 99, 36);
@@ -984,7 +973,7 @@ public final class Player extends GameCanvas {
 			g.fillRect(healthX, 0, 6, scrH);
 			if (rollingHealth > 0) {
 				int hh = scrH * rollingHealth / 1000;
-				final int clr = Math.min(255, rollingHealth / 2);
+				final int clr = Math.min(255, rollingHealth >> 1);
 				g.setColor(255, clr, clr);
 				g.fillRect(healthX, scrH - hh, 6, hh);
 			}
@@ -1108,9 +1097,9 @@ public final class Player extends GameCanvas {
 				}
 				// drawing note
 				lastY = noteY - noteH;
-				final boolean[] haveGr = (dur != 0 && colorHoldHeadsAsHolds) ? holdsWithGr : notesWithGr;
+				final boolean haveGr = ((dur != 0 && colorHoldHeadsAsHolds) ? holdsWithGr : notesWithGr)[column];
 				final int[] noteClr = (dur != 0 && colorHoldHeadsAsHolds) ? holdsColors : notesColors;
-				if (haveGr[column]) {
+				if (haveGr) {
 					if (verticalGr) {
 						int ly = lastY;
 						final int x2 = x + colW - 1;
