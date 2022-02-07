@@ -1,6 +1,6 @@
 name: Broken game logic report
 description: A map that works fine in it's native game breakes nmania gameplay logic.
-title: ""
+title: "Player bug: "
 labels: ["type:broken-game-logic"]
 assignees:
   - Feodor0090
