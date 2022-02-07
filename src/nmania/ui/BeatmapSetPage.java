@@ -26,7 +26,10 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 	BeatmapManager bm;
 	String dir;
 	BeatmapSet set;
-	ChoiceGroup mode = new ChoiceGroup(text[0], Choice.EXCLUSIVE, new String[] { text[1], text[2] }, null);
+	ChoiceGroup daMod = new ChoiceGroup("Difficulty adjustment", Choice.POPUP,
+			new String[] { "Normal", "Hard Rock", "Easy" }, null);
+	ChoiceGroup mode = new ChoiceGroup("Play mode", Choice.POPUP,
+			new String[] { "Normal", "Sudden Death", "No Fail", "Automated demo", "Gramophone" }, null);
 
 	private BeatmapSetsList list;
 	private Command back = new Command(text[3], Command.BACK, 1);
@@ -59,8 +62,8 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 			if (img != null)
 				img = ImageUtils.resize(img, 350, (int) (img.getHeight() / (img.getWidth() / 350f)), true, false);
 			deleteAll();
-			append(new ImageItem(img == null ? text[7] : null, img,
-					Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER, null));
+			append(new ImageItem(img == null ? text[7] : null, img, Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER,
+					null));
 			append(set.artist + " - " + set.title + " (" + set.mapper + ")");
 			for (int i = 0; i < set.files.length; i++) {
 				String f = set.files[i];
@@ -76,9 +79,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 			mode.setSelectedIndex(0, true);
 			append(mode);
 			addCommand(back);
-		} catch (
-
-		Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			deleteAll();
 			addCommand(back);
@@ -86,10 +87,31 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 		}
 	}
 
+	public PlayOptions FromChoices() {
+		PlayOptions opts = new PlayOptions();
+		opts.autoplay = mode.getSelectedIndex() == 3;
+		switch (mode.getSelectedIndex()) {
+		case 1:
+			opts.failMod = 1;
+			break;
+		case 2:
+			opts.failMod = -1;
+			break;
+		}
+		switch (daMod.getSelectedIndex()) {
+		case 1:
+			opts.daMod = 1;
+			break;
+		case 2:
+			opts.daMod = -1;
+			break;
+		}
+		return opts;
+	}
+
 	public void commandAction(Command c, Item arg1) {
 		if (c instanceof Difficulty) {
-			PlayOptions opts = new PlayOptions();
-			opts.autoplay = mode.getSelectedIndex() == 1;
+			PlayOptions opts = FromChoices();
 			(new PlayerLoader(set, ((Difficulty) c).fileName, opts, this)).start();
 		}
 	}
