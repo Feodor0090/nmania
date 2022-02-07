@@ -181,44 +181,57 @@ public final class Player extends GameCanvas {
 		// step 7: cache data for HUD drawing
 		log.log("Caching service data");
 		fontL = Font.getFont(0, 0, 16);
-		if (s.richSkin == null) {
-
-		} else {
-			
-		}
-		fillCountersH = fontL.getHeight();
-		{
-			fillScoreW = fontL.stringWidth("000000000");
-			scoreBg = ImageUtils.crop(bg, scrW - fillScoreW, 0, scrW - 1, fillCountersH + 1);
-		}
 		numsWidthCache = new int[10];
-		for (int i = 0; i < 10; i++) {
-			numsWidthCache[i] = fontL.charWidth((char) ('0' + i));
-		}
 		accText = score.currentAcc; // chaining
-		{
+		if (s.richSkin == null) {
+			rich = null;
+			fillCountersH = fontL.getHeight();
+			fillScoreW = fontL.stringWidth("000000000");
+			for (int i = 0; i < 10; i++) {
+				numsWidthCache[i] = fontL.charWidth((char) ('0' + i));
+			}
 			fillAccW = fontL.charsWidth(accText, 0, 7);
-			accBg = ImageUtils.crop(bg, scrW - fillAccW, scrH - fillCountersH, scrW - 1, scrH - 1);
+			kbH = s.keyboardHeight;
+			colW = s.GetColumnWidth();
+			noteH = s.noteHeight;
+			notesColors = s.GetNoteColors(columnsCount);
+			notesWithGr = new boolean[columnsCount];
+			for (int i = 0; i < columnsCount; i++) {
+				notesWithGr[i] = notesColors[i * 2] != notesColors[i * 2 + 1];
+			}
+			keysColors = s.GetKeyColors(columnsCount);
+			holdKeysColors = s.GetHoldKeyColors(columnsCount);
+		} else {
+			rich = s.richSkin.toPlayerCache(columnsCount);
+			fillCountersH = s.richSkin.GetCounterHeight();
+			fillScoreW = s.richSkin.GetScoreWidth();
+			for (int i = 0; i < 10; i++) {
+				numsWidthCache[i] = s.richSkin.digits[i].getWidth();
+			}
+			fillAccW = s.richSkin.GetAccWidth();
+			kbH = s.richSkin.GetKeyboardHeight();
+			colW = s.richSkin.GetColumnWidth();
+			noteH = s.richSkin.GetNoteHeight();
+			notesColors = null;
+			notesWithGr = null;
+			keysColors = null;
+			holdKeysColors = null;
 		}
+		scoreBg = ImageUtils.crop(bg, scrW - fillScoreW, 0, scrW - 1, fillCountersH + 1);
+		accBg = ImageUtils.crop(bg, scrW - fillAccW, scrH - fillCountersH, scrW - 1, scrH - 1);
 		zeroW = fontL.charWidth('0');
-		kbH = s.keyboardHeight;
 		kbY = scrH - kbH;
-		colW = s.GetColumnWidth();
 		colWp1 = colW + 1;
 		judgmentCenter = s.leftOffset + colWp1 * columnsCount / 2;
-		localHoldX = (colW - s.holdWidth) / 2;
+		holdW = s.holdWidth;
+		localHoldX = (colW - holdW) / 2;
 		fillColsW = 1 + (colWp1 * columnsCount) + 6;
 		fillAccX = scrW - fillAccW;
 		fillScoreX = scrW - fillScoreW;
 		healthX = s.leftOffset + 1 + (colWp1 * columnsCount);
 		leftOffset = s.leftOffset;
-		noteH = s.noteHeight;
-		holdW = s.holdWidth;
-		notesColors = s.GetNoteColors(columnsCount);
-		notesWithGr = new boolean[columnsCount];
-		for (int i = 0; i < columnsCount; i++) {
-			notesWithGr[i] = notesColors[i * 2] != notesColors[i * 2 + 1];
-		}
+		// <---->
+		
 		holdsColors = s.GetHoldColors(columnsCount);
 		holdsWithGr = new boolean[columnsCount];
 		for (int i = 0; i < columnsCount; i++) {
@@ -226,8 +239,6 @@ public final class Player extends GameCanvas {
 		}
 		colorHoldHeadsAsHolds = s.holdsHaveOwnColors;
 		verticalGr = s.verticalGradientOnNotes;
-		keysColors = s.GetKeyColors(columnsCount);
-		holdKeysColors = s.GetHoldKeyColors(columnsCount);
 
 		Thread.sleep(1);
 
@@ -280,7 +291,7 @@ public final class Player extends GameCanvas {
 	private final int noteH;
 	private final int holdW;
 	private final int zeroW;
-	private final Image[] rich = null;
+	private final Image[] rich;
 
 	/**
 	 * Gameplay time.

@@ -35,6 +35,30 @@ public class RichSkin {
 		return key1.getHeight();
 	}
 
+	public int GetCounterHeight() {
+		return digits[0].getHeight();
+	}
+
+	public int GetScoreWidth() {
+		int max = 0;
+		for (int i = 0; i < 10; i++) {
+			if (digits[i].getWidth() > max) {
+				max = digits[i].getWidth();
+			}
+		}
+		return max * 9;
+	}
+
+	public int GetAccWidth() {
+		int max = 0;
+		for (int i = 0; i < 10; i++) {
+			if (digits[i].getWidth() > max) {
+				max = digits[i].getWidth();
+			}
+		}
+		return (max * 5) + digits[10].getWidth() + digits[11].getWidth();
+	}
+
 	/**
 	 * Returns a collection of sprites to be drawn.<br>
 	 * <br>
