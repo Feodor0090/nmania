@@ -1,4 +1,4 @@
-Modo
+Modo de Juego
 Normal
 Demostración
 Atrás
@@ -7,3 +7,4 @@ Error al leer Be-Music Source
 Debe haber al menos un beatmap osu!/nmania válido en la carpeta. Además, el nombre de la carpeta no debe ser demasiado largo ni contener caracteres especiales.
 Error al leer el fondo de Beatmap
 Error al leer Be-Music Source
+Nivel de dificultad
