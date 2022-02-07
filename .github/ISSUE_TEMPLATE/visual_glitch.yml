@@ -1,0 +1,23 @@
+name: Visual glitch
+description: There is something that being drawn wrong.
+title: "Visual glitch: "
+labels: ["type:visual-glitch"]
+assignees:
+  - Feodor0090
+body:
+  - type: input
+    id: version
+    attributes:
+      label: nmania version
+      description: Version, that you run
+      placeholder: 2.9.2
+    validations:
+      required: true
+  - type: textarea
+    id: descr
+    attributes:
+      label: Capture
+      description: Attach here non-compressted capture of device's screen / emulator window. Write what is wrong.
+      placeholder: Screenshot727.png
+    validations:
+      required: true
