@@ -59,6 +59,8 @@ public class Skin {
 	public boolean verticalGradientOnNotes = true;
 	public boolean holdsHaveOwnColors = true;
 
+	public RichSkin richSkin = null;
+
 	public int GetColumnWidth() {
 		return columnWidth;
 	}
@@ -108,8 +110,16 @@ public class Skin {
 		return c;
 	}
 
-	public void Load() {
+	public void LoadRich(boolean force) {
+		rich = true;
+		if (force || richSkin == null) {
+			// load
+		}
+	}
 
+	public void DisableRich() {
+		rich = false;
+		richSkin = null;
 	}
 
 	public void Save() {
