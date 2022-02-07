@@ -26,7 +26,6 @@ body:
     attributes:
       label: Description of the bug
       description: What's wrong? Also attach screenshots/video.
-      placeholder: Tell us what you see!
-      value: Score counter starts to roll backwards and Maho's face overlaps playfield.
+      placeholder: Score counter starts to roll backwards and Maho's face overlaps playfield.
     validations:
       required: true
