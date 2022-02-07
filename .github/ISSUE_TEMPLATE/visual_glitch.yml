@@ -2,8 +2,6 @@ name: Visual glitch
 description: There is something that being drawn wrong.
 title: "Visual glitch: "
 labels: ["type:visual-glitch"]
-assignees:
-  - Feodor0090
 body:
   - type: input
     id: version
