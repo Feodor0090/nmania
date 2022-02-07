@@ -82,8 +82,10 @@ public final class Player extends GameCanvas {
 
 		// step 3: setup difficulty
 		// TODO
+		float od = map.difficulty;
 		log.log("Setting scoring up");
-		hitWindows = new int[] { 200, 150, 100, 50, 25, 10 };
+		hitWindows = new int[] { (int) (188 - 3 * od), (int) (151 - 3 * od), (int) (127 - 3 * od), (int) (97 - 3 * od),
+				(int) (64 - 3 * od), 16 };
 		score = new ScoreController();
 		this.enableJudgements = enableJudgements;
 
