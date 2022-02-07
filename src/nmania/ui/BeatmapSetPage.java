@@ -29,7 +29,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 	ChoiceGroup daMod = new ChoiceGroup("Difficulty adjustment", Choice.POPUP,
 			new String[] { "Normal", "Hard Rock", "Easy" }, null);
 	ChoiceGroup mode = new ChoiceGroup("Play mode", Choice.POPUP,
-			new String[] { "Normal", "Sudden Death", "No Fail", "Automated demo", "Gramophone" }, null);
+			new String[] { "Normal", "Sudden Death", "No Fail", "Automated demo" }, null);
 
 	private BeatmapSetsList list;
 	private Command back = new Command(text[3], Command.BACK, 1);
@@ -78,6 +78,8 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 			}
 			mode.setSelectedIndex(0, true);
 			append(mode);
+			daMod.setSelectedIndex(0, true);
+			append(daMod);
 			addCommand(back);
 		} catch (Exception e) {
 			e.printStackTrace();
