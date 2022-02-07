@@ -1,40 +1,46 @@
 package nmania.ui;
 
-import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Item;
 import javax.microedition.lcdui.ItemCommandListener;
-import javax.microedition.lcdui.List;
 import javax.microedition.lcdui.StringItem;
 
 import nmania.Nmania;
 import nmania.Settings;
 
-public class InfoScreen extends List implements CommandListener {
+public class InfoScreen extends MultisectionList implements CommandListener {
 
-	private Command toMenu = new Command("Back", Command.BACK, 1);
-	private Command toList = new Command("Back", Command.BACK, 1);
-
-	public InfoScreen() {
-		super("Information", Choice.IMPLICIT, new String[] { "About this app", "How to load osu!mania beatmaps",
-				"How to load nmania beatmaps", "Skinning", "Low FPS & lags troubleshooting" }, null);
-		this.addCommand(toMenu);
-		this.setCommandListener(this);
+	public InfoScreen(boolean touch) {
+		super(touch);
+		Switch(list);
+		_this = this;
 	}
 
-	public void commandAction(Command c, Displayable d) {
+	final Command toList = new Command(Nmania.commonText[0], Command.BACK, 1);
+	final CommandListener _this;
+
+	public final void commandAction(Command c, Displayable d) {
 		if (c == toList) {
 			Nmania.Push(this);
-		} else if (c == toMenu) {
-			Nmania.Push(new MainScreen());
-		} else if (c == List.SELECT_COMMAND) {
-			Form f = new Form(getString(getSelectedIndex()));
-			f.setCommandListener(this);
+		}
+	}
+
+	final ListSection list = new ListSection() {
+
+		final String[] items = new String[] { "About this app", "How to load osu!mania beatmaps",
+				"How to load nmania beatmaps", "Skinning", "Low FPS & lags troubleshooting", "<<< back" };
+
+		public void OnSelect(int i) {
+			Form f = new Form(items[i]);
+			f.setCommandListener(_this);
 			f.addCommand(toList);
-			switch (getSelectedIndex()) {
+			switch (i) {
+			case 5:
+				Switch(null);
+				return;
 			case 0:
 				f.append(new StringItem("nmania v" + Nmania.version(),
 						"Open source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps."));
@@ -121,34 +127,41 @@ public class InfoScreen extends List implements CommandListener {
 			}
 			Nmania.Push(f);
 		}
-	}
 
-	public static final void AppendHowToPlayFooter(Form f, int start, String ext) {
-		f.append("\n" + start
-				+ ". Storage structure is identical to osu!stable - the working folder must contain several folders, one child folder for each beatmapset.");
-		f.append(" Nesting is not supported, \".../nmania/BMS1/map1.");
-		f.append(ext);
-		f.append("\" will be read, \".../nmania/BMS2/dir/map2.");
-		f.append(ext);
-		f.append("\" will be ignored.");
-		f.append("\n" + (start + 1) + ". Open the game, go to \"play\" submenu. Here is list of your beatmapsets. ");
-		f.append(" If some are missed, check their location, try to rename, etc.");
-		f.append("\n" + (start + 2) + ". Open any to proceed to it's difficulties. Choose one to play it.");
-		f.append("\nIf you have troubles, read everything in this manual again. ");
-		f.append(
-				"If you still have troubles, ask in our TG chat or open a GitHub discussion (links are in \"about\" section).");
-	}
-
-	public static final void AppendWD(Form f, int n) {
-		f.append("\n" + n + ". Game's current working folder is ");
-		f.append(new Link(Settings.workingFolder));
-		if (!Settings.workingFolder.equals(Settings.defaultWF)) {
-			f.append(". Default one was ");
-			f.append(new Link(Settings.defaultWF));
+		public String GetTitle() {
+			return "Information";
 		}
-		f.append(". If there is no one, create it on EXACT path.");
-	}
 
+		public String[] GetItems() {
+			return items;
+		}
+		public final void AppendHowToPlayFooter(Form f, int start, String ext) {
+			f.append("\n" + start
+					+ ". Storage structure is identical to osu!stable - the working folder must contain several folders, one child folder for each beatmapset.");
+			f.append(" Nesting is not supported, \".../nmania/BMS1/map1.");
+			f.append(ext);
+			f.append("\" will be read, \".../nmania/BMS2/dir/map2.");
+			f.append(ext);
+			f.append("\" will be ignored.");
+			f.append("\n" + (start + 1) + ". Open the game, go to \"play\" submenu. Here is list of your beatmapsets. ");
+			f.append(" If some are missed, check their location, try to rename, etc.");
+			f.append("\n" + (start + 2) + ". Open any to proceed to it's difficulties. Choose one to play it.");
+			f.append("\nIf you have troubles, read everything in this manual again. ");
+			f.append(
+					"If you still have troubles, ask in our TG chat or open a GitHub discussion (links are in \"about\" section).");
+		}
+
+		public final void AppendWD(Form f, int n) {
+			f.append("\n" + n + ". Game's current working folder is ");
+			f.append(new Link(Settings.workingFolder));
+			if (!Settings.workingFolder.equals(Settings.defaultWF)) {
+				f.append(". Default one was ");
+				f.append(new Link(Settings.defaultWF));
+			}
+			f.append(". If there is no one, create it on EXACT path.");
+		}
+	};
+	
 	public static class Link extends StringItem implements ItemCommandListener {
 
 		private static Command open = new Command("Go to", Command.ITEM, 1);
@@ -172,5 +185,4 @@ public class InfoScreen extends List implements CommandListener {
 		}
 
 	}
-
 }

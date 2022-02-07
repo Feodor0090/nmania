@@ -145,7 +145,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 			Nmania.Push(new SkinSelect());
 			break;
 		case 4:
-			Nmania.Push(new InfoScreen());
+			Nmania.Push(new InfoScreen(lastInputIsTouch));
 			break;
 		default:
 			break;
@@ -170,7 +170,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 				} catch (Exception e) {
 					needThread = false;
 					e.printStackTrace();
-					Nmania.Push(new InfoScreen());
+					Nmania.Push(new InfoScreen(lastInputIsTouch));
 					Thread.yield();
 					Thread.yield();
 					Alert a = new Alert("nmania",
