@@ -1,11 +1,9 @@
 package nmania.ui;
 
-import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.lcdui.TextField;
@@ -13,15 +11,12 @@ import javax.microedition.lcdui.TextField;
 import nmania.Nmania;
 import nmania.Settings;
 
-public class SettingsScreen extends Canvas implements CommandListener {
+public class SettingsScreen extends MultisectionList implements CommandListener {
 
 	public SettingsScreen(boolean touch) {
-		setFullScreenMode(true);
-		selected = touch ? -1 : 0;
+		super(touch);
 		_this = this;
 		Switch(main);
-		repaint();
-		this.touch = touch;
 	}
 
 	final SettingsScreen _this;
@@ -31,59 +26,6 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	final Command dirOk = new Command("OK", Command.OK, 1);
 	final Command offsetOk = new Command("OK", Command.OK, 1);
 	final Command localeOk = new Command("OK", Command.OK, 1);
-
-	int iy;
-	int th;
-
-	SettingsSection curr = null;
-	SettingsSection prev;
-	boolean switching;
-	int switchOffset = 0;
-	boolean touch;
-
-	protected void paint(Graphics g) {
-		Font f = Font.getFont(0, 0, 8);
-		th = f.getHeight();
-		g.setFont(f);
-		if (switching) {
-			int x = (getWidth() * (40 - switchOffset)) / 20;
-			g.setColor(0);
-			g.fillRect(0, 0, getWidth()-x, getHeight());
-			g.setColor(MainScreen.bgColor);
-			g.fillRect(getWidth()-x, 0, Math.min(x, getWidth()), getHeight());
-			g.translate(-x, 0);
-			if (prev != null) {
-				paintSection(g, prev);
-			}
-			g.translate(getWidth()*2, 0);
-			g.translate(getWidth(), 0);
-			if (curr != null) {
-				g.setColor(0);
-				g.fillRect(0, 0, getWidth(), getHeight());
-				paintSection(g, curr);
-			}
-			g.translate(-g.getTranslateX(), 0);
-		} else {
-			g.setColor(0);
-			g.fillRect(0, 0, getWidth(), getHeight());
-			paintSection(g, curr);
-		}
-	}
-
-	private void paintSection(Graphics g, SettingsSection s) {
-		int h = getHeight();
-		String[] items = s.GetItems();
-		iy = (h - th * items.length) / 2;
-		g.setColor(MainScreen.bgColor);
-		if (selected >= 0 && !switching)
-			g.fillRect(5, iy + th * selected, getWidth() - 10, th);
-		g.setColor(-1);
-		g.drawString(s.GetTitle(), getWidth() / 2, 0, Graphics.HCENTER | Graphics.TOP);
-		for (int i = 0; i < items.length; i++) {
-			g.drawString(items[i], 10, iy + th * i, 0);
-		}
-		s.paint(g, iy, getWidth());
-	}
 
 	void drawCheckbox(Graphics g, boolean ok, int y, int th) {
 		g.setColor(-1);
@@ -95,54 +37,6 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		}
 		g.fillArc(getWidth() - th - 5, y + 5, th - 10, th - 10, 0, 360);
 	}
-
-	protected void keyPressed(int k) {
-		touch = false;
-		if (curr == null || switching)
-			return;
-		if (k == -1 || k == '2') {
-			// up
-			selected--;
-			if (selected < 0)
-				selected = curr.GetItems().length - 1;
-		} else if (k == -2 || k == '8') {
-			// down
-			selected++;
-			if (selected >= curr.GetItems().length)
-				selected = 0;
-		} else if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
-			activateItem();
-		} else if (k == -7) {
-			Settings.Save();
-			Nmania.Push(new MainScreen());
-		}
-		repaint();
-	}
-
-	protected void pointerPressed(int x, int y) {
-		touch = true;
-		if (curr == null || switching)
-			return;
-		y -= iy;
-		if (y < 0)
-			return;
-		for (int i = 0; i < curr.GetItems().length; i++) {
-			if (y < th) {
-				selected = i;
-				activateItem();
-				repaint();
-				return;
-			}
-			y -= th;
-		}
-	}
-
-	private void activateItem() {
-		if (!switching)
-			curr.OnSelect(selected);
-	}
-
-	int selected = 0;
 
 	public void commandAction(Command c, Displayable d) {
 		if (d instanceof TextBox) {
@@ -161,35 +55,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		}
 	}
 
-	public void Switch(final SettingsSection ss) {
-		switching = true;
-		prev = curr;
-		curr = ss;
-		switchOffset = 40;
-		(new Thread() {
-			public void run() {
-				try {
-					while (switchOffset > 0) {
-						repaint();
-						Thread.sleep(10);
-						switchOffset--;
-					}
-					selected = touch ? -1 : 0;
-					if (ss == null)
-						Nmania.Push(new MainScreen());
-					else {
-						switching = false;
-						repaint();
-					}
-
-				} catch (Exception e) {
-					return;
-				}
-			}
-		}).start();
-	}
-
-	final SettingsSection main = new SettingsSection() {
+	final ListSection main = new ListSection() {
 
 		public void OnSelect(int i) {
 			switch (i) {
@@ -251,7 +117,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			g.drawString("x" + Settings.speedDiv, getWidth() - 10, y + th * 4, Graphics.TOP | Graphics.RIGHT);
 		}
 	};
-	final SettingsSection audio = new SettingsSection() {
+	final ListSection audio = new ListSection() {
 
 		public void OnSelect(int i) {
 			switch (i) {
@@ -293,7 +159,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			g.drawString(Settings.gameplayOffset + "ms", getWidth() - 10, y + th * 3, 24);
 		}
 	};
-	final SettingsSection system = new SettingsSection() {
+	final ListSection system = new ListSection() {
 
 		public void OnSelect(int i) {
 			switch (i) {
@@ -332,7 +198,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			drawCheckbox(g, Settings.profiler, iy + th * 3, th);
 		}
 	};
-	final SettingsSection binds = new SettingsSection() {
+	final ListSection binds = new ListSection() {
 
 		final String[] items = new String[] { "1K", "2K", "3K", "4K", "5K", "6K", "7K", "8K", "9K", "10K", "<<< back" };
 
@@ -360,16 +226,5 @@ public class SettingsScreen extends Canvas implements CommandListener {
 			}
 		}
 	};
-
-	public abstract class SettingsSection {
-		public abstract String GetTitle();
-
-		public abstract String[] GetItems();
-
-		public abstract void OnSelect(int i);
-
-		public void paint(Graphics g, int y, int sw) {
-		}
-	}
 
 }
