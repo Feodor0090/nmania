@@ -1,0 +1,32 @@
+name: Broken game logic report
+description: A map that works fine in it's native game breakes nmania gameplay logic.
+title: ""
+labels: ["type:broken-game-logic"]
+assignees:
+  - Feodor0090
+body:
+  - type: input
+    id: version
+    attributes:
+      label: nmania version
+      description: Version, that you run
+      placeholder: 0.x.y
+    validations:
+      required: true
+  - type: textarea
+    id: bms
+    attributes:
+      label: Beatmap
+      description: Attach here your beatmapset (paste a link or drag a `zip`). If it was converted, attach an original one too, link conversion tool that was used.
+      placeholder: https://osu.ppy.sh/beatmapsets/1#osu/75
+    validations:
+      required: true
+  - type: textarea
+    id: descr
+    attributes:
+      label: Description of the bug
+      description: What's wrong? Also attach screenshots/video.
+      placeholder: Tell us what you see!
+      value: Score counter starts to roll backwards and Maho's face overlaps playfield.
+    validations:
+      required: true
