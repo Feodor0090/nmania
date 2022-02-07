@@ -275,6 +275,7 @@ public final class Player extends GameCanvas {
 	private final int noteH;
 	private final int holdW;
 	private final int zeroW;
+	private final RichSkin rich = null;
 
 	/**
 	 * Gameplay time.
@@ -799,10 +800,17 @@ public final class Player extends GameCanvas {
 	 * Method to redraw hot areas. Called by update loop.
 	 */
 	public final void Redraw() {
-		g.setClip(0, 0, scrW, kbY);
-		RedrawNotes();
-		g.setClip(0, 0, scrW, scrH);
-		RedrawHUD();
+		if (rich == null) {
+			g.setClip(0, 0, scrW, kbY);
+			RedrawNotesVector();
+			g.setClip(0, 0, scrW, scrH);
+			RedrawHUDVector();
+		} else {
+			g.setClip(0, 0, scrW, kbY);
+			RedrawNotesRich();
+			g.setClip(0, 0, scrW, scrH);
+			RedrawHUDRich();
+		}
 		if (Settings.fullScreenFlush) {
 			flushGraphics();
 		} else {
@@ -819,7 +827,7 @@ public final class Player extends GameCanvas {
 	/**
 	 * Redraws score, acc, health and judgment.
 	 */
-	private final void RedrawHUD() {
+	private final void RedrawHUDVector() {
 		g.setColor(-1);
 		// score & acc
 		if (Settings.drawCounters) {
@@ -1025,6 +1033,13 @@ public final class Player extends GameCanvas {
 	}
 
 	/**
+	 * Redraws score, acc, health and judgment.
+	 */
+	private final void RedrawHUDRich() {
+
+	}
+
+	/**
 	 * Draws bg image.
 	 */
 	private final void FillBg() {
@@ -1066,7 +1081,7 @@ public final class Player extends GameCanvas {
 	/**
 	 * Redraws notes.
 	 */
-	private final void RedrawNotes() {
+	private final void RedrawNotesVector() {
 
 		// current Y offset due to scroll
 		final int notesY = kbY + time / scrollDiv;
@@ -1143,4 +1158,10 @@ public final class Player extends GameCanvas {
 		}
 	}
 
+	/**
+	 * Redraws notes.
+	 */
+	private final void RedrawNotesRich() {
+
+	}
 }
