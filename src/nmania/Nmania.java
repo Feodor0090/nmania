@@ -77,8 +77,7 @@ public final class Nmania extends MIDlet {
 	 */
 	public static String[] getStrings(String cat) {
 		try {
-			String locale = System.getProperty("microedition.locale").toLowerCase().substring(0, 2);
-			InputStream s = Nmania.class.getResourceAsStream("/text/" + cat + "_" + locale + ".txt");
+			InputStream s = Nmania.class.getResourceAsStream("/text/" + cat + "_" + Settings.locale + ".txt");
 			if (s == null)
 				s = Nmania.class.getResourceAsStream("/text/" + cat + "_en.txt");
 

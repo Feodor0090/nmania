@@ -30,6 +30,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 	final Command scrollOk = new Command("OK", Command.OK, 1);
 	final Command dirOk = new Command("OK", Command.OK, 1);
 	final Command offsetOk = new Command("OK", Command.OK, 1);
+	final Command localeOk = new Command("OK", Command.OK, 1);
 
 	int iy;
 	int th;
@@ -147,6 +148,8 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Settings.workingFolder = ((TextBox) d).getString();
 			} else if (c == offsetOk) {
 				Settings.gameplayOffset = Integer.parseInt(((TextBox) d).getString());
+			} else if (c == localeOk) {
+				Settings.locale = ((TextBox) d).getString();
 			}
 			Nmania.Push(this);
 		}
@@ -213,12 +216,18 @@ public class SettingsScreen extends Canvas implements CommandListener {
 				Nmania.Push(box2);
 				break;
 			case 6:
+				TextBox box3 = new TextBox(items[6], Settings.locale, 6, TextField.ANY);
+				box3.addCommand(localeOk);
+				box3.setCommandListener(_this);
+				Nmania.Push(box3);
+				break;
+			case 7:
 				Settings.Save();
 				Switch(null);
 				break;
 			}
 		}
-		
+
 		final String[] items = Nmania.getStrings("sets_main");
 
 		public String[] GetItems() {

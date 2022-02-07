@@ -24,6 +24,7 @@ public final class Settings {
 	public static boolean fullScreenFlush = false;
 	public static boolean profiler = false;
 	public static String workingFolder = defaultWF;
+	public static String locale;
 
 	/**
 	 * Audio/gameplay clocks offset. <br>
@@ -60,6 +61,7 @@ public final class Settings {
 			j.accumulate("gameplayoffset", new Integer(gameplayOffset));
 			j.accumulate("usebmssamples", new Boolean(useBmsSamples));
 			j.accumulate("profiler", new Boolean(profiler));
+			j.accumulate("locale", locale);
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -112,6 +114,7 @@ public final class Settings {
 			gameplayOffset = j.optInt("gameplayoffset", 0);
 			useBmsSamples = j.optBoolean("usebmssamples", true);
 			profiler = j.optBoolean("profiler", false);
+			locale = j.optString("locale", System.getProperty("microedition.locale").substring(0, 2).toLowerCase());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
