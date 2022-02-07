@@ -231,7 +231,7 @@ public final class Player extends GameCanvas {
 		healthX = s.leftOffset + 1 + (colWp1 * columnsCount);
 		leftOffset = s.leftOffset;
 		// <---->
-		
+
 		holdsColors = s.GetHoldColors(columnsCount);
 		holdsWithGr = new boolean[columnsCount];
 		for (int i = 0; i < columnsCount; i++) {
@@ -1052,7 +1052,134 @@ public final class Player extends GameCanvas {
 	 * Redraws score, acc, health and judgment.
 	 */
 	private final void RedrawHUDRich() {
-
+		g.setColor(-1);
+		// score & acc
+		if (Settings.drawCounters) {
+			final int realScore = score.currentHitScore;
+			if (realScore != rollingScore) {
+				rollingScore += (realScore - rollingScore) / 60 + 1;
+			}
+			g.drawImage(scoreBg, scrW, 0, 24);
+			int num = rollingScore;
+			int x1 = scrW;
+			while (true) {
+				final int d = num % 10;
+				g.drawImage(rich[d + 6], x1, 0, 24);
+				x1 -= numsWidthCache[d];
+				if (num < 10)
+					break;
+				num /= 10;
+			}
+			g.drawImage(accBg, scrW, scrH, 40);
+			x1 = scrW;
+			for (int i = 6; i >= 0; i--) {
+				final char c = accText[i];
+				if (c == '%') {
+					g.drawImage(rich[17], x1, 0, 24);
+					x1 -= rich[17].getWidth();
+				} else if (c == ',') {
+					g.drawImage(rich[16], x1, 0, 24);
+					x1 -= rich[16].getWidth();
+				} else {
+					int idx = (c - '0');
+					g.drawImage(rich[idx + 6], x1, 0, 24);
+					x1 -= numsWidthCache[idx];
+				}
+			}
+		}
+		// judgment & combo
+		if (time - lastJudgementTime < 200) {
+			g.drawImage(rich[lastJudgement], judgmentCenter, 100, 17);
+		}
+		int combo = score.currentCombo;
+		if (Settings.drawCounters && combo > 0) {
+			if (combo < 10) {
+				g.drawImage(rich[combo + 6], judgmentCenter, 100, 33);
+			} else if (combo < 100) {
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter, 100, 36);
+				g.drawImage(rich[combo / 10 + 6], judgmentCenter, 100, 40);
+			} else if (combo < 1000) {
+				int zw2 = zeroW >> 1;
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter + zw2, 100, 36);
+				combo /= 10;
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter, 100, 33);
+				combo /= 10;
+				g.drawImage(rich[combo + 6], judgmentCenter - zw2, 100, 40);
+			} else {
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter + zeroW, 100, 36);
+				combo /= 10;
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter, 100, 36);
+				combo /= 10;
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter, 100, 40);
+				combo /= 10;
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter - zeroW, 100, 40);
+				// failsafe for 9999+ combo
+				if (combo > 10) {
+					combo /= 10;
+					g.drawImage(rich[combo % 10 + 6], judgmentCenter - zeroW * 2, 10, 40);
+				}
+				// Yeah, 99999+ is not supported.
+			}
+		}
+		// health
+		{
+			if (health != rollingHealth) {
+				final int delta = (health - rollingHealth);
+				rollingHealth += delta / 10 + (delta > 0 ? 1 : -1);
+			}
+			g.setColor(0);
+			g.fillRect(healthX, 0, 6, scrH);
+			if (rollingHealth > 0) {
+				int hh = scrH * rollingHealth / 1000;
+				final int clr = Math.min(255, rollingHealth >> 1);
+				g.setColor(255, clr, clr);
+				g.fillRect(healthX, scrH - hh, 6, hh);
+			}
+		}
+		// profiler
+		if (Settings.profiler) {
+			// recount
+			{
+				if (time < _lastTime) {
+					_lastTime = 0;
+				} else if (time - _lastTime > 1000) {
+					_lastTime += 1000;
+					_lastFps = framesPassed - _lastFrames;
+					_lastFrames = framesPassed;
+					Runtime r = Runtime.getRuntime();
+					_lastMem = (int) (r.totalMemory() - r.freeMemory()) / 1024;
+				}
+			}
+			g.setColor(0, 255, 0);
+			// fps
+			{
+				int num = _lastFps;
+				int x1 = leftOffset + columnsCount * colW;
+				while (true) {
+					final int d = num % 10;
+					g.drawChar((char) (d + '0'), x1, fillCountersH, 24);
+					x1 -= numsWidthCache[d];
+					if (num < 10)
+						break;
+					num /= 10;
+				}
+			}
+			// mem
+			{
+				int num = _lastMem;
+				int x1 = leftOffset + columnsCount * colW;
+				g.drawString("kb", x1, 0, 24);
+				x1 -= fontL.stringWidth("kb");
+				while (true) {
+					final int d = num % 10;
+					g.drawChar((char) (d + '0'), x1, 0, 24);
+					x1 -= numsWidthCache[d];
+					if (num < 10)
+						break;
+					num /= 10;
+				}
+			}
+		}
 	}
 
 	/**
