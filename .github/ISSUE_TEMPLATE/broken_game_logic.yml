@@ -10,7 +10,7 @@ body:
     attributes:
       label: nmania version
       description: Version, that you run
-      placeholder: 0.x.y
+      placeholder: 2.9.2
     validations:
       required: true
   - type: textarea
