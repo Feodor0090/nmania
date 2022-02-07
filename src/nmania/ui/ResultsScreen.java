@@ -57,17 +57,17 @@ public final class ResultsScreen extends Canvas {
 
 		g.setColor(-1);
 		g.setFont(Font.getFont(0, 0, 16));
-		g.drawString("RESULTS", w / 2, -introTimer, 17);
+		g.drawString(Nmania.commonText[11], w / 2, -introTimer, 17);
 		g.setFont(Font.getFont(0, 0, 8));
-		g.drawString("any key to proceed", w / 2, h + introTimer, Graphics.BOTTOM | Graphics.HCENTER);
+		g.drawString(Nmania.commonText[12], w / 2, h + introTimer, Graphics.BOTTOM | Graphics.HCENTER);
 
 		int th = Font.getFont(0, 0, 8).getHeight();
 		int y = (h - th * 9) / 2;
-		drawRow(g, 0, "Total score", -1, String.valueOf(score.currentHitScore), y, w);
+		drawRow(g, 0, Nmania.commonText[14], -1, String.valueOf(score.currentHitScore), y, w);
 		y += th;
-		drawRow(g, 1, "Max combo", -1, score.hits[0] == 0 ? "Full combo" : String.valueOf(score.maxCombo), y, w);
+		drawRow(g, 1, Nmania.commonText[15], -1, score.hits[0] == 0 ? Nmania.commonText[17] : String.valueOf(score.maxCombo), y, w);
 		y += th;
-		drawRow(g, 2, "Accuracy", -1, String.valueOf((score.GetAccuracy() / 100f) + "%"), y, w);
+		drawRow(g, 2, Nmania.commonText[16], -1, String.valueOf((score.GetAccuracy() / 100f) + "%"), y, w);
 		y += th;
 		for (int i = 0; i < 6; i++) {
 			drawRow(g, 3 + i, Player.judgements[i], Player.judgementColors[i], String.valueOf(score.hits[i]), y, w);

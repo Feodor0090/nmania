@@ -1,0 +1,27 @@
+Back
+Beatmapset select
+Pallete editor
+Check
+keybinds setup
+pause/exit
+column
+press a key for the
+Cancel
+There are no keybinds for this mode
+Set them.
+RESULTS
+any key to proceed
+Edit
+Total score
+Max combo
+Accuracy
+Full combo
+Save & exit
+Choose skin type
+Settings
+Audio
+System
+not set
+Continue
+Retry
+Quit

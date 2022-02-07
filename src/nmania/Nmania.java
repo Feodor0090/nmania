@@ -17,8 +17,12 @@ public final class Nmania extends MIDlet {
 
 	public static Nmania inst;
 	public boolean running;
+	public static BeatmapManager bm;
+	public static Skin skin;
+	public static String[] commonText;
 
 	public Nmania() {
+		inst = this;
 	}
 
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
@@ -27,8 +31,6 @@ public final class Nmania extends MIDlet {
 	protected void pauseApp() {
 	}
 
-	public static BeatmapManager bm;
-	public static Skin skin;
 
 	public static void LoadManager(String dir) throws IOException {
 		bm = new BeatmapManager(dir);
@@ -36,10 +38,10 @@ public final class Nmania extends MIDlet {
 	}
 
 	protected void startApp() throws MIDletStateChangeException {
-		inst = this;
 		if (running)
 			return;
 		Settings.Load();
+		commonText = getStrings("common");
 		Push(new MainScreen());
 	}
 

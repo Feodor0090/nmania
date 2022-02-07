@@ -44,8 +44,8 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 		append(holdKeyColors);
 	}
 
-	private final Command back = new Command("Back", Command.BACK, 2);
-	private final Command edit = new Command("Edit", Command.ITEM, 1);
+	private final Command back = new Command(Nmania.commonText[0], Command.BACK, 2);
+	private final Command edit = new Command(Nmania.commonText[13], Command.ITEM, 1);
 	final SkinSelect prev;
 	final Skin skin = Nmania.skin;
 

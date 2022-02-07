@@ -226,7 +226,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		}
 
 		public String GetTitle() {
-			return "nmania settings";
+			return Nmania.commonText[20];
 		}
 
 		public void paint(Graphics g, int y, int sw) {
@@ -261,7 +261,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		}
 
 		public String GetTitle() {
-			return "Audio";
+			return Nmania.commonText[21];
 		}
 
 		final String[] items = Nmania.getStrings("sets_audio");
@@ -301,7 +301,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		}
 
 		public String GetTitle() {
-			return "System";
+			return Nmania.commonText[22];
 		}
 
 		final String[] items = Nmania.getStrings("sets_system");
@@ -340,7 +340,7 @@ public class SettingsScreen extends Canvas implements CommandListener {
 		public void paint(Graphics g, int y, int sw) {
 			for (int i = 0; i < 10; i++) {
 				if (i > 0 && Settings.keyLayout[i] == null) {
-					g.drawString("not set", getWidth() - 10, y + th * i, 24);
+					g.drawString(Nmania.commonText[23], getWidth() - 10, y + th * i, 24);
 				}
 			}
 		}

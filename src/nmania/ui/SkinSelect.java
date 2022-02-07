@@ -48,7 +48,7 @@ public class SkinSelect extends Canvas {
 		g.fillRect(0, 0, w, h);
 		g.setColor(-1);
 
-		g.drawString("Choose skin type", w / 2, -outroTimer, 17);
+		g.drawString(Nmania.commonText[19], w / 2, -outroTimer, 17);
 		int x1 = w / 4;
 		int x2 = w * 3 / 4;
 		if (outroTimer != 0) {
@@ -80,7 +80,7 @@ public class SkinSelect extends Canvas {
 		if (!selectionFocused && outroTimer == 0)
 			g.fillRect(5, h - th - 5, w - 10, th);
 		g.setColor(-1);
-		g.drawString("Save & exit", w / 2, h - 5 + outroTimer, 33);
+		g.drawString(Nmania.commonText[18], w / 2, h - 5 + outroTimer, 33);
 
 		if (introTimer > 0) {
 			g.setColor(-1);

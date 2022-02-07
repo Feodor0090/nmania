@@ -654,7 +654,6 @@ public final class Player extends GameCanvas {
 	 * Loop method, that handles pause menu redrawing.
 	 */
 	private void PauseUpdateLoop() {
-		String[] pauseText = new String[] { "Continue", "Retry", "Quit" };
 		while (isPaused) {
 			int sw3 = scrW / 3;
 			int sh5 = scrH / 5;
@@ -665,7 +664,7 @@ public final class Player extends GameCanvas {
 				g.setColor((i == pauseItem ? 255 : 0), 0, 0);
 				g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
 				g.setColor(-1);
-				g.drawString(pauseText[i], scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
+				g.drawString(Nmania.commonText[24 + i], scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
 			}
 			flushGraphics();
 			try {
@@ -734,7 +733,7 @@ public final class Player extends GameCanvas {
 					g.setColor((i == pauseItem ? 255 : 0), 0, 0);
 					g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
 					g.setColor(-1);
-					g.drawString(i == 0 ? "Retry" : "Quit", scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
+					g.drawString(Nmania.commonText[25 + i], scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
 				}
 				flushGraphics();
 				try {

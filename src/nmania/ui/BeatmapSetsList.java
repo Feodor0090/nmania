@@ -15,10 +15,10 @@ import nmania.Nmania;
 public class BeatmapSetsList extends List implements CommandListener {
 
 	private BeatmapManager bm;
-	private Command back = new Command("Back", Command.BACK, 1);
+	private Command back = new Command(Nmania.commonText[0], Command.BACK, 1);
 	
 	public BeatmapSetsList(BeatmapManager bm) throws IOException {
-		super("Beatmapset select", Choice.IMPLICIT);
+		super(Nmania.commonText[1], Choice.IMPLICIT);
 		setCommandListener(this);
 		this.bm = bm;
 		Enumeration e = bm.list();

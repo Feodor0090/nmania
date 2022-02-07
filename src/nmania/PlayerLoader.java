@@ -29,7 +29,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 	Displayable page;
 	final boolean auto;
 	Alert a;
-	Command cancelCmd = new Command("Cancel", Command.STOP, 1);
+	Command cancelCmd = new Command(Nmania.commonText[8], Command.STOP, 1);
 
 	public void run() {
 		a = new Alert("nmania", "Reading beatmap file", null, AlertType.INFO);
@@ -64,7 +64,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 			// no keyboard layout
 			KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, page);
 			PushWaitPush(kbs,
-					new Alert("nmania", "There are no keybinds for this mode (" + b.columnsCount + "K). Set them.",
+					new Alert("nmania", Nmania.commonText[9] + " (" + b.columnsCount + "K). " + Nmania.commonText[10],
 							null, AlertType.WARNING));
 			return;
 		}
