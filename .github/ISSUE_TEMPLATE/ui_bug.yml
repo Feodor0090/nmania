@@ -1,0 +1,29 @@
+name: UI bug
+description: Something in UI don't work as it should.
+title: "UI bug: "
+labels: ["type:ui-bug"]
+body:
+  - type: input
+    id: version
+    attributes:
+      label: nmania version
+      description: Version, that you run
+      placeholder: 2.9.2
+    validations:
+      required: true
+  - type: textarea
+    id: device
+    attributes:
+      label: Your device and it's runtime
+      description: Model, OS kind&version. In case of PC, write it's specs and JVM version. If emulation/custom runtime is used, write about it.
+      placeholder: Nokia 3310, symbian 5.25
+    validations:
+      required: true
+  - type: textarea
+    id: descr
+    attributes:
+      label: Description
+      description: Attach here screenshots or a video. Write what is wrong. Explain what did you do to break the game.
+      placeholder: These buttons don't work: VID1296000.mp4
+    validations:
+      required: true
