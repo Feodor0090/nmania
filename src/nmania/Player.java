@@ -20,7 +20,7 @@ import tube42.lib.imagelib.ImageUtils;
 
 public final class Player extends GameCanvas {
 
-	protected Player(Beatmap map, boolean enableJudgements, Skin s, ILogger log, Displayable next)
+	protected Player(Beatmap map, PlayOptions opts, Skin s, ILogger log, Displayable next)
 			throws IOException, MediaException, InterruptedException {
 		super(false);
 		setFullScreenMode(true);
@@ -83,12 +83,21 @@ public final class Player extends GameCanvas {
 		// step 3: setup difficulty
 		// TODO
 		float od = map.difficulty;
+		int perfectHW = 16;
+		if (opts.daMod < 0) {
+			od = od / 1.4f;
+			perfectHW = 22;
+		} else if (opts.daMod > 1) {
+			od = od * 1.4f;
+			perfectHW = 11;
+		}
 		log.log("Setting scoring up");
 		hitWindows = new int[] { (int) (188 - 3 * od), (int) (151 - 3 * od), (int) (127 - 3 * od), (int) (97 - 3 * od),
-				(int) (64 - 3 * od), 16 };
-		healthValues = new int[] { -100, -10, 0, 20, 40, 50 };
+				(int) (64 - 3 * od), perfectHW };
+		healthValues = new int[] { opts.failMod > 0 ? -1001 : -100, -10, 0, 20, 40, 50 };
 		score = new ScoreController();
-		this.enableJudgements = enableJudgements;
+		failCondition = opts.failMod;
+		playerCanPlay = !opts.autoplay;
 
 		// step 4: setup configs
 		log.log("Bootstrapping player");
@@ -225,7 +234,7 @@ public final class Player extends GameCanvas {
 		System.gc();
 	}
 
-	private final boolean enableJudgements;
+	private final boolean playerCanPlay;
 	private final int columnsCount;
 	private final int[][] columns;
 	private final int[] currentNote;
@@ -234,6 +243,10 @@ public final class Player extends GameCanvas {
 	private final int[] keyMappings;
 	private final int[] hitWindows;
 	private final int[] healthValues;
+	/**
+	 * @see PlayOptions#failMod
+	 */
+	private final int failCondition;
 	public final ScoreController score;
 	public final AudioController track;
 	private final Image bg;
@@ -398,7 +411,7 @@ public final class Player extends GameCanvas {
 			pauseItem = 0;
 			return;
 		}
-		if (!enableJudgements)
+		if (!playerCanPlay)
 			return;
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
@@ -409,7 +422,7 @@ public final class Player extends GameCanvas {
 	}
 
 	protected final void keyReleased(final int k) {
-		if (!enableJudgements || isPaused)
+		if (!playerCanPlay || isPaused)
 			return;
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
@@ -455,7 +468,7 @@ public final class Player extends GameCanvas {
 		// is beatmap over?
 		int emptyColumns = 0;
 
-		if (enableJudgements) {
+		if (playerCanPlay) {
 			// checking all columns
 			for (int column = 0; column < columnsCount; column++) {
 
@@ -760,7 +773,10 @@ public final class Player extends GameCanvas {
 			health = 1000;
 		if (health < 0) {
 			if (j == 0) {
-				failed = true;
+				// MoFail can't fail
+				if (failCondition >= 0) {
+					failed = true;
+				}
 			} else {
 				health = 0;
 			}

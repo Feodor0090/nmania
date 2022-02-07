@@ -16,18 +16,18 @@ import nmania.ui.MainScreen;
 
 public class PlayerLoader extends Thread implements ILogger, CommandListener {
 
-	public PlayerLoader(BeatmapSet set, String bmFileName, boolean auto, BeatmapSetPage page) {
+	public PlayerLoader(BeatmapSet set, String bmFileName, PlayOptions opts, BeatmapSetPage page) {
 		super("Player loader");
 		this.set = set;
 		this.bmfn = bmFileName;
 		this.page = page;
-		this.auto = auto;
+		this.opts = opts;
 	}
 
 	final BeatmapSet set;
 	final String bmfn;
 	Displayable page;
-	final boolean auto;
+	final PlayOptions opts;
 	Alert a;
 	Command cancelCmd = new Command("Cancel", Command.STOP, 1);
 
@@ -72,7 +72,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 			page = null;
 		}
 		try {
-			Player p = new Player(b, !auto, Nmania.skin, this, page);
+			Player p = new Player(b, opts, Nmania.skin, this, page);
 			Nmania.Push(p);
 			Thread t = new PlayerThread(p);
 			t.start();

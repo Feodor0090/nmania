@@ -16,6 +16,7 @@ import javax.microedition.lcdui.StringItem;
 import nmania.BeatmapManager;
 import nmania.BeatmapSet;
 import nmania.Nmania;
+import nmania.PlayOptions;
 import nmania.PlayerLoader;
 import tube42.lib.imagelib.ImageUtils;
 
@@ -87,7 +88,9 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 
 	public void commandAction(Command c, Item arg1) {
 		if (c instanceof Difficulty) {
-			(new PlayerLoader(set, ((Difficulty) c).fileName, mode.getSelectedIndex() == 1, this)).start();
+			PlayOptions opts = new PlayOptions();
+			opts.autoplay = mode.getSelectedIndex() == 1;
+			(new PlayerLoader(set, ((Difficulty) c).fileName, opts, this)).start();
 		}
 	}
 
