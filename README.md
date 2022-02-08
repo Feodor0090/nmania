@@ -28,7 +28,11 @@ _coming soon_
 https://t.me/nnmidletschat
 
 ## How to play
-Go to osu!direct or it's mirror and download maps that you want to play (or copy them from stable's `Songs` folder). Extract your maps to `C:/Data/Sounds/nmania/` (if there is no such path, create folders manually) like stable does - one nested folder for each mapset. Launch the game and play. You may want to adjust scroll speed, dim and sound effects in `settings`, adjust look of the game in `skinning`, or read this manual again in `info`.
+Go to osu!direct or it's mirror and download maps that you want to play (or copy them from stable's `Songs` folder). Extract your maps to `C:/Data/Sounds/nmania/` (if there is no such path, create folders manually) like stable does - one nested folder for each mapset. 
+
+If you have a standalone `nmania` beatmap, you need to compose a BMS yourself. Create a nested folder, place the beatmap file here. Find the music track and background image for it, put them in the same folder with the beatmap (keep eye on files' names, rename them if needed).
+
+Launch the game and play. You may want to adjust scroll speed, dim and sound effects in `settings`, adjust look of the game in `skinning`, or read this manual again in `info`.
 
 If the game is too laggy even with flat skinning and without sounds, there is likely something wrong with your device, _WORKSFORME_.
 
