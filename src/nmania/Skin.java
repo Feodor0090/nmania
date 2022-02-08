@@ -25,7 +25,7 @@ public class Skin {
 			// parse
 			JSONObject j = new JSONObject(new String(d));
 
-			rich = j.getBoolean("rich");
+			rich = j.optBoolean("rich", false);
 			keyboardHeight = j.getInt("keyboardheight");
 			leftOffset = j.getInt("leftoffset");
 			columnWidth = j.getInt("columnwidth");
@@ -118,6 +118,7 @@ public class Skin {
 				richSkin.Check();
 			} catch (IllegalStateException e) {
 				richSkin = null;
+				rich = false;
 				throw e;
 			}
 		}
