@@ -2,8 +2,16 @@ package nmania;
 
 import org.json.me.JSONArray;
 
+import nmania.formats.IRawBeatmap;
 import symnovel.IComparable;
 
+/**
+ * Beatmap model. Can be created using {@link IRawBeatmap} and passed to
+ * {@link Player}.
+ * 
+ * @author Feodor0090
+ *
+ */
 public final class Beatmap {
 	public int id;
 	public String diffName;
@@ -23,6 +31,11 @@ public final class Beatmap {
 		return set.wdPath + set.folderName + local;
 	}
 
+	/**
+	 * Nmania's the only hitobject.
+	 * 
+	 * @author Feodor0090
+	 */
 	public static final class ManiaNote implements IComparable {
 		int time;
 		int column;
@@ -49,6 +62,7 @@ public final class Beatmap {
 		}
 	}
 
+	// TODO use somewhere or delete at all
 	public static final class TimingPoint {
 		final int time;
 		final int signature;

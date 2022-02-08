@@ -6,10 +6,17 @@ import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 
+/**
+ * Class that's responsible for music playback.
+ * 
+ * @author Feodor0090
+ *
+ */
 public final class AudioController {
 
 	public AudioController(Beatmap map) throws IOException, MediaException {
 		String file = map.ToGlobalPath(map.audio);
+		// this supposes that all "builtin" files are mp3
 		player = file.startsWith("file://") ? Manager.createPlayer(file)
 				: Manager.createPlayer(getClass().getResourceAsStream(file), "audio/mpeg");
 		player.realize();
@@ -21,7 +28,7 @@ public final class AudioController {
 	private final int offset;
 
 	public int Now() {
-		return offset+(int) (player.getMediaTime() / 1000);
+		return offset + (int) (player.getMediaTime() / 1000);
 	}
 
 	public boolean Play() {
@@ -42,6 +49,9 @@ public final class AudioController {
 		}
 	}
 
+	/**
+	 * Disposes the player.
+	 */
 	public void Stop() {
 		try {
 			player.stop();
@@ -51,6 +61,9 @@ public final class AudioController {
 		player.close();
 	}
 
+	/**
+	 * Makes the track to play from the beginning.
+	 */
 	public void Reset() {
 		try {
 			player.setMediaTime(0);

@@ -232,8 +232,6 @@ public final class Player extends GameCanvas {
 		fillScoreX = scrW - fillScoreW;
 		healthX = s.leftOffset + 1 + (colWp1 * columnsCount);
 		leftOffset = s.leftOffset;
-		// <---->
-
 		holdsColors = s.GetHoldColors(columnsCount);
 		holdsWithGr = new boolean[columnsCount];
 		for (int i = 0; i < columnsCount; i++) {
@@ -241,7 +239,8 @@ public final class Player extends GameCanvas {
 		}
 		colorHoldHeadsAsHolds = s.holdsHaveOwnColors;
 		verticalGr = s.verticalGradientOnNotes;
-
+		// don't try to fix the mess above
+		
 		Thread.sleep(1);
 
 		// step 8: lock graphics

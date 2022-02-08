@@ -15,6 +15,12 @@ import nmania.formats.IRawBeatmap;
 import nmania.formats.InvalidBeatmapTypeException;
 import nmania.formats.RawBeatmapConverter;
 
+/**
+ * Class with methods for beatmaps reading.
+ * 
+ * @author Feodor0090
+ *
+ */
 public class BeatmapManager {
 
 	public BeatmapManager(String wd) {

@@ -9,8 +9,24 @@ import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
 
+/**
+ * Zero-allocation (in theory) pool of samples.
+ * 
+ * @author Feodor0090
+ *
+ */
 public final class MultiSample {
 
+	/**
+	 * Creates the pool.
+	 * 
+	 * @param local Is it inside JAR package?
+	 * @param file  File name.
+	 * @param type  MIME type.
+	 * @param count Count of player to prepare.
+	 * @throws IOException
+	 * @throws MediaException
+	 */
 	public MultiSample(boolean local, String file, String type, int count) throws IOException, MediaException {
 		poolSize = count;
 		pool = new Player[count];
