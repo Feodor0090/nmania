@@ -101,10 +101,14 @@ public class MainScreen extends GameCanvas implements Runnable {
 	protected void pointerPressed(int x, int y) {
 		lastInputIsTouch = true;
 		if (state == 2) {
-			x -= (getWidth() - menu.getWidth());
-			y -= (getHeight() - menu.getHeight());
+			// attempt to clamp the touch into 640x360
+			x -= getWidth() / 2;
+			y -= getHeight() / 2;
 			x *= mul;
 			y *= mul;
+			x += 320;
+			y += 180;
+			// zones
 			if (x < 210) {
 				state = 4;
 				if (y > 180) {
