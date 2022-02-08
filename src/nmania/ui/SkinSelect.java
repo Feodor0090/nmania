@@ -3,14 +3,18 @@ package nmania.ui;
 import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
+import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
 
 import nmania.Nmania;
 import nmania.Skin;
 import tube42.lib.imagelib.ColorUtils;
 
-public class SkinSelect extends Canvas {
+public class SkinSelect extends Canvas implements CommandListener {
 
 	public SkinSelect() {
 		setFullScreenMode(true);
@@ -25,6 +29,15 @@ public class SkinSelect extends Canvas {
 						Thread.sleep(10);
 						introTimer--;
 					}
+					if (Nmania.skin.rich) {
+						try {
+							Nmania.skin.LoadRich(false);
+						} catch (IllegalStateException e) {
+							Alert a = new Alert("Rich skin is invalid", e.getMessage(), null, AlertType.ERROR);
+							a.setTimeout(Alert.FOREVER);
+							Nmania.Push(a);
+						}
+					}
 					repaint();
 				} catch (Exception e) {
 					return;
@@ -33,11 +46,11 @@ public class SkinSelect extends Canvas {
 		}).start();
 	}
 
-	boolean useRich = false;
 	boolean selectionFocused = true;
 	int th = 80;
 	int introTimer = 30;
 	int outroTimer = 0;
+	private final Command back = new Command(Nmania.commonText[0], Command.BACK, 2);
 
 	protected void paint(Graphics g) {
 		int w = getWidth();
@@ -64,17 +77,17 @@ public class SkinSelect extends Canvas {
 
 		g.setColor(MainScreen.bgColor);
 		for (int i = 0; i < 5; i++) {
-			int x0 = useRich ? x2 : x1;
+			int x0 = Nmania.skin.rich ? x2 : x1;
 			x0 = x0 - 60;
 			int y0 = h / 2 - 55 - th - 5 - 5;
 			int h0 = 110 + th * 2 + 20;
 			g.drawRect(x0 + i, y0 + i, 120 - i * 2, h0 - i * 2);
 		}
 		if (selectionFocused) {
-			g.fillRect((useRich ? x2 : x1) - 50, h / 2 + 55, 100, th);
+			g.fillRect((Nmania.skin.rich ? x2 : x1) - 50, h / 2 + 55, 100, th);
 		}
 		g.setColor(-1);
-		g.drawString("settings", (useRich ? x2 : x1), h / 2 + 55, 17);
+		g.drawString("settings", (Nmania.skin.rich ? x2 : x1), h / 2 + 55, 17);
 		g.setColor(MainScreen.bgColor);
 
 		if (!selectionFocused && outroTimer == 0)
@@ -114,7 +127,7 @@ public class SkinSelect extends Canvas {
 	protected void keyPressed(int k) {
 		if (k == -3 || k == -4 || k == '4' || k == '6') {
 			if (selectionFocused) {
-				useRich = !useRich;
+				Nmania.skin.rich = !Nmania.skin.rich;
 			}
 			repaint();
 			return;
@@ -126,9 +139,8 @@ public class SkinSelect extends Canvas {
 		}
 		if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
 			if (selectionFocused) {
-				if (useRich) {
-					Nmania.Push(new Alert("nmania", "Rich skin is not available yet. Check newer versions of the game.",
-							null, AlertType.ERROR));
+				if (Nmania.skin.rich) {
+					DisplayRichInfo();
 				} else {
 					Nmania.Push(new VectorSkinSetup(this));
 				}
@@ -139,13 +151,18 @@ public class SkinSelect extends Canvas {
 	}
 
 	void Exit() {
-		if (useRich) {
-			Nmania.Push(new Alert("nmania", "Rich skin is not available yet. Check newer versions of the game.", null,
-					AlertType.ERROR));
-			return;
-		}
 		(new Thread() {
 			public void run() {
+				if (Nmania.skin.rich) {
+					try {
+						Nmania.skin.LoadRich(true);
+					} catch (IllegalStateException e) {
+						Alert a = new Alert("Rich skin is invalid", e.getMessage(), null, AlertType.ERROR);
+						a.setTimeout(Alert.FOREVER);
+						Nmania.Push(a);
+						return;
+					}
+				}
 				try {
 					while (outroTimer <= 30) {
 						repaint();
@@ -153,6 +170,7 @@ public class SkinSelect extends Canvas {
 						outroTimer++;
 					}
 					repaint();
+					Nmania.skin.Save();
 					Nmania.Push(new MainScreen());
 				} catch (Exception e) {
 					return;
@@ -166,19 +184,37 @@ public class SkinSelect extends Canvas {
 			Exit();
 		}
 		if (x < getWidth() / 2) {
-			if (useRich) {
-				useRich = false;
+			if (Nmania.skin.rich) {
+				Nmania.skin.rich = false;
 			} else {
 				Nmania.Push(new VectorSkinSetup(this));
 			}
 		} else {
-			if (useRich) {
-				Nmania.Push(new Alert("nmania", "Rich skin is not available yet. Check newer versions of the game.",
-						null, AlertType.ERROR));
+			if (Nmania.skin.rich) {
+				DisplayRichInfo();
 			} else {
-				useRich = true;
+				Nmania.skin.rich = true;
 			}
 		}
+	}
+
+	private final void DisplayRichInfo() {
+		Form f = new Form("Rich skin setup");
+		f.setCommandListener(this);
+		f.addCommand(back);
+		f.append("Rich skin setup is being done via file manager.\n");
+		f.append("In your working folder, create a subfolder \"_skin\".\n");
+		f.append("File naming structure: \"(type)(index).png\". Only png is supported.\n");
+		f.append("There should be 3 (1,2,3) \"key\", 3 \"hkey\", 3 \"note\", 6 (0-5) \"judgment\" and 12 (0-11) \"digit\" images.\n");
+		f.append("The 1st images will be used in non-odd columns, the 2nds in odd and the 3rds in central.\n");
+		f.append("0-9 digit images will be used for 0-9 digits. The 10th image should contain comma, the 11th \"%\" symbol.\n");
+		f.append("0th-5th judgment images should contain splashes for 0, 50, 100, 200, 300, 305.\n");
+		f.append("All digits must have the same height. All keys and hkeys the same size. All notes the same size. Keys, hkeys and notes the same width.");
+		Nmania.Push(f);
+	}
+
+	public void commandAction(Command c, Displayable arg1) {
+		if(c==back) Nmania.Push(this);
 	}
 
 }

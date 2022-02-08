@@ -181,39 +181,58 @@ public final class Player extends GameCanvas {
 		// step 7: cache data for HUD drawing
 		log.log("Caching service data");
 		fontL = Font.getFont(0, 0, 16);
-		fillCountersH = fontL.getHeight();
-		{
-			fillScoreW = fontL.stringWidth("000000000");
-			scoreBg = ImageUtils.crop(bg, scrW - fillScoreW, 0, scrW - 1, fillCountersH + 1);
-		}
 		numsWidthCache = new int[10];
-		for (int i = 0; i < 10; i++) {
-			numsWidthCache[i] = fontL.charWidth((char) ('0' + i));
-		}
 		accText = score.currentAcc; // chaining
-		{
+		if (s.richSkin == null) {
+			rich = null;
+			fillCountersH = fontL.getHeight();
+			fillScoreW = fontL.stringWidth("000000000");
+			for (int i = 0; i < 10; i++) {
+				numsWidthCache[i] = fontL.charWidth((char) ('0' + i));
+			}
 			fillAccW = fontL.charsWidth(accText, 0, 7);
-			accBg = ImageUtils.crop(bg, scrW - fillAccW, scrH - fillCountersH, scrW - 1, scrH - 1);
+			kbH = s.keyboardHeight;
+			colW = s.GetColumnWidth();
+			noteH = s.noteHeight;
+			notesColors = s.GetNoteColors(columnsCount);
+			notesWithGr = new boolean[columnsCount];
+			for (int i = 0; i < columnsCount; i++) {
+				notesWithGr[i] = notesColors[i * 2] != notesColors[i * 2 + 1];
+			}
+			keysColors = s.GetKeyColors(columnsCount);
+			holdKeysColors = s.GetHoldKeyColors(columnsCount);
+			zeroW = fontL.charWidth('0');
+		} else {
+			rich = s.richSkin.toPlayerCache(columnsCount);
+			fillCountersH = s.richSkin.GetCounterHeight();
+			fillScoreW = s.richSkin.GetScoreWidth();
+			for (int i = 0; i < 10; i++) {
+				numsWidthCache[i] = s.richSkin.digits[i].getWidth();
+			}
+			fillAccW = s.richSkin.GetAccWidth();
+			kbH = s.richSkin.GetKeyboardHeight();
+			colW = s.richSkin.GetColumnWidth();
+			noteH = s.richSkin.GetNoteHeight();
+			notesColors = null;
+			notesWithGr = null;
+			keysColors = null;
+			holdKeysColors = null;
+			zeroW = s.richSkin.GetMaxDigitWidth();
 		}
-		zeroW = fontL.charWidth('0');
-		kbH = s.keyboardHeight;
+		scoreBg = ImageUtils.crop(bg, scrW - fillScoreW, 0, scrW - 1, fillCountersH + 1);
+		accBg = ImageUtils.crop(bg, scrW - fillAccW, scrH - fillCountersH, scrW - 1, scrH - 1);
 		kbY = scrH - kbH;
-		colW = s.GetColumnWidth();
 		colWp1 = colW + 1;
 		judgmentCenter = s.leftOffset + colWp1 * columnsCount / 2;
-		localHoldX = (colW - s.holdWidth) / 2;
+		holdW = s.holdWidth;
+		localHoldX = (colW - holdW) / 2;
 		fillColsW = 1 + (colWp1 * columnsCount) + 6;
 		fillAccX = scrW - fillAccW;
 		fillScoreX = scrW - fillScoreW;
 		healthX = s.leftOffset + 1 + (colWp1 * columnsCount);
 		leftOffset = s.leftOffset;
-		noteH = s.noteHeight;
-		holdW = s.holdWidth;
-		notesColors = s.GetNoteColors(columnsCount);
-		notesWithGr = new boolean[columnsCount];
-		for (int i = 0; i < columnsCount; i++) {
-			notesWithGr[i] = notesColors[i * 2] != notesColors[i * 2 + 1];
-		}
+		// <---->
+
 		holdsColors = s.GetHoldColors(columnsCount);
 		holdsWithGr = new boolean[columnsCount];
 		for (int i = 0; i < columnsCount; i++) {
@@ -221,8 +240,6 @@ public final class Player extends GameCanvas {
 		}
 		colorHoldHeadsAsHolds = s.holdsHaveOwnColors;
 		verticalGr = s.verticalGradientOnNotes;
-		keysColors = s.GetKeyColors(columnsCount);
-		holdKeysColors = s.GetHoldKeyColors(columnsCount);
 
 		Thread.sleep(1);
 
@@ -275,6 +292,7 @@ public final class Player extends GameCanvas {
 	private final int noteH;
 	private final int holdW;
 	private final int zeroW;
+	private final Image[] rich;
 
 	/**
 	 * Gameplay time.
@@ -799,10 +817,17 @@ public final class Player extends GameCanvas {
 	 * Method to redraw hot areas. Called by update loop.
 	 */
 	public final void Redraw() {
-		g.setClip(0, 0, scrW, kbY);
-		RedrawNotes();
-		g.setClip(0, 0, scrW, scrH);
-		RedrawHUD();
+		if (rich == null) {
+			g.setClip(0, 0, scrW, kbY);
+			RedrawNotesVector();
+			g.setClip(0, 0, scrW, scrH);
+			RedrawHUDVector();
+		} else {
+			g.setClip(0, 0, scrW, kbY);
+			RedrawNotesRich();
+			g.setClip(0, 0, scrW, scrH);
+			RedrawHUDRich();
+		}
 		if (Settings.fullScreenFlush) {
 			flushGraphics();
 		} else {
@@ -819,7 +844,7 @@ public final class Player extends GameCanvas {
 	/**
 	 * Redraws score, acc, health and judgment.
 	 */
-	private final void RedrawHUD() {
+	private final void RedrawHUDVector() {
 		g.setColor(-1);
 		// score & acc
 		if (Settings.drawCounters) {
@@ -1025,6 +1050,140 @@ public final class Player extends GameCanvas {
 	}
 
 	/**
+	 * Redraws score, acc, health and judgment.
+	 */
+	private final void RedrawHUDRich() {
+		g.setColor(-1);
+		// score & acc
+		if (Settings.drawCounters) {
+			final int realScore = score.currentHitScore;
+			if (realScore != rollingScore) {
+				rollingScore += (realScore - rollingScore) / 60 + 1;
+			}
+			g.drawImage(scoreBg, scrW, 0, 24);
+			int num = rollingScore;
+			int x1 = scrW;
+			while (true) {
+				final int d = num % 10;
+				g.drawImage(rich[d + 6], x1, 0, 24);
+				x1 -= numsWidthCache[d];
+				if (num < 10)
+					break;
+				num /= 10;
+			}
+			g.drawImage(accBg, scrW, scrH, 40);
+			x1 = scrW;
+			for (int i = 6; i >= 0; i--) {
+				final char c = accText[i];
+				if (c == '%') {
+					g.drawImage(rich[17], x1, scrH, 40);
+					x1 -= rich[17].getWidth();
+				} else if (c == ',') {
+					g.drawImage(rich[16], x1, scrH, 40);
+					x1 -= rich[16].getWidth();
+				} else if (c != ' ') {
+					int idx = (c - '0');
+					g.drawImage(rich[idx + 6], x1, scrH, 40);
+					x1 -= numsWidthCache[idx];
+				}
+			}
+		}
+		// judgment & combo
+		if (time - lastJudgementTime < 200) {
+			g.drawImage(rich[lastJudgement], judgmentCenter, 100, 17);
+		}
+		int combo = score.currentCombo;
+		if (Settings.drawCounters && combo > 0) {
+			if (combo < 10) {
+				g.drawImage(rich[combo + 6], judgmentCenter, 100, 33);
+			} else if (combo < 100) {
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter, 100, 36);
+				g.drawImage(rich[combo / 10 + 6], judgmentCenter, 100, 40);
+			} else if (combo < 1000) {
+				int zw2 = zeroW >> 1;
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter + zw2, 100, 36);
+				combo /= 10;
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter, 100, 33);
+				combo /= 10;
+				g.drawImage(rich[combo + 6], judgmentCenter - zw2, 100, 40);
+			} else {
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter + zeroW, 100, 36);
+				combo /= 10;
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter, 100, 36);
+				combo /= 10;
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter, 100, 40);
+				combo /= 10;
+				g.drawImage(rich[combo % 10 + 6], judgmentCenter - zeroW, 100, 40);
+				// failsafe for 9999+ combo
+				if (combo > 10) {
+					combo /= 10;
+					g.drawImage(rich[combo % 10 + 6], judgmentCenter - zeroW * 2, 10, 40);
+				}
+				// Yeah, 99999+ is not supported.
+			}
+		}
+		// health
+		{
+			if (health != rollingHealth) {
+				final int delta = (health - rollingHealth);
+				rollingHealth += delta / 10 + (delta > 0 ? 1 : -1);
+			}
+			g.setColor(0);
+			g.fillRect(healthX, 0, 6, scrH);
+			if (rollingHealth > 0) {
+				int hh = scrH * rollingHealth / 1000;
+				final int clr = Math.min(255, rollingHealth >> 1);
+				g.setColor(255, clr, clr);
+				g.fillRect(healthX, scrH - hh, 6, hh);
+			}
+		}
+		// profiler
+		if (Settings.profiler) {
+			// recount
+			{
+				if (time < _lastTime) {
+					_lastTime = 0;
+				} else if (time - _lastTime > 1000) {
+					_lastTime += 1000;
+					_lastFps = framesPassed - _lastFrames;
+					_lastFrames = framesPassed;
+					Runtime r = Runtime.getRuntime();
+					_lastMem = (int) (r.totalMemory() - r.freeMemory()) / 1024;
+				}
+			}
+			g.setColor(0, 255, 0);
+			// fps
+			{
+				int num = _lastFps;
+				int x1 = leftOffset + columnsCount * colW;
+				while (true) {
+					final int d = num % 10;
+					g.drawChar((char) (d + '0'), x1, fillCountersH, 24);
+					x1 -= numsWidthCache[d];
+					if (num < 10)
+						break;
+					num /= 10;
+				}
+			}
+			// mem
+			{
+				int num = _lastMem;
+				int x1 = leftOffset + columnsCount * colW;
+				g.drawString("kb", x1, 0, 24);
+				x1 -= fontL.stringWidth("kb");
+				while (true) {
+					final int d = num % 10;
+					g.drawChar((char) (d + '0'), x1, 0, 24);
+					x1 -= numsWidthCache[d];
+					if (num < 10)
+						break;
+					num /= 10;
+				}
+			}
+		}
+	}
+
+	/**
 	 * Draws bg image.
 	 */
 	private final void FillBg() {
@@ -1052,21 +1211,28 @@ public final class Player extends GameCanvas {
 	 */
 	private final void DrawKey(final int k, final boolean hold) {
 		final int x = leftOffset + 1 + (k * colWp1);
-		final int x2 = colW + x - 1;
-		final int topClr = (hold ? holdKeysColors : keysColors)[k * 2];
-		final int btmClr = (hold ? holdKeysColors : keysColors)[k * 2 + 1];
-		int y = kbY;
-		for (int i = 1; i < kbH; i++) {
-			y++;
-			g.setColor(ColorUtils.blend(btmClr, topClr, i * 255 / kbH));
-			g.drawLine(x, y, x2, y);
+		if (rich == null) {
+			final int x2 = colW + x - 1;
+			final int topClr = (hold ? holdKeysColors : keysColors)[k * 2];
+			final int btmClr = (hold ? holdKeysColors : keysColors)[k * 2 + 1];
+			int y = kbY;
+			for (int i = 1; i < kbH; i++) {
+				y++;
+				g.setColor(ColorUtils.blend(btmClr, topClr, i * 255 / kbH));
+				g.drawLine(x, y, x2, y);
+			}
+		} else {
+			if (hold)
+				g.drawImage(rich[18 + columnsCount * 2 + k], x, kbY, 0);
+			else
+				g.drawImage(rich[18 + k], x, kbY, 0);
 		}
 	}
 
 	/**
 	 * Redraws notes.
 	 */
-	private final void RedrawNotes() {
+	private final void RedrawNotesVector() {
 
 		// current Y offset due to scroll
 		final int notesY = kbY + time / scrollDiv;
@@ -1143,4 +1309,49 @@ public final class Player extends GameCanvas {
 		}
 	}
 
+	/**
+	 * Redraws notes.
+	 */
+	private final void RedrawNotesRich() {
+
+		// current Y offset due to scroll
+		final int notesY = kbY + time / scrollDiv;
+
+		// column X
+		int x = leftOffset + 1;
+
+		for (int column = 0; column < columnsCount; column++) {
+
+			// clearing the column
+			g.setColor(0);
+			g.fillRect(x, 0, colW, kbY);
+
+			// current column
+			final int[] c = columns[column];
+
+			// iterating through notes
+			for (int i = currentNote[column]; i < c.length; i += 2) {
+				// the note Y
+				final int noteY = notesY - (c[i] / scrollDiv);
+
+				if (noteY < 0)
+					break;
+
+				// hold duration
+				final int dur = c[i + 1];
+
+				// drawing hold
+				if (dur != 0) {
+					final int holdLen = dur / scrollDiv;
+					g.setColor(holdsColors[(column << 1) + 1]);
+					g.fillRect(x + localHoldX, noteY - holdLen, holdW, holdLen);
+				}
+
+				// drawing note
+				g.drawImage(rich[18 + columnsCount + column], x, noteY, 36);
+
+			}
+			x += colWp1;
+		}
+	}
 }

@@ -166,6 +166,18 @@ public class MainScreen extends GameCanvas implements Runnable {
 						Nmania.skin = new Skin();
 					}
 					Nmania.Push(new BeatmapSetsList(Nmania.bm));
+					if(Nmania.skin.rich) {
+						try {
+							Nmania.skin.LoadRich(false);
+						} catch (IllegalStateException e) {
+							Thread.yield();
+							Alert a = new Alert("nmania",
+									"Failed to load your rich skin. A vector one will be used. Visit skinning menu to learn what went wrong.",
+									null, AlertType.ERROR);
+							a.setTimeout(Alert.FOREVER);
+							Nmania.Push(a);
+						}
+					}
 					needThread = false;
 				} catch (Exception e) {
 					needThread = false;

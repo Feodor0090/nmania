@@ -25,7 +25,7 @@ public class Skin {
 			// parse
 			JSONObject j = new JSONObject(new String(d));
 
-			rich = j.getBoolean("rich");
+			rich = j.optBoolean("rich", false);
 			keyboardHeight = j.getInt("keyboardheight");
 			leftOffset = j.getInt("leftoffset");
 			columnWidth = j.getInt("columnwidth");
@@ -58,6 +58,8 @@ public class Skin {
 			SNUtils.toARGB("0x69D"), SNUtils.toARGB("0x0FF"), SNUtils.toARGB("0x69D") };
 	public boolean verticalGradientOnNotes = true;
 	public boolean holdsHaveOwnColors = true;
+
+	public RichSkin richSkin = null;
 
 	public int GetColumnWidth() {
 		return columnWidth;
@@ -108,8 +110,23 @@ public class Skin {
 		return c;
 	}
 
-	public void Load() {
+	public void LoadRich(boolean force) throws IllegalStateException {
+		rich = true;
+		if (force || richSkin == null) {
+			richSkin = new RichSkin(Settings.workingFolder + "_skin/");
+			try {
+				richSkin.Check();
+			} catch (IllegalStateException e) {
+				richSkin = null;
+				rich = false;
+				throw e;
+			}
+		}
+	}
 
+	public void DisableRich() {
+		rich = false;
+		richSkin = null;
 	}
 
 	public void Save() {

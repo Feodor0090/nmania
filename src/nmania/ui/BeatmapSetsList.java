@@ -16,7 +16,7 @@ public class BeatmapSetsList extends List implements CommandListener {
 
 	private BeatmapManager bm;
 	private Command back = new Command(Nmania.commonText[0], Command.BACK, 1);
-	
+
 	public BeatmapSetsList(BeatmapManager bm) throws IOException {
 		super(Nmania.commonText[1], Choice.IMPLICIT);
 		setCommandListener(this);
@@ -24,6 +24,8 @@ public class BeatmapSetsList extends List implements CommandListener {
 		Enumeration e = bm.list();
 		while (e.hasMoreElements()) {
 			String s = e.nextElement().toString();
+			if (s.charAt(0) == '_')
+				continue;
 			if (s.charAt(s.length() - 1) != '/')
 				continue;
 			append(s.substring(0, s.length() - 1), null);
@@ -34,7 +36,7 @@ public class BeatmapSetsList extends List implements CommandListener {
 	public void commandAction(Command c, Displayable arg1) {
 		if (c == List.SELECT_COMMAND) {
 			Nmania.Push(new BeatmapSetPage(bm, getString(getSelectedIndex()), this));
-		} else if(c == back) {
+		} else if (c == back) {
 			Nmania.Push(new MainScreen());
 		}
 	}
