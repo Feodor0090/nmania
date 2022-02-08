@@ -201,6 +201,7 @@ public final class Player extends GameCanvas {
 			}
 			keysColors = s.GetKeyColors(columnsCount);
 			holdKeysColors = s.GetHoldKeyColors(columnsCount);
+			zeroW = fontL.charWidth('0');
 		} else {
 			rich = s.richSkin.toPlayerCache(columnsCount);
 			fillCountersH = s.richSkin.GetCounterHeight();
@@ -216,10 +217,10 @@ public final class Player extends GameCanvas {
 			notesWithGr = null;
 			keysColors = null;
 			holdKeysColors = null;
+			zeroW = s.richSkin.GetMaxDigitWidth();
 		}
 		scoreBg = ImageUtils.crop(bg, scrW - fillScoreW, 0, scrW - 1, fillCountersH + 1);
 		accBg = ImageUtils.crop(bg, scrW - fillAccW, scrH - fillCountersH, scrW - 1, scrH - 1);
-		zeroW = fontL.charWidth('0');
 		kbY = scrH - kbH;
 		colWp1 = colW + 1;
 		judgmentCenter = s.leftOffset + colWp1 * columnsCount / 2;
@@ -1075,14 +1076,14 @@ public final class Player extends GameCanvas {
 			for (int i = 6; i >= 0; i--) {
 				final char c = accText[i];
 				if (c == '%') {
-					g.drawImage(rich[17], x1, 0, 24);
+					g.drawImage(rich[17], x1, scrH, 40);
 					x1 -= rich[17].getWidth();
 				} else if (c == ',') {
-					g.drawImage(rich[16], x1, 0, 24);
+					g.drawImage(rich[16], x1, scrH, 40);
 					x1 -= rich[16].getWidth();
-				} else {
+				} else if (c != ' ') {
 					int idx = (c - '0');
-					g.drawImage(rich[idx + 6], x1, 0, 24);
+					g.drawImage(rich[idx + 6], x1, scrH, 40);
 					x1 -= numsWidthCache[idx];
 				}
 			}

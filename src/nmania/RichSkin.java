@@ -88,23 +88,21 @@ public class RichSkin {
 	}
 
 	public int GetScoreWidth() {
-		int max = 0;
-		for (int i = 0; i < 10; i++) {
-			if (digits[i].getWidth() > max) {
-				max = digits[i].getWidth();
-			}
-		}
-		return max * 9;
+		return GetMaxDigitWidth() * 9;
 	}
 
 	public int GetAccWidth() {
+		return (GetMaxDigitWidth() * 5) + digits[10].getWidth() + digits[11].getWidth();
+	}
+
+	public int GetMaxDigitWidth() {
 		int max = 0;
 		for (int i = 0; i < 10; i++) {
 			if (digits[i].getWidth() > max) {
 				max = digits[i].getWidth();
 			}
 		}
-		return (max * 5) + digits[10].getWidth() + digits[11].getWidth();
+		return max;
 	}
 
 	/**
