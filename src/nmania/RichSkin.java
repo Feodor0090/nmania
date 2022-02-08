@@ -20,7 +20,26 @@ public class RichSkin {
 	public final Image[] judgments = new Image[6];
 
 	public final void Check() throws IllegalStateException {
+		for (int i = 1; i < digits.length; i++) {
+			if (digits[i].getHeight() != digits[i - 1].getHeight())
+				throw new IllegalStateException("Heights of digits are not equal to each other.");
+		}
+		if (!Check3Match(note1, note2, note3))
+			throw new IllegalStateException("Sizes of notes are not equal to each other.");
+		if (!Check3Match(key1, key2, key3))
+			throw new IllegalStateException("Sizes of keys are not equal to each other.");
+		if (!Check3Match(shadow1, shadow2, shadow3))
+			throw new IllegalStateException("Sizes of shadows are not equal to each other.");
+		if(key1.getWidth()!=note1.getWidth()) 
+			throw new IllegalStateException("Widths of notes and keys are not equal to each other.");
+		if(shadow1.getWidth()!=note1.getWidth()) 
+			throw new IllegalStateException("Width of notes and shadows are not equal to each other.");
 
+	}
+
+	private final static boolean Check3Match(Image i1, Image i2, Image i3) {
+		return i1.getWidth() == i2.getWidth() && i2.getWidth() == i3.getWidth() && i1.getHeight() == i2.getHeight()
+				&& i2.getHeight() == i3.getHeight();
 	}
 
 	public int GetColumnWidth() {
