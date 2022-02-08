@@ -111,13 +111,13 @@ public abstract class MultisectionList extends Canvas {
 			g.setColor(MainScreen.bgColor);
 			g.fillRect(getWidth() - x, 0, Math.min(x, getWidth()), getHeight());
 			g.translate(-x, 0);
-			if (prev != null) {
+			if (prev != null && x < getWidth()) {
 				paintSection(g, prev);
 			}
 			g.translate(getWidth() * 2, 0);
 			g.setColor(0);
 			g.fillRect(0, 0, getWidth(), getHeight());
-			if (curr != null) {
+			if (curr != null && x > getWidth()) {
 				paintSection(g, curr);
 			}
 			g.translate(-g.getTranslateX(), 0);
