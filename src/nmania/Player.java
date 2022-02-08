@@ -1310,5 +1310,44 @@ public final class Player extends GameCanvas {
 	 */
 	private final void RedrawNotesRich() {
 
+		// current Y offset due to scroll
+		final int notesY = kbY + time / scrollDiv;
+
+		// column X
+		int x = leftOffset + 1;
+
+		for (int column = 0; column < columnsCount; column++) {
+
+			// clearing the column
+			g.setColor(0);
+			g.fillRect(x, 0, colW, kbY);
+
+			// current column
+			final int[] c = columns[column];
+
+			// iterating through notes
+			for (int i = currentNote[column]; i < c.length; i += 2) {
+				// the note Y
+				final int noteY = notesY - (c[i] / scrollDiv);
+
+				if (noteY < 0)
+					break;
+
+				// hold duration
+				final int dur = c[i + 1];
+
+				// drawing hold
+				if (dur != 0) {
+					final int holdLen = dur / scrollDiv;
+					g.setColor(holdsColors[(column << 1) + 1]);
+					g.fillRect(x + localHoldX, noteY - holdLen, holdW, holdLen);
+				}
+				
+				// drawing note
+				g.drawImage(rich[18 + columnsCount + column], x, noteY, 36);
+
+			}
+			x += colWp1;
+		}
 	}
 }
