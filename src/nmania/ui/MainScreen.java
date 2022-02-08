@@ -166,7 +166,7 @@ public class MainScreen extends GameCanvas implements Runnable {
 						Nmania.skin = new Skin();
 					}
 					Nmania.Push(new BeatmapSetsList(Nmania.bm));
-					if(Nmania.skin.rich) {
+					if (Nmania.skin.rich) {
 						try {
 							Nmania.skin.LoadRich(false);
 						} catch (IllegalStateException e) {
@@ -267,6 +267,8 @@ public class MainScreen extends GameCanvas implements Runnable {
 				break;
 		}
 		state = 0;
+		Font f = Font.getFont(0, 0, 8);
+		g.setFont(f);
 		// LOGO
 		while (needThread && state == 0) {
 			w = getWidth();
@@ -296,8 +298,6 @@ public class MainScreen extends GameCanvas implements Runnable {
 		// MENU
 		state = 2;
 		startTime = System.currentTimeMillis();
-		Font f = Font.getFont(0, 0, 8);
-		g.setFont(f);
 		while (needThread && state == 2) {
 			w = getWidth();
 			h = getHeight();
@@ -327,7 +327,6 @@ public class MainScreen extends GameCanvas implements Runnable {
 			}
 			g.drawImage(menu, w / 2, h / 2, 3);
 			g.setColor(0);
-			g.drawString("github.com/Feodor0090/nmania", w / 2, 0, 17);
 			g.drawString("v" + Nmania.version(), w / 2, h, 33);
 			if (now - startTime < 500) {
 				g.setColor(-1);
