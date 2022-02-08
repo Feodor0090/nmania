@@ -177,6 +177,7 @@ public final class Player extends GameCanvas {
 		} else {
 			hitSounds = null;
 		}
+		defaultHSSet = map.defaultSampleSet;
 
 		// step 7: cache data for HUD drawing
 		log.log("Caching service data");
@@ -323,6 +324,7 @@ public final class Player extends GameCanvas {
 	private final Sample restart;
 	private final MultiSample[][] hitSounds;
 	private final String applause;
+	private final int defaultHSSet;
 
 	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
 	public final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
@@ -531,7 +533,7 @@ public final class Player extends GameCanvas {
 									lastJudgementTime = time;
 									currentNote[column] += 2;
 									if (hitSounds != null && j != 0)
-										hitSounds[0][0].Play();
+										hitSounds[defaultHSSet][0].Play();
 									break;
 								}
 							}
@@ -550,7 +552,7 @@ public final class Player extends GameCanvas {
 									lastJudgement = j;
 									lastJudgementTime = time;
 									if (hitSounds != null && j != 0)
-										hitSounds[0][0].Play();
+										hitSounds[defaultHSSet][0].Play();
 									break;
 								}
 							}
@@ -575,7 +577,7 @@ public final class Player extends GameCanvas {
 								lastJudgementTime = time;
 								currentNote[column] += 2;
 								if (hitSounds != null && j != 0)
-									hitSounds[0][2].Play();
+									hitSounds[defaultHSSet][2].Play();
 								break;
 							}
 						}
@@ -621,7 +623,7 @@ public final class Player extends GameCanvas {
 					lastJudgementTime = time;
 					currentNote[column] += 2;
 					if (hitSounds != null)
-						hitSounds[0][0].Play();
+						hitSounds[defaultHSSet][0].Play();
 				} else {
 					if (diff - dur > 0) {
 						holdKeys[column] = false;
@@ -631,7 +633,7 @@ public final class Player extends GameCanvas {
 						lastJudgementTime = time;
 						currentNote[column] += 2;
 						if (hitSounds != null)
-							hitSounds[0][2].Play();
+							hitSounds[defaultHSSet][2].Play();
 					} else if (!holdKeys[column]) {
 						holdKeys[column] = true;
 						CountHit(5);
@@ -639,7 +641,7 @@ public final class Player extends GameCanvas {
 						lastJudgement = 5;
 						lastJudgementTime = time;
 						if (hitSounds != null)
-							hitSounds[0][0].Play();
+							hitSounds[defaultHSSet][0].Play();
 					}
 				}
 			}

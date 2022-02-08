@@ -16,6 +16,7 @@ public final class Beatmap {
 	public ManiaNote[] notes;
 	public TimingPoint[] points;
 	public BeatmapSet set;
+	public int defaultSampleSet = 0;
 
 	public Beatmap() {
 	}

@@ -133,6 +133,16 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		}
 		b.notes = new ManiaNote[notes.size()];
 		notes.copyInto(b.notes);
+		try {
+			String ss = getValue("SampleSet").toLowerCase();
+			if (ss.equals("drum")) {
+				b.defaultSampleSet = 2;
+			} else if (ss.equals("soft")) {
+				b.defaultSampleSet = 1;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return b;
 	}
 
