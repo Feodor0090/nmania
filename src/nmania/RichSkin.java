@@ -46,6 +46,13 @@ public class RichSkin {
 			throw new IllegalStateException("Digits were not correctly loaded.");
 		}
 		try {
+			for (int i = 1; i < judgments.length; i++) {
+				judgments[i].getHeight();
+			}
+		} catch (NullPointerException e) {
+			throw new IllegalStateException("Judgments were not correctly loaded.");
+		}
+		try {
 			if (!Check3Match(note1, note2, note3))
 				throw new IllegalStateException("Sizes of notes are not equal to each other.");
 		} catch (NullPointerException e) {
