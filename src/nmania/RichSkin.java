@@ -4,7 +4,24 @@ import javax.microedition.lcdui.Image;
 
 public class RichSkin {
 	public RichSkin(String folder) {
+		key1 = BeatmapManager.getImgFromFS(folder + "key1.png");
+		key2 = BeatmapManager.getImgFromFS(folder + "key2.png");
+		key3 = BeatmapManager.getImgFromFS(folder + "key3.png");
 
+		hkey1 = BeatmapManager.getImgFromFS(folder + "hkey1.png");
+		hkey2 = BeatmapManager.getImgFromFS(folder + "hkey2.png");
+		hkey3 = BeatmapManager.getImgFromFS(folder + "hkey3.png");
+
+		note1 = BeatmapManager.getImgFromFS(folder + "note1.png");
+		note2 = BeatmapManager.getImgFromFS(folder + "note2.png");
+		note3 = BeatmapManager.getImgFromFS(folder + "note3.png");
+
+		for (int i = 0; i < 6; i++) {
+			judgments[i] = BeatmapManager.getImgFromFS(folder + "judgment" + i + ".png");
+		}
+		for (int i = 0; i < 12; i++) {
+			digits[i] = BeatmapManager.getImgFromFS(folder + "digit" + i + ".png");
+		}
 	}
 
 	public Image key1;
@@ -20,20 +37,32 @@ public class RichSkin {
 	public final Image[] judgments = new Image[6];
 
 	public final void Check() throws IllegalStateException {
-		for (int i = 1; i < digits.length; i++) {
-			if (digits[i].getHeight() != digits[i - 1].getHeight())
-				throw new IllegalStateException("Heights of digits are not equal to each other.");
+		try {
+			for (int i = 1; i < digits.length; i++) {
+				if (digits[i].getHeight() != digits[i - 1].getHeight())
+					throw new IllegalStateException("Heights of digits are not equal to each other.");
+			}
+		} catch (NullPointerException e) {
+			throw new IllegalStateException("Digits were not correctly loaded.");
 		}
-		if (!Check3Match(note1, note2, note3))
-			throw new IllegalStateException("Sizes of notes are not equal to each other.");
-		if (!Check3Match(key1, key2, key3))
-			throw new IllegalStateException("Sizes of keys are not equal to each other.");
-		if (!Check3Match(hkey1, hkey2, hkey3))
-			throw new IllegalStateException("Sizes of held keys are not equal to each other.");
-		if(key1.getWidth()!=note1.getWidth()) 
+		try {
+			if (!Check3Match(note1, note2, note3))
+				throw new IllegalStateException("Sizes of notes are not equal to each other.");
+		} catch (NullPointerException e) {
+			throw new IllegalStateException("Notes were not correctly loaded.");
+		}
+		try {
+			if (!Check3Match(key1, key2, key3))
+				throw new IllegalStateException("Sizes of keys are not equal to each other.");
+			if (!Check3Match(hkey1, hkey2, hkey3))
+				throw new IllegalStateException("Sizes of held keys are not equal to each other.");
+		} catch (NullPointerException e) {
+			throw new IllegalStateException("Keys were not correctly loaded.");
+		}
+		if (key1.getWidth() != note1.getWidth())
 			throw new IllegalStateException("Widths of notes and keys are not equal to each other.");
-		if(hkey1.getWidth()!=note1.getWidth()) 
-			throw new IllegalStateException("Width of notes and held keys are not equal to each other.");
+		if (hkey1.getWidth() != key1.getWidth() || hkey1.getHeight() != key1.getHeight())
+			throw new IllegalStateException("Sizes of keys and held keys are not equal to each other.");
 
 	}
 

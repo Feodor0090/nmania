@@ -110,10 +110,16 @@ public class Skin {
 		return c;
 	}
 
-	public void LoadRich(boolean force) {
+	public void LoadRich(boolean force) throws IllegalStateException {
 		rich = true;
 		if (force || richSkin == null) {
-			// load
+			richSkin = new RichSkin(Settings.workingFolder + "_skin/");
+			try {
+				richSkin.Check();
+			} catch (IllegalStateException e) {
+				richSkin = null;
+				throw e;
+			}
 		}
 	}
 
