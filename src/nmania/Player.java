@@ -1221,7 +1221,10 @@ public final class Player extends GameCanvas {
 				g.drawLine(x, y, x2, y);
 			}
 		} else {
-			g.drawImage(rich[18 + k], x, kbY, 0);
+			if (hold)
+				g.drawImage(rich[18 + columnsCount * 2 + k], x, kbY, 0);
+			else
+				g.drawImage(rich[18 + k], x, kbY, 0);
 		}
 	}
 
@@ -1342,7 +1345,7 @@ public final class Player extends GameCanvas {
 					g.setColor(holdsColors[(column << 1) + 1]);
 					g.fillRect(x + localHoldX, noteY - holdLen, holdW, holdLen);
 				}
-				
+
 				// drawing note
 				g.drawImage(rich[18 + columnsCount + column], x, noteY, 36);
 

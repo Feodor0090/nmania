@@ -13,9 +13,9 @@ public class RichSkin {
 	public Image note1;
 	public Image note2;
 	public Image note3;
-	public Image shadow1;
-	public Image shadow2;
-	public Image shadow3;
+	public Image hkey1;
+	public Image hkey2;
+	public Image hkey3;
 	public final Image[] digits = new Image[12]; // 0123456789,%
 	public final Image[] judgments = new Image[6];
 
@@ -28,12 +28,12 @@ public class RichSkin {
 			throw new IllegalStateException("Sizes of notes are not equal to each other.");
 		if (!Check3Match(key1, key2, key3))
 			throw new IllegalStateException("Sizes of keys are not equal to each other.");
-		if (!Check3Match(shadow1, shadow2, shadow3))
-			throw new IllegalStateException("Sizes of shadows are not equal to each other.");
+		if (!Check3Match(hkey1, hkey2, hkey3))
+			throw new IllegalStateException("Sizes of held keys are not equal to each other.");
 		if(key1.getWidth()!=note1.getWidth()) 
 			throw new IllegalStateException("Widths of notes and keys are not equal to each other.");
-		if(shadow1.getWidth()!=note1.getWidth()) 
-			throw new IllegalStateException("Width of notes and shadows are not equal to each other.");
+		if(hkey1.getWidth()!=note1.getWidth()) 
+			throw new IllegalStateException("Width of notes and held keys are not equal to each other.");
 
 	}
 
@@ -99,7 +99,7 @@ public class RichSkin {
 		System.arraycopy(digits, 0, a, 6, 12);
 		System.arraycopy(composeSpritesFor(key1, key2, key3, columns), 0, a, 18, columns);
 		System.arraycopy(composeSpritesFor(note1, note2, note3, columns), 0, a, 18 + columns, columns);
-		System.arraycopy(composeSpritesFor(shadow1, shadow2, shadow3, columns), 0, a, 18 + columns + columns, columns);
+		System.arraycopy(composeSpritesFor(hkey1, hkey2, hkey3, columns), 0, a, 18 + columns + columns, columns);
 		return a;
 	}
 
