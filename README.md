@@ -21,8 +21,6 @@ Open source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps.
 - `PhoneME` is partially playable, has major problems with input/gameplay/music synchronization and files.
 - `KEmulator` is not compatible due to broken multimedia API.
 - [`KEmulator nnmod`](http://nnproject.cc/kem/) is partially playable. Skin settings are not functional, multihold is not propertly supported.
-### Devices compatibility tracker
-_coming soon_
 
 ## Join our chat in TG!
 https://t.me/nnmidletschat
@@ -35,6 +33,15 @@ If you have a standalone `nmania` beatmap, you need to compose a BMS yourself. C
 Launch the game and play. You may want to adjust scroll speed, dim and sound effects in `settings`, adjust look of the game in `skinning`, or read this manual again in `info`.
 
 If the game is too laggy even with flat skinning and without sounds, there is likely something wrong with your device, _WORKSFORME_.
+
+### Rich skinning structure
+It's written inside the game. You can also explore a [template](/info/richSkinTemplate.zip).
+
+### Language setting
+To apply a localization, pack your files into jar under names `CATEGORY_LANG.txt` as english files named. In game settings, enter the `LANG` postfix. Refer to source code if it doesn't work.
+
+### Flush rate troubles
+Default HUD rendering requires 3 flushes in a game frame. This can limit FPS to 20 or even 16 on some devices. Try to enable `fullscreen flush`. Now there will be 1 flush in 1 frame, but yeah, the whole screen. Still bad? Disable HUD at all (`draw counters`) (don't forget to disable `fullscreen flush` too!). Now you will have 1 partial flush in 1 frame. This should be enough. And yeah, buy a normal device like E5 (:
 
 ## Manual building
 Find a SDK for your device, install it. Look for futher instructions in it's documentation (you want to package a `MIDlet suite`).
