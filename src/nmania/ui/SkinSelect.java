@@ -182,6 +182,7 @@ public class SkinSelect extends Canvas implements CommandListener {
 	protected void pointerPressed(int x, int y) {
 		if (y > getHeight() - th * 2) {
 			Exit();
+			return;
 		}
 		if (x < getWidth() / 2) {
 			if (Nmania.skin.rich) {
