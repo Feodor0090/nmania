@@ -21,8 +21,6 @@ Open source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps.
 - `PhoneME` is partially playable, has major problems with input/gameplay/music synchronization and files.
 - `KEmulator` is not compatible due to broken multimedia API.
 - [`KEmulator nnmod`](http://nnproject.cc/kem/) is partially playable. Skin settings are not functional, multihold is not propertly supported.
-### Devices compatibility tracker
-_coming soon_
 
 ## Join our chat in TG!
 https://t.me/nnmidletschat
