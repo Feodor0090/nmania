@@ -114,7 +114,7 @@ public class SettingsScreen extends MultisectionList implements CommandListener 
 			g.setColor(-1);
 			g.drawString(((int) (Settings.bgDim * 100)) + "%", getWidth() - 10, y + th * 3,
 					Graphics.TOP | Graphics.RIGHT);
-			g.drawString("x" + Settings.speedDiv, getWidth() - 10, y + th * 4, Graphics.TOP | Graphics.RIGHT);
+			g.drawString("1px/" + Settings.speedDiv + "ms", getWidth() - 10, y + th * 4, Graphics.TOP | Graphics.RIGHT);
 		}
 	};
 	final ListSection audio = new ListSection() {
