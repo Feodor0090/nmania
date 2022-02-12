@@ -37,13 +37,15 @@ public class RichSkin {
 	public final Image[] judgments = new Image[6];
 
 	public final void Check() throws IllegalStateException {
+		int i1 = 0;
 		try {
-			for (int i = 1; i < digits.length; i++) {
-				if (digits[i].getHeight() != digits[i - 1].getHeight())
+			for (i1 = 1; i1 < digits.length; i1++) {
+				if (digits[i1].getHeight() != digits[i1 - 1].getHeight())
 					throw new IllegalStateException("Heights of digits are not equal to each other.");
 			}
 		} catch (NullPointerException e) {
-			throw new IllegalStateException("Digits were not correctly loaded.");
+			throw new IllegalStateException(
+					"Digits were not correctly loaded. Check " + (i1 - 1) + "-" + i1 + " digit sprites.");
 		}
 		try {
 			for (int i = 1; i < judgments.length; i++) {
