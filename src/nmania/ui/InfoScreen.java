@@ -47,6 +47,7 @@ public class InfoScreen extends MultisectionList implements CommandListener {
 				f.append(new Link("GitHub", "https://github.com/Feodor0090/nmania"));
 				f.append(new Link("TG chat", "https://t.me/nnmidletschat"));
 				f.append(new StringItem("Code & design", "Feodor0090"));
+				f.append(new Link("Support me", "donate.stream/f0090"));
 				f.append("\n\nLibraries used: org.json.me, ");
 				f.append(new Link("https://github.com/tube42/imagelib"));
 				break;
