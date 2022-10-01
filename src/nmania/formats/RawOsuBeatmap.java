@@ -119,21 +119,7 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 				notes.addElement(new ManiaNote(time, column + 1, dur));
 			}
 		} else {
-			// catch
-			if (getValue("Mode").equals("2"))
-				throw new InvalidBeatmapTypeException("This is an osu!catch beatmap. They are not supported.");
-			// std
-			b.columnsCount = 2;
-			for (int i = 0; i < rawObjs.length; i++) {
-				if (rawObjs[i].length() < 4)
-					continue;
-				String[] values = SNUtils.splitFull(SNUtils.split2(rawObjs[i], ':')[0], ',');
-				// int type = Integer.parseInt(values[3]);
-				int time = Integer.parseInt(values[2]);
-				// sliders are not supported yet
-				// int dur = ((type & 2) == 0) ? 0 : Integer.parseInt(values[5]) - time;
-				notes.addElement(new ManiaNote(time, i % 2 + 1, 0));
-			}
+			throw new InvalidBeatmapTypeException("This is an osu! or osu!catch beatmap. They are not supported.");
 		}
 		b.notes = new ManiaNote[notes.size()];
 		notes.copyInto(b.notes);
