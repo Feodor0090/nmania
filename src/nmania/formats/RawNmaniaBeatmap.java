@@ -55,4 +55,8 @@ public class RawNmaniaBeatmap extends JSONObject implements IRawBeatmap {
 		return optString("author");
 	}
 
+	public String GetMode() {
+		return IRawBeatmap.VSRG;
+	}
+
 }

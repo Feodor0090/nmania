@@ -158,4 +158,8 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		return getValue("Creator");
 	}
 
+	public String GetMode() {
+		return IRawBeatmap.VSRG;
+	}
+
 }
