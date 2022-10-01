@@ -135,7 +135,14 @@ public final class Player extends GameCanvas {
 		if (Settings.gameplaySamples) {
 			String sn;
 			if (Settings.useBmsSamples && (sn = map.set.findFile("combobreak")) != null) {
-				combobreak = new Sample(map.ToGlobalPath(sn), null);
+				Sample cb;
+				try {
+					cb = new Sample(map.ToGlobalPath(sn), null);
+				} catch (Exception e) {
+					e.printStackTrace();
+					cb = new Sample("/sfx/miss.mp3", "audio/mpeg");
+				}
+				combobreak = cb;
 			} else {
 				combobreak = new Sample("/sfx/miss.mp3", "audio/mpeg");
 			}
@@ -240,7 +247,7 @@ public final class Player extends GameCanvas {
 		colorHoldHeadsAsHolds = s.holdsHaveOwnColors;
 		verticalGr = s.verticalGradientOnNotes;
 		// don't try to fix the mess above
-		
+
 		Thread.sleep(1);
 
 		// step 8: lock graphics
