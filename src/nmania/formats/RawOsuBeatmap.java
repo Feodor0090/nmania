@@ -3,6 +3,7 @@ package nmania.formats;
 import java.util.Vector;
 
 import nmania.Beatmap;
+import nmania.Beatmap.Break;
 import nmania.Beatmap.ManiaNote;
 import nmania.Beatmap.TimingPoint;
 import symnovel.SNUtils;
@@ -56,6 +57,27 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		return SNUtils.splitFull(raw.substring(start, end), '\n');
 	}
 
+	public final Break[] breaks() {
+		int start = raw.indexOf("[Events]") + 8;
+		int end = raw.indexOf("\n[", start);
+		if (end == -1)
+			end = raw.length();
+		String[] lines = SNUtils.splitFull(raw.substring(start, end), '\n');
+		Vector v = new Vector(lines.length);
+		for (int i = 0; i < lines.length; i++) {
+			if (lines[i].indexOf("2,") == 0) {
+				String[] values = SNUtils.splitFull(lines[i], ',');
+				int st = Integer.parseInt(SNUtils.split2(values[1], '.')[0]);
+				int e = Integer.parseInt(SNUtils.split2(values[2], '.')[0]);
+				Break b = new Break(st, e - st);
+				v.addElement(b);
+			}
+		}
+		Break[] arr = new Break[v.size()];
+		v.copyInto(arr);
+		return arr;
+	}
+
 	public Beatmap ToBeatmap() throws InvalidBeatmapTypeException {
 		Beatmap b = new Beatmap();
 
@@ -64,6 +86,7 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		b.points = new TimingPoint[0];
 		b.audio = getValue("AudioFilename");
 		b.image = GetImage();
+		b.breaks = breaks();
 		String[] rawObjs = hitObjects();
 		Vector notes = new Vector();
 		if (getValue("Mode").equals("1")) {
