@@ -4,7 +4,7 @@ Automated demo
 Back
 Parsing beatmaps
 Failed to read BMS
-There must be at least one valid osu! / nmania beatmap in the folder. Also, check folder name - it must not be too long or contain special characters.
+There must be at least one valid osu! / nmania beatmap in the folder. Try check folder name and files inside it - it must not be too long or contain special characters. Rename them to shorter variants.
 Failed to read beatmap's background.
 Failed to read BMS
 Difficulty adjustment

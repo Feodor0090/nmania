@@ -54,7 +54,11 @@ public class BeatmapManager {
 				while (bmsFiles.hasMoreElements()) {
 					String f = bmsFiles.nextElement().toString();
 					if (RawBeatmapConverter.CanReadFile(f)) {
-						fm = getStringFromFS(directory + dir + f);
+						try {
+							fm = getStringFromFS(directory + dir + f);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
 						break;
 					}
 				}
