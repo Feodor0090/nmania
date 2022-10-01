@@ -27,6 +27,8 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		int e = lf;
 		if (cr != -1)
 			e = Math.min(cr, lf);
+		if (lf == -1)
+			e = raw.length();
 		String data = raw.substring(b, e);
 		return data.trim();
 	}
