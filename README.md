@@ -1,6 +1,6 @@
 ![nmania logo](/res/ui/nmania-logo-1x.png)
 # nmania
-Open source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps.
+Open source Vertical Scrolling Rhythm Game for J2ME. Compatible with osu!mania beatmaps and intented to be it's clone. More gameplay modes and support of other games' beatmaps may come in future.
 
 ![](/info/sh2.png)
 
@@ -20,13 +20,15 @@ Open source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps.
 - `J2ME Loader` has major problems with native UI, but playable. Use OTG or BT keyboard. 640x360 is recommended. Your working folder is likely `/storage/emulated/0/Data/Sounds/nmania/`.
 - `PhoneME` is partially playable, has major problems with input/gameplay/music synchronization and files.
 - `KEmulator` is not compatible due to broken multimedia API.
-- [`KEmulator nnmod`](http://nnproject.cc/kem/) is partially playable. Skin settings are not functional, multihold is not propertly supported.
+- [`KEmulator nnmod`](http://nnproject.cc/kem/) is partially playable. Skin settings are not functional, multihold is not propertly supported. Use `file:///root/` as your folder, or else it won't work.
 
 ## Join our chat in TG!
 https://t.me/nnmidletschat
 
 ## How to play
-Go to osu!direct or it's mirror and download maps that you want to play (or copy them from stable's `Songs` folder). Extract your maps to `C:/Data/Sounds/nmania/` (if there is no such path, create folders manually) like stable does - one nested folder for each mapset. 
+Go to [osu!direct](https://osu.ppy.sh/beatmapsets/) or [it's mirror](https://beatconnect.io/) and download maps that you want to play (or copy them from stable's `Songs` folder). Extract your maps to `C:/Data/Sounds/nmania/` (if there is no such path, create folders manually) like stable does - one nested folder for each mapset.
+
+**There is no guarantee that your beatmap will work as it is!** You may need to reencode the music to MP3, rename weird files, etc. **osu!, osu!taiko and osu!catch beatmaps are not supported!** You need osu!mania-first beatmaps (for "mode" `3`).
 
 If you have a standalone `nmania` beatmap, you need to compose a BMS yourself. Create a nested folder, place the beatmap file here. Find the music track and background image for it, put them in the same folder with the beatmap (keep eye on files' names, rename them if needed).
 
@@ -35,7 +37,7 @@ Launch the game and play. You may want to adjust scroll speed, dim and sound eff
 If the game is too laggy even with flat skinning and without sounds, there is likely something wrong with your device, _WORKSFORME_.
 
 ### Rich skinning structure
-It's written inside the game. You can also explore a [template](/info/richSkinTemplate.zip).
+It's written inside the game. Please read "info". Ask in issues if you didn't understand. You can also explore a [template](/info/richSkinTemplate.zip). Currently we don't provide "osu!classic", "triangles" or "argon" skin out-of-the-box. Remake them for this game yourself if you need. OSK skins are not supported. Remake them if you need.
 
 ### Language setting
 To apply a localization, pack your files into jar under names `CATEGORY_LANG.txt` as english files named. In game settings, enter the `LANG` postfix. Refer to source code if it doesn't work.
