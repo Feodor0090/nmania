@@ -5,4 +5,7 @@ contact_links:
     about: Ask for help or propose an idea.
   - name: TG chat
     url: https://t.me/nnmidletschat
-    about: Community of nnproject software. You can ask here for help or learn about other applications.
+    about: Community of nnproject software. You can ask here for help or learn about our other applications (for example, telegram client).
+  - name: TG DM
+    url: https://t.me/sym_ansel
+    about: My personal account. Feel free to ask for help.
