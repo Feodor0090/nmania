@@ -68,11 +68,14 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 			if (lines[i].indexOf("2,") == 0) {
 				String[] values = SNUtils.splitFull(lines[i], ',');
 				int st = Integer.parseInt(SNUtils.split2(values[1], '.')[0]);
-				int e = Integer.parseInt(SNUtils.split2(values[2], '.')[0]);
-				Break b = new Break(st, e - st);
+				int dur = Integer.parseInt(SNUtils.split2(values[2], '.')[0]) - st;
+				if (dur < 3000)
+					continue;
+				Break b = new Break(st, dur);
 				v.addElement(b);
 			}
 		}
+		v.addElement(new Break(Integer.MAX_VALUE - 2, 1)); //this is requered by player to optimize MORE checks
 		Break[] arr = new Break[v.size()];
 		v.copyInto(arr);
 		return arr;

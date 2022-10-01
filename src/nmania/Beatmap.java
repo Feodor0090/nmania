@@ -86,7 +86,7 @@ public final class Beatmap {
 		 * @return Inlined data array.
 		 */
 		public final static int[] Inline(Break[] breaks) {
-			int[] arr = new int[breaks.length];
+			int[] arr = new int[breaks.length * 2];
 			for (int i = 0; i < breaks.length; i++) {
 				arr[i * 2] = breaks[i].time;
 				arr[i * 2 + 1] = breaks[i].duration;

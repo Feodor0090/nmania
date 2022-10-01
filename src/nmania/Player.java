@@ -10,6 +10,7 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.media.MediaException;
 
+import nmania.Beatmap.Break;
 import nmania.ui.MainScreen;
 import nmania.ui.ResultsScreen;
 import symnovel.SNUtils;
@@ -81,7 +82,7 @@ public final class Player extends GameCanvas {
 		Thread.sleep(1);
 
 		// step 3: setup difficulty
-		// TODO
+		// TODO TODO what the fuck i meant a year ago?
 		float od = map.difficulty;
 		int perfectHW = 16;
 		if (opts.daMod < 0) {
@@ -111,8 +112,10 @@ public final class Player extends GameCanvas {
 
 		// step 5: loading beatmap
 		log.log("Loading beatmap hitobjects");
+		// sorting by time
 		SNUtils.sort(map.notes);
 		Vector[] _cols = new Vector[columnsCount];
+		// filling columns
 		for (int i = 0; i < _cols.length; i++)
 			_cols[i] = new Vector();
 		for (int i = 0; i < map.notes.length; i++) {
@@ -121,6 +124,7 @@ public final class Player extends GameCanvas {
 			_cols[c].addElement(new Integer(map.notes[i].duration));
 		}
 		Thread.sleep(1);
+		// burning columns in player
 		for (int i = 0; i < columnsCount; i++) {
 			columns[i] = new int[_cols[i].size()];
 			for (int j = 0; j < _cols[i].size(); j++) {
@@ -128,6 +132,10 @@ public final class Player extends GameCanvas {
 			}
 		}
 		_cols = null;
+		Thread.sleep(1);
+		currentBreak = 0; // we are starting in gameplay mode
+		breaks = Break.Inline(map.breaks); // just burning them in
+		// NO CHECKS WILL BE PERFORMED
 		Thread.sleep(1);
 
 		// step 6: samples
@@ -138,7 +146,7 @@ public final class Player extends GameCanvas {
 				Sample cb;
 				try {
 					cb = new Sample(map.ToGlobalPath(sn), null);
-				} catch (Exception e) {
+				} catch (Exception e) { // some maps may have wrongly encoded this shit
 					e.printStackTrace();
 					cb = new Sample("/sfx/miss.mp3", "audio/mpeg");
 				}
@@ -272,6 +280,8 @@ public final class Player extends GameCanvas {
 	 * @see PlayOptions#failMod
 	 */
 	private final int failCondition;
+	private final int[] breaks;
+	private int currentBreak;
 	public final ScoreController score;
 	public final AudioController track;
 	private final Image bg;
@@ -384,6 +394,7 @@ public final class Player extends GameCanvas {
 					health = 1000;
 					rollingScore = 0;
 					lastJudgementTime = -10000;
+					currentBreak = 0;
 					score.Reset();
 					for (int i = 0; i < currentNote.length; i++) {
 						currentNote[i] = 0;
@@ -477,6 +488,7 @@ public final class Player extends GameCanvas {
 	 * Method that is called by update loop each frame. Contains gameplay logic.
 	 */
 	public final void Update() {
+		// TODO optimize all this shit
 		framesPassed++;
 		// sync
 		time = track.Now();
@@ -489,21 +501,70 @@ public final class Player extends GameCanvas {
 			FailSequence(exitNow);
 			return;
 		}
+		boolean breakActive = false;
+		if (breaks[currentBreak] - time < 0) {
+			// break is in progress
+			if (breaks[currentBreak] + breaks[currentBreak + 1] - time < 0) {
+				// or not?
+				Refill();
+				currentBreak += 2;
+			} else {
+				breakActive = true;
+				int timepassed = time - breaks[currentBreak];
+				int timeleft = breaks[currentBreak] + breaks[currentBreak + 1] - time;
+				if (timepassed < 500) {
+					// fading out playfield (break started)
+					int fade = scrH * timepassed / 500;
+					if (rich == null)
+						RedrawHUDVector();
+					else
+						RedrawHUDRich();
+					g.setClip(0, 0, scrW, fade);
+					FillBg();
+					g.setClip(0, 0, scrW, scrH);
+					flushGraphics();
+				} else if (timeleft < 500) {
+					// fading in
+					int fade = scrH * (500 - timeleft) / 500;
+					g.setClip(0, 0, scrW, fade);
+					FillBg();
+					DrawBorders();
+					for (int i = 0; i < columnsCount; i++) {
+						DrawKey(i, false);
+					}
+					Redraw();
+					if (rich == null)
+						RedrawHUDVector();
+					else
+						RedrawHUDRich();
+					g.setClip(0, 0, scrW, scrH);
+				} else {
+					// idle
+					g.setClip(0, 0, scrW, scrH);
+					FillBg();
+					// drawing countdown
+					DrawBreakCountdown(timeleft);
+					flushGraphics();
+				}
+			}
+		}
 
 		// is beatmap over?
 		int emptyColumns = 0;
 
 		if (playerCanPlay) {
-			// checking all columns
+			// checking all columns for incoming hits
 			for (int column = 0; column < columnsCount; column++) {
+				// loop for each column
 
 				if (currentNote[column] >= columns[column].length) {
+					// checks for columns with no more notes
 					if (holdKeys[column] && !holdKeys[column])
 						DrawKey(column, true);
 					else if (!holdKeys[column] && holdKeys[column])
 						DrawKey(column, false);
 					emptyColumns++;
-					continue;
+					continue; // this column is empty
 				}
 				// diff between current time and note hit time.
 				// positive - it's late, negative - it's early.
@@ -518,7 +579,7 @@ public final class Player extends GameCanvas {
 						DrawKey(column, true);
 					else if (!holdKeys[column] && lastHoldKeys[column])
 						DrawKey(column, false);
-					continue;
+					continue; // note can't be hit yet
 				}
 
 				// if we have input
@@ -530,7 +591,7 @@ public final class Player extends GameCanvas {
 							DrawKey(column, true);
 							// absolute difference
 							final int adiff = Math.abs(diff);
-							// checking hitwindow
+							// checking hitwindows
 							for (int j = 5; j > -1; j--) {
 								if (adiff < hitWindows[j]) {
 									CountHit(j);
@@ -656,8 +717,72 @@ public final class Player extends GameCanvas {
 
 		if (emptyColumns == columnsCount) {
 			PassSequence();
-		} else {
+		} else if (!breakActive) {
 			Redraw();
+		}
+	}
+
+	private final void DrawBreakCountdown(int msLeft) {
+		int timeleft = (msLeft / 1000) + 1;
+		int tl = timeleft; // won't change, used for coloring
+		if (timeleft > 999)
+			timeleft = 999;
+		int center = scrW / 2;
+		int ch = scrH / 2;
+		char c = (char) ('0' + timeleft % 10);
+		int zw2 = zeroW >> 1;
+		g.setColor(-1);
+		g.drawChar('<', center + 1 + zeroW * 2, ch + 1, 36);
+		g.drawChar('<', center - 1 + zeroW * 2, ch + 1, 36);
+		g.drawChar('<', center + 1 + zeroW * 2, ch - 1, 36);
+		g.drawChar('<', center - 1 + zeroW * 2, ch - 1, 36);
+		setColorForCountdown(tl);
+		g.drawChar('<', center + zeroW * 2, ch, 36);
+		g.setColor(-1);
+		g.drawChar(c, center + 1 + zw2, ch + 1, 36);
+		g.drawChar(c, center - 1 + zw2, ch + 1, 36);
+		g.drawChar(c, center + 1 + zw2, ch - 1, 36);
+		g.drawChar(c, center - 1 + zw2, ch - 1, 36);
+		setColorForCountdown(tl);
+		g.drawChar(c, center + zw2, ch, 36);
+		timeleft /= 10;
+		c = (char) ('0' + timeleft % 10);
+		g.setColor(-1);
+		g.drawChar(c, center + 1, ch + 1, 33);
+		g.drawChar(c, center - 1, ch + 1, 33);
+		g.drawChar(c, center + 1, ch - 1, 33);
+		g.drawChar(c, center - 1, ch - 1, 33);
+		setColorForCountdown(tl);
+		g.drawChar(c, center, ch, 33);
+		timeleft /= 10;
+		c = (char) ('0' + timeleft);
+		g.setColor(-1);
+		g.drawChar(c, center + 1 - zw2, ch + 1, 40);
+		g.drawChar(c, center - 1 - zw2, ch + 1, 40);
+		g.drawChar(c, center + 1 - zw2, ch - 1, 40);
+		g.drawChar(c, center - 1 - zw2, ch - 1, 40);
+		setColorForCountdown(tl);
+		g.drawChar(c, center - zw2, ch, 40);
+		g.setColor(-1);
+		g.drawChar('>', center + 1 - zeroW * 2, ch + 1, 40);
+		g.drawChar('>', center - 1 - zeroW * 2, ch + 1, 40);
+		g.drawChar('>', center + 1 - zeroW * 2, ch - 1, 40);
+		g.drawChar('>', center - 1 - zeroW * 2, ch - 1, 40);
+		setColorForCountdown(tl);
+		g.drawChar('>', center - zeroW * 2, ch, 40);
+	}
+
+	private final void setColorForCountdown(int secLeft) {
+		if (secLeft <= 2) {
+			g.setColor(255, 0, 0);
+		} else if (secLeft == 3) {
+			g.setColor(191, 0, 0);
+		} else if (secLeft == 4) {
+			g.setColor(127, 0, 0);
+		} else if (secLeft == 4) {
+			g.setColor(63, 0, 0);
+		} else {
+			g.setColor(0, 0, 0);
 		}
 	}
 
