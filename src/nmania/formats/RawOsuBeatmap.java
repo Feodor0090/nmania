@@ -17,8 +17,16 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 
 	public final String getValue(String key) {
 		key = "\n" + key + ":";
-		int b = raw.indexOf(key) + key.length();
-		int e = Math.min(raw.indexOf('\n', b), raw.indexOf('\r', b));
+		int b = raw.indexOf(key);
+		if (b == -1) {
+			throw new RuntimeException("Failed to get key " + key);
+		}
+		b = b + key.length();
+		int cr = raw.indexOf('\r', b);
+		int lf = raw.indexOf('\n', b);
+		int e = lf;
+		if (cr != -1)
+			e = Math.min(cr, lf);
 		String data = raw.substring(b, e);
 		return data.trim();
 	}
