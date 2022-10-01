@@ -103,6 +103,10 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		} else if (getValue("Mode").equals("3")) {
 			// mania
 			b.columnsCount = (int) Float.parseFloat(getValue("CircleSize"));
+			if (b.columnsCount < 1 || b.columnsCount > 10)
+				throw new InvalidBeatmapTypeException(
+						"This is a " + b.columnsCount + "K beatmap. Only 1K-10K are supported.");
+
 			for (int i = 0; i < rawObjs.length; i++) {
 				if (rawObjs[i].length() < 4)
 					continue;
