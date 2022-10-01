@@ -15,7 +15,7 @@ public final class PlayerThread extends Thread {
 			throw new RuntimeException("Failed to start music!");
 		while (player.running) {
 			player.Update();
-			player.Redraw();
+			//TODO  inline while to save stack
 		}
 	}
 }

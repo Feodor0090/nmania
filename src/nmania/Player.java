@@ -656,6 +656,8 @@ public final class Player extends GameCanvas {
 
 		if (emptyColumns == columnsCount) {
 			PassSequence();
+		} else {
+			Redraw();
 		}
 	}
 
