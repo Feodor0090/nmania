@@ -114,7 +114,13 @@ public final class Settings {
 			gameplayOffset = j.optInt("gameplayoffset", 0);
 			useBmsSamples = j.optBoolean("usebmssamples", true);
 			profiler = j.optBoolean("profiler", false);
-			locale = j.optString("locale", System.getProperty("microedition.locale").substring(0, 2).toLowerCase());
+			String systemLocale = System.getProperty("microedition.locale");
+			if (systemLocale == null) {
+				systemLocale = "en";
+			} else {
+				systemLocale = systemLocale.substring(0, 2).toLowerCase();
+			}
+			locale = j.optString("locale", systemLocale);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
