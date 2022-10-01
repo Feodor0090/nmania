@@ -6,7 +6,7 @@ import nmania.formats.IRawBeatmap;
 import symnovel.IComparable;
 
 /**
- * Beatmap model. Can be created using {@link IRawBeatmap} and passed to
+ * Beatmap model. Can be created using {@link IRawBeatmap#ToBeatmap()} and passed to
  * {@link Player}.
  * 
  * @author Feodor0090
