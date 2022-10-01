@@ -1,5 +1,11 @@
 package nmania;
 
+/**
+ * Model for folder with several beatmaps. All the data will be read from a random one.
+ * 
+ * @author Feodor0090
+ *
+ */
 public final class BeatmapSet {
 	public int id;
 	public String title;
