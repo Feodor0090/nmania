@@ -112,6 +112,7 @@ public final class Player extends GameCanvas {
 
 		// step 5: loading beatmap
 		log.log("Loading beatmap hitobjects");
+		holdHoldingTimes = new int[columnsCount];
 		// sorting by time
 		SNUtils.sort(map.notes);
 		Vector[] _cols = new Vector[columnsCount];
@@ -273,6 +274,7 @@ public final class Player extends GameCanvas {
 	private final int[] currentNote;
 	private final boolean[] lastHoldKeys;
 	private final boolean[] holdKeys;
+	private final int[] holdHoldingTimes;
 	private final int[] keyMappings;
 	private final int[] hitWindows;
 	private final int[] healthValues;
@@ -627,8 +629,14 @@ public final class Player extends GameCanvas {
 									break;
 								}
 							}
+							holdHoldingTimes[column] = 0; // ready to count holding ms
 						} else {
 							// holding the hold!
+							holdHoldingTimes[column] += delta;
+							if (holdHoldingTimes[column] > 100) {
+								holdHoldingTimes[column] -= 100;
+								score.CountTick();
+							}
 						}
 					}
 					continue;
@@ -1018,7 +1026,7 @@ public final class Player extends GameCanvas {
 		}
 		// TODO is there a better way to do this? May be we should compose a char array
 		// (like with accuracy) inside ScoreCounter and expose a drawing method for it?
-		int combo = score.currentCombo;
+		int combo = score.GetGameplayCombo();
 		// This shit was written because we mustn't allocate strings during gameplay. Do
 		// not try to touch something here, i even don't know how this works...
 		if (Settings.drawCounters && combo > 0) {

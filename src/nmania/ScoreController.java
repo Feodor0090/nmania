@@ -2,6 +2,8 @@ package nmania;
 
 public final class ScoreController {
 	public final int[] hits = new int[6];
+	public int realTicks;
+	public int resettableTicks;
 	public int maxHitScore;
 	public int currentHitScore;
 	public int maxCombo;
@@ -16,6 +18,7 @@ public final class ScoreController {
 			if (currentCombo > maxCombo)
 				maxCombo = currentCombo;
 			currentCombo = 0;
+			resettableTicks = 0;
 		} else
 			currentCombo++;
 		maxHitScore += scores[5];
@@ -36,12 +39,21 @@ public final class ScoreController {
 		currentAcc[0] = accRaw == 0 ? ' ' : '1';
 	}
 
+	public final void CountTick() {
+		realTicks++;
+		resettableTicks++;
+	}
+
 	public final int GetAccuracy() {
 		if (maxHitScore == 0)
 			return 10000;
 		if (currentHitScore < 200000)
 			return currentHitScore * 10000 / maxHitScore;
 		return (int) (currentHitScore * 10000l / maxHitScore);
+	}
+
+	public final int GetGameplayCombo() {
+		return currentCombo + resettableTicks;
 	}
 
 	public final void Reset() {
@@ -52,5 +64,7 @@ public final class ScoreController {
 		currentHitScore = 0;
 		maxCombo = 0;
 		currentCombo = 0;
+		realTicks = 0;
+		resettableTicks = 0;
 	}
 }
