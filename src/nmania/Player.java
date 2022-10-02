@@ -455,6 +455,7 @@ public final class Player extends GameCanvas {
 		}
 		System.gc();
 		isPaused = false;
+		failed = false;
 		track.Play();
 	}
 
@@ -1506,9 +1507,10 @@ public final class Player extends GameCanvas {
 			x += colWp1;
 		}
 	}
-	
+
 	/**
 	 * Gets inlined map data.
+	 * 
 	 * @return Timings for each column. DO NOT TOUCH THIS DATA!
 	 */
 	public final int[][] GetMap() {
