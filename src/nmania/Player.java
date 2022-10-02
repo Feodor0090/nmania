@@ -271,7 +271,7 @@ public final class Player extends GameCanvas {
 		System.gc();
 	}
 
-	private final boolean playerCanPlay;
+	// private final boolean playerCanPlay;
 	private final int columnsCount;
 	private final int[][] columns;
 	private final int[] currentNote;
@@ -427,8 +427,6 @@ public final class Player extends GameCanvas {
 			pauseItem = 0;
 			return;
 		}
-		if (!playerCanPlay)
-			return;
 		if (input != null)
 			return;
 		for (int i = 0; i < columnsCount; i++) {
@@ -463,7 +461,7 @@ public final class Player extends GameCanvas {
 	}
 
 	protected final void keyReleased(final int k) {
-		if (!playerCanPlay || isPaused)
+		if (isPaused)
 			return;
 		if (input != null)
 			return;
@@ -496,82 +494,82 @@ public final class Player extends GameCanvas {
 	}
 
 	/**
-	 * Method that is called by update loop each frame. Contains gameplay logic.
+	 * Method that is called by update thread. Contains gameplay logic.
 	 */
-	public final void Update() {
-		// TODO optimize all this shit
-		framesPassed++;
-		// sync
-		int prevtime = time;
-		time = track.Now();
-		if (input != null) {
-			// replay handling
-			time = input.UpdatePlayer(this, time);
-		}
-		int delta = time - prevtime;
-		if (delta < 0)
-			delta = 0;
-
-		if (isPaused) {
-			PauseUpdateLoop();
+	public final void Loop() {
+		while (running) {
+			// TODO optimize all this shit
+			framesPassed++;
+			// sync
+			int prevtime = time;
 			time = track.Now();
-		}
-		if (failed) {
-			FailSequence(exitNow);
-			return;
-		}
-		boolean breakActive = false;
-		if (breaks[currentBreak] - time < 0) {
-			// break is in progress
-			if (breaks[currentBreak] + breaks[currentBreak + 1] - time < 0) {
-				// or not?
-				Refill();
-				currentBreak += 2;
-			} else {
-				breakActive = true;
-				int timepassed = time - breaks[currentBreak];
-				int timeleft = breaks[currentBreak] + breaks[currentBreak + 1] - time;
-				if (timepassed < 500) {
-					// fading out playfield (break started)
-					int fade = scrH * timepassed / 500;
-					if (rich == null)
-						RedrawHUDVector();
-					else
-						RedrawHUDRich();
-					g.setClip(0, 0, scrW, fade);
-					FillBg();
-					g.setClip(0, 0, scrW, scrH);
-					flushGraphics();
-				} else if (timeleft < 500) {
-					// fading in
-					int fade = scrH * (500 - timeleft) / 500;
-					g.setClip(0, 0, scrW, fade);
-					FillBg();
-					DrawBorders();
-					for (int i = 0; i < columnsCount; i++) {
-						DrawKey(i, false);
-					}
-					Redraw();
-					if (rich == null)
-						RedrawHUDVector();
-					else
-						RedrawHUDRich();
-					g.setClip(0, 0, scrW, scrH);
+			if (input != null) {
+				// replay handling
+				time = input.UpdatePlayer(this, time);
+			}
+			int delta = time - prevtime;
+			if (delta < 0)
+				delta = 0;
+
+			if (isPaused) {
+				PauseUpdateLoop();
+				time = track.Now();
+			}
+			if (failed) {
+				FailSequence(exitNow);
+				return;
+			}
+			boolean breakActive = false;
+			if (breaks[currentBreak] - time < 0) {
+				// break is in progress
+				if (breaks[currentBreak] + breaks[currentBreak + 1] - time < 0) {
+					// or not?
+					Refill();
+					currentBreak += 2;
 				} else {
-					// idle
-					g.setClip(0, 0, scrW, scrH);
-					FillBg();
-					// drawing countdown
-					DrawBreakCountdown(timeleft);
-					flushGraphics();
+					breakActive = true;
+					int timepassed = time - breaks[currentBreak];
+					int timeleft = breaks[currentBreak] + breaks[currentBreak + 1] - time;
+					if (timepassed < 500) {
+						// fading out playfield (break started)
+						int fade = scrH * timepassed / 500;
+						if (rich == null)
+							RedrawHUDVector();
+						else
+							RedrawHUDRich();
+						g.setClip(0, 0, scrW, fade);
+						FillBg();
+						g.setClip(0, 0, scrW, scrH);
+						flushGraphics();
+					} else if (timeleft < 500) {
+						// fading in
+						int fade = scrH * (500 - timeleft) / 500;
+						g.setClip(0, 0, scrW, fade);
+						FillBg();
+						DrawBorders();
+						for (int i = 0; i < columnsCount; i++) {
+							DrawKey(i, false);
+						}
+						Redraw();
+						if (rich == null)
+							RedrawHUDVector();
+						else
+							RedrawHUDRich();
+						g.setClip(0, 0, scrW, scrH);
+					} else {
+						// idle
+						g.setClip(0, 0, scrW, scrH);
+						FillBg();
+						// drawing countdown
+						DrawBreakCountdown(timeleft);
+						flushGraphics();
+					}
 				}
 			}
-		}
 
-		// is beatmap over?
-		int emptyColumns = 0;
+			// is beatmap over?
+			int emptyColumns = 0;
 
-		if (playerCanPlay) {
 			// checking all columns for incoming hits
 			for (int column = 0; column < columnsCount; column++) {
 				// loop for each column
@@ -696,54 +694,13 @@ public final class Player extends GameCanvas {
 					continue;
 				}
 			}
-		} else {
-			// auto mode
-			for (int column = 0; column < columnsCount; column++) {
-				if (currentNote[column] >= columns[column].length) {
-					emptyColumns++;
-					continue;
-				}
-				final int diff = time - columns[column][currentNote[column]];
-				final int dur = columns[column][currentNote[column] + 1];
-				if (diff < 0)
-					continue;
+			System.arraycopy(holdKeys, 0, lastHoldKeys, 0, columnsCount);
 
-				if (dur == 0) {
-					CountHit(5);
-					score.CountHit(5);
-					lastJudgement = 5;
-					lastJudgementTime = time;
-					currentNote[column] += 2;
-					if (hitSounds != null)
-						hitSounds[defaultHSSet][0].Play();
-				} else {
-					if (diff - dur > 0) {
-						holdKeys[column] = false;
-						CountHit(5);
-						score.CountHit(5);
-						lastJudgement = 5;
-						lastJudgementTime = time;
-						currentNote[column] += 2;
-						if (hitSounds != null)
-							hitSounds[defaultHSSet][2].Play();
-					} else if (!holdKeys[column]) {
-						holdKeys[column] = true;
-						CountHit(5);
-						score.CountHit(5);
-						lastJudgement = 5;
-						lastJudgementTime = time;
-						if (hitSounds != null)
-							hitSounds[defaultHSSet][0].Play();
-					}
-				}
+			if (emptyColumns == columnsCount) {
+				PassSequence();
+			} else if (!breakActive) {
+				Redraw();
 			}
-		}
-		System.arraycopy(holdKeys, 0, lastHoldKeys, 0, columnsCount);
-
-		if (emptyColumns == columnsCount) {
-			PassSequence();
-		} else if (!breakActive) {
-			Redraw();
 		}
 	}
 
