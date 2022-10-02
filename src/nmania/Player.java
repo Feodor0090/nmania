@@ -389,21 +389,7 @@ public final class Player extends GameCanvas {
 					isPaused = false;
 					track.Play();
 				} else if (pauseItem == 1) {
-					if (restart != null)
-						restart.Play();
-					track.Reset();
-					rollingHealth = 1000;
-					health = 1000;
-					rollingScore = 0;
-					lastJudgementTime = -10000;
-					currentBreak = 0;
-					score.Reset();
-					for (int i = 0; i < currentNote.length; i++) {
-						currentNote[i] = 0;
-					}
-					System.gc();
-					isPaused = false;
-					track.Play();
+					ResetPlayer();
 				} else if (pauseItem == 2) {
 					// order has meaning
 					exitNow = true;
@@ -418,21 +404,7 @@ public final class Player extends GameCanvas {
 				pauseItem = pauseItem == 0 ? 1 : 0;
 			} else if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
 				if (pauseItem == 0) {
-					if (restart != null)
-						restart.Play();
-					track.Reset();
-					rollingHealth = 1000;
-					health = 1000;
-					rollingScore = 0;
-					lastJudgementTime = -10000;
-					score.Reset();
-					for (int i = 0; i < currentNote.length; i++) {
-						currentNote[i] = 0;
-					}
-					System.gc();
-					isPaused = false;
-					failed = false;
-					track.Play();
+					ResetPlayer();
 				} else if (pauseItem == 1) {
 					running = false;
 					isPaused = false;
@@ -457,6 +429,27 @@ public final class Player extends GameCanvas {
 				return;
 			}
 		}
+	}
+	
+	/**
+	 * Performs gameplay restart.
+	 */
+	private final void ResetPlayer() {
+		if (restart != null)
+			restart.Play();
+		track.Reset();
+		rollingHealth = 1000;
+		health = 1000;
+		rollingScore = 0;
+		lastJudgementTime = -10000;
+		currentBreak = 0;
+		score.Reset();
+		for (int i = 0; i < currentNote.length; i++) {
+			currentNote[i] = 0;
+		}
+		System.gc();
+		isPaused = false;
+		track.Play();
 	}
 
 	protected final void keyReleased(final int k) {
