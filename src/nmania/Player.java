@@ -21,7 +21,7 @@ import tube42.lib.imagelib.ImageUtils;
 
 public final class Player extends GameCanvas {
 
-	public Player(Beatmap map, PlayOptions opts, Skin s, ILogger log, Displayable next)
+	public Player(Beatmap map, PlayOptions opts, Skin s, ILogger log, Displayable next, IInputOverrider input)
 			throws IOException, MediaException, InterruptedException {
 		super(false);
 		setFullScreenMode(true);
@@ -102,6 +102,7 @@ public final class Player extends GameCanvas {
 
 		// step 4: setup configs
 		log.log("Bootstrapping player");
+		this.input = input;
 		columnsCount = map.columnsCount;
 		columns = new int[columnsCount][];
 		currentNote = new int[columnsCount];
@@ -286,6 +287,7 @@ public final class Player extends GameCanvas {
 	private int currentBreak;
 	public final ScoreController score;
 	public final AudioController track;
+	private final IInputOverrider input;
 	private final Image bg;
 	private final Graphics g;
 	private final int scrW, scrH;
@@ -402,16 +404,18 @@ public final class Player extends GameCanvas {
 		if (isPaused && failed) {
 			if (k == -1 || k == '2' || k == -2 || k == '8') {
 				pauseItem = pauseItem == 0 ? 1 : 0;
-			} else if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
+				return;
+			}
+			if (k == -5 || k == -6 || k == 32 || k == '5' || k == 10) {
 				if (pauseItem == 0) {
 					ResetPlayer();
-				} else if (pauseItem == 1) {
-					running = false;
-					isPaused = false;
-					track.Stop();
-					Dispose();
-					Nmania.Push(menu == null ? (new MainScreen()) : menu);
+					return;
 				}
+				running = false;
+				isPaused = false;
+				track.Stop();
+				Dispose();
+				Nmania.Push(menu == null ? (new MainScreen()) : menu);
 			}
 			return;
 		}
@@ -423,14 +427,16 @@ public final class Player extends GameCanvas {
 		}
 		if (!playerCanPlay)
 			return;
+		if (input != null)
+			return;
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
-				holdKeys[i] = true;
+				ToggleColumnInputState(i, true);
 				return;
 			}
 		}
 	}
-	
+
 	/**
 	 * Performs gameplay restart.
 	 */
@@ -455,12 +461,18 @@ public final class Player extends GameCanvas {
 	protected final void keyReleased(final int k) {
 		if (!playerCanPlay || isPaused)
 			return;
+		if (input != null)
+			return;
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
-				holdKeys[i] = false;
+				ToggleColumnInputState(i, false);
 				return;
 			}
 		}
+	}
+
+	public final void ToggleColumnInputState(int column, boolean state) {
+		holdKeys[column] = state;
 	}
 
 	protected final void pointerPressed(final int x, final int y) {
