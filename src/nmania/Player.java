@@ -491,7 +491,11 @@ public final class Player extends GameCanvas {
 		// TODO optimize all this shit
 		framesPassed++;
 		// sync
+		int prevtime = time;
 		time = track.Now();
+		int delta = time - prevtime;
+		if (delta < 0)
+			delta = 0;
 
 		if (isPaused) {
 			PauseUpdateLoop();
