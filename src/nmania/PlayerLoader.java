@@ -10,6 +10,7 @@ import javax.microedition.lcdui.Gauge;
 import nmania.formats.IRawBeatmap;
 import nmania.formats.InvalidBeatmapTypeException;
 import nmania.formats.RawBeatmapConverter;
+import nmania.replays.AutoplayRunner;
 import nmania.ui.BeatmapSetPage;
 import nmania.ui.KeyboardSetup;
 import nmania.ui.MainScreen;
@@ -73,7 +74,12 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 			page = null;
 		}
 		try {
-			Player p = new Player(b, opts, Nmania.skin, this, page, null);
+			IInputOverrider input = null;
+			if(opts.autoplay) {
+				input = new AutoplayRunner();
+				opts.autoplay = false; //legacy
+			}
+			Player p = new Player(b, opts, Nmania.skin, this, page, input);
 			Nmania.Push(p);
 			Thread t = new PlayerThread(p);
 			t.start();

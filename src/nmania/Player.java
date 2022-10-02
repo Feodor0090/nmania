@@ -265,6 +265,8 @@ public final class Player extends GameCanvas {
 		g = getGraphics();
 		g.setFont(fontL);
 
+		if (input != null)
+			input.Reset();
 		log.log("Ready.");
 		System.gc();
 	}
@@ -453,6 +455,7 @@ public final class Player extends GameCanvas {
 		for (int i = 0; i < currentNote.length; i++) {
 			currentNote[i] = 0;
 		}
+		input.Reset();
 		System.gc();
 		isPaused = false;
 		failed = false;
@@ -501,6 +504,10 @@ public final class Player extends GameCanvas {
 		// sync
 		int prevtime = time;
 		time = track.Now();
+		if (input != null) {
+			// replay handling
+			time = input.UpdatePlayer(this, time);
+		}
 		int delta = time - prevtime;
 		if (delta < 0)
 			delta = 0;
