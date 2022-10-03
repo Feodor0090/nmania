@@ -1,4 +1,7 @@
-package nmania.formats;
+package nmania.beatmaps;
+
+import nmania.beatmaps.json.RawNmaniaBeatmap;
+import nmania.beatmaps.osu.RawOsuBeatmap;
 
 /**
  * Tiny library for creating {@link IRawBeatmap}s from unknown text.

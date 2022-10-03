@@ -1,4 +1,4 @@
-package nmania.formats;
+package nmania.beatmaps.json;
 
 import org.json.me.JSONArray;
 import org.json.me.JSONObject;
@@ -6,6 +6,7 @@ import org.json.me.JSONObject;
 import nmania.Beatmap;
 import nmania.Beatmap.ManiaNote;
 import nmania.Beatmap.TimingPoint;
+import nmania.beatmaps.IRawBeatmap;
 import symnovel.SNUtils;
 
 public class RawNmaniaBeatmap extends JSONObject implements IRawBeatmap {

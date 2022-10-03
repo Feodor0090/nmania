@@ -1,4 +1,4 @@
-package nmania.formats;
+package nmania.beatmaps;
 
 import nmania.Beatmap;
 

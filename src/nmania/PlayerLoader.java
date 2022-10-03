@@ -7,9 +7,9 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Gauge;
 
-import nmania.formats.IRawBeatmap;
-import nmania.formats.InvalidBeatmapTypeException;
-import nmania.formats.RawBeatmapConverter;
+import nmania.beatmaps.IRawBeatmap;
+import nmania.beatmaps.InvalidBeatmapTypeException;
+import nmania.beatmaps.RawBeatmapConverter;
 import nmania.replays.AutoplayRunner;
 import nmania.ui.BeatmapSetPage;
 import nmania.ui.KeyboardSetup;

@@ -2,7 +2,7 @@ package nmania;
 
 import org.json.me.JSONArray;
 
-import nmania.formats.IRawBeatmap;
+import nmania.beatmaps.IRawBeatmap;
 import symnovel.IComparable;
 
 /**

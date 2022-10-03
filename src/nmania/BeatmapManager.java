@@ -11,9 +11,9 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Image;
 
-import nmania.formats.IRawBeatmap;
-import nmania.formats.InvalidBeatmapTypeException;
-import nmania.formats.RawBeatmapConverter;
+import nmania.beatmaps.IRawBeatmap;
+import nmania.beatmaps.InvalidBeatmapTypeException;
+import nmania.beatmaps.RawBeatmapConverter;
 
 /**
  * Class with methods for beatmaps reading.

@@ -1,4 +1,4 @@
-package nmania.formats;
+package nmania.beatmaps.osu;
 
 import java.util.Vector;
 
@@ -6,6 +6,8 @@ import nmania.Beatmap;
 import nmania.Beatmap.Break;
 import nmania.Beatmap.ManiaNote;
 import nmania.Beatmap.TimingPoint;
+import nmania.beatmaps.IRawBeatmap;
+import nmania.beatmaps.InvalidBeatmapTypeException;
 import symnovel.SNUtils;
 
 public final class RawOsuBeatmap implements IRawBeatmap {
