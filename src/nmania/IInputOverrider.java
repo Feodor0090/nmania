@@ -18,4 +18,10 @@ public interface IInputOverrider {
 	 * @return Time to seek player to. Normally should be the same as second argument.
 	 */
 	public int UpdatePlayer(Player player, int time);
+	
+	/**
+	 * Gets name of this overrider.
+	 * @return String to display. Must not be null.
+	 */
+	public String GetName();
 }
