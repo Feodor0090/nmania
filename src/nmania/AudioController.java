@@ -14,6 +14,8 @@ import javax.microedition.media.Player;
  */
 public final class AudioController {
 
+	private int lastTime;
+	
 	public AudioController(Beatmap map) throws IOException, MediaException {
 		String file = map.ToGlobalPath(map.audio);
 		// this supposes that all "builtin" files are mp3
@@ -28,7 +30,9 @@ public final class AudioController {
 	private final int offset;
 
 	public int Now() {
-		return offset + (int) (player.getMediaTime() / 1000);
+		long mt = player.getMediaTime();
+		if(mt<0) return lastTime;
+		return lastTime = offset + (int) (mt / 1000);
 	}
 
 	public boolean Play() {
