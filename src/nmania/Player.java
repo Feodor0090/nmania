@@ -826,7 +826,7 @@ public final class Player extends GameCanvas {
 			}
 		}
 		Dispose();
-		Nmania.Push(new ResultsScreen(score, track, bg, menu, applause));
+		Nmania.Push(new ResultsScreen(score, track, bg, menu, applause, input));
 	}
 
 	/**

@@ -7,6 +7,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import nmania.AudioController;
+import nmania.IInputOverrider;
 import nmania.Nmania;
 import nmania.Player;
 import nmania.Sample;
@@ -15,12 +16,16 @@ import nmania.ScoreController;
 public final class ResultsScreen extends Canvas {
 
 	public ResultsScreen(ScoreController score, AudioController music, Image bg, Displayable next,
-			final String applauseFile) {
+			final String applauseFile, IInputOverrider input) {
 		super();
 		this.score = score;
 		this.music = music;
 		this.bg = bg;
 		this.next = next;
+		if(input == null)
+			title = Nmania.commonText[11];
+		else
+			title = input.GetName();
 		setFullScreenMode(true);
 		(new Thread() {
 			public void run() {
@@ -48,6 +53,7 @@ public final class ResultsScreen extends Canvas {
 	public final Image bg;
 	public final Displayable next;
 	Sample applause = null;
+	String title;
 
 	protected void paint(Graphics g) {
 		int w = getWidth();
@@ -57,7 +63,7 @@ public final class ResultsScreen extends Canvas {
 
 		g.setColor(-1);
 		g.setFont(Font.getFont(0, 0, 16));
-		g.drawString(Nmania.commonText[11], w / 2, -introTimer, 17);
+		g.drawString(title, w / 2, -introTimer, 17);
 		g.setFont(Font.getFont(0, 0, 8));
 		g.drawString(Nmania.commonText[12], w / 2, h + introTimer, Graphics.BOTTOM | Graphics.HCENTER);
 
