@@ -144,6 +144,8 @@ public class BeatmapManager {
 			return null;
 		} catch (IOException e) {
 			return null;
+		} catch (OutOfMemoryError e) {
+			return null;
 		} finally {
 			try {
 				if (fcon != null)
