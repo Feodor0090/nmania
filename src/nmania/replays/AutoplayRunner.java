@@ -9,6 +9,7 @@ public class AutoplayRunner implements IInputOverrider {
 	private int columnsCount;
 	private int[] currentNote;
 	private boolean[] localKeys; // just a local cache
+	int frame = 0;
 
 	public int UpdatePlayer(Player player, int time) {
 		if (columns == null) {
@@ -29,7 +30,7 @@ public class AutoplayRunner implements IInputOverrider {
 			int dur = columns[column][currentNote[column] + 1];
 			if (dur == 0) {
 				// COPY OF CODE BELOW!
-				if (currentNote[column] + 2 > columns[column].length) {
+				if (currentNote[column] + 2 < columns[column].length) {
 					int next = columns[column][currentNote[column] + 2];
 					if (next - start < 30)
 						dur = (next - start) / 2;
@@ -38,16 +39,27 @@ public class AutoplayRunner implements IInputOverrider {
 				}
 			}
 
-			if (diff >= 5 && !localKeys[column]) {
-				int newtime = time - diff + 1;
-				if (newtime < finalnewtime)
-					finalnewtime = newtime;
+			if (diff >= 5) {
+				// player.log += "\nFrame "+frame+": Note from " + start + " to " + (start +
+				// dur) + " is " + diff + "ms later, controlling player";
+				if (!localKeys[column]) {
+					int newtime = time - diff + 1;
+					// player.log += "\nFrame "+frame+": Note at " + start + " with duration " + dur
+					// + " will seek player to " + newtime;
+					if (newtime < finalnewtime)
+						finalnewtime = newtime;
+				} else if (diff - dur > 1) {
+					int newtime = time - (diff - dur) + 1;
+					// player.log += "\nFrame "+frame+": Tail at " + start + "+" + dur + " (" +
+					// (start + dur) + ") will seek player to " + newtime;
+					if (newtime < finalnewtime)
+						finalnewtime = newtime;
+				}
 			}
-			if (localKeys[column] && diff - dur >= 5) {
-				int newtime = time - (diff - dur) + 1;
-				if (newtime < finalnewtime)
-					finalnewtime = newtime;
-			}
+		}
+		if (finalnewtime != time) {
+			// player.log += "\nFrame "+frame+": Player seeked from " + time + " to " +
+			// finalnewtime;
 		}
 		time = finalnewtime;
 
@@ -70,7 +82,7 @@ public class AutoplayRunner implements IInputOverrider {
 
 			if (dur == 0) {
 				// it's a hit. Lets hold a little.
-				if (currentNote[column] + 2 > columns[column].length) {
+				if (currentNote[column] + 2 < columns[column].length) {
 					int next = columns[column][currentNote[column] + 2];
 					if (next - start < 30)
 						dur = (next - start) / 2;
@@ -79,13 +91,18 @@ public class AutoplayRunner implements IInputOverrider {
 				}
 			}
 
-			if (diff >= 0) {
+			if (diff >= -1) {
 				if (!localKeys[column]) {
+					// player.log += "\nFrame "+frame+": Note at " + start + " is " + diff + "ms
+					// off, pressing the button, player is at " + time;
 					// key is not holded yet
 					localKeys[column] = true; // caching hold
 					player.ToggleColumnInputState(column, true); // forwarding
 				} else {
-					if (diff - dur >= 0) {
+					if (diff - dur >= -1) {
+						// player.log += "\nFrame "+frame+": Note from " + start + " to " + (start +
+						// dur) + " ended " + (diff - dur)
+						// + "ms ago, releasing the button, player is at " + time;
 						// it's time to release the key
 						localKeys[column] = false; // caching
 						player.ToggleColumnInputState(column, false); // forwarding
@@ -96,13 +113,16 @@ public class AutoplayRunner implements IInputOverrider {
 
 		}
 
+		frame++;
 		return time;
 	}
 
 	public void Reset() {
+		frame = 0;
 		if (columns != null && columnsCount > 0) {
 			currentNote = new int[columnsCount];
 			localKeys = new boolean[columnsCount];
+
 		}
 	}
 
