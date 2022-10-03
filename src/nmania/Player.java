@@ -107,7 +107,6 @@ public final class Player extends GameCanvas {
 		healthValues = new int[] { opts.failMod > 0 ? -1001 : -100, -10, 0, 20, 40, 50 };
 		score = new ScoreController();
 		failCondition = opts.failMod;
-		playerCanPlay = !opts.autoplay;
 
 		// step 4: setup configs
 		log.log("Bootstrapping player");
@@ -118,6 +117,7 @@ public final class Player extends GameCanvas {
 		holdKeys = new boolean[columnsCount];
 		lastHoldKeys = new boolean[columnsCount];
 		keyMappings = Settings.keyLayout[columnsCount - 1];
+		holdHeadScored = new boolean[columnsCount];
 		Thread.sleep(1);
 
 		// step 5: loading beatmap
@@ -287,6 +287,7 @@ public final class Player extends GameCanvas {
 	private final boolean[] lastHoldKeys;
 	private final boolean[] holdKeys;
 	private final int[] holdHoldingTimes;
+	private final boolean[] holdHeadScored;
 	private final int[] keyMappings;
 	private final int[] hitWindows;
 	private final int[] healthValues;
@@ -362,6 +363,7 @@ public final class Player extends GameCanvas {
 			SNUtils.toARGB("0x494"), SNUtils.toARGB("0x0B0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x90F") };
 
 	private final int scrollDiv = Settings.speedDiv;
+	// public String log = "";
 
 	/**
 	 * Clears allocated samples.
@@ -462,6 +464,8 @@ public final class Player extends GameCanvas {
 		for (int i = 0; i < currentNote.length; i++) {
 			currentNote[i] = 0;
 		}
+		// System.out.println(log);
+		// log = "";
 		input.Reset();
 		System.gc();
 		isPaused = false;
@@ -484,6 +488,8 @@ public final class Player extends GameCanvas {
 
 	public final void ToggleColumnInputState(int column, boolean state) {
 		holdKeys[column] = state;
+		// log += "\nReveived input " + state + " on " + column + " at time " + time +
+		// ", global frame " + framesPassed;
 	}
 
 	protected final void pointerPressed(final int x, final int y) {
@@ -517,8 +523,11 @@ public final class Player extends GameCanvas {
 				time = input.UpdatePlayer(this, time);
 			}
 			int delta = time - prevtime;
-			if (delta < 0)
+			if (delta < 0) {
 				delta = 0;
+				// log += "\nDelta is " + delta + "! Time " + time + ", global frame " +
+				// framesPassed;
+			}
 
 			if (isPaused) {
 				PauseUpdateLoop();
@@ -620,6 +629,8 @@ public final class Player extends GameCanvas {
 							// checking hitwindows
 							for (int j = 5; j > -1; j--) {
 								if (adiff < hitWindows[j]) {
+									// log += "\nHit note at " + columns[column][currentNote[column]] + " is scored
+									// at "+ j + ", column " + column + ", time " + time;
 									CountHit(j);
 									score.CountHit(j);
 									lastJudgement = j;
@@ -630,6 +641,9 @@ public final class Player extends GameCanvas {
 									break;
 								}
 							}
+						} else {
+							// log += "\nHit note at " + columns[column][currentNote[column]] + " is
+							// preholded, column " + column + ", time " + time;
 						}
 					} else {
 						// it is a hold
@@ -640,12 +654,15 @@ public final class Player extends GameCanvas {
 							// checking hitwindow
 							for (int j = 5; j > -1; j--) {
 								if (adiff < hitWindows[j]) {
+									// log += "\nHold note at " + columns[column][currentNote[column]] + " is scored
+									// at " + j + ", column " + column + ", time " + time;
 									CountHit(j);
 									score.CountHit(j);
 									lastJudgement = j;
 									lastJudgementTime = time;
 									if (hitSounds != null && j != 0)
 										hitSounds[defaultHSSet][0].Play();
+									holdHeadScored[column] = true;
 									break;
 								}
 							}
@@ -670,22 +687,28 @@ public final class Player extends GameCanvas {
 						// checking hitwindow
 						for (int j = 5; j > -1; j--) {
 							if (adiff < hitWindows[j]) {
+								// log += "\nTail note at " + (columns[column][currentNote[column]] + dur)
+								// + " is scored at " + j + ", column " + column + ", time " + time;
 								CountHit(j);
 								score.CountHit(j);
 								lastJudgement = j;
 								lastJudgementTime = time;
 								currentNote[column] += 2;
+								holdHeadScored[column] = false;
 								if (hitSounds != null && j != 0)
 									hitSounds[defaultHSSet][2].Play();
 								break;
 							}
 						}
-						if (adiff >= hitWindows[0]) {
+						if (adiff >= hitWindows[0] && holdHeadScored[column]) {
+							// log += "\nTail note at " + (columns[column][currentNote[column]] + dur)
+							// + " is missed, column " + column + ", time " + time;
 							CountHit(0);
 							score.CountHit(0);
 							lastJudgement = 0;
 							lastJudgementTime = time;
 							currentNote[column] += 2;
+							holdHeadScored[column] = false;
 						}
 						continue;
 					}
