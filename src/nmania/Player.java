@@ -1137,6 +1137,18 @@ public final class Player extends GameCanvas {
 				// Yeah, 99999+ is not supported.
 			}
 		}
+		// replay title
+		if (input != null) {
+			String t = input.GetName();
+			g.setColor(-1);
+			g.drawString(t, judgmentCenter + 1, 0, 17);
+			g.drawString(t, judgmentCenter - 1, 0, 17);
+			g.drawString(t, judgmentCenter + 1, 2, 17);
+			g.drawString(t, judgmentCenter - 1, 2, 17);
+			g.setColor(0, 200, 0);
+			g.drawString(t, judgmentCenter, 1, 17);
+
+		}
 		// health
 		{
 			if (health != rollingHealth) {
