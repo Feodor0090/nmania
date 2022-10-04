@@ -35,6 +35,8 @@ public final class Settings {
 	public static int gameplayOffset = 0;
 
 	public static final void Save() {
+		if (!workingFolder.endsWith("/"))
+			workingFolder = workingFolder + "/";
 		try {
 			JSONObject j = new JSONObject();
 			j.accumulate("bgdim", String.valueOf(bgDim));
