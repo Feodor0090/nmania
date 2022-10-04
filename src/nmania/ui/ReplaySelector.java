@@ -8,21 +8,21 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
-import nmania.BeatmapSet;
 import nmania.Nmania;
+import nmania.PlayerBootstrapData;
 
 public final class ReplaySelector extends List implements CommandListener {
 
-	private BeatmapSet set;
 	private Command back = new Command(Nmania.commonText[0], Command.BACK, 1);
 	private Displayable prev;
+	private PlayerBootstrapData data;
 
-	public ReplaySelector(BeatmapSet set, Displayable prev) {
+	public ReplaySelector(PlayerBootstrapData data, Displayable prev) {
 		super("Select a replay", Choice.IMPLICIT);
 		this.prev = prev;
 		setCommandListener(this);
-		this.set = set;
-		String[] list = set.ListAllReplays();
+		this.data = data;
+		String[] list = data.set.ListAllReplays();
 		for (int i = 0; i < list.length; i++) {
 			append(list[i], null);
 		}
@@ -33,7 +33,8 @@ public final class ReplaySelector extends List implements CommandListener {
 		if (c == List.SELECT_COMMAND && size() > 0) {
 			String name = getString(getSelectedIndex());
 			try {
-				set.ReadReplay(name).DecodeData();
+				data.set.ReadReplay(name).DecodeData();
+				
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

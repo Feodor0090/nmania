@@ -116,14 +116,14 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 
 	public void commandAction(Command c, Item arg1) {
 		if (c instanceof Difficulty) {
-			if (mode.getSelectedIndex() == 4) {
-				Nmania.Push(new ReplaySelector(set, this));
-				return;
-			}
-			IInputOverrider input = mode.getSelectedIndex() == 3 ? new AutoplayRunner() : null;
 			PlayerBootstrapData opts = FromChoices();
 			opts.set = set;
 			opts.mapFileName = ((Difficulty) c).fileName;
+			if (mode.getSelectedIndex() == 4) {
+				Nmania.Push(new ReplaySelector(opts, this));
+				return;
+			}
+			IInputOverrider input = mode.getSelectedIndex() == 3 ? new AutoplayRunner() : null;
 			(new PlayerLoader(opts, input, this)).start();
 		}
 	}
