@@ -65,9 +65,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 		if (Settings.keyLayout[b.columnsCount - 1] == null) {
 			// no keyboard layout
 			KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, page);
-			PushWaitPush(kbs,
-					new Alert("nmania", Nmania.commonText[9] + " (" + b.columnsCount + "K). " + Nmania.commonText[10],
-							null, AlertType.WARNING));
+			Nmania.Push(kbs);
 			return;
 		}
 		if (!Settings.keepMenu) {
