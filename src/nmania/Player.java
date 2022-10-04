@@ -983,7 +983,7 @@ public final class Player extends GameCanvas {
 			// cols
 			flushGraphics(leftOffset, 0, fillColsW, scrH);
 			// score & acc
-			if (Settings.drawCounters) {
+			if (Settings.drawHUD) {
 				flushGraphics(fillScoreX, 0, fillScoreW, fillCountersH);
 				flushGraphics(fillAccX, scrH - fillCountersH, fillAccW, fillCountersH);
 			}
@@ -996,7 +996,7 @@ public final class Player extends GameCanvas {
 	private final void RedrawHUDVector() {
 		g.setColor(-1);
 		// score & acc
-		if (Settings.drawCounters) {
+		if (Settings.drawHUD) {
 			final int realScore = score.currentHitScore;
 			if (realScore != rollingScore) {
 				rollingScore += (realScore - rollingScore) / 60 + 1;
@@ -1031,7 +1031,7 @@ public final class Player extends GameCanvas {
 		int combo = score.GetGameplayCombo();
 		// This shit was written because we mustn't allocate strings during gameplay. Do
 		// not try to touch something here, i even don't know how this works...
-		if (Settings.drawCounters && combo > 0) {
+		if (Settings.drawHUD && combo > 0) {
 			if (combo < 10) {
 				final char c = (char) ('0' + combo);
 				g.setColor(-1);
@@ -1216,7 +1216,7 @@ public final class Player extends GameCanvas {
 	private final void RedrawHUDRich() {
 		g.setColor(-1);
 		// score & acc
-		if (Settings.drawCounters) {
+		if (Settings.drawHUD) {
 			final int realScore = score.currentHitScore;
 			if (realScore != rollingScore) {
 				rollingScore += (realScore - rollingScore) / 60 + 1;
@@ -1254,7 +1254,7 @@ public final class Player extends GameCanvas {
 			g.drawImage(rich[lastJudgement], judgmentCenter, 100, 17);
 		}
 		int combo = score.currentCombo;
-		if (Settings.drawCounters && combo > 0) {
+		if (Settings.drawHUD && combo > 0) {
 			if (combo < 10) {
 				g.drawImage(rich[combo + 6], judgmentCenter, 100, 33);
 			} else if (combo < 100) {

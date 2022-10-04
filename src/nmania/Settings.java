@@ -9,21 +9,64 @@ import symnovel.SNUtils;
 
 public final class Settings {
 
-	public static final String defaultWF = "file:///C:/Data/Sounds/nmania/";
+	public static final String GetDefaultFolder() {
+		String dir = System.getProperty("fileconn.dir.sounds");
+		if (dir == null)
+			dir = "file:///C:/Data/Sounds/";
+		return dir + "nmania/";
+	}
 
+	/**
+	 * % of background dimming during gameplay. 0f - not touched, 1f - completely black.
+	 */
 	public static float bgDim = 0.75f;
+	/**
+	 * Array with keyboard layouts. Zero element is layout for 1K, the 9th is for 10K.
+	 * Each layout has keys for all columns and for pause key.
+	 */
 	public static int[][] keyLayout = new int[10][];
 
+	/**
+	 * Divider for scrolling speed.
+	 */
 	public static int speedDiv = 3;
 
+	/**
+	 * Are exit/fail/pass/restart samples enabled?
+	 */
 	public static boolean gameplaySamples = true;
+	/**
+	 * Are hit samples enabled?
+	 */
 	public static boolean hitSamples = false;
+	/**
+	 * If hit samples are enabled, do we want to load them from beatmap?
+	 */
 	public static boolean useBmsSamples = true;
+	/**
+	 * If false, menu's displayables will be lost when loading player.
+	 */
 	public static boolean keepMenu = true;
-	public static boolean drawCounters = true;
+	/**
+	 * Are we drawing HUD?
+	 */
+	public static boolean drawHUD = true;
+	/**
+	 * Do we want to use single full flush?
+	 * If false, three partial will be performed.
+	 */
 	public static boolean fullScreenFlush = false;
+	/**
+	 * Draw fps?
+	 */
 	public static boolean profiler = false;
-	public static String workingFolder = defaultWF;
+	/**
+	 * Folder from which we read all the data. Must contain trailing slash. Must contain file:///.
+	 */
+	public static String workingFolder = GetDefaultFolder();
+	/**
+	 * Language prefix.
+	 */
 	public static String locale;
 
 	/**
@@ -57,7 +100,7 @@ public final class Settings {
 			j.accumulate("samples", new Boolean(gameplaySamples));
 			j.accumulate("hitsounds", new Boolean(hitSamples));
 			j.accumulate("keepmenu", new Boolean(keepMenu));
-			j.accumulate("drawcounters", new Boolean(drawCounters));
+			j.accumulate("drawcounters", new Boolean(drawHUD));
 			j.accumulate("fullscreenflush", new Boolean(fullScreenFlush));
 			j.accumulate("dir", workingFolder);
 			j.accumulate("gameplayoffset", new Integer(gameplayOffset));
@@ -108,11 +151,11 @@ public final class Settings {
 			gameplaySamples = j.optBoolean("samples", true);
 			hitSamples = j.optBoolean("hitsounds", false);
 			keepMenu = j.optBoolean("keepmenu", false);
-			drawCounters = j.optBoolean("drawcounters", true);
+			drawHUD = j.optBoolean("drawcounters", true);
 			final String device = Nmania.GetDevice();
 			fullScreenFlush = j.optBoolean("fullscreenflush",
 					device.indexOf("platform=S60") != -1 && device.indexOf("platform_version=5") != -1);
-			workingFolder = j.optString("dir", defaultWF);
+			workingFolder = j.optString("dir", GetDefaultFolder());
 			gameplayOffset = j.optInt("gameplayoffset", 0);
 			useBmsSamples = j.optBoolean("usebmssamples", true);
 			profiler = j.optBoolean("profiler", false);

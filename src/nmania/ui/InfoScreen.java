@@ -155,9 +155,9 @@ public class InfoScreen extends MultisectionList implements CommandListener {
 		public final void AppendWD(Form f, int n) {
 			f.append("\n" + n + ". Game's current working folder is ");
 			f.append(new Link(Settings.workingFolder));
-			if (!Settings.workingFolder.equals(Settings.defaultWF)) {
+			if (!Settings.workingFolder.equals(Settings.GetDefaultFolder())) {
 				f.append(". Default one was ");
-				f.append(new Link(Settings.defaultWF));
+				f.append(new Link(Settings.GetDefaultFolder()));
 			}
 			f.append(". If there is no one, create it on EXACT path.");
 		}

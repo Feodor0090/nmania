@@ -167,7 +167,7 @@ public class SettingsScreen extends MultisectionList implements CommandListener 
 				Settings.keepMenu = !Settings.keepMenu;
 				break;
 			case 1:
-				Settings.drawCounters = !Settings.drawCounters;
+				Settings.drawHUD = !Settings.drawHUD;
 				break;
 			case 2:
 				Settings.fullScreenFlush = !Settings.fullScreenFlush;
@@ -193,7 +193,7 @@ public class SettingsScreen extends MultisectionList implements CommandListener 
 
 		public void paint(Graphics g, int y, int sw) {
 			drawCheckbox(g, Settings.keepMenu, y, th);
-			drawCheckbox(g, Settings.drawCounters, y + th, th);
+			drawCheckbox(g, Settings.drawHUD, y + th, th);
 			drawCheckbox(g, Settings.fullScreenFlush, iy + th * 2, th);
 			drawCheckbox(g, Settings.profiler, iy + th * 3, th);
 		}
