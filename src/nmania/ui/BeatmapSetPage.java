@@ -28,10 +28,9 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 	BeatmapManager bm;
 	String dir;
 	BeatmapSet set;
-	ChoiceGroup daMod = new ChoiceGroup(text[9], Choice.POPUP,
-			new String[] { text[1], "Hard Rock", "Easy" }, null);
+	ChoiceGroup daMod = new ChoiceGroup(text[9], Choice.POPUP, new String[] { text[1], "Hard Rock", "Easy" }, null);
 	ChoiceGroup mode = new ChoiceGroup(text[0], Choice.POPUP,
-			new String[] { text[1], "Sudden Death", "No Fail", text[2] }, null);
+			new String[] { text[1], "Sudden Death", "No Fail", text[2], "Watch replay" }, null);
 
 	private BeatmapSetsList list;
 	private Command back = new Command(text[3], Command.BACK, 1);
@@ -115,6 +114,10 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 
 	public void commandAction(Command c, Item arg1) {
 		if (c instanceof Difficulty) {
+			if(mode.getSelectedIndex()==4) {
+				Nmania.Push(new ReplaySelector(set, this));
+				return;
+			}
 			IInputOverrider input = mode.getSelectedIndex() == 3 ? new AutoplayRunner() : null;
 			PlayOptions opts = FromChoices();
 			(new PlayerLoader(set, ((Difficulty) c).fileName, opts, input, this)).start();
