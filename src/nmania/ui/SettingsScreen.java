@@ -129,6 +129,7 @@ public class SettingsScreen extends MultisectionList implements CommandListener 
 				break;
 			case 2:
 				Settings.useBmsSamples = !Settings.useBmsSamples;
+				break;
 			case 3:
 				TextBox box = new TextBox(items[3], String.valueOf(Settings.gameplayOffset), 4, TextField.NUMERIC);
 				box.addCommand(offsetOk);
