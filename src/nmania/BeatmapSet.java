@@ -1,7 +1,19 @@
 package nmania;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Vector;
+
+import javax.microedition.io.Connector;
+import javax.microedition.io.file.FileConnection;
+
+import nmania.replays.IRawReplay;
+import nmania.replays.osu.OsuReplay;
+
 /**
- * Model for folder with several beatmaps. All the data will be read from a random one.
+ * Model for folder with several beatmaps. All the data will be read from a
+ * random one. Factory method is
+ * {@link BeatmapManager#FromBMSDirectory(String)}.
  * 
  * @author Feodor0090
  *
@@ -43,5 +55,40 @@ public final class BeatmapSet {
 				return files[i];
 		}
 		return null;
+	}
+
+	public String[] ListAllReplays() {
+		Vector v = new Vector(files.length / 2, 8);
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].endsWith(".osr"))
+				v.addElement(files[i]);
+		}
+		String[] arr = new String[v.size()];
+		v.copyInto(arr);
+		return arr;
+	}
+
+	/**
+	 * Reads OSR.
+	 * 
+	 * @param name OSR file name.
+	 * @return Read replay. Always not null.
+	 * @throws IOException If file reading failed.
+	 */
+	public OsuReplay ReadReplay(String name) throws IOException {
+		OsuReplay replay = new OsuReplay();
+		FileConnection fc = null;
+		InputStream is = null;
+		try {
+			fc = (FileConnection) Connector.open(wdPath + folderName + name, Connector.READ);
+			is = fc.openInputStream();
+			replay.read(is);
+		} finally {
+			if (is != null)
+				is.close();
+			if (fc != null)
+				fc.close();
+		}
+		return replay;
 	}
 }
