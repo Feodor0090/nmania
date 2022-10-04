@@ -21,7 +21,7 @@ import tube42.lib.imagelib.ImageUtils;
 
 public final class Player extends GameCanvas {
 
-	public Player(Beatmap map, PlayOptions opts, Skin s, ILogger log, Displayable next, IInputOverrider input)
+	public Player(Beatmap map, PlayerBootstrapData opts, Skin s, ILogger log, Displayable next, IInputOverrider input)
 			throws IOException, MediaException, InterruptedException {
 		super(false);
 		setFullScreenMode(true);
@@ -292,7 +292,7 @@ public final class Player extends GameCanvas {
 	private final int[] hitWindows;
 	private final int[] healthValues;
 	/**
-	 * @see PlayOptions#failMod
+	 * @see PlayerBootstrapData#failMod
 	 */
 	private final int failCondition;
 	private final int[] breaks;
@@ -826,7 +826,7 @@ public final class Player extends GameCanvas {
 			}
 		}
 		Dispose();
-		Nmania.Push(new ResultsScreen(score, track, bg, menu, applause, input));
+		Nmania.Push(new ResultsScreen(score, input, null, track, applause, bg, menu));
 	}
 
 	/**

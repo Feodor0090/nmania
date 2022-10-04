@@ -17,7 +17,7 @@ import nmania.BeatmapManager;
 import nmania.BeatmapSet;
 import nmania.IInputOverrider;
 import nmania.Nmania;
-import nmania.PlayOptions;
+import nmania.PlayerBootstrapData;
 import nmania.PlayerLoader;
 import nmania.replays.AutoplayRunner;
 import tube42.lib.imagelib.ImageUtils;
@@ -93,9 +93,8 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 		}
 	}
 
-	public PlayOptions FromChoices() {
-		PlayOptions opts = new PlayOptions();
-		opts.autoplay = mode.getSelectedIndex() == 3;
+	public PlayerBootstrapData FromChoices() {
+		PlayerBootstrapData opts = new PlayerBootstrapData();
 		switch (mode.getSelectedIndex()) {
 		case 1:
 			opts.failMod = 1;
@@ -117,13 +116,15 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 
 	public void commandAction(Command c, Item arg1) {
 		if (c instanceof Difficulty) {
-			if(mode.getSelectedIndex()==4) {
+			if (mode.getSelectedIndex() == 4) {
 				Nmania.Push(new ReplaySelector(set, this));
 				return;
 			}
 			IInputOverrider input = mode.getSelectedIndex() == 3 ? new AutoplayRunner() : null;
-			PlayOptions opts = FromChoices();
-			(new PlayerLoader(set, ((Difficulty) c).fileName, opts, input, this)).start();
+			PlayerBootstrapData opts = FromChoices();
+			opts.set = set;
+			opts.mapFileName = ((Difficulty) c).fileName;
+			(new PlayerLoader(opts, input, this)).start();
 		}
 	}
 

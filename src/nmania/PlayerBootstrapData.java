@@ -1,6 +1,19 @@
 package nmania;
 
-public class PlayOptions {
+/**
+ * This object contains all the data player need to be able to play something.
+ * @author Feodor0090
+ *
+ */
+public class PlayerBootstrapData {
+	/**
+	 * Beatmapset that we are going to play.
+	 */
+	public BeatmapSet set;
+	/**
+	 * Filename of the beatmap.
+	 */
+	public String mapFileName;
 	/**
 	 * <ul>
 	 * <li>-1 - No Fail

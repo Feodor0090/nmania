@@ -7,9 +7,7 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Gauge;
 
-import nmania.beatmaps.IRawBeatmap;
 import nmania.beatmaps.InvalidBeatmapTypeException;
-import nmania.beatmaps.RawBeatmapConverter;
 import nmania.ui.BeatmapSetPage;
 import nmania.ui.KeyboardSetup;
 import nmania.ui.MainScreen;
@@ -23,20 +21,16 @@ import nmania.ui.MainScreen;
 public class PlayerLoader extends Thread implements ILogger, CommandListener {
 
 
-	public PlayerLoader(BeatmapSet set, String bmFileName, PlayOptions opts, IInputOverrider input, BeatmapSetPage page) {
+	public PlayerLoader(PlayerBootstrapData data, IInputOverrider input, BeatmapSetPage page) {
 		super("Player loader");
-		this.set = set;
-		this.bmfn = bmFileName;
 		this.input = input;
 		this.page = page;
-		this.opts = opts;
+		this.data = data;
 	}
 
 	private final IInputOverrider input;
-	final BeatmapSet set;
-	final String bmfn;
 	Displayable page;
-	final PlayOptions opts;
+	final PlayerBootstrapData data;
 	Alert a;
 	Command cancelCmd = new Command(Nmania.commonText[8], Command.STOP, 1);
 
@@ -49,10 +43,8 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 		Nmania.Push(a);
 		Beatmap b;
 		try {
-			String raw = BeatmapManager.getStringFromFS(set.wdPath + set.folderName + bmfn);
-			IRawBeatmap rb = RawBeatmapConverter.FromText(raw);
 			Thread.sleep(1);
-			b = rb.ToBeatmap();
+			b = BeatmapManager.ReadBeatmap(data).ToBeatmap();
 		} catch (InvalidBeatmapTypeException e) {
 			PushWaitPush(page, new Alert("Beatmap is invalid", e.getMessage(), null, AlertType.ERROR));
 			return;
@@ -64,7 +56,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 			PushWaitPush(page, new Alert("Failed to parse beatmap", e.toString(), null, AlertType.ERROR));
 			return;
 		}
-		b.set = set;
+		b.set = data.set;
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
@@ -80,7 +72,7 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 			page = null;
 		}
 		try {
-			Player p = new Player(b, opts, Nmania.skin, this, page, input);
+			Player p = new Player(b, data, Nmania.skin, this, page, input);
 			Nmania.Push(p);
 			Thread t = new PlayerThread(p);
 			t.start();
