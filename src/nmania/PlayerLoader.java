@@ -10,21 +10,29 @@ import javax.microedition.lcdui.Gauge;
 import nmania.beatmaps.IRawBeatmap;
 import nmania.beatmaps.InvalidBeatmapTypeException;
 import nmania.beatmaps.RawBeatmapConverter;
-import nmania.replays.AutoplayRunner;
 import nmania.ui.BeatmapSetPage;
 import nmania.ui.KeyboardSetup;
 import nmania.ui.MainScreen;
 
+/**
+ * Utility for starting player. Construct it and start the thread to begin player preparation.
+ * 
+ * @author Feodor0090
+ *
+ */
 public class PlayerLoader extends Thread implements ILogger, CommandListener {
 
-	public PlayerLoader(BeatmapSet set, String bmFileName, PlayOptions opts, BeatmapSetPage page) {
+
+	public PlayerLoader(BeatmapSet set, String bmFileName, PlayOptions opts, IInputOverrider input, BeatmapSetPage page) {
 		super("Player loader");
 		this.set = set;
 		this.bmfn = bmFileName;
+		this.input = input;
 		this.page = page;
 		this.opts = opts;
 	}
 
+	private final IInputOverrider input;
 	final BeatmapSet set;
 	final String bmfn;
 	Displayable page;
@@ -72,11 +80,6 @@ public class PlayerLoader extends Thread implements ILogger, CommandListener {
 			page = null;
 		}
 		try {
-			IInputOverrider input = null;
-			if(opts.autoplay) {
-				input = new AutoplayRunner();
-				opts.autoplay = false; //legacy
-			}
 			Player p = new Player(b, opts, Nmania.skin, this, page, input);
 			Nmania.Push(p);
 			Thread t = new PlayerThread(p);

@@ -15,9 +15,11 @@ import javax.microedition.lcdui.StringItem;
 
 import nmania.BeatmapManager;
 import nmania.BeatmapSet;
+import nmania.IInputOverrider;
 import nmania.Nmania;
 import nmania.PlayOptions;
 import nmania.PlayerLoader;
+import nmania.replays.AutoplayRunner;
 import tube42.lib.imagelib.ImageUtils;
 
 public class BeatmapSetPage extends Form implements Runnable, ItemCommandListener, CommandListener {
@@ -113,8 +115,9 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 
 	public void commandAction(Command c, Item arg1) {
 		if (c instanceof Difficulty) {
+			IInputOverrider input = mode.getSelectedIndex() == 3 ? new AutoplayRunner() : null;
 			PlayOptions opts = FromChoices();
-			(new PlayerLoader(set, ((Difficulty) c).fileName, opts, this)).start();
+			(new PlayerLoader(set, ((Difficulty) c).fileName, opts, input, this)).start();
 		}
 	}
 

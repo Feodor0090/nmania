@@ -1,7 +1,6 @@
 package nmania;
 
 public class PlayOptions {
-	public boolean autoplay = false;
 	/**
 	 * <ul>
 	 * <li>-1 - No Fail
