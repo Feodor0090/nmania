@@ -7,5 +7,10 @@ package nmania.replays;
  *
  */
 public interface IRawReplay {
+	/**
+	 * Reads this replay data.
+	 * 
+	 * @return Chunks.
+	 */
 	public ReplayChunk DecodeData();
 }

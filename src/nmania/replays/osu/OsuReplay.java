@@ -7,11 +7,14 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 
 import lzma.LZMADecoder;
 import lzma.LZMAEncoder;
 import lzma.LzmaInputStream;
 import lzma.LzmaOutputStream;
+import nmania.ScoreController;
+import nmania.replays.IExtendedReplay;
 import nmania.replays.IRawReplay;
 import nmania.replays.ReplayChunk;
 import symnovel.SNUtils;
@@ -22,7 +25,7 @@ import symnovel.SNUtils;
  * @author Shinovon
  * 
  */
-public class OsuReplay implements IRawReplay {
+public class OsuReplay implements IExtendedReplay {
 
 	public int gameMode;
 	public int gameVersion;
@@ -121,13 +124,14 @@ public class OsuReplay implements IRawReplay {
 
 				String[] data = SNUtils.split(frame, '|', 4);
 				int delta = Integer.parseInt(data[0]);
-				if(delta == -12345)
+				if (delta == -12345)
 					continue;
-				lastTime+=delta;
+				lastTime += delta;
 				int keys = Integer.parseInt(data[1]);
-				if(keys == lastKeys) continue;
+				if (keys == lastKeys)
+					continue;
 				lastKeys = keys;
-				
+
 				if (nextFrame >= ReplayChunk.FRAMES_IN_CHUNK) {
 					nextFrame = 0;
 					chunk = ReplayChunk.Chain(chunk);
@@ -181,6 +185,81 @@ public class OsuReplay implements IRawReplay {
 		compressedBytes.close();
 		w.writeLong(onlineScoreID);
 		dataOut.close();
+	}
+
+	public String GetMode() {
+		if (gameMode == 0)
+			return "OSU";
+		if (gameMode == 1)
+			return "TAIKO";
+		if (gameMode == 3)
+			return "VSRG";
+		return "invalid";
+	}
+
+	public int GetPerfects() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetGreats() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetGoods() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetOks() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetMehs() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetMissed() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetTicks() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public String GetAccuracy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public long GetScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public long GetCombo() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public boolean IsFC() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public Date PlayedAt() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String GetPlayerName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

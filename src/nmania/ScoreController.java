@@ -1,6 +1,10 @@
 package nmania;
 
-public final class ScoreController {
+import java.util.Date;
+
+public final class ScoreController implements IScore {
+	public Date playTimestamp;
+	public String playerName = "";
 	public final int[] hits = new int[6];
 	public int realTicks;
 	public int resettableTicks;
@@ -66,5 +70,70 @@ public final class ScoreController {
 		currentCombo = 0;
 		realTicks = 0;
 		resettableTicks = 0;
+	}
+
+	public int GetPerfects() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetGreats() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetGoods() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetOks() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetMehs() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetMissed() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public int GetTicks() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public String GetAccuracy() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public long GetScore() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public long GetCombo() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public boolean IsFC() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public Date PlayedAt() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public String GetPlayerName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
