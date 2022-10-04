@@ -8,9 +8,9 @@ public interface IScore {
 	int GetGoods();
 	int GetOks();
 	int GetMehs();
-	int GetMissed();
+	int GetMisses();
 	int GetTicks();
-	String GetAccuracy();
+	int GetAccuracy();
 	long GetScore();
 	long GetCombo();
 	boolean IsFC();
