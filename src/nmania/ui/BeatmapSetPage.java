@@ -31,6 +31,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 	ChoiceGroup daMod = new ChoiceGroup(text[9], Choice.POPUP, new String[] { text[1], "Hard Rock", "Easy" }, null);
 	ChoiceGroup mode = new ChoiceGroup(text[0], Choice.POPUP,
 			new String[] { text[1], "Sudden Death", "No Fail", text[2], "Watch replay" }, null);
+	ChoiceGroup record = new ChoiceGroup("Replay recording", Choice.MULTIPLE, new String[] { "Enable" }, null);
 
 	private BeatmapSetsList list;
 	private Command back = new Command(text[3], Command.BACK, 1);
@@ -66,6 +67,8 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 			append(new ImageItem(img == null ? text[7] : null, img, Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER,
 					null));
 			append(set.artist + " - " + set.title + " (" + set.mapper + ")");
+			record.setSelectedIndex(0, false);
+			append(record);
 			for (int i = 0; i < set.files.length; i++) {
 				String f = set.files[i];
 				if (f.endsWith(".osu") || f.endsWith(".nmbm")) {
