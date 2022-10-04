@@ -1,10 +1,11 @@
 package nmania;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public final class ScoreController implements IScore {
-	public Date playTimestamp;
-	public String playerName = "";
+	public Date playTimestamp = Calendar.getInstance().getTime();
+	public String playerName = "buddy";
 	public final int[] hits = new int[6];
 	public int realTicks;
 	public int resettableTicks;
@@ -73,67 +74,50 @@ public final class ScoreController implements IScore {
 	}
 
 	public int GetPerfects() {
-		// TODO Auto-generated method stub
-		return 0;
+		return hits[5];
 	}
 
 	public int GetGreats() {
-		// TODO Auto-generated method stub
-		return 0;
+		return hits[4];
 	}
 
 	public int GetGoods() {
-		// TODO Auto-generated method stub
-		return 0;
+		return hits[3];
 	}
 
 	public int GetOks() {
-		// TODO Auto-generated method stub
-		return 0;
+		return hits[2];
 	}
 
 	public int GetMehs() {
-		// TODO Auto-generated method stub
-		return 0;
+		return hits[1];
 	}
 
-	public int GetMissed() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int GetMisses() {
+		return hits[0];
 	}
 
 	public int GetTicks() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public String GetAccuracy() {
-		// TODO Auto-generated method stub
-		return null;
+		return realTicks;
 	}
 
 	public long GetScore() {
-		// TODO Auto-generated method stub
-		return 0;
+		return currentHitScore;
 	}
 
 	public long GetCombo() {
-		// TODO Auto-generated method stub
-		return 0;
+		return maxCombo;
 	}
 
 	public boolean IsFC() {
-		// TODO Auto-generated method stub
-		return false;
+		return GetMisses()==0;
 	}
 
 	public Date PlayedAt() {
-		// TODO Auto-generated method stub
-		return null;
+		return playTimestamp;
 	}
 
 	public String GetPlayerName() {
-		// TODO Auto-generated method stub
-		return null;
+		return playerName;
 	}
 }

@@ -232,9 +232,9 @@ public class OsuReplay implements IExtendedReplay {
 		return 0;
 	}
 
-	public String GetAccuracy() {
+	public int GetAccuracy() {
 		// TODO Auto-generated method stub
-		return null;
+		return 0;
 	}
 
 	public long GetScore() {
