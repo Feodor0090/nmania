@@ -127,7 +127,7 @@ public class AutoplayRunner implements IInputOverrider {
 	}
 
 	public String GetName() {
-		return "AUTO";
+		return "AUTOPLAY";
 	}
 
 }
