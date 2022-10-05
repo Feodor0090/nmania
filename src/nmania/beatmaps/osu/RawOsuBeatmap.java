@@ -106,11 +106,11 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 				 * System.out.println(rawObjs[i]); System.out.println(values[values.length -
 				 * 1]);
 				 */
-				int time = Integer.parseInt(SNUtils.split2(values[2], '.')[0]);
-				int type = Integer.parseInt(values[3]);
+				int time = Integer.parseInt(SNUtils.split2(values[2], '.')[0].trim());
+				int type = Integer.parseInt(values[3].trim());
 				if ((type & 8) != 0) {
 					// spinner
-					int dur = Integer.parseInt(SNUtils.split2(values[5], '.')[0]) - time;
+					int dur = Integer.parseInt(SNUtils.split2(values[5], '.')[0].trim()) - time;
 					for (int j = 1; j <= 3; j++) {
 						notes.addElement(new ManiaNote(time, j, dur));
 					}
@@ -128,7 +128,7 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 							notes.addElement(new ManiaNote(time, 2, 0));
 					} else {
 						// drumroll
-						int dur = Integer.parseInt(SNUtils.split2(values[7], '.')[0]);
+						int dur = Integer.parseInt(SNUtils.split2(values[7], '.')[0].trim());
 						if ((sound & 4) == 0) {
 							notes.addElement(new ManiaNote(time, 2, dur));
 						} else {
@@ -140,7 +140,7 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 			}
 		} else if (getValue("Mode").equals("3")) {
 			// mania
-			b.columnsCount = (int) Float.parseFloat(getValue("CircleSize"));
+			b.columnsCount = (int) Float.parseFloat(getValue("CircleSize").trim());
 			if (b.columnsCount < 1 || b.columnsCount > 10)
 				throw new InvalidBeatmapTypeException(
 						"This is a " + b.columnsCount + "K beatmap. Only 1K-10K are supported.");
@@ -149,10 +149,10 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 				if (rawObjs[i].length() < 4)
 					continue;
 				String[] values = SNUtils.splitFull(SNUtils.split2(rawObjs[i], ':')[0], ',');
-				float x = Float.parseFloat(values[0]);
-				int type = Integer.parseInt(values[3]);
-				int time = Integer.parseInt(SNUtils.split2(values[2], '.')[0]);
-				int dur = ((type & 128) == 0) ? 0 : Integer.parseInt(SNUtils.split2(values[5], '.')[0]) - time;
+				float x = Float.parseFloat(values[0].trim());
+				int type = Integer.parseInt(values[3].trim());
+				int time = Integer.parseInt(SNUtils.split2(values[2], '.')[0].trim());
+				int dur = ((type & 128) == 0) ? 0 : Integer.parseInt(SNUtils.split2(values[5], '.')[0].trim()) - time;
 				int column = (int) Math.floor(x * b.columnsCount / 512);
 				notes.addElement(new ManiaNote(time, column + 1, dur));
 			}
