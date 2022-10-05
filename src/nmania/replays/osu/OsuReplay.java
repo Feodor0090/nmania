@@ -7,6 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
 import java.util.Date;
 
 import lzma.LZMADecoder;
@@ -198,68 +199,56 @@ public class OsuReplay implements IExtendedReplay {
 	}
 
 	public int GetPerfects() {
-		// TODO Auto-generated method stub
-		return 0;
+		return countGekis;
 	}
 
 	public int GetGreats() {
-		// TODO Auto-generated method stub
-		return 0;
+		return count300;
 	}
 
 	public int GetGoods() {
-		// TODO Auto-generated method stub
-		return 0;
+		return countKatus;
 	}
 
 	public int GetOks() {
-		// TODO Auto-generated method stub
-		return 0;
+		return count100;
 	}
 
 	public int GetMehs() {
-		// TODO Auto-generated method stub
-		return 0;
+		return count50;
 	}
 
-	public int GetMissed() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int GetMisses() {
+		return countMisses;
 	}
 
 	public int GetTicks() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	public int GetAccuracy() {
-		// TODO Auto-generated method stub
 		return 0;
+		//TODO
 	}
 
 	public long GetScore() {
-		// TODO Auto-generated method stub
-		return 0;
+		return totalScore;
 	}
 
 	public long GetCombo() {
-		// TODO Auto-generated method stub
-		return 0;
+		return maxCombo;
 	}
 
 	public boolean IsFC() {
-		// TODO Auto-generated method stub
-		return false;
+		return perfectCombo;
 	}
 
 	public Date PlayedAt() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Date(timestamp);
 	}
 
 	public String GetPlayerName() {
-		// TODO Auto-generated method stub
-		return null;
+		return playerName;
 	}
 
 }
