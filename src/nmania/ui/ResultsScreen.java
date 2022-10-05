@@ -19,6 +19,18 @@ import nmania.replays.ReplayPlayer;
 
 public final class ResultsScreen extends Canvas {
 
+	/**
+	 * 
+	 * @param data       Date to play the beatmap again. Must not be null.
+	 * @param score      Score to show. Must not be null.
+	 * @param input      Input that was used in a play.
+	 * @param replay     Recorded replay. Restored replays must be passed via
+	 *                   "input" param, leave this null.
+	 * @param track      Track to stop when exiting.
+	 * @param sample     Sample to play.
+	 * @param background Image.
+	 * @param menu       Next screen.
+	 */
 	public ResultsScreen(PlayerBootstrapData data, IScore score, IInputOverrider input, IRawReplay replay,
 			AudioController track, String sample, Image background, Displayable menu) {
 		this.data = data;
@@ -47,7 +59,6 @@ public final class ResultsScreen extends Canvas {
 	public final Displayable next;
 	boolean itemSelected = true;
 	boolean replaySaveDialog = false;
-	boolean replayCanBeSaved = false;
 	boolean willWatch = false;
 	private PlayerBootstrapData data;
 	Sample applause = null;
@@ -105,7 +116,7 @@ public final class ResultsScreen extends Canvas {
 		print(g, String.valueOf(score.GetMisses()), w - 10, y, -1, anchorRT);
 		y += th8 + 2;
 
-		if (replay == null) {
+		if (replay == null && input == null) {
 			itemSelected = false;
 			print(g, "Replay unavailable", w / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
 		} else {
@@ -120,6 +131,10 @@ public final class ResultsScreen extends Canvas {
 		g.setColor((!itemSelected ? 255 : 0), 0, 0);
 		g.drawRect(w / 2 + 9, h - 5 - 10 - th0 - 1, w / 2 - 19, th0 + 11);
 		print(g, replaySaveDialog ? "Discard" : "Quit", w * 3 / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
+		if (replaySaveDialog) {
+			print(g, willWatch? "Save replay? It won't save after watch." : "You are quitting. Save replay?", w / 2, h - 5 - 10 - th0, -1,
+					Graphics.HCENTER | Graphics.BOTTOM);
+		}
 	}
 
 	private static final void print(Graphics g, String s, int x, int y, int color, int anchor) {
@@ -159,12 +174,15 @@ public final class ResultsScreen extends Canvas {
 					Exit();
 				}
 			} else {
-				if (replayCanBeSaved) {
+				if (replay != null) {
+					// we are going to watch our own replay
 					replaySaveDialog = true;
+					willWatch = true;
 					repaint();
 				} else {
+					// we are watching foreign replay
 					System.out.println("Player began loading");
-					(new PlayerLoader(data, new ReplayPlayer(replay.DecodeData(), score), next)).start();
+					(new PlayerLoader(data, input, next)).start();
 				}
 			}
 		}
@@ -178,7 +196,7 @@ public final class ResultsScreen extends Canvas {
 					Exit();
 				}
 			} else {
-				if (replayCanBeSaved) {
+				if (replay != null) {
 					replaySaveDialog = true;
 					repaint();
 				} else {

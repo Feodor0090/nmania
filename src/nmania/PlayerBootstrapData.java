@@ -32,4 +32,6 @@ public class PlayerBootstrapData {
 	 * Other values are clamped to this range (only sign matters).
 	 */
 	public int daMod = 0;
+	
+	public boolean recordReplay;
 }

@@ -38,7 +38,8 @@ public final class ReplaySelector extends List implements CommandListener {
 			String name = getString(getSelectedIndex());
 			try {
 				OsuReplay r = data.set.ReadReplay(name);
-				Nmania.Push(new ResultsScreen(data, r, null, r, null, null, null, this));
+				IInputOverrider input = new ReplayPlayer(r.DecodeData(), r);
+				Nmania.Push(new ResultsScreen(data, r, input, null, null, null, null, this));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

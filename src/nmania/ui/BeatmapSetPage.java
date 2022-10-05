@@ -95,6 +95,10 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 
 	public PlayerBootstrapData FromChoices() {
 		PlayerBootstrapData opts = new PlayerBootstrapData();
+		boolean[] rr = new boolean[1];
+		record.getSelectedFlags(rr);
+		opts.recordReplay = rr[0];
+		opts.set = set;
 		switch (mode.getSelectedIndex()) {
 		case 1:
 			opts.failMod = 1;
@@ -117,7 +121,6 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 	public void commandAction(Command c, Item arg1) {
 		if (c instanceof Difficulty) {
 			PlayerBootstrapData opts = FromChoices();
-			opts.set = set;
 			opts.mapFileName = ((Difficulty) c).fileName;
 			if (mode.getSelectedIndex() == 4) {
 				Nmania.Push(new ReplaySelector(opts, this));

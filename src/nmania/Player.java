@@ -11,6 +11,7 @@ import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.media.MediaException;
 
 import nmania.Beatmap.Break;
+import nmania.replays.ReplayRecorder;
 import nmania.ui.MainScreen;
 import nmania.ui.ResultsScreen;
 import symnovel.SNUtils;
@@ -148,6 +149,10 @@ public final class Player extends GameCanvas {
 		currentBreak = 0; // we are starting in gameplay mode
 		breaks = Break.Inline(map.breaks); // just burning them in
 		// NO CHECKS WILL BE PERFORMED
+		if (input == null && data.recordReplay)
+			recorder = new ReplayRecorder(score);
+		else
+			recorder = null;
 		Thread.sleep(1);
 
 		// step 6: samples
@@ -328,6 +333,7 @@ public final class Player extends GameCanvas {
 	private final int holdW;
 	private final int zeroW;
 	private final Image[] rich;
+	private final ReplayRecorder recorder;
 
 	/**
 	 * Gameplay time.
@@ -492,6 +498,8 @@ public final class Player extends GameCanvas {
 		holdKeys[column] = state;
 		// log += "\nReveived input " + state + " on " + column + " at time " + time +
 		// ", global frame " + framesPassed;
+		if (recorder != null)
+			recorder.Receive(time, column, state);
 	}
 
 	protected final void pointerPressed(final int x, final int y) {
@@ -828,7 +836,7 @@ public final class Player extends GameCanvas {
 			}
 		}
 		Dispose();
-		Nmania.Push(new ResultsScreen(data, score, input, null, track, applause, bg, menu));
+		Nmania.Push(new ResultsScreen(data, score, input, recorder, track, applause, bg, menu));
 	}
 
 	/**
@@ -960,6 +968,17 @@ public final class Player extends GameCanvas {
 		DrawBorders();
 		for (int i = 0; i < columnsCount; i++) {
 			DrawKey(i, false);
+		}
+		if (recorder != null) {
+			String t = "REC";
+			final int x = leftOffset + 11 + (columnsCount * colWp1);
+			g.setColor(-1);
+			g.drawString(t, x + 1, 0, 17);
+			g.drawString(t, x - 1, 0, 17);
+			g.drawString(t, x + 1, 2, 17);
+			g.drawString(t, x - 1, 2, 17);
+			g.setColor(255, 0, 0);
+			g.drawString(t, x, 1, 17);
 		}
 		flushGraphics();
 	}
