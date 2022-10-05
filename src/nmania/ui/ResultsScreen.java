@@ -48,6 +48,7 @@ public final class ResultsScreen extends Canvas {
 		}
 		bg = background;
 		next = menu;
+		setFullScreenMode(true);
 	}
 
 	int introTimer = 100;
@@ -84,9 +85,11 @@ public final class ResultsScreen extends Canvas {
 		print(g, input == null ? Nmania.commonText[11] : input.GetName(), w / 2, 1, input == null ? -1 : (200 << 8),
 				Graphics.HCENTER | Graphics.TOP);
 		g.setFont(Font.getFont(0, 0, 8));
-		print(g, "by " + score.GetPlayerName() + " at " + score.PlayedAt(), w / 2, th16 + 3, -1,
-				Graphics.HCENTER | Graphics.TOP);
+		print(g, data.set.artist + " - " + data.set.title, w / 2, th16 + 3, -1, Graphics.HCENTER | Graphics.TOP);
 		int y = th16 + th8 + 4 + 1;
+		print(g, "by " + score.GetPlayerName() + " at " + score.PlayedAt(), w / 2, y, -1,
+				Graphics.HCENTER | Graphics.TOP);
+		y += th8 + 2;
 
 		// stats
 		print(g, "Total score", 10, y, -1, 0);
@@ -104,17 +107,16 @@ public final class ResultsScreen extends Canvas {
 		print(g, String.valueOf(score.GetPerfects()), cl, y, -1, anchorRT);
 		print(g, Player.judgements[2], cr, y, Player.judgementColors[2], 0);
 		print(g, String.valueOf(score.GetOks()), w - 10, y, -1, anchorRT);
-		y += th8 + 2;
+		y += th8;
 		print(g, Player.judgements[4], 10, y, Player.judgementColors[4], 0);
 		print(g, String.valueOf(score.GetGreats()), cl, y, -1, anchorRT);
 		print(g, Player.judgements[1], cr, y, Player.judgementColors[1], 0);
 		print(g, String.valueOf(score.GetMehs()), w - 10, y, -1, anchorRT);
-		y += th8 + 2;
+		y += th8;
 		print(g, Player.judgements[3], 10, y, Player.judgementColors[3], 0);
 		print(g, String.valueOf(score.GetGoods()), cl, y, -1, anchorRT);
 		print(g, Player.judgements[0], cr, y, Player.judgementColors[0], 0);
 		print(g, String.valueOf(score.GetMisses()), w - 10, y, -1, anchorRT);
-		y += th8 + 2;
 
 		if (replay == null && input == null) {
 			itemSelected = false;
@@ -132,8 +134,8 @@ public final class ResultsScreen extends Canvas {
 		g.drawRect(w / 2 + 9, h - 5 - 10 - th0 - 1, w / 2 - 19, th0 + 11);
 		print(g, replaySaveDialog ? "Discard" : "Quit", w * 3 / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
 		if (replaySaveDialog) {
-			print(g, willWatch? "Save replay? It will be lost after watch." : "You are quitting. Save replay?", w / 2, h - 5 - 10 - th0, -1,
-					Graphics.HCENTER | Graphics.BOTTOM);
+			print(g, willWatch ? "Save replay? It will be lost after watch." : "You are quitting. Save replay?", w / 2,
+					h - 5 - 10 - th0, -1, Graphics.HCENTER | Graphics.BOTTOM);
 		}
 	}
 
