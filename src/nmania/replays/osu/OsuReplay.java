@@ -7,16 +7,13 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Calendar;
 import java.util.Date;
 
 import lzma.LZMADecoder;
 import lzma.LZMAEncoder;
 import lzma.LzmaInputStream;
 import lzma.LzmaOutputStream;
-import nmania.ScoreController;
 import nmania.replays.IExtendedReplay;
-import nmania.replays.IRawReplay;
 import nmania.replays.ReplayChunk;
 import symnovel.SNUtils;
 

@@ -12,8 +12,10 @@ import nmania.IScore;
 import nmania.Nmania;
 import nmania.Player;
 import nmania.PlayerBootstrapData;
+import nmania.PlayerLoader;
 import nmania.Sample;
 import nmania.replays.IRawReplay;
+import nmania.replays.ReplayPlayer;
 
 public final class ResultsScreen extends Canvas {
 
@@ -46,6 +48,7 @@ public final class ResultsScreen extends Canvas {
 	boolean itemSelected = true;
 	boolean replaySaveDialog = false;
 	boolean replayCanBeSaved = false;
+	boolean willWatch = false;
 	private PlayerBootstrapData data;
 	Sample applause = null;
 	String title;
@@ -54,7 +57,11 @@ public final class ResultsScreen extends Canvas {
 		int w = getWidth();
 		int h = getHeight();
 		int anchorRT = Graphics.RIGHT | Graphics.TOP;
-		g.drawImage(bg, w / 2, h / 2, Graphics.HCENTER | Graphics.VCENTER);
+		g.setColor(0);
+		if (bg == null)
+			g.fillRect(0, 0, w, h);
+		else
+			g.drawImage(bg, w / 2, h / 2, Graphics.HCENTER | Graphics.VCENTER);
 		int th8 = Font.getFont(0, 0, 8).getHeight();
 		int th0 = Font.getFont(0, 0, 0).getHeight();
 		int th16 = Font.getFont(0, 0, 16).getHeight();
@@ -128,11 +135,12 @@ public final class ResultsScreen extends Canvas {
 	private final void Exit() {
 		if (applause != null)
 			applause.Dispose();
-		music.Stop();
+		if (music != null)
+			music.Stop();
 		Nmania.Push(next == null ? new MainScreen() : next);
 	}
 
-	protected void keyReleased(int k) {
+	protected void keyPressed(int k) {
 		if (k == -1 || k == -2 || k == -3 || k == -4 || k == '2' || k == '4' || k == '6' || k == '8') {
 			if (replay != null)
 				itemSelected = !itemSelected;
@@ -142,14 +150,33 @@ public final class ResultsScreen extends Canvas {
 
 		if (k == -6) {
 			if (replaySaveDialog) {
-
+				SaveReplay();
+				if (willWatch) {
+					// we are watching our own replay
+					(new PlayerLoader(data, new ReplayPlayer(replay.DecodeData(), score), next)).start();
+				} else {
+					// we are discarding our own replay
+					Exit();
+				}
 			} else {
-
+				if (replayCanBeSaved) {
+					replaySaveDialog = true;
+					repaint();
+				} else {
+					System.out.println("Player began loading");
+					(new PlayerLoader(data, new ReplayPlayer(replay.DecodeData(), score), next)).start();
+				}
 			}
 		}
 		if (k == -7) {
 			if (replaySaveDialog) {
-				Exit();
+				if (willWatch) {
+					// we are watching our own replay
+					(new PlayerLoader(data, new ReplayPlayer(replay.DecodeData(), score), next)).start();
+				} else {
+					// we are discarding our own replay
+					Exit();
+				}
 			} else {
 				if (replayCanBeSaved) {
 					replaySaveDialog = true;
@@ -160,8 +187,12 @@ public final class ResultsScreen extends Canvas {
 			}
 		}
 		if (k == -5 || k == '5' || k == 32 || k == 10) {
-			keyReleased(itemSelected ? -6 : -7);
+			keyPressed(itemSelected ? -6 : -7);
 		}
+	}
+
+	private void SaveReplay() {
+
 	}
 
 	protected void pointerReleased(int arg0, int arg1) {

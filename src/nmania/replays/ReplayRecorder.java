@@ -1,5 +1,7 @@
 package nmania.replays;
 
+import java.util.Date;
+
 import nmania.IScoreData;
 import nmania.ScoreController;
 
@@ -38,5 +40,9 @@ public final class ReplayRecorder implements IRawReplay, IScoreData {
 
 	public String GetPlayerName() {
 		return score.playerName;
+	}
+
+	public Date PlayedAt() {
+		return score.PlayedAt();
 	}
 }

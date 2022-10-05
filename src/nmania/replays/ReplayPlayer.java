@@ -1,17 +1,21 @@
 package nmania.replays;
 
+import java.util.Date;
+
 import nmania.IInputOverrider;
 import nmania.IScoreData;
 import nmania.Player;
 
 public class ReplayPlayer implements IInputOverrider, IRawReplay {
 
-	public ReplayPlayer(ReplayChunk replay, IScoreData name) {
+	public ReplayPlayer(ReplayChunk replay, IScoreData score) {
 		this.replay = replay;
-		playerName = name.GetPlayerName();
+		playerName = score.GetPlayerName();
+		date = score.PlayedAt();
 	}
 
 	private String playerName;
+	private Date date;
 	private ReplayChunk replay;
 	private int nextFrame = 0;
 	private int state = 0;
@@ -60,6 +64,10 @@ public class ReplayPlayer implements IInputOverrider, IRawReplay {
 
 	public ReplayChunk DecodeData() {
 		return replay.firstChunk;
+	}
+
+	public Date PlayedAt() {
+		return date;
 	}
 
 }

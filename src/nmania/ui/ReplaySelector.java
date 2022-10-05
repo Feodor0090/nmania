@@ -8,8 +8,12 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.List;
 
+import nmania.IInputOverrider;
 import nmania.Nmania;
 import nmania.PlayerBootstrapData;
+import nmania.PlayerLoader;
+import nmania.replays.ReplayPlayer;
+import nmania.replays.osu.OsuReplay;
 
 public final class ReplaySelector extends List implements CommandListener {
 
@@ -33,8 +37,8 @@ public final class ReplaySelector extends List implements CommandListener {
 		if (c == List.SELECT_COMMAND && size() > 0) {
 			String name = getString(getSelectedIndex());
 			try {
-				data.set.ReadReplay(name).DecodeData();
-				
+				OsuReplay r = data.set.ReadReplay(name);
+				Nmania.Push(new ResultsScreen(data, r, null, r, null, null, null, this));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
