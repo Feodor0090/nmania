@@ -26,6 +26,7 @@ public final class Player extends GameCanvas {
 		super(false);
 		setFullScreenMode(true);
 		this.menu = next;
+		this.data = opts;
 
 		scrW = getWidth();
 		scrH = getHeight();
@@ -299,6 +300,7 @@ public final class Player extends GameCanvas {
 	private int currentBreak;
 	public final ScoreController score;
 	public final AudioController track;
+	private final PlayerBootstrapData data;
 	private final IInputOverrider input;
 	private final Image bg;
 	private final Graphics g;
@@ -826,7 +828,7 @@ public final class Player extends GameCanvas {
 			}
 		}
 		Dispose();
-		Nmania.Push(new ResultsScreen(score, input, null, track, applause, bg, menu));
+		Nmania.Push(new ResultsScreen(data, score, input, null, track, applause, bg, menu));
 	}
 
 	/**

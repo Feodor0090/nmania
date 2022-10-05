@@ -11,14 +11,15 @@ import nmania.IInputOverrider;
 import nmania.IScore;
 import nmania.Nmania;
 import nmania.Player;
+import nmania.PlayerBootstrapData;
 import nmania.Sample;
-import nmania.ScoreController;
 import nmania.replays.IRawReplay;
 
 public final class ResultsScreen extends Canvas {
 
-	public ResultsScreen(IScore score, IInputOverrider input, IRawReplay replay, AudioController track, String sample,
-			Image background, Displayable menu) {
+	public ResultsScreen(PlayerBootstrapData data, IScore score, IInputOverrider input, IRawReplay replay,
+			AudioController track, String sample, Image background, Displayable menu) {
+		this.data = data;
 		this.score = score;
 		this.input = input;
 		this.replay = replay;
@@ -35,47 +36,6 @@ public final class ResultsScreen extends Canvas {
 		next = menu;
 	}
 
-	/**
-	 * @deprecated
-	 * @param score
-	 * @param music
-	 * @param bg
-	 * @param next
-	 * @param applauseFile
-	 * @param input
-	 */
-	public ResultsScreen(ScoreController score, AudioController music, Image bg, Displayable next,
-			final String applauseFile, IInputOverrider input) {
-		super();
-		this.score = score;
-		this.music = music;
-		this.bg = bg;
-		this.next = next;
-		if (input == null)
-			title = Nmania.commonText[11];
-		else
-			title = input.GetName();
-		setFullScreenMode(true);
-		(new Thread() {
-			public void run() {
-				try {
-					while (introTimer > 0) {
-						repaint();
-						Thread.sleep(10);
-						introTimer--;
-					}
-					repaint();
-					if (applauseFile != null) {
-						applause = new Sample(applauseFile, null);
-						applause.Play();
-					}
-				} catch (Exception e) {
-					return;
-				}
-			}
-		}).start();
-	}
-
 	int introTimer = 100;
 	public IInputOverrider input;
 	public IRawReplay replay;
@@ -86,6 +46,7 @@ public final class ResultsScreen extends Canvas {
 	boolean itemSelected = true;
 	boolean replaySaveDialog = false;
 	boolean replayCanBeSaved = false;
+	private PlayerBootstrapData data;
 	Sample applause = null;
 	String title;
 
