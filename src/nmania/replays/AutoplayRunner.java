@@ -1,5 +1,8 @@
 package nmania.replays;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import nmania.IInputOverrider;
 import nmania.Player;
 
@@ -10,6 +13,7 @@ public class AutoplayRunner implements IInputOverrider {
 	private int[] currentNote;
 	private boolean[] localKeys; // just a local cache
 	int frame = 0;
+	private Date date = Calendar.getInstance().getTime();
 
 	public int UpdatePlayer(Player player, int time) {
 		if (columns == null) {
@@ -128,6 +132,14 @@ public class AutoplayRunner implements IInputOverrider {
 
 	public String GetName() {
 		return "AUTOPLAY";
+	}
+
+	public String GetPlayerName() {
+		return "nmania";
+	}
+
+	public Date PlayedAt() {
+		return date;
 	}
 
 }

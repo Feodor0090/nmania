@@ -4,8 +4,8 @@ import java.util.Calendar;
 import java.util.Date;
 
 public final class ScoreController implements IScore {
-	public Date playTimestamp = Calendar.getInstance().getTime();
-	public String playerName = "buddy";
+	public Date playTimestamp;
+	public String playerName;
 	public final int[] hits = new int[6];
 	public int realTicks;
 	public int resettableTicks;
@@ -16,6 +16,21 @@ public final class ScoreController implements IScore {
 	public final char[] currentAcc = new char[] { '1', '0', '0', ',', '0', '0', '%' };
 
 	private static final int[] scores = new int[] { 0, 50, 100, 200, 300, 305 };
+
+	/**
+	 * Creates a new score controller.
+	 * 
+	 * @param data Data to override.
+	 */
+	public ScoreController(IScoreData data) {
+		if (data == null) {
+			playerName = Settings.name;
+			playTimestamp = Calendar.getInstance().getTime();
+		} else {
+			playerName = data.GetPlayerName();
+			playTimestamp = data.PlayedAt();
+		}
+	}
 
 	public final void CountHit(int type) {
 		hits[type]++;
@@ -110,7 +125,7 @@ public final class ScoreController implements IScore {
 	}
 
 	public boolean IsFC() {
-		return GetMisses()==0;
+		return GetMisses() == 0;
 	}
 
 	public Date PlayedAt() {

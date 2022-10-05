@@ -6,7 +6,7 @@ package nmania;
  * @author Feodor0090
  *
  */
-public interface IInputOverrider {
+public interface IInputOverrider extends IScoreData {
 	/**
 	 * Called when starting playback.
 	 */

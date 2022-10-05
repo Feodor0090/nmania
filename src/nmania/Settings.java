@@ -68,6 +68,10 @@ public final class Settings {
 	 * Language prefix.
 	 */
 	public static String locale;
+	/**
+	 * Player's nickname.
+	 */
+	public static String name = "buddy";
 
 	/**
 	 * Audio/gameplay clocks offset. <br>

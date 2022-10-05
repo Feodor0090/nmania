@@ -1,8 +1,14 @@
 package nmania.replays;
 
-public final class ReplayRecorder implements IRawReplay {
+import nmania.IScoreData;
+import nmania.ScoreController;
 
-	public ReplayRecorder() {
+public final class ReplayRecorder implements IRawReplay, IScoreData {
+
+	private final ScoreController score;
+
+	public ReplayRecorder(ScoreController score) {
+		this.score = score;
 		chunk = ReplayChunk.CreateEmpty();
 	}
 
@@ -28,5 +34,9 @@ public final class ReplayRecorder implements IRawReplay {
 
 	public ReplayChunk DecodeData() {
 		return chunk.firstChunk;
+	}
+
+	public String GetPlayerName() {
+		return score.playerName;
 	}
 }

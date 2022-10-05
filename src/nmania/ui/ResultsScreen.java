@@ -24,8 +24,10 @@ public final class ResultsScreen extends Canvas {
 		this.replay = replay;
 		music = track;
 		try {
-			if (sample != null)
+			if (sample != null) {
 				applause = new Sample(sample, null);
+				applause.Play();
+			}
 		} catch (Exception e) {
 		} catch (OutOfMemoryError e) {
 		}

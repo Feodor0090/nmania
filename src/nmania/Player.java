@@ -105,7 +105,7 @@ public final class Player extends GameCanvas {
 		hitWindows = new int[] { (int) (188 - 3 * od), (int) (151 - 3 * od), (int) (127 - 3 * od), (int) (97 - 3 * od),
 				(int) (64 - 3 * od), perfectHW };
 		healthValues = new int[] { opts.failMod > 0 ? -1001 : -100, -10, 0, 20, 40, 50 };
-		score = new ScoreController();
+		score = new ScoreController(input);
 		failCondition = opts.failMod;
 
 		// step 4: setup configs

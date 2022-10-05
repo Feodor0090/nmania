@@ -1,8 +1,6 @@
 package nmania;
 
-import java.util.Date;
-
-public interface IScore {
+public interface IScore extends IScoreData {
 	int GetPerfects();
 	int GetGreats();
 	int GetGoods();
@@ -14,6 +12,4 @@ public interface IScore {
 	long GetScore();
 	long GetCombo();
 	boolean IsFC();
-	Date PlayedAt();
-	String GetPlayerName();
 }

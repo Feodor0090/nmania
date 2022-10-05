@@ -6,7 +6,7 @@ package nmania.replays;
  * @author Feodor0090
  *
  */
-public final class ReplayChunk {
+public final class ReplayChunk implements IRawReplay {
 	/**
 	 * First node of this linked list. If this node is first, this must be a
 	 * cyclical reference. Must not be null.
@@ -42,5 +42,9 @@ public final class ReplayChunk {
 		prev.nextChunk = c;
 		c.data = new int[FRAMES_IN_CHUNK * 2];
 		return c;
+	}
+
+	public ReplayChunk DecodeData() {
+		return firstChunk;
 	}
 }

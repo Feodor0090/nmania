@@ -1,14 +1,17 @@
 package nmania.replays;
 
 import nmania.IInputOverrider;
+import nmania.IScoreData;
 import nmania.Player;
 
-public class ReplayPlayer implements IInputOverrider {
+public class ReplayPlayer implements IInputOverrider, IRawReplay {
 
-	public ReplayPlayer(ReplayChunk replay) {
+	public ReplayPlayer(ReplayChunk replay, IScoreData name) {
 		this.replay = replay;
+		playerName = name.GetPlayerName();
 	}
 
+	private String playerName;
 	private ReplayChunk replay;
 	private int nextFrame = 0;
 	private int state = 0;
@@ -49,6 +52,14 @@ public class ReplayPlayer implements IInputOverrider {
 
 	public String GetName() {
 		return "REPLAY";
+	}
+
+	public String GetPlayerName() {
+		return playerName;
+	}
+
+	public ReplayChunk DecodeData() {
+		return replay.firstChunk;
 	}
 
 }
