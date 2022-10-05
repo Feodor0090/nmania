@@ -21,7 +21,7 @@ import nmania.ui.MainScreen;
 public class PlayerLoader extends Thread implements ILogger, CommandListener {
 
 
-	public PlayerLoader(PlayerBootstrapData data, IInputOverrider input, BeatmapSetPage page) {
+	public PlayerLoader(PlayerBootstrapData data, IInputOverrider input, Displayable page) {
 		super("Player loader");
 		this.input = input;
 		this.page = page;
