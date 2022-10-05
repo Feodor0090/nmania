@@ -132,7 +132,7 @@ public final class ResultsScreen extends Canvas {
 		g.drawRect(w / 2 + 9, h - 5 - 10 - th0 - 1, w / 2 - 19, th0 + 11);
 		print(g, replaySaveDialog ? "Discard" : "Quit", w * 3 / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
 		if (replaySaveDialog) {
-			print(g, willWatch? "Save replay? It won't save after watch." : "You are quitting. Save replay?", w / 2, h - 5 - 10 - th0, -1,
+			print(g, willWatch? "Save replay? It will be lost after watch." : "You are quitting. Save replay?", w / 2, h - 5 - 10 - th0, -1,
 					Graphics.HCENTER | Graphics.BOTTOM);
 		}
 	}

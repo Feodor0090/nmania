@@ -474,7 +474,10 @@ public final class Player extends GameCanvas {
 		}
 		// System.out.println(log);
 		// log = "";
-		input.Reset();
+		if (input != null)
+			input.Reset();
+		if (recorder != null)
+			recorder.Reset();
 		System.gc();
 		isPaused = false;
 		failed = false;
@@ -973,12 +976,12 @@ public final class Player extends GameCanvas {
 			String t = "REC";
 			final int x = leftOffset + 11 + (columnsCount * colWp1);
 			g.setColor(-1);
-			g.drawString(t, x + 1, 0, 17);
-			g.drawString(t, x - 1, 0, 17);
-			g.drawString(t, x + 1, 2, 17);
-			g.drawString(t, x - 1, 2, 17);
+			g.drawString(t, x + 1, 0, 0);
+			g.drawString(t, x - 1, 0, 0);
+			g.drawString(t, x + 1, 2, 0);
+			g.drawString(t, x - 1, 2, 0);
 			g.setColor(255, 0, 0);
-			g.drawString(t, x, 1, 17);
+			g.drawString(t, x, 1, 0);
 		}
 		flushGraphics();
 	}

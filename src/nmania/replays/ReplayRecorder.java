@@ -34,6 +34,12 @@ public final class ReplayRecorder implements IRawReplay, IScoreData {
 		nextFrame++;
 	}
 
+	public void Reset() {
+		chunk = ReplayChunk.CreateEmpty();
+		nextFrame = 0;
+		state = 0;
+	}
+
 	public ReplayChunk DecodeData() {
 		return chunk.firstChunk;
 	}
