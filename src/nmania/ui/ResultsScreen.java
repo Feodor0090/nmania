@@ -1,5 +1,8 @@
 package nmania.ui;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
@@ -87,7 +90,7 @@ public final class ResultsScreen extends Canvas {
 		g.setFont(Font.getFont(0, 0, 8));
 		print(g, data.set.artist + " - " + data.set.title, w / 2, th16 + 3, -1, Graphics.HCENTER | Graphics.TOP);
 		int y = th16 + th8 + 4 + 1;
-		print(g, "by " + score.GetPlayerName() + " at " + score.PlayedAt(), w / 2, y, -1,
+		print(g, "by " + score.GetPlayerName() + " at " + formatDate(score.PlayedAt()), w / 2, y, -1,
 				Graphics.HCENTER | Graphics.TOP);
 		y += th8 + 2;
 
@@ -137,6 +140,20 @@ public final class ResultsScreen extends Canvas {
 			print(g, willWatch ? "Save replay? It will be lost after watch." : "You are quitting. Save replay?", w / 2,
 					h - 5 - 10 - th0, -1, Graphics.HCENTER | Graphics.BOTTOM);
 		}
+	}
+
+	private static final String formatDate(Date d) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		int hrs = c.get(Calendar.HOUR_OF_DAY);
+		int min = c.get(Calendar.MINUTE);
+		int sec = c.get(Calendar.SECOND);
+		String time = (hrs < 10 ? "0" : "") + hrs + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "")
+				+ sec;
+		int day = c.get(Calendar.DAY_OF_MONTH);
+		int mnt = c.get(Calendar.MONTH);
+		String date = (day < 10 ? "0" : "") + day + "." + (mnt < 10 ? "0" : "") + mnt + "." + c.get(Calendar.YEAR);
+		return time + " " + date;
 	}
 
 	private static final void print(Graphics g, String s, int x, int y, int color, int anchor) {
