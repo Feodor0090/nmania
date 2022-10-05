@@ -98,7 +98,7 @@ public final class Player extends GameCanvas {
 		if (opts.daMod < 0) {
 			od = od / 1.4f;
 			perfectHW = 22;
-		} else if (opts.daMod > 1) {
+		} else if (opts.daMod > 0) {
 			od = od * 1.4f;
 			perfectHW = 11;
 		}
