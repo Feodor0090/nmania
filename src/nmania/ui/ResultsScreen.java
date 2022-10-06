@@ -51,6 +51,8 @@ public final class ResultsScreen extends Canvas {
 		}
 		bg = background;
 		next = menu;
+		if (input == null && replay == null)
+			activeMenu = 1;
 		setFullScreenMode(true);
 	}
 
@@ -211,6 +213,7 @@ public final class ResultsScreen extends Canvas {
 					(new PlayerLoader(data, input, next)).start();
 				}
 			} else if (activeMenu == 1) {
+				Dispose();
 				(new PlayerLoader(data, null, next)).start();
 			} else if (activeMenu == 2) {
 				SaveReplay();
