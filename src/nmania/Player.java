@@ -1209,21 +1209,6 @@ public final class Player extends GameCanvas {
 				int x1 = leftOffset + columnsCount * colW;
 				while (true) {
 					final int d = num % 10;
-					g.drawChar((char) (d + '0'), x1, fillCountersH, 24);
-					x1 -= numsWidthCache[d];
-					if (num < 10)
-						break;
-					num /= 10;
-				}
-			}
-			// mem
-			{
-				int num = _lastMem;
-				int x1 = leftOffset + columnsCount * colW;
-				g.drawString("kb", x1, 0, 24);
-				x1 -= fontL.stringWidth("kb");
-				while (true) {
-					final int d = num % 10;
 					g.drawChar((char) (d + '0'), x1, 0, 24);
 					x1 -= numsWidthCache[d];
 					if (num < 10)
