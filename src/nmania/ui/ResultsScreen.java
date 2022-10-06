@@ -62,11 +62,14 @@ public final class ResultsScreen extends Canvas {
 	public final Image bg;
 	public final Displayable next;
 	boolean itemSelected = true;
-	boolean replaySaveDialog = false;
-	boolean willWatch = false;
 	private PlayerBootstrapData data;
 	Sample applause = null;
 	String title;
+	/**
+	 * 0 - watch/quit 1 - retry/quit 2 - save/discard -> quit 3 - save/discard ->
+	 * watch
+	 */
+	private int activeMenu;
 
 	protected void paint(Graphics g) {
 		int w = getWidth();
@@ -95,7 +98,7 @@ public final class ResultsScreen extends Canvas {
 		y += th8 + 2;
 
 		// stats
-		print(g, "Total score", 10, y, -1, 0);
+		print(g, "Score", 10, y, -1, 0);
 		print(g, String.valueOf(score.GetScore()), w - 10, y, -1, anchorRT);
 		y += th8 + 2;
 		print(g, "Accuracy", 10, y, -1, 0);
@@ -121,25 +124,37 @@ public final class ResultsScreen extends Canvas {
 		print(g, Player.judgements[0], cr, y, Player.judgementColors[0], 0);
 		print(g, String.valueOf(score.GetMisses()), w - 10, y, -1, anchorRT);
 
-		if (replay == null && input == null) {
-			itemSelected = false;
-			print(g, "Replay unavailable", w / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
-		} else {
-			g.setGrayScale(itemSelected ? 63 : 0);
-			g.fillRect(10, h - 5 - 10 - th0, w / 2 - 20, th0 + 10);
-			g.setColor((itemSelected ? 255 : 0), 0, 0);
-			g.drawRect(9, h - 5 - 10 - th0 - 1, w / 2 - 19, th0 + 11);
-			print(g, replaySaveDialog ? "Save" : "Watch replay", w / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
+		String info = null;
+		String left = null;
+		String right = null;
+		if (activeMenu == 0) {
+			left = "Watch";
+			right = "Quit";
+		} else if (activeMenu == 1) {
+			info = "No replay available.";
+			left = "Retry";
+			right = "Quit";
+		} else if (activeMenu == 2) {
+			info = "Save your replay?";
+			left = "Save";
+			right = "Discard";
+		} else if (activeMenu == 3) {
+			info = "Replay will be lost. Save?";
+			left = "Save";
+			right = "Discard";
 		}
+		if (info != null)
+			print(g, info, w / 2, h - 5 - 10 - th0, -1, Graphics.HCENTER | Graphics.BOTTOM);
+		g.setGrayScale(itemSelected ? 63 : 0);
+		g.fillRect(10, h - 5 - 10 - th0, w / 2 - 20, th0 + 10);
+		g.setColor((itemSelected ? 255 : 0), 0, 0);
+		g.drawRect(9, h - 5 - 10 - th0 - 1, w / 2 - 19, th0 + 11);
+		print(g, left, w / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
 		g.setGrayScale(!itemSelected ? 63 : 0);
 		g.fillRect(w / 2 + 10, h - 5 - 10 - th0, w / 2 - 20, th0 + 10);
 		g.setColor((!itemSelected ? 255 : 0), 0, 0);
 		g.drawRect(w / 2 + 9, h - 5 - 10 - th0 - 1, w / 2 - 19, th0 + 11);
-		print(g, replaySaveDialog ? "Discard" : "Quit", w * 3 / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
-		if (replaySaveDialog) {
-			print(g, willWatch ? "Save replay? It will be lost after watch." : "You are quitting. Save replay?", w / 2,
-					h - 5 - 10 - th0, -1, Graphics.HCENTER | Graphics.BOTTOM);
-		}
+		print(g, right, w * 3 / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
 	}
 
 	private static final String formatDate(Date d) {
@@ -167,60 +182,61 @@ public final class ResultsScreen extends Canvas {
 	}
 
 	private final void Exit() {
+		Dispose();
+		Nmania.Push(next == null ? new MainScreen() : next);
+	}
+
+	private final void Dispose() {
 		if (applause != null)
 			applause.Dispose();
 		if (music != null)
 			music.Stop();
-		Nmania.Push(next == null ? new MainScreen() : next);
 	}
 
 	protected void keyPressed(int k) {
 		if (k == -1 || k == -2 || k == -3 || k == -4 || k == '2' || k == '4' || k == '6' || k == '8') {
-			if (replay != null)
-				itemSelected = !itemSelected;
+			itemSelected = !itemSelected;
 			repaint();
 			return;
 		}
 
 		if (k == -6) {
-			if (replaySaveDialog) {
-				SaveReplay();
-				if (willWatch) {
-					// we are watching our own replay
-					(new PlayerLoader(data, new ReplayPlayer(replay.DecodeData(), score), next)).start();
-				} else {
-					// we are discarding our own replay
-					Exit();
-				}
-			} else {
+			if (activeMenu == 0) {
 				if (replay != null) {
-					// we are going to watch our own replay
-					replaySaveDialog = true;
-					willWatch = true;
+					activeMenu = 3;
 					repaint();
 				} else {
 					// we are watching foreign replay
-					System.out.println("Player began loading");
+					Dispose();
 					(new PlayerLoader(data, input, next)).start();
 				}
+			} else if (activeMenu == 1) {
+				(new PlayerLoader(data, null, next)).start();
+			} else if (activeMenu == 2) {
+				SaveReplay();
+				Exit();
+			} else if (activeMenu == 3) {
+				SaveReplay();
+				// we are watching our own replay
+				Dispose();
+				(new PlayerLoader(data, new ReplayPlayer(replay.DecodeData(), score), next)).start();
 			}
 		}
 		if (k == -7) {
-			if (replaySaveDialog) {
-				if (willWatch) {
-					// we are watching our own replay
-					(new PlayerLoader(data, new ReplayPlayer(replay.DecodeData(), score), next)).start();
-				} else {
-					// we are discarding our own replay
-					Exit();
-				}
-			} else {
+			if (activeMenu == 0) {
 				if (replay != null) {
-					replaySaveDialog = true;
+					activeMenu = 2;
 					repaint();
 				} else {
 					Exit();
 				}
+			} else if (activeMenu == 1) {
+				Exit();
+			} else if (activeMenu == 2) {
+				Exit();
+			} else if (activeMenu == 3) {
+				Dispose();
+				(new PlayerLoader(data, new ReplayPlayer(replay.DecodeData(), score), next)).start();
 			}
 		}
 		if (k == -5 || k == '5' || k == 32 || k == 10) {
@@ -232,7 +248,9 @@ public final class ResultsScreen extends Canvas {
 
 	}
 
-	protected void pointerReleased(int arg0, int arg1) {
-		Exit();
+	protected void pointerReleased(int x, int y) {
+		if (y < getHeight() / 2)
+			return;
+		keyPressed(x < getWidth() / 2 ? -6 : -7);
 	}
 }
