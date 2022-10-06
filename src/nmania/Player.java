@@ -972,15 +972,18 @@ public final class Player extends GameCanvas {
 		for (int i = 0; i < columnsCount; i++) {
 			DrawKey(i, false);
 		}
-		if (recorder != null) {
-			String t = "REC";
+		if (recorder != null || input != null) {
+			String t = input == null ? "REC" : input.GetName();
 			final int x = leftOffset + 11 + (columnsCount * colWp1);
 			g.setColor(-1);
 			g.drawString(t, x + 1, 0, 0);
 			g.drawString(t, x - 1, 0, 0);
 			g.drawString(t, x + 1, 2, 0);
 			g.drawString(t, x - 1, 2, 0);
-			g.setColor(255, 0, 0);
+			if (input == null)
+				g.setColor(255, 0, 0);
+			else
+				g.setColor(0, 200, 0);
 			g.drawString(t, x, 1, 0);
 		}
 		flushGraphics();
@@ -1160,18 +1163,6 @@ public final class Player extends GameCanvas {
 				}
 				// Yeah, 99999+ is not supported.
 			}
-		}
-		// replay title
-		if (input != null) {
-			String t = input.GetName();
-			g.setColor(-1);
-			g.drawString(t, judgmentCenter + 1, 0, 17);
-			g.drawString(t, judgmentCenter - 1, 0, 17);
-			g.drawString(t, judgmentCenter + 1, 2, 17);
-			g.drawString(t, judgmentCenter - 1, 2, 17);
-			g.setColor(0, 200, 0);
-			g.drawString(t, judgmentCenter, 1, 17);
-
 		}
 		// health
 		{
