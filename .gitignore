@@ -3,3 +3,5 @@
 /.mtj.tmp/
 /deployed/
 *.bak
+.mtj
+build.properties
