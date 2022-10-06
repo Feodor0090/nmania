@@ -2,7 +2,10 @@ package md5;
 
 import java.security.MessageDigest;
 
-public class MessageDigestLayer {
+/**
+ * @author Shinovon
+ */
+final class MessageDigestLayer {
 	
 	private MessageDigest md;
 

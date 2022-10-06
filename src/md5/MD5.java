@@ -2,25 +2,45 @@ package md5;
 
 import java.io.InputStream;
 
+/**
+ * @author Shinovon
+ */
 public class MD5 {
 	private static MD5 inst;
 
 	private static void init() {
 		inst = new MD5();
 	}
-	public synchronized static byte[] getMD5(byte[] b) throws Exception {
+	
+	private static void _update(byte[] b) throws Exception {
 		if (inst == null) init();
 		inst.update(b);
+	}
+	
+	public synchronized static byte[] getMD5(byte[] b) throws Exception {
+		_update(b);
 		return inst.digest();
 	}
-	public static String getMD5String(byte[] b) throws Exception {
+	
+	public synchronized static byte[] getMD5(InputStream in) throws Exception {
 		if (inst == null) init();
-		inst.update(b);
+		inst.read(in);
+		return inst.digest();
+	}
+	
+	public synchronized static String getMD5String(byte[] b) throws Exception {
+		_update(b);
 		return inst.digestString();
 	}
-	public static String getMD5String(String s) throws Exception {
+	
+	public synchronized static String getMD5String(String s) throws Exception {
+		_update(s.getBytes());
+		return inst.digestString();
+	}
+	
+	public synchronized static String getMD5String(InputStream in) throws Exception {
 		if (inst == null) init();
-		inst.update(s.getBytes());
+		inst.read(in);
 		return inst.digestString();
 	}
 	
@@ -28,7 +48,11 @@ public class MD5 {
 	private MD5Calc calc;
 	private MessageDigestLayer md;
 	
-	public MD5() {
+	public MD5(boolean forceCalc) {
+		if(forceCalc) {
+			calc = new MD5Calc();
+			return;
+		}
 		try {
 			Class.forName("java.security.MessageDigest");
 			satsa = true;
@@ -36,6 +60,10 @@ public class MD5 {
 		} catch (Throwable e) {
 			calc = new MD5Calc();
 		}
+	}
+	
+	public MD5() {
+		this(false);
 	}
 
 	public void reset() {

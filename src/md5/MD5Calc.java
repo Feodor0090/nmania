@@ -1,6 +1,9 @@
 package md5;
 
-public final class MD5Calc {
+/**
+ * @author Shinovon
+ */
+final class MD5Calc {
 	private byte[] digestBits;
 	private int[] state;
 	private long count;
