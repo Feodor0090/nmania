@@ -121,7 +121,7 @@ public final class ScoreController implements IScore {
 	}
 
 	public long GetCombo() {
-		return maxCombo;
+		return maxCombo > currentCombo ? maxCombo : currentCombo;
 	}
 
 	public boolean IsFC() {
