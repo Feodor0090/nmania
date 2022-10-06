@@ -11,6 +11,7 @@ import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Image;
 
+import md5.MD5;
 import nmania.beatmaps.IRawBeatmap;
 import nmania.beatmaps.InvalidBeatmapTypeException;
 import nmania.beatmaps.RawBeatmapConverter;
@@ -155,6 +156,36 @@ public class BeatmapManager {
 		}
 	}
 
+	public static String getMD5FromFs(String path) {
+		InputStream is = null;
+		FileConnection fcon = null;
+		try {
+			fcon = (FileConnection) Connector.open(path, Connector.READ);
+			if (!fcon.exists())
+				return null;
+			is = fcon.openInputStream();
+
+			MD5 md5 = new MD5();
+			md5.read(is);
+			try {
+				fcon.close();
+				fcon = null;
+			} catch (Exception e) {
+			}
+			return md5.digestString();
+		} catch (Exception e) {
+			return null;
+		} catch (OutOfMemoryError e) {
+			return null;
+		} finally {
+			try {
+				if (fcon != null)
+					fcon.close();
+			} catch (IOException e) {
+			}
+		}
+	}
+
 	private final static String[] bakeEnum(Enumeration e) {
 		Vector v = new Vector();
 		while (e.hasMoreElements())
@@ -169,5 +200,9 @@ public class BeatmapManager {
 		String raw = getStringFromFS(data.set.wdPath + data.set.folderName + data.mapFileName);
 		IRawBeatmap rb = RawBeatmapConverter.FromText(raw);
 		return rb;
+	}
+
+	public final static String ReadBeatmapMd5(PlayerBootstrapData data) {
+		return getMD5FromFs(data.set.wdPath + data.set.folderName + data.mapFileName);
 	}
 }
