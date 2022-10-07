@@ -1,5 +1,9 @@
 package nmania.replays;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 /**
  * Runtime data of replay. Node of a linked list.
  * 
@@ -46,5 +50,34 @@ public final class ReplayChunk implements IRawReplay {
 
 	public ReplayChunk DecodeData() {
 		return firstChunk;
+	}
+
+	public final static byte[] Encode(ReplayChunk r) throws IOException {
+		byte[] comma = ",".getBytes("UTF-8");
+		ByteArrayOutputStream buf = new ByteArrayOutputStream();
+		r = r.firstChunk;
+		int nextFrame = 0;
+		int lastTime = 0;
+		boolean writeComma = false;
+		while (true) {
+			if (nextFrame >= r.framesCount) {
+				if (r.nextChunk == null)
+					break;
+				r = r.nextChunk;
+			}
+			if (writeComma)
+				buf.write(comma);
+			int time = r.data[nextFrame * 2];
+			int keys = r.data[nextFrame * 2 + 1];
+			int delta = time - lastTime;
+			lastTime = time;
+			nextFrame++;
+			String frame = delta + "|" + keys + "|0|0";
+			buf.write(frame.getBytes("UTF-8"));
+			writeComma = true;
+		}
+		byte[] arr = buf.toByteArray();
+		buf.close();
+		return arr;
 	}
 }
