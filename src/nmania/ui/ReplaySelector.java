@@ -11,7 +11,6 @@ import javax.microedition.lcdui.List;
 import nmania.IInputOverrider;
 import nmania.Nmania;
 import nmania.PlayerBootstrapData;
-import nmania.PlayerLoader;
 import nmania.replays.ReplayPlayer;
 import nmania.replays.osu.OsuReplay;
 
