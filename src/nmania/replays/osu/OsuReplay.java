@@ -186,6 +186,20 @@ public class OsuReplay implements IExtendedReplay {
 		w.writeLong(onlineScoreID);
 		dataOut.close();
 	}
+	
+	public void WriteScoreDataFrom(IScore score) {
+		countMisses = score.GetMisses();
+		count50 = score.GetMehs();
+		count100 = score.GetOks();
+		countKatus = score.GetGoods();
+		count300 = score.GetGreats();
+		countGekis = score.GetPerfects();
+		maxCombo = score.GetCombo();
+		perfectCombo = score.IsFC();
+		totalScore = (int) score.GetScore();
+		timestamp = score.PlayedAt().getTime();
+		playerName = score.GetPlayerName();
+	}
 
 	public String GetMode() {
 		if (gameMode == 0)
