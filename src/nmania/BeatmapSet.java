@@ -9,6 +9,7 @@ import javax.microedition.io.file.FileConnection;
 
 import nmania.replays.IRawReplay;
 import nmania.replays.osu.OsuReplay;
+import nmania.ui.ResultsScreen;
 
 /**
  * Model for folder with several beatmaps. All the data will be read from a
@@ -55,6 +56,40 @@ public final class BeatmapSet {
 				return files[i];
 		}
 		return null;
+	}
+
+	public String GetFullBeatmapPath(String diffFileName) {
+		return wdPath + folderName + diffFileName;
+	}
+
+	public String GetFilenameForNewReplay(OsuReplay replay, PlayerBootstrapData data) throws IOException {
+		FileConnection fc = null;
+		String name = wdPath + folderName + replay.playerName + " playing "
+				+ data.mapFileName.substring(0, data.mapFileName.length() - 4) + " at "
+				+ ResultsScreen.formatDate(replay.PlayedAt(), "-");
+		int sub = 0;
+		try {
+			while (true) {
+				fc = (FileConnection) Connector.open(addOsrNum(name, sub), Connector.READ);
+				if(fc.exists()) {
+					sub++;
+					fc.close();
+				}
+				else {
+					break;
+				}
+			}
+		} finally {
+			if (fc != null)
+				fc.close();
+		}
+		return addOsrNum(name, sub);
+	}
+
+	private String addOsrNum(String name, int sub) {
+		if (sub == 0)
+			return name + ".osr";
+		return name + " (" + sub + ").osr";
 	}
 
 	public String[] ListAllReplays() {

@@ -1,8 +1,14 @@
 package nmania.ui;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.microedition.io.Connector;
+import javax.microedition.io.file.FileConnection;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
@@ -10,6 +16,7 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import nmania.AudioController;
+import nmania.BeatmapManager;
 import nmania.IInputOverrider;
 import nmania.IScore;
 import nmania.Nmania;
@@ -18,7 +25,9 @@ import nmania.PlayerBootstrapData;
 import nmania.PlayerLoader;
 import nmania.Sample;
 import nmania.replays.IRawReplay;
+import nmania.replays.ReplayChunk;
 import nmania.replays.ReplayPlayer;
+import nmania.replays.osu.OsuReplay;
 
 public final class ResultsScreen extends Canvas {
 
@@ -95,7 +104,7 @@ public final class ResultsScreen extends Canvas {
 		g.setFont(Font.getFont(0, 0, 8));
 		print(g, data.set.artist + " - " + data.set.title, w / 2, th16 + 3, -1, Graphics.HCENTER | Graphics.TOP);
 		int y = th16 + th8 + 4 + 1;
-		print(g, "by " + score.GetPlayerName() + " at " + formatDate(score.PlayedAt()), w / 2, y, -1,
+		print(g, "by " + score.GetPlayerName() + " at " + formatDate(score.PlayedAt(), ":"), w / 2, y, -1,
 				Graphics.HCENTER | Graphics.TOP);
 		y += th8 + 2;
 
@@ -159,14 +168,14 @@ public final class ResultsScreen extends Canvas {
 		print(g, right, w * 3 / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
 	}
 
-	private static final String formatDate(Date d) {
+	public static final String formatDate(Date d, String timeSplitter) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(d);
 		int hrs = c.get(Calendar.HOUR_OF_DAY);
 		int min = c.get(Calendar.MINUTE);
 		int sec = c.get(Calendar.SECOND);
-		String time = (hrs < 10 ? "0" : "") + hrs + ":" + (min < 10 ? "0" : "") + min + ":" + (sec < 10 ? "0" : "")
-				+ sec;
+		String time = (hrs < 10 ? "0" : "") + hrs + timeSplitter + (min < 10 ? "0" : "") + min + timeSplitter
+				+ (sec < 10 ? "0" : "") + sec;
 		int day = c.get(Calendar.DAY_OF_MONTH);
 		int mnt = c.get(Calendar.MONTH);
 		String date = (day < 10 ? "0" : "") + day + "." + (mnt < 10 ? "0" : "") + mnt + "." + c.get(Calendar.YEAR);
@@ -248,6 +257,29 @@ public final class ResultsScreen extends Canvas {
 	}
 
 	private void SaveReplay() {
+		OsuReplay r = new OsuReplay();
+		r.gameMode = 3;
+		r.gameVersion = 292;
+		r.WriteScoreDataFrom(score);
+		r.beatmapHash = BeatmapManager.ReadBeatmapMd5(data);
+		FileConnection fc = null;
+		try {
+			fc = (FileConnection) Connector.open(data.set.GetFilenameForNewReplay(r, data), Connector.READ_WRITE);
+			fc.create();
+			OutputStream os = fc.openOutputStream();
+			InputStream blob = new ByteArrayInputStream(ReplayChunk.Encode(replay.DecodeData()));
+			r.write(os, blob);
+			os.close();
+			blob.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (fc != null)
+				try {
+					fc.close();
+				} catch (IOException e) {
+				}
+		}
 
 	}
 

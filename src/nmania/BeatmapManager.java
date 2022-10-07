@@ -197,7 +197,7 @@ public class BeatmapManager {
 	}
 
 	public final static IRawBeatmap ReadBeatmap(PlayerBootstrapData data) throws InvalidBeatmapTypeException {
-		String raw = getStringFromFS(data.set.wdPath + data.set.folderName + data.mapFileName);
+		String raw = getStringFromFS(data.set.GetFullBeatmapPath(data.mapFileName));
 		IRawBeatmap rb = RawBeatmapConverter.FromText(raw);
 		return rb;
 	}
