@@ -13,6 +13,7 @@ import lzma.LZMADecoder;
 import lzma.LZMAEncoder;
 import lzma.LzmaInputStream;
 import lzma.LzmaOutputStream;
+import nmania.IScore;
 import nmania.ScoreController;
 import nmania.replays.IExtendedReplay;
 import nmania.replays.ReplayChunk;
@@ -237,7 +238,7 @@ public class OsuReplay implements IExtendedReplay {
 		return totalScore;
 	}
 
-	public long GetCombo() {
+	public int GetCombo() {
 		return maxCombo;
 	}
 

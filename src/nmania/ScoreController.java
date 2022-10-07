@@ -120,7 +120,7 @@ public final class ScoreController implements IScore {
 		return currentHitScore;
 	}
 
-	public long GetCombo() {
+	public int GetCombo() {
 		return maxCombo > currentCombo ? maxCombo : currentCombo;
 	}
 

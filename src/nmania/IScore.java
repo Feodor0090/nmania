@@ -10,6 +10,6 @@ public interface IScore extends IScoreData {
 	int GetTicks();
 	int GetAccuracy();
 	long GetScore();
-	long GetCombo();
+	int GetCombo();
 	boolean IsFC();
 }
