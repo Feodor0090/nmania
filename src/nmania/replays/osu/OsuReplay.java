@@ -225,10 +225,12 @@ public class OsuReplay implements IExtendedReplay {
 	}
 
 	public int GetAccuracy() {
-		int totalHits = GetMisses()+GetMehs()+GetOks()+GetGoods()+GetGreats()+GetPerfects();
-		long maxScore = totalHits*ScoreController.scores[5];
-		long ourScore = GetMehs()*ScoreController.scores[1]+GetOks()*ScoreController.scores[2]+GetGoods()*ScoreController.scores[3]+GetGreats()*ScoreController.scores[4]+GetPerfects()*ScoreController.scores[5];
-		return (int) ((ourScore*10000L)/maxScore);
+		int totalHits = GetMisses() + GetMehs() + GetOks() + GetGoods() + GetGreats() + GetPerfects();
+		long maxScore = totalHits * ScoreController.scores[5];
+		long ourScore = GetMehs() * ScoreController.scores[1] + GetOks() * ScoreController.scores[2]
+				+ GetGoods() * ScoreController.scores[3] + GetGreats() * ScoreController.scores[4]
+				+ GetPerfects() * ScoreController.scores[5];
+		return (int) ((ourScore * 10000L) / maxScore);
 	}
 
 	public long GetScore() {
