@@ -20,7 +20,7 @@ Open source Vertical Scrolling Rhythm Game for J2ME. Compatible with osu!mania b
 - `J2ME Loader` has major problems with native UI, but playable. Use OTG or BT keyboard. 640x360 is recommended. Your working folder is likely `/storage/emulated/0/Data/Sounds/nmania/`.
 - `PhoneME` is partially playable, has major problems with input/gameplay/music synchronization and files.
 - `KEmulator` is not compatible due to broken multimedia API.
-- [`KEmulator nnmod`](http://nnproject.cc/kem/) is partially playable. Skin settings are not functional, multihold is not propertly supported. Use `file:///root/` as your folder, or else it won't work.
+- [`KEmulator nnmod`](https://nnp.nnchan.ru/kem/) is partially playable. Skin settings are not functional, multihold is not propertly supported. Use `file:///root/` as your folder, or else it won't work.
 
 ## Join our chat in TG!
 https://t.me/nnmidletschat
