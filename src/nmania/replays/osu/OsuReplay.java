@@ -13,6 +13,7 @@ import lzma.LZMADecoder;
 import lzma.LZMAEncoder;
 import lzma.LzmaInputStream;
 import lzma.LzmaOutputStream;
+import nmania.ScoreController;
 import nmania.replays.IExtendedReplay;
 import nmania.replays.ReplayChunk;
 import symnovel.SNUtils;
@@ -224,8 +225,10 @@ public class OsuReplay implements IExtendedReplay {
 	}
 
 	public int GetAccuracy() {
-		return 0;
-		//TODO
+		int totalHits = GetMisses()+GetMehs()+GetOks()+GetGoods()+GetGreats()+GetPerfects();
+		long maxScore = totalHits*ScoreController.scores[5];
+		long ourScore = GetMehs()*ScoreController.scores[1]+GetOks()*ScoreController.scores[2]+GetGoods()*ScoreController.scores[3]+GetGreats()*ScoreController.scores[4]+GetPerfects()*ScoreController.scores[5];
+		return (int) ((ourScore*10000L)/maxScore);
 	}
 
 	public long GetScore() {

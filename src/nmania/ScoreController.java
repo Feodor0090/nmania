@@ -15,7 +15,7 @@ public final class ScoreController implements IScore {
 	public int currentCombo;
 	public final char[] currentAcc = new char[] { '1', '0', '0', ',', '0', '0', '%' };
 
-	private static final int[] scores = new int[] { 0, 50, 100, 200, 300, 305 };
+	public static final int[] scores = new int[] { 0, 50, 100, 200, 300, 305 };
 
 	/**
 	 * Creates a new score controller.
