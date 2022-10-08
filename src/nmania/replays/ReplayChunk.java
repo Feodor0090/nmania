@@ -2,7 +2,6 @@ package nmania.replays;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 /**
  * Runtime data of replay. Node of a linked list.

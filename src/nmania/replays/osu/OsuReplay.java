@@ -78,50 +78,28 @@ public class OsuReplay implements IExtendedReplay {
 		r.close();
 	}
 
-	public String decodeReplayData() throws IOException {
-		if (replayReadyData != null)
-			return replayReadyData;
-		InputStream bytes = new ByteArrayInputStream(replayData);
-		// Delete compressed data
-		replayData = null;
-		LzmaInputStream stream = new LzmaInputStream(bytes, new LZMADecoder());
-		ByteArrayOutputStream uncompressed = new ByteArrayOutputStream();
-		byte[] buf = new byte[512];
-		while (true) {
-			int read = stream.read(buf, 0, 512);
-			if (read == -1)
-				break;
-			uncompressed.write(buf, 0, read);
-		}
-		stream.close();
-		stream = null;
-		bytes.close();
-		bytes = null;
-		replayReadyData = new String(uncompressed.toByteArray(), "UTF-8");
-		uncompressed.close();
-		return replayReadyData;
-	}
-
 	public ReplayChunk DecodeData() {
-		String s;
+
 		try {
-			s = decodeReplayData();
-			int si = 0;
-			int ei = 0;
+			LzmaInputStream stream = new LzmaInputStream(new ByteArrayInputStream(replayData), new LZMADecoder());
+			int comma = ",".getBytes("UTF-8")[0];
+			ReplayChunk chunk = ReplayChunk.CreateEmpty();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			int lastKeys = 0;
 			int lastTime = 0;
 			int nextFrame = 0;
-			ReplayChunk chunk = ReplayChunk.CreateEmpty();
 			boolean loop = true;
 			while (loop) {
-				ei = s.indexOf(',', si);
-				if (ei == -1) {
-					ei = s.length();
-					loop = false;
+				while (true) {
+					int c = stream.read();
+					if (c == -1)
+						loop = false;
+					if (c == comma || c == -1)
+						break;
+					baos.write(c);
 				}
-				String frame = s.substring(si, ei);
-				si = ei + 1;
-
+				String frame = new String(baos.toByteArray(), "UTF-8");
+				baos.reset();
 				String[] data = SNUtils.split(frame, '|', 4);
 				int delta = Integer.parseInt(data[0]);
 				if (delta == -12345)
@@ -141,9 +119,9 @@ public class OsuReplay implements IExtendedReplay {
 				chunk.framesCount++;
 				nextFrame++;
 			}
+			stream.close();
 			return chunk.firstChunk;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -186,7 +164,7 @@ public class OsuReplay implements IExtendedReplay {
 		w.writeLong(onlineScoreID);
 		dataOut.close();
 	}
-	
+
 	public void WriteScoreDataFrom(IScore score) {
 		countMisses = score.GetMisses();
 		count50 = score.GetMehs();
