@@ -2,6 +2,8 @@ package nmania.ui;
 
 import java.io.IOException;
 
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
@@ -11,6 +13,7 @@ import javax.microedition.lcdui.List;
 import nmania.IInputOverrider;
 import nmania.Nmania;
 import nmania.PlayerBootstrapData;
+import nmania.replays.ReplayChunk;
 import nmania.replays.ReplayPlayer;
 import nmania.replays.osu.OsuReplay;
 
@@ -37,7 +40,13 @@ public final class ReplaySelector extends List implements CommandListener {
 			String name = getString(getSelectedIndex());
 			try {
 				OsuReplay r = data.set.ReadReplay(name);
-				IInputOverrider input = new ReplayPlayer(r.DecodeData(), r);
+				ReplayChunk chunk = r.DecodeData();
+				if(chunk == null)
+				{
+					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
+					return;
+				}
+				IInputOverrider input = new ReplayPlayer(chunk, r);
 				Nmania.Push(new ResultsScreen(data, r, input, null, null, null, null, this));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

@@ -9,6 +9,8 @@ import java.util.Date;
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
+import javax.microedition.lcdui.Alert;
+import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
@@ -230,8 +232,15 @@ public final class ResultsScreen extends Canvas {
 			} else if (activeMenu == 3) {
 				SaveReplay();
 				// we are watching our own replay
-				Dispose();
-				(new PlayerLoader(data, new ReplayPlayer(replay.DecodeData(), score), next)).start();
+
+				ReplayChunk chunk = replay.DecodeData();
+				if (chunk == null) {
+					activeMenu = 1;
+					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
+				} else {
+					Dispose();
+					(new PlayerLoader(data, new ReplayPlayer(chunk, score), next)).start();
+				}
 			}
 		}
 		if (k == -7) {
@@ -247,8 +256,14 @@ public final class ResultsScreen extends Canvas {
 			} else if (activeMenu == 2) {
 				Exit();
 			} else if (activeMenu == 3) {
-				Dispose();
-				(new PlayerLoader(data, new ReplayPlayer(replay.DecodeData(), score), next)).start();
+				ReplayChunk chunk = replay.DecodeData();
+				if (chunk == null) {
+					activeMenu = 1;
+					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
+				} else {
+					Dispose();
+					(new PlayerLoader(data, new ReplayPlayer(chunk, score), next)).start();
+				}
 			}
 		}
 		if (k == -5 || k == '5' || k == 32 || k == 10) {
@@ -266,11 +281,7 @@ public final class ResultsScreen extends Canvas {
 		try {
 			fc = (FileConnection) Connector.open(data.set.GetFilenameForNewReplay(r, data), Connector.READ_WRITE);
 			fc.create();
-			OutputStream os = fc.openOutputStream();
-			InputStream blob = new ByteArrayInputStream(ReplayChunk.Encode(replay.DecodeData()));
-			r.write(os, blob);
-			os.close();
-			blob.close();
+			r.write(fc.openOutputStream(), new ByteArrayInputStream(ReplayChunk.Encode(replay.DecodeData())));
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
