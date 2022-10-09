@@ -25,7 +25,7 @@ class ReplayWriterStream extends InputStream {
 	int len = 0;
 	
 	ReplayWriterStream(ReplayChunk r) {
-		this.r = r;
+		this.r = r.firstChunk;
 	}
 
 	public int read() throws IOException {
