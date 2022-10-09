@@ -14,24 +14,8 @@ public class PlayerBootstrapData {
 	 * Filename of the beatmap.
 	 */
 	public String mapFileName;
-	/**
-	 * <ul>
-	 * <li>-1 - No Fail
-	 * <li>0 - default
-	 * <li>1 - Sudden Death
-	 * </ul>
-	 * Other values are clamped to this range (only sign matters).
-	 */
-	public int failMod = 0;
-	/**
-	 * <ul>
-	 * <li>-1 - EZ
-	 * <li>0 - default
-	 * <li>1 - HR
-	 * </ul>
-	 * Other values are clamped to this range (only sign matters).
-	 */
-	public int daMod = 0;
+	
+	public ModsState mods = new ModsState();
 	
 	public boolean recordReplay;
 }

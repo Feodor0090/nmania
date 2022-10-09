@@ -101,18 +101,18 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 		opts.set = set;
 		switch (mode.getSelectedIndex()) {
 		case 1:
-			opts.failMod = 1;
+			opts.mods.SetFA(1);
 			break;
 		case 2:
-			opts.failMod = -1;
+			opts.mods.SetFA(-1);
 			break;
 		}
 		switch (daMod.getSelectedIndex()) {
 		case 1:
-			opts.daMod = 1;
+			opts.mods.SetDA(1);
 			break;
 		case 2:
-			opts.daMod = -1;
+			opts.mods.SetDA(-1);
 			break;
 		}
 		return opts;

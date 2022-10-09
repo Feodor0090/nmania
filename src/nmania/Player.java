@@ -96,19 +96,21 @@ public final class Player extends GameCanvas {
 		// TODO TODO what the fuck i meant a year ago?
 		float od = map.difficulty;
 		int perfectHW = 16;
-		if (opts.daMod < 0) {
+		int daMod = opts.mods.GetDA();
+		int faMod = opts.mods.GetFA();
+		if (daMod < 0) {
 			od = od / 1.4f;
 			perfectHW = 22;
-		} else if (opts.daMod > 0) {
+		} else if (daMod > 0) {
 			od = od * 1.4f;
 			perfectHW = 11;
 		}
 		log.log("Setting scoring up");
 		hitWindows = new int[] { (int) (188 - 3 * od), (int) (151 - 3 * od), (int) (127 - 3 * od), (int) (97 - 3 * od),
 				(int) (64 - 3 * od), perfectHW };
-		healthValues = new int[] { opts.failMod > 0 ? -1001 : -100, -10, 0, 20, 40, 50 };
+		healthValues = new int[] { daMod > 0 ? -1001 : -100, -10, 0, 20, 40, 50 };
 		score = new ScoreController(input);
-		failCondition = opts.failMod;
+		failCondition = faMod;
 
 		// step 4: setup configs
 		log.log("Bootstrapping player");
