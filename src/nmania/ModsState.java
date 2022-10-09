@@ -83,8 +83,25 @@ public class ModsState {
 		if (state == 2)
 			value = value | 16384;
 	}
-	
+
 	public int GetMask() {
 		return value;
+	}
+
+	public final static String[] MOD_NAMES = new String[] { "NF", "EZ", "TD", "HD", "HR", "SD", "DT", "RX", "HT", "NC",
+			"FL", "AT", "SO", "AP", "PF", "K4", "K5", "K6", "K7", "K8", "FI", "RD", "CN", "TP", "K9", "CP", "K1", "K3",
+			"K2", "S2", "MR" };
+
+	public String toString() {
+		if (value == 0)
+			return "none";
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i <= 30; i++) {
+			if ((value & (1 << i)) != 0) {
+				sb.append(' ');
+				sb.append(MOD_NAMES[i]);
+			}
+		}
+		return sb.toString();
 	}
 }

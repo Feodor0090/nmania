@@ -109,7 +109,10 @@ public final class ResultsScreen extends Canvas {
 
 		// stats
 		print(g, "Score", 10, y, -1, 0);
-		print(g, String.valueOf(score.GetScore()), w - 10, y, -1, anchorRT);
+		print(g, String.valueOf(score.GetScore()), cl, y ,-1, anchorRT);
+		print(g, "Mods", cr, y, -1, 0);
+		print(g, data.mods.toString(), w - 10, y, -1, anchorRT);
+		
 		y += th8 + 2;
 		print(g, "Accuracy", 10, y, -1, 0);
 		int acc = score.GetAccuracy();
