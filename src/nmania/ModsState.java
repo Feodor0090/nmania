@@ -83,4 +83,8 @@ public class ModsState {
 		if (state == 2)
 			value = value | 16384;
 	}
+	
+	public int GetMask() {
+		return value;
+	}
 }

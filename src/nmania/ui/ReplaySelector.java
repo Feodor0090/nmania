@@ -46,6 +46,8 @@ public final class ReplaySelector extends List implements CommandListener {
 					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
 					return;
 				}
+				
+				data.mods = r.GetMods();
 				IInputOverrider input = new ReplayPlayer(chunk, r);
 				Nmania.Push(new ResultsScreen(data, r, input, null, null, null, null, this));
 			} catch (IOException e) {

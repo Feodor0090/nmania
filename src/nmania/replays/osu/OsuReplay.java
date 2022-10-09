@@ -12,6 +12,7 @@ import java.util.Date;
 import lzma.LZMADecoder;
 import lzma.LZMAEncoder;
 import nmania.IScore;
+import nmania.ModsState;
 import nmania.ScoreController;
 import nmania.replays.IExtendedReplay;
 import nmania.replays.ReplayChunk;
@@ -225,6 +226,14 @@ public final class OsuReplay implements IExtendedReplay {
 
 	public String GetPlayerName() {
 		return playerName;
+	}
+	
+	public ModsState GetMods() {
+		return new ModsState(modsUsed);
+	}
+	
+	public void SetMods(ModsState mods) {
+		modsUsed = mods.GetMask();
 	}
 
 }

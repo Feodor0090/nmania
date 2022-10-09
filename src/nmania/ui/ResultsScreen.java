@@ -273,6 +273,7 @@ public final class ResultsScreen extends Canvas {
 		r.gameMode = 3;
 		r.gameVersion = 292;
 		r.WriteScoreDataFrom(score);
+		r.SetMods(data.mods);
 		r.beatmapHash = BeatmapManager.ReadBeatmapMd5(data);
 		FileConnection fc = null;
 		try {
