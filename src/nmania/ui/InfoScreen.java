@@ -42,7 +42,7 @@ public class InfoScreen extends MultisectionList implements CommandListener {
 				Switch(null);
 				return;
 			case 0:
-				f.append(new StringItem("nmania v" + Nmania.version(),
+				f.append(new StringItem("nmania v" + Nmania.version,
 						"Open source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps."));
 				f.append(new Link("GitHub", "https://github.com/Feodor0090/nmania"));
 				f.append(new Link("TG chat", "https://t.me/nnmidletschat"));

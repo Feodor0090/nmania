@@ -20,9 +20,11 @@ public final class Nmania extends MIDlet {
 	public static BeatmapManager bm;
 	public static Skin skin;
 	public static String[] commonText;
+	public static String version;
 
 	public Nmania() {
 		inst = this;
+		version = getAppProperty("MIDlet-Version");
 	}
 
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
@@ -58,10 +60,6 @@ public final class Nmania extends MIDlet {
 			inst.platformRequest(link);
 		} catch (ConnectionNotFoundException e) {
 		}
-	}
-
-	public static String version() {
-		return inst.getAppProperty("MIDlet-Version");
 	}
 
 	public static String GetDevice() {
