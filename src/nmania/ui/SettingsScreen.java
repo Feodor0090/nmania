@@ -177,6 +177,8 @@ public class SettingsScreen extends MultisectionList implements CommandListener 
 				Settings.profiler = !Settings.profiler;
 				break;
 			case 4:
+				Settings.recordReplay = !Settings.recordReplay;
+			case 5:
 				Switch(main);
 				break;
 			}

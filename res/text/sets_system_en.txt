@@ -2,4 +2,5 @@ Keep UI during gameplay
 Draw counters
 Fullscreen flush
 Enable profiler
+Record replays
 <<< back

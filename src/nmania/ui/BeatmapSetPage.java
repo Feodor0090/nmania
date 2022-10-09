@@ -19,6 +19,7 @@ import nmania.IInputOverrider;
 import nmania.Nmania;
 import nmania.PlayerBootstrapData;
 import nmania.PlayerLoader;
+import nmania.Settings;
 import nmania.replays.AutoplayRunner;
 import tube42.lib.imagelib.ImageUtils;
 
@@ -67,7 +68,7 @@ public class BeatmapSetPage extends Form implements Runnable, ItemCommandListene
 			append(new ImageItem(img == null ? text[7] : null, img, Item.LAYOUT_CENTER | Item.LAYOUT_NEWLINE_AFTER,
 					null));
 			append(set.artist + " - " + set.title + " (" + set.mapper + ")");
-			record.setSelectedIndex(0, false);
+			record.setSelectedIndex(0, Settings.recordReplay);
 			append(record);
 			for (int i = 0; i < set.files.length; i++) {
 				String f = set.files[i];

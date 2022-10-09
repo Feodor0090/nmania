@@ -72,6 +72,10 @@ public final class Settings {
 	 * Player's nickname.
 	 */
 	public static String name = null;
+	/**
+	 * Should replays be recorded by default?
+	 */
+	public static boolean recordReplay = false;
 
 	/**
 	 * Audio/gameplay clocks offset. <br>
@@ -112,6 +116,7 @@ public final class Settings {
 			j.accumulate("profiler", new Boolean(profiler));
 			j.accumulate("locale", locale);
 			j.accumulate("name", name);
+			j.accumulate("record", new Boolean(recordReplay));
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -172,6 +177,7 @@ public final class Settings {
 			}
 			locale = j.optString("locale", systemLocale);
 			name = j.optString("name", null);
+			recordReplay = j.optBoolean("record");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

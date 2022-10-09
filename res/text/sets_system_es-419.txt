@@ -2,4 +2,5 @@ Mostrar interfaz durante el juego
 Mostrar contadores
 Pantalla completa
 Activar perfiles
+Record replays
 <<< atrás
