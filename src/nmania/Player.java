@@ -35,9 +35,13 @@ public final class Player extends GameCanvas {
 		// step 1: loading background
 		log.log("Loading map background");
 
-		Image _bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image));
-		if (_bg != null) {
+		Image _bg = null;
+		try {
+			_bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image));
+		} catch (OutOfMemoryError e) {
 
+		}
+		if (_bg != null) {
 			try {
 				Thread.sleep(1);
 				final float screenAR = scrW / (float) scrH;
@@ -76,15 +80,13 @@ public final class Player extends GameCanvas {
 					});
 				}
 			} catch (OutOfMemoryError e) {
+				_bg = null;
 			}
 			bg = _bg;
 			_bg = null;
 			Thread.sleep(1);
 		} else {
-			bg = Image.createImage(scrW, scrH);
-			Graphics bgg = bg.getGraphics();
-			bgg.setColor(0);
-			bgg.fillRect(0, 0, scrW, scrH);
+			bg = null;
 		}
 
 		// step 2: loading music
@@ -254,8 +256,21 @@ public final class Player extends GameCanvas {
 			holdKeysColors = null;
 			zeroW = s.richSkin.GetMaxDigitWidth();
 		}
-		scoreBg = ImageUtils.crop(bg, scrW - fillScoreW, 0, scrW - 1, fillCountersH + 1);
-		accBg = ImageUtils.crop(bg, scrW - fillAccW, scrH - fillCountersH, scrW - 1, scrH - 1);
+		if (bg == null) {
+			Image tmp = Image.createImage(fillScoreW, fillCountersH);
+			Graphics bgg = tmp.getGraphics();
+			bgg.setColor(0);
+			bgg.fillRect(0, 0, scrW, scrH);
+			scoreBg = Image.createImage(tmp);
+			tmp = Image.createImage(fillAccW, fillCountersH);
+			bgg = tmp.getGraphics();
+			bgg.setColor(0);
+			bgg.fillRect(0, 0, scrW, scrH);
+			accBg = Image.createImage(tmp);
+		} else {
+			scoreBg = ImageUtils.crop(bg, scrW - fillScoreW, 0, scrW - 1, fillCountersH + 1);
+			accBg = ImageUtils.crop(bg, scrW - fillAccW, scrH - fillCountersH, scrW - 1, scrH - 1);
+		}
 		kbY = scrH - kbH;
 		colWp1 = colW + 1;
 		judgmentCenter = s.leftOffset + colWp1 * columnsCount / 2;
@@ -1350,6 +1365,11 @@ public final class Player extends GameCanvas {
 	 * Draws bg image.
 	 */
 	private final void FillBg() {
+		if (bg == null) {
+			g.setColor(0);
+			g.fillRect(0, 0, scrW, scrH);
+			return;
+		}
 		g.drawImage(bg, 0, 0, 0);
 	}
 
