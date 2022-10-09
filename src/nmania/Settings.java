@@ -10,7 +10,7 @@ import symnovel.SNUtils;
 public final class Settings {
 
 	public static final String GetDefaultFolder() {
-		String dir = System.getProperty("fileconn.dir.sounds");
+		String dir = System.getProperty("fileconn.dir.music");
 		if (dir == null)
 			dir = "file:///C:/Data/Sounds/";
 		return dir + "nmania/";
