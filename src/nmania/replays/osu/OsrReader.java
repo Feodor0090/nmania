@@ -10,7 +10,7 @@ import java.io.InputStream;
  * @author Shinovon
  * 
  */
-public class OsrReader {
+class OsrReader {
 	private InputStream in;
 
 	public OsrReader(DataInputStream dataStream) {

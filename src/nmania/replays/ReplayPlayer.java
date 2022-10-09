@@ -6,7 +6,7 @@ import nmania.IInputOverrider;
 import nmania.IScoreData;
 import nmania.Player;
 
-public class ReplayPlayer implements IInputOverrider, IRawReplay {
+public final class ReplayPlayer implements IInputOverrider, IReplayProvider {
 
 	public ReplayPlayer(ReplayChunk replay, IScoreData score) {
 		this.replay = replay;
@@ -62,7 +62,7 @@ public class ReplayPlayer implements IInputOverrider, IRawReplay {
 		return playerName;
 	}
 
-	public ReplayChunk DecodeData() {
+	public ReplayChunk GetReplay() {
 		return replay.firstChunk;
 	}
 

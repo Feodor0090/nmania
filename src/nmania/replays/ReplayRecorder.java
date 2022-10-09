@@ -5,7 +5,7 @@ import java.util.Date;
 import nmania.IScoreData;
 import nmania.ScoreController;
 
-public final class ReplayRecorder implements IRawReplay, IScoreData {
+public final class ReplayRecorder implements IReplayProvider, IScoreData {
 
 	private final ScoreController score;
 
@@ -40,7 +40,7 @@ public final class ReplayRecorder implements IRawReplay, IScoreData {
 		state = 0;
 	}
 
-	public ReplayChunk DecodeData() {
+	public ReplayChunk GetReplay() {
 		return chunk.firstChunk;
 	}
 

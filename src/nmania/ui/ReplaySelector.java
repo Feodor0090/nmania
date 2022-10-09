@@ -40,7 +40,7 @@ public final class ReplaySelector extends List implements CommandListener {
 			String name = getString(getSelectedIndex());
 			try {
 				OsuReplay r = data.set.ReadReplay(name);
-				ReplayChunk chunk = r.DecodeData();
+				ReplayChunk chunk = r.GetReplay();
 				if(chunk == null)
 				{
 					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));

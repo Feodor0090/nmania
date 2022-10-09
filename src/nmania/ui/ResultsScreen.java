@@ -1,9 +1,6 @@
 package nmania.ui;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,7 +23,7 @@ import nmania.Player;
 import nmania.PlayerBootstrapData;
 import nmania.PlayerLoader;
 import nmania.Sample;
-import nmania.replays.IRawReplay;
+import nmania.replays.IReplayProvider;
 import nmania.replays.ReplayChunk;
 import nmania.replays.ReplayPlayer;
 import nmania.replays.osu.OsuReplay;
@@ -45,7 +42,7 @@ public final class ResultsScreen extends Canvas {
 	 * @param background Image.
 	 * @param menu       Next screen.
 	 */
-	public ResultsScreen(PlayerBootstrapData data, IScore score, IInputOverrider input, IRawReplay replay,
+	public ResultsScreen(PlayerBootstrapData data, IScore score, IInputOverrider input, IReplayProvider replay,
 			AudioController track, String sample, Image background, Displayable menu) {
 		this.data = data;
 		this.score = score;
@@ -69,7 +66,7 @@ public final class ResultsScreen extends Canvas {
 
 	int introTimer = 100;
 	public IInputOverrider input;
-	public IRawReplay replay;
+	public IReplayProvider replay;
 	public final IScore score;
 	public final AudioController music;
 	public final Image bg;
@@ -233,7 +230,7 @@ public final class ResultsScreen extends Canvas {
 				SaveReplay();
 				// we are watching our own replay
 
-				ReplayChunk chunk = replay.DecodeData();
+				ReplayChunk chunk = replay.GetReplay();
 				if (chunk == null) {
 					activeMenu = 1;
 					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
@@ -256,7 +253,7 @@ public final class ResultsScreen extends Canvas {
 			} else if (activeMenu == 2) {
 				Exit();
 			} else if (activeMenu == 3) {
-				ReplayChunk chunk = replay.DecodeData();
+				ReplayChunk chunk = replay.GetReplay();
 				if (chunk == null) {
 					activeMenu = 1;
 					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
@@ -281,8 +278,8 @@ public final class ResultsScreen extends Canvas {
 		try {
 			fc = (FileConnection) Connector.open(data.set.GetFilenameForNewReplay(r, data), Connector.READ_WRITE);
 			fc.create();
-			r.write(fc.openOutputStream(), new ByteArrayInputStream(ReplayChunk.Encode(replay.DecodeData())));
-		} catch (IOException e) {
+			r.write(fc.openOutputStream(), replay.GetReplay());
+		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {
 			if (fc != null)

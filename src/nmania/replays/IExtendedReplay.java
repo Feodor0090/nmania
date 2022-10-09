@@ -7,7 +7,7 @@ import nmania.IScore;
  * 
  * @author Feodor0090
  */
-public interface IExtendedReplay extends IRawReplay, IScore {
+public interface IExtendedReplay extends IReplayProvider, IScore {
 	/**
 	 * Gets mode of this replay.
 	 * @return Always must be "VSRG".

@@ -7,7 +7,7 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 
-import nmania.replays.IRawReplay;
+import nmania.replays.IReplayProvider;
 import nmania.replays.osu.OsuReplay;
 import nmania.ui.ResultsScreen;
 

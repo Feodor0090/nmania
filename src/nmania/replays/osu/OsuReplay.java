@@ -11,13 +11,10 @@ import java.util.Date;
 
 import lzma.LZMADecoder;
 import lzma.LZMAEncoder;
-import lzma.LzmaInputStream;
-import lzma.LzmaOutputStream;
 import nmania.IScore;
 import nmania.ScoreController;
 import nmania.replays.IExtendedReplay;
 import nmania.replays.ReplayChunk;
-import symnovel.SNUtils;
 
 /**
  * Model of OSR file. Contains all header information and replay blob.
@@ -25,7 +22,7 @@ import symnovel.SNUtils;
  * @author Shinovon
  * 
  */
-public class OsuReplay implements IExtendedReplay {
+public final class OsuReplay implements IExtendedReplay {
 
 	public int gameMode;
 	public int gameVersion;
@@ -47,7 +44,6 @@ public class OsuReplay implements IExtendedReplay {
 	public long onlineScoreID;
 
 	private byte[] replayData;
-	private String replayReadyData = null;
 
 	public void read(InputStream inputStream) throws IOException {
 		DataInputStream in = new DataInputStream(inputStream);
@@ -78,91 +74,76 @@ public class OsuReplay implements IExtendedReplay {
 		r.close();
 	}
 
-	public ReplayChunk DecodeData() {
-
+	public ReplayChunk GetReplay() {
 		try {
-			LzmaInputStream stream = new LzmaInputStream(new ByteArrayInputStream(replayData), new LZMADecoder());
-			int comma = ",".getBytes("UTF-8")[0];
-			ReplayChunk chunk = ReplayChunk.CreateEmpty();
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			int lastKeys = 0;
-			int lastTime = 0;
-			int nextFrame = 0;
-			boolean loop = true;
-			while (loop) {
-				while (true) {
-					int c = stream.read();
-					if (c == -1)
-						loop = false;
-					if (c == comma || c == -1)
-						break;
-					baos.write(c);
-				}
-				String frame = new String(baos.toByteArray(), "UTF-8");
-				baos.reset();
-				String[] data = SNUtils.split(frame, '|', 4);
-				int delta = Integer.parseInt(data[0]);
-				if (delta == -12345)
-					continue;
-				lastTime += delta;
-				int keys = Integer.parseInt(data[1]);
-				if (keys == lastKeys)
-					continue;
-				lastKeys = keys;
-
-				if (nextFrame >= ReplayChunk.FRAMES_IN_CHUNK) {
-					nextFrame = 0;
-					chunk = ReplayChunk.Chain(chunk);
-				}
-				chunk.data[nextFrame * 2] = lastTime;
-				chunk.data[nextFrame * 2 + 1] = keys;
-				chunk.framesCount++;
-				nextFrame++;
+			ReplayReaderStream out = new ReplayReaderStream();
+			InputStream in = new ByteArrayInputStream(replayData);
+			LZMADecoder decoder = new LZMADecoder();
+			byte[] properties = new byte[5];
+			if (in.read(properties) != 5) {
+				throw new IOException("LZMA file has no header!");
 			}
-			stream.close();
-			return chunk.firstChunk;
+	
+			if (!decoder.setDecoderProperties(properties)) {
+				throw new IOException("Decoder properties cannot be set!");
+			}
+			long outSize = 0;
+			for (int i = 0; i < 8; i++) {
+				int v = in.read();
+				if (v < 0)
+					throw new IOException("Can't read stream size");
+				outSize |= ((long) v) << (8 * i);
+			}
+	
+			if (!decoder.code(in, out, outSize)) {
+				throw new IOException("Decoding unsuccessful!");
+			}
+			return out.getChunk();
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 
-	public void write(OutputStream outputStream, InputStream replayDataStream) throws IOException {
+	public void write(OutputStream outputStream, ReplayChunk r) throws IOException {
 		DataOutputStream dataOut = new DataOutputStream(outputStream);
-		OsrWriter w = new OsrWriter(dataOut);
+		OsrWriter writer = new OsrWriter(dataOut);
+		writer.writeByte(gameMode);
+		writer.writeInt(gameVersion);
+		writer.writeString(beatmapHash);
+		writer.writeString(playerName);
+		writer.writeString(replayHash);
+		writer.writeShort(count300);
+		writer.writeShort(count100);
+		writer.writeShort(count50);
+		writer.writeShort(countGekis);
+		writer.writeShort(countKatus);
+		writer.writeShort(countMisses);
+		writer.writeInt(totalScore);
+		writer.writeShort(maxCombo);
+		writer.writeByte(perfectCombo ? 1 : 0);
+		writer.writeInt(modsUsed);
 
-		w.writeByte(gameMode);
-		w.writeInt(gameVersion);
-		w.writeString(beatmapHash);
-		w.writeString(playerName);
-		w.writeString(replayHash);
-		w.writeShort(count300);
-		w.writeShort(count100);
-		w.writeShort(count50);
-		w.writeShort(countGekis);
-		w.writeShort(countKatus);
-		w.writeShort(countMisses);
-		w.writeInt(totalScore);
-		w.writeShort(maxCombo);
-		w.writeByte(perfectCombo ? 1 : 0);
-		w.writeInt(modsUsed);
-
-		w.writeString(lifeBarGraph);
-		w.writeLong(timestamp);
-
+		writer.writeString(lifeBarGraph);
+		writer.writeLong(timestamp);
 		ByteArrayOutputStream compressedBytes = new ByteArrayOutputStream();
-		LzmaOutputStream lzmaStream = new LzmaOutputStream(compressedBytes, new LZMAEncoder());
-		byte[] buf = new byte[256];
-		int i;
-		while ((i = replayDataStream.read(buf)) != -1) {
-			lzmaStream.write(buf, 0, i);
-		}
-		lzmaStream.close();
-		w.writeInt(compressedBytes.size());
+		LZMAEncoder encoder = new LZMAEncoder();
+		encoder.setDictionarySize(4194304);
+		encoder.setEndMarkerMode(true);
+		encoder.setMatchFinder(LZMAEncoder.EMatchFinderTypeBT4);
+		encoder.setNumFastBytes(0x20);
+		
+        encoder.writeCoderProperties(compressedBytes);
+        compressedBytes.write(new byte[] { -1, -1, -1, -1, -1, -1, -1, -1 });
+		encoder.code(new ReplayWriterStream(r), compressedBytes, -1, -1, null);
+		
+		writer.writeInt(compressedBytes.size());
 		dataOut.write(compressedBytes.toByteArray());
-		compressedBytes.close();
-		w.writeLong(onlineScoreID);
+		writer.writeLong(onlineScoreID);
 		dataOut.close();
+		compressedBytes = null;
+		writer = null;
+		dataOut = null;
 	}
 
 	public void WriteScoreDataFrom(IScore score) {
