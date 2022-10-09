@@ -71,7 +71,7 @@ public final class Settings {
 	/**
 	 * Player's nickname.
 	 */
-	public static String name = "buddy";
+	public static String name = null;
 
 	/**
 	 * Audio/gameplay clocks offset. <br>
@@ -111,6 +111,7 @@ public final class Settings {
 			j.accumulate("usebmssamples", new Boolean(useBmsSamples));
 			j.accumulate("profiler", new Boolean(profiler));
 			j.accumulate("locale", locale);
+			j.accumulate("name", name);
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -170,6 +171,7 @@ public final class Settings {
 				systemLocale = systemLocale.substring(0, 2).toLowerCase();
 			}
 			locale = j.optString("locale", systemLocale);
+			name = j.optString("name", null);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

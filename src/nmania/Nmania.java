@@ -5,15 +5,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import javax.microedition.io.ConnectionNotFoundException;
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Display;
 import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.TextBox;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import nmania.ui.MainScreen;
 import symnovel.SNUtils;
 
-public final class Nmania extends MIDlet {
+public final class Nmania extends MIDlet implements CommandListener {
 
 	public static Nmania inst;
 	public boolean running;
@@ -33,7 +36,6 @@ public final class Nmania extends MIDlet {
 	protected void pauseApp() {
 	}
 
-
 	public static void LoadManager(String dir) throws IOException {
 		bm = new BeatmapManager(dir);
 		bm.Init();
@@ -44,7 +46,14 @@ public final class Nmania extends MIDlet {
 			return;
 		Settings.Load();
 		commonText = getStrings("common");
-		Push(new MainScreen());
+		if (Settings.name == null) {
+			final TextBox box = new TextBox("What's your name?", "", 50, 0);
+			box.addCommand(new Command("Next", Command.OK, 0));
+			box.setCommandListener(this);
+			Push(box);
+		} else {
+			Push(new MainScreen());
+		}
 	}
 
 	public static void Push(Displayable d) {
@@ -90,6 +99,17 @@ public final class Nmania extends MIDlet {
 			// null is returned to avoid massive try-catch constructions near every call.
 			// Normally, it always returns english file.
 			return null;
+		}
+	}
+
+	public void commandAction(Command arg0, Displayable d) {
+		if(d instanceof TextBox) {
+			String name = ((TextBox) d).getString();
+			if(name.length()==0) return;
+			name = name.replace('\n', ' ');
+			Settings.name = name;
+			Settings.Save();
+			Push(new MainScreen());
 		}
 	}
 
