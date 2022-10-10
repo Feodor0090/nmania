@@ -1,5 +1,6 @@
 package nmania.ui.ng;
 
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 
 public interface IDisplay {
@@ -9,4 +10,6 @@ public interface IDisplay {
 	void OpenOverlay(IOverlay o);
 	void SetBg(Image bg);
 	void SetBg(int color);
+	Displayable GetDisplayable();
+	void PauseRendering();
 }

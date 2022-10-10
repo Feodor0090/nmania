@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Graphics;
 
 public interface IScreen {
 	String GetTitle();
+	boolean ShowLogo();
 	String GetOption();
 	void OnOptionActivate(IDisplay d);
 	void Paint(Graphics g, int w, int h);

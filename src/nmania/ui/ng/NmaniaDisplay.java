@@ -2,6 +2,7 @@ package nmania.ui.ng;
 
 import java.io.IOException;
 
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -47,11 +48,19 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	int w;
 	int h;
 	long time = System.currentTimeMillis();
-	long trFrw = -1;
+	long trFrw = -1, trBrw = -1;
 	boolean cycle = true;
+	boolean pause = false;
 
 	public void run() {
 		while (cycle) {
+			while (pause) {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					pause = false;
+				}
+			}
 			long delta = System.currentTimeMillis() - time;
 			time += delta;
 			w = getWidth();
@@ -85,7 +94,11 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					leftButtonContract -= delta * 0.002f;
 			}
 
-			if (trFrw == -1) {
+			if (trFrw != -1) {
+				PlayForwardTransition((time - trFrw) / 250f, stack[top - 1], stack[top]);
+			} else if (trBrw != -1) {
+				PlayBackwardsTransition((time - trBrw) / 250f, stack[top + 1], stack[top]);
+			} else {
 				g.setColor(BG_COLOR);
 				g.fillRect(0, 0, w, h);
 				g.translate(0, headerH + 10);
@@ -93,9 +106,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				g.translate(0, -g.getTranslateY());
 				DrawButtons();
 				DrawHeader(stack[top].GetTitle());
-				g.drawImage(logo, w - logo.getWidth(), 0, 0);
-			} else {
-				PlayForwardTransition((time - trFrw) / 250f, stack[top - 1], stack[top]);
+				if (stack[top].ShowLogo())
+					g.drawImage(logo, w - logo.getWidth(), 0, 0);
 			}
 			flushGraphics();
 		}
@@ -136,7 +148,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			int fw = (int) (w * progress);
 			g.fillRect(w - fw, 0, fw, h);
 			DrawButtons();
-			g.drawImage(logo, lerp(w - logo.getWidth(), w / 2 - logo.getWidth() / 2, progress),
+			g.drawImage(logo, lerp(w - (prev.ShowLogo() ? logo.getWidth() : 0), w / 2 - logo.getWidth() / 2, progress),
 					lerp(0, h / 2 - logo.getHeight() / 2, progress), 0);
 			return;
 		}
@@ -179,17 +191,64 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.fillRect(0, 0, fw, h);
 			g.fillRect(w - fw, 0, fw, h);
 			DrawButtons();
-			g.drawImage(logo, lerp(w - logo.getWidth(), w / 2 - logo.getWidth() / 2, 1f - (progress - 3f)),
-					lerp(0, h / 2 - logo.getHeight() / 2, 1f - (progress - 3f)), 0);
+			g.drawImage(logo, lerp(w - (next.ShowLogo() ? logo.getWidth() : 0), w / 2 - logo.getWidth() / 2,
+					1f - (progress - 3f)), lerp(0, h / 2 - logo.getHeight() / 2, 1f - (progress - 3f)), 0);
 			return;
 		}
+		g.setColor(BG_COLOR);
+		g.fillRect(0, 0, w, h);
 		g.translate(0, headerH + 10);
 		next.Paint(g, w, h - headerH - 10 - keysH);
 		g.translate(0, -g.getTranslateY());
 		DrawButtons();
 		DrawHeader(next.GetTitle());
-		g.drawImage(logo, w - logo.getWidth(), 0, 0);
+		if (next.ShowLogo())
+			g.drawImage(logo, w - logo.getWidth(), 0, 0);
 		trFrw = -1;
+	}
+
+	public void PlayBackwardsTransition(float progress, IScreen top, IScreen target) {
+		if (progress < 1f) {
+			g.setColor(BG_COLOR);
+			g.fillRect(0, 0, w, h);
+			g.translate(0, headerH + 10);
+			top.Paint(g, w, h - headerH - 10 - keysH);
+			g.translate(-g.getTranslateX(), -g.getTranslateY());
+			DrawHeader(top.GetTitle());
+			if (top.ShowLogo())
+				g.drawImage(logo, w - logo.getWidth(), 0, 0);
+			int fh = (int) (h * progress);
+			g.setColor(DARKER_COLOR);
+			g.fillRect(0, 0, w / 2, fh);
+			g.fillRect(w / 2, h - fh, w / 2, fh);
+			DrawButtons();
+			return;
+		}
+		if (progress < 2f) {
+			g.setColor(BG_COLOR);
+			g.fillRect(0, 0, w, h);
+			g.translate((int) (-w * (2f - progress)), headerH + 10);
+			target.Paint(g, w, h - headerH - 10 - keysH);
+			g.translate(-g.getTranslateX(), -g.getTranslateY());
+			DrawHeader(target.GetTitle());
+			if (top.ShowLogo())
+				g.drawImage(logo, w - logo.getWidth(), 0, 0);
+			int fw = (int) (w * (2f - progress));
+			g.setColor(DARKER_COLOR);
+			g.fillRect(w - fw, 0, fw, h);
+			DrawButtons();
+			return;
+		}
+		g.setColor(BG_COLOR);
+		g.fillRect(0, 0, w, h);
+		g.translate(0, headerH + 10);
+		target.Paint(g, w, h - headerH - 10 - keysH);
+		g.translate(0, -g.getTranslateY());
+		DrawButtons();
+		DrawHeader(target.GetTitle());
+		if (target.ShowLogo())
+			g.drawImage(logo, w - logo.getWidth(), 0, 0);
+		trBrw = -1;
 	}
 
 	private void DrawButtons() {
@@ -220,7 +279,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	protected void keyPressed(int k) {
+		pause = false;
 		if (trFrw != -1)
+			return;
+		if (trBrw != -1)
 			return;
 		if (k == -6) {
 			leftButtonState = 1f;
@@ -261,11 +323,15 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public void Back() {
 		stack[top].OnExit(this);
 		if (top == 0) {
+			cycle = false;
+			pause = false;
 			Nmania.exit();
+			return;
 		}
 		stack[top + 1] = null;
 		top--;
 		stack[top].OnResume(this);
+		trBrw = System.currentTimeMillis();
 	}
 
 	public void Push(IScreen s) {
@@ -294,5 +360,13 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public void SetBg(int color) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public Displayable GetDisplayable() {
+		return this;
+	}
+
+	public void PauseRendering() {
+		pause = true;
 	}
 }
