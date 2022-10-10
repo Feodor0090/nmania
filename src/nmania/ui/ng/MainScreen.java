@@ -21,13 +21,19 @@ public class MainScreen extends ListScreen implements IListSelectHandler {
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
-		// TODO Auto-generated method stub
+		switch (item.UUID) {
+		case 0:
+			display.Push(new BMSSelect());
+			break;
 
+		default:
+			break;
+		}
 	}
 
 	public void OnSide(int direction, ListItem item, ListScreen screen, IDisplay display) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public boolean ShowLogo() {
