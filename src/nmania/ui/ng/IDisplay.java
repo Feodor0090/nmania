@@ -3,6 +3,7 @@ package nmania.ui.ng;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 
+import nmania.AudioController;
 import nmania.Beatmap;
 
 public interface IDisplay {
@@ -15,6 +16,7 @@ public interface IDisplay {
 	void SetBg(Image bg);
 	Image GetBg();
 	void SetAudio(Beatmap bm);
+	AudioController GetAudio();
 	Displayable GetDisplayable();
 	void PauseRendering();
 	void ResumeRendering();

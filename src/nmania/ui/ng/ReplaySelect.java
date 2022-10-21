@@ -35,7 +35,8 @@ public class ReplaySelect extends ListScreen implements IListSelectHandler, Runn
 			data.mods = r.GetMods();
 			IInputOverrider input = new ReplayPlayer(chunk, r);
 			display.PauseRendering();
-			Nmania.Push(new ResultsScreen(data, r, input, null, null, null, null, display.GetDisplayable()));
+			Nmania.Push(new ResultsScreen(data, r, input, null, display.GetAudio(), null, display.GetBg(),
+					display.GetDisplayable()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

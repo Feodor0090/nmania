@@ -421,6 +421,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			return;
 		try {
 			music = new AudioController(bm);
+			music.Loop();
 			music.Play();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -428,6 +429,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			e.printStackTrace();
 		} catch (OutOfMemoryError e) {
 		}
+	}
+	
+	public AudioController GetAudio() {
+		return music;
 	}
 
 	public Displayable GetDisplayable() {
