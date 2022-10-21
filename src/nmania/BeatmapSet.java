@@ -126,4 +126,8 @@ public final class BeatmapSet {
 		}
 		return replay;
 	}
+	
+	public static String GetDifficultyNameFast(String fileName) {
+		return fileName.substring(fileName.indexOf('[') + 1, fileName.lastIndexOf(']'));
+	}
 }
