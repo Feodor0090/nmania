@@ -44,13 +44,13 @@ public class PlayerLoader extends Thread {
 			Thread.sleep(1);
 			b = BeatmapManager.ReadBeatmap(data).ToBeatmap();
 		} catch (InvalidBeatmapTypeException e) {
-			log.log("Beatmap is invalid", true);
+			log.logError("Beatmap is invalid");
 			return;
 		} catch (InterruptedException e) {
 			return;
 		} catch (Exception e) {
 			e.printStackTrace();
-			log.log("Failed to parse beatmap!", true);
+			log.logError("Failed to parse beatmap!");
 			return;
 		}
 		b.set = data.set;
@@ -88,7 +88,7 @@ public class PlayerLoader extends Thread {
 		} catch (Exception e) {
 			e.printStackTrace();
 			Nmania.Push(back);
-			log.log(e.toString(), true);
+			log.logError(e.toString());
 		}
 	}
 }

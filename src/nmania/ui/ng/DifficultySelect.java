@@ -7,7 +7,14 @@ import javax.microedition.lcdui.Image;
 
 import nmania.BeatmapManager;
 import nmania.BeatmapSet;
+import nmania.IInputOverrider;
 import nmania.ModsState;
+import nmania.Nmania;
+import nmania.PlayerBootstrapData;
+import nmania.Settings;
+import nmania.replays.AutoplayRunner;
+import nmania.ui.ReplaySelector;
+import nmania.ui.BeatmapSetPage.Difficulty;
 import tube42.lib.imagelib.ColorUtils;
 
 public class DifficultySelect extends ListScreen implements Runnable, IListSelectHandler {
@@ -128,8 +135,13 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
-		// TODO Auto-generated method stub
-
+		PlayerBootstrapData opts = new PlayerBootstrapData();
+		opts.recordReplay = Settings.recordReplay;
+		opts.set = set;
+		opts.mods = mods;
+		opts.mapFileName = ((DifficultyItem) item).fileName;
+		IInputOverrider input = mode == 1 ? new AutoplayRunner() : null;
+		display.Push(new PlayerLoaderScreen(input, opts));
 	}
 
 	public void OnSide(int direction, ListItem item, ListScreen screen, IDisplay display) {
