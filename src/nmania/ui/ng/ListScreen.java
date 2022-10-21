@@ -21,7 +21,7 @@ public abstract class ListScreen implements IScreen {
 		if (selected >= list.length)
 			selected = list.length - 1;
 	}
-	
+
 	public void SetItems(Vector v) {
 		ListItem[] arr = new ListItem[v.size()];
 		v.copyInto(arr);
@@ -99,6 +99,8 @@ public abstract class ListScreen implements IScreen {
 	}
 
 	public void OnKey(IDisplay d, int k) {
+		if (items == null)
+			return;
 		if (k == -1 || k == '2') {
 			selected--;
 			if (selected < 0)
