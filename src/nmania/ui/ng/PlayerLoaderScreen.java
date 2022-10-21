@@ -96,6 +96,7 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 	}
 
 	public void OnResume(IDisplay d) {
+		d.Back();
 	}
 
 	public void run() {
