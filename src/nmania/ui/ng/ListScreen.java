@@ -1,5 +1,7 @@
 package nmania.ui.ng;
 
+import java.util.Vector;
+
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
@@ -18,6 +20,12 @@ public abstract class ListScreen implements IScreen {
 		items = list;
 		if (selected >= list.length)
 			selected = list.length - 1;
+	}
+	
+	public void SetItems(Vector v) {
+		ListItem[] arr = new ListItem[v.size()];
+		v.copyInto(arr);
+		SetItems(arr);
 	}
 
 	public ListItem GetSelected() {
