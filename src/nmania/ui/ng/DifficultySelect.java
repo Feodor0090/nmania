@@ -19,6 +19,8 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	IDisplay d;
 	int keysH;
 	public ModsState mods = new ModsState();
+	public int mode;
+	public String[] modes = new String[] { "normal", "autoplay", "replay" };
 
 	public DifficultySelect(BeatmapManager bm, String folder) {
 		this.bm = bm;
@@ -46,7 +48,23 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 			g.drawLine(0, bottomY + i, w, bottomY + i);
 		}
 		g.setFont(font);
-		NmaniaDisplay.print(g, "Mode: NM AT Replay", 10, bottomY, -1, NmaniaDisplay.BG_COLOR, 0);
+
+		NmaniaDisplay.print(g, "Mode:", 10, bottomY, -1, NmaniaDisplay.BG_COLOR, 0);
+		final int sp = 12;
+		int x = font.stringWidth("Mode:") + 10;
+		for (int i = 0; i < 3; i++) {
+			int sw = font.stringWidth(modes[i]);
+			if (i == mode) {
+				int trs = bottomY + (font.getHeight() >> 1);
+				int trb = bottomY + font.getHeight() - 4;
+				g.setColor(NmaniaDisplay.PINK_COLOR);
+				g.fillTriangle(x + 2, trs, x + 8, bottomY + 4, x + 8, trb);
+				g.fillRect(x + sp - 2, bottomY + 2, sw + 4, font.getHeight() - 4);
+				g.fillTriangle(x + sp + sw + 4, bottomY + 4, x + sp + sw + 4, trb, x + sp + sw + 10, trs);
+			}
+			NmaniaDisplay.print(g, modes[i], x + sp, bottomY, -1, NmaniaDisplay.BG_COLOR, 0);
+			x += sp + sw;
+		}
 		NmaniaDisplay.print(g, "Mods: " + mods.toString(), w - 10, bottomY, -1, NmaniaDisplay.BG_COLOR,
 				Graphics.TOP | Graphics.RIGHT);
 		NmaniaDisplay.print(g, "Beatmap analysis disabled.", 10, bottomY + font.getHeight(), -1, NmaniaDisplay.BG_COLOR,
@@ -116,7 +134,10 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	}
 
 	public void OnSide(int direction, ListItem item, ListScreen screen, IDisplay display) {
-		// TODO Auto-generated method stub
-
+		mode += direction;
+		if (mode < 0)
+			mode = modes.length - 1;
+		if (mode >= modes.length)
+			mode = 0;
 	}
 }
