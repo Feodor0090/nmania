@@ -73,6 +73,7 @@ public class PlayerLoader extends Thread {
 		try {
 			Player p = new Player(b, data, Nmania.skin, log, back, input);
 			if (display != null) {
+				display.SetAudio(null);
 				if (Settings.keepMenu)
 					display.PauseRendering();
 				else

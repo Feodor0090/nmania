@@ -106,8 +106,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 				}
 			}
 			SetItems(items);
-			loadingState = false;
-			Thread.sleep(200);
+			Thread.sleep(50);
 			try {
 				Image img = BeatmapManager.getImgFromFS(set.wdPath + set.folderName + set.image);
 				d.SetBg(img);
@@ -116,6 +115,11 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 			} catch (OutOfMemoryError e) {
 				e.printStackTrace();
 			}
+			loadingState = false;
+			if (!Settings.musicInMenu)
+				return;
+			Thread.sleep(50);
+			d.SetAudio(set);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
