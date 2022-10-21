@@ -55,9 +55,8 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 		}
 		g.setFont(font);
 
-		NmaniaDisplay.print(g, "Mode:", 10, bottomY, -1, NmaniaDisplay.BG_COLOR, 0);
 		final int sp = 12;
-		int x = font.stringWidth("Mode:") + 10;
+		int x = 0;
 		for (int i = 0; i < 3; i++) {
 			int sw = font.stringWidth(modes[i]);
 			if (i == mode) {
@@ -90,6 +89,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 
 	public void run() {
 		try {
+			Thread.sleep(1000);
 			set = bm.FromBMSDirectory(folder + "/");
 			if (set == null) {
 				// TODO error
