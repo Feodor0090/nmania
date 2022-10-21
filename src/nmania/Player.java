@@ -1001,15 +1001,15 @@ public final class Player extends GameCanvas {
 			String t = input == null ? "REC" : input.GetName();
 			final int x = leftOffset + 11 + (columnsCount * colWp1);
 			g.setColor(-1);
-			g.drawString(t, x + 1, 0, 0);
-			g.drawString(t, x - 1, 0, 0);
-			g.drawString(t, x + 1, 2, 0);
-			g.drawString(t, x - 1, 2, 0);
+			g.drawString(t, x + 1, 40, 0);
+			g.drawString(t, x - 1, 40, 0);
+			g.drawString(t, x + 1, 42, 0);
+			g.drawString(t, x - 1, 42, 0);
 			if (input == null)
 				g.setColor(255, 0, 0);
 			else
 				g.setColor(0, 200, 0);
-			g.drawString(t, x, 1, 0);
+			g.drawString(t, x, 41, 0);
 		}
 		flushGraphics();
 	}
