@@ -81,6 +81,12 @@ public final class Settings {
 
 	public static boolean musicInMenu = true;
 
+	public static boolean throttleGameplay = false;
+
+	public static boolean maxPriority = false;
+
+	public static boolean forceThreadSwitch = false;
+
 	/**
 	 * Audio/gameplay clocks offset. <br>
 	 * <br>
@@ -122,6 +128,9 @@ public final class Settings {
 			j.accumulate("name", name);
 			j.accumulate("record", new Boolean(recordReplay));
 			j.accumulate("musicinmenu", new Boolean(musicInMenu));
+			j.accumulate("throttle", new Boolean(throttleGameplay));
+			j.accumulate("maxpr", new Boolean(maxPriority));
+			j.accumulate("threadswitch", new Boolean(forceThreadSwitch));
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -184,6 +193,9 @@ public final class Settings {
 			name = j.optString("name", null);
 			recordReplay = j.optBoolean("record");
 			musicInMenu = j.optBoolean("musicinmenu", true);
+			throttleGameplay = j.optBoolean("throttle");
+			maxPriority = j.optBoolean("maxpr");
+			forceThreadSwitch = j.optBoolean("threadswitch");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

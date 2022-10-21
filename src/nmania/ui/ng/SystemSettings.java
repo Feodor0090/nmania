@@ -46,10 +46,16 @@ public class SystemSettings extends ListScreen implements IListSelectHandler {
 			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		case 5:
+			Settings.throttleGameplay = !Settings.throttleGameplay;
+			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		case 6:
+			Settings.maxPriority = !Settings.maxPriority;
+			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		case 7:
+			((SwitchItem) item).state = !((SwitchItem) item).state;
+			Settings.forceThreadSwitch = !Settings.forceThreadSwitch;
 			break;
 		case 8:
 			break;
