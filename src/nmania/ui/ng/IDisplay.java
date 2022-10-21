@@ -8,8 +8,11 @@ public interface IDisplay {
 	void Push(IScreen s);
 	void CloseOverlay();
 	void OpenOverlay(IOverlay o);
+	/**
+	 * Sets background image.
+	 * @param bg Any image to use. Null to reset.
+	 */
 	void SetBg(Image bg);
-	void SetBg(int color);
 	Displayable GetDisplayable();
 	void PauseRendering();
 }

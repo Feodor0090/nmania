@@ -9,8 +9,12 @@ import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
 
 import nmania.Nmania;
+import nmania.Settings;
 import symnovel.SNUtils;
 import tube42.lib.imagelib.ColorUtils;
+import tube42.lib.imagelib.ImageFxUtils;
+import tube42.lib.imagelib.ImageUtils;
+import tube42.lib.imagelib.ImageFxUtils.PixelModifier;
 
 public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
@@ -51,6 +55,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	long trFrw = -1, trBrw = -1;
 	boolean cycle = true;
 	boolean pause = false;
+	Image bg;
 
 	public void run() {
 		while (cycle) {
@@ -99,8 +104,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			} else if (trBrw != -1) {
 				PlayBackwardsTransition((time - trBrw) / 250f, stack[top + 1], stack[top]);
 			} else {
-				g.setColor(BG_COLOR);
-				g.fillRect(0, 0, w, h);
+				if (bg == null) {
+					g.setColor(BG_COLOR);
+					g.fillRect(0, 0, w, h);
+				} else {
+					g.drawImage(bg, 0, 0, 0);
+				}
 				g.translate(0, headerH + 10);
 				stack[top].Paint(g, w, h - headerH - 10 - keysH);
 				g.translate(0, -g.getTranslateY());
@@ -138,8 +147,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	 */
 	public void PlayForwardTransition(float progress, IScreen prev, IScreen next) {
 		if (progress < 1f) {
-			g.setColor(BG_COLOR);
-			g.fillRect(0, 0, w, h);
+			if (bg == null) {
+				g.setColor(BG_COLOR);
+				g.fillRect(0, 0, w, h);
+			} else {
+				g.drawImage(bg, 0, 0, 0);
+			}
 			g.translate((int) (-w * progress), headerH + 10);
 			prev.Paint(g, w, h - headerH - 10 - keysH);
 			g.translate(-g.getTranslateX(), -g.getTranslateY());
@@ -180,8 +193,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			return;
 		}
 		if (progress < 4f) {
-			g.setColor(BG_COLOR);
-			g.fillRect(0, 0, w, h);
+			if (bg == null) {
+				g.setColor(BG_COLOR);
+				g.fillRect(0, 0, w, h);
+			} else {
+				g.drawImage(bg, 0, 0, 0);
+			}
 			g.translate(0, headerH + 10);
 			next.Paint(g, w, h - headerH - 10 - keysH);
 			g.translate(0, -g.getTranslateY());
@@ -195,8 +212,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					1f - (progress - 3f)), lerp(0, h / 2 - logo.getHeight() / 2, 1f - (progress - 3f)), 0);
 			return;
 		}
-		g.setColor(BG_COLOR);
-		g.fillRect(0, 0, w, h);
+		if (bg == null) {
+			g.setColor(BG_COLOR);
+			g.fillRect(0, 0, w, h);
+		} else {
+			g.drawImage(bg, 0, 0, 0);
+		}
 		g.translate(0, headerH + 10);
 		next.Paint(g, w, h - headerH - 10 - keysH);
 		g.translate(0, -g.getTranslateY());
@@ -209,8 +230,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
 	public void PlayBackwardsTransition(float progress, IScreen top, IScreen target) {
 		if (progress < 1f) {
-			g.setColor(BG_COLOR);
-			g.fillRect(0, 0, w, h);
+			if (bg == null) {
+				g.setColor(BG_COLOR);
+				g.fillRect(0, 0, w, h);
+			} else {
+				g.drawImage(bg, 0, 0, 0);
+			}
 			g.translate(0, headerH + 10);
 			top.Paint(g, w, h - headerH - 10 - keysH);
 			g.translate(-g.getTranslateX(), -g.getTranslateY());
@@ -225,8 +250,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			return;
 		}
 		if (progress < 2f) {
-			g.setColor(BG_COLOR);
-			g.fillRect(0, 0, w, h);
+			if (bg == null) {
+				g.setColor(BG_COLOR);
+				g.fillRect(0, 0, w, h);
+			} else {
+				g.drawImage(bg, 0, 0, 0);
+			}
 			g.translate((int) (-w * (2f - progress)), headerH + 10);
 			target.Paint(g, w, h - headerH - 10 - keysH);
 			g.translate(-g.getTranslateX(), -g.getTranslateY());
@@ -239,8 +268,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			DrawButtons();
 			return;
 		}
-		g.setColor(BG_COLOR);
-		g.fillRect(0, 0, w, h);
+		if (bg == null) {
+			g.setColor(BG_COLOR);
+			g.fillRect(0, 0, w, h);
+		} else {
+			g.drawImage(bg, 0, 0, 0);
+		}
 		g.translate(0, headerH + 10);
 		target.Paint(g, w, h - headerH - 10 - keysH);
 		g.translate(0, -g.getTranslateY());
@@ -353,13 +386,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void SetBg(Image bg) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void SetBg(int color) {
-		// TODO Auto-generated method stub
-
+		this.bg = CreateBackground(bg);
 	}
 
 	public Displayable GetDisplayable() {
@@ -368,5 +395,58 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
 	public void PauseRendering() {
 		pause = true;
+	}
+
+	/**
+	 * Creates background from arbitary image.
+	 * 
+	 * @param raw Image to work on.
+	 * @return Image to use, null if solid color must be used instead.
+	 */
+	public Image CreateBackground(Image raw) {
+		if (raw == null)
+			return null;
+		if (Settings.bgDim >= 1f)
+			return null;
+		try {
+			int scrW = getWidth(), scrH = getHeight();
+			final float screenAR = scrW / (float) scrH;
+			final float bgAR = raw.getWidth() / (float) raw.getHeight();
+			int tw;
+			int th;
+			if (screenAR == bgAR) {
+				tw = scrW;
+				th = scrH;
+			} else if (screenAR > bgAR) {
+				// screen is wider
+				tw = scrW;
+				th = (int) (tw / bgAR);
+			} else {
+				// screen is taller
+				th = scrH;
+				tw = (int) (th * bgAR);
+			}
+			raw = ImageUtils.resize(raw, tw, th, Settings.bgDim <= 0.95f, false);
+			if (tw != scrW || th != scrH) {
+				int x0 = (tw - scrW) / 2;
+				int y0 = (th - scrH) / 2;
+				raw = ImageUtils.crop(raw, x0, y0, x0 + scrW, y0 + scrH);
+			}
+			if (Settings.bgDim > 0.01f) {
+				raw = ImageFxUtils.applyModifier(raw, new PixelModifier() {
+					final int blendLevel = (int) ((1f - Settings.bgDim) * 255);
+
+					public void apply(int[] p, int[] o, int count, int y) {
+						for (int i = 0; i < p.length; i++) {
+							o[i] = ColorUtils.blend(p[i], BG_COLOR, blendLevel);
+						}
+					}
+				});
+			}
+			return raw;
+		} catch (Throwable t) {
+			t.printStackTrace();
+			return null;
+		}
 	}
 }
