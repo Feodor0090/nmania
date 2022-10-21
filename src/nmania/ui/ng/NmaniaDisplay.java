@@ -74,7 +74,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					g = null;
 					bg = null;
 					th = null;
-					music.Stop();
+					if (music != null)
+						music.Stop();
 					music = null;
 					System.gc();
 					return;
@@ -143,7 +144,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		g = null;
 		bg = null;
 		th = null;
-		music.Stop();
+		if (music != null)
+			music.Stop();
 		music = null;
 		System.gc();
 	}
