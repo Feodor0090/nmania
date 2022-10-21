@@ -13,7 +13,7 @@ import nmania.Skin;
 public class BMSSelect extends ListScreen implements Runnable, IListSelectHandler {
 
 	public String GetTitle() {
-		return "SELECT A BEATMAPSET";
+		return "SELECT A CHART";
 	}
 
 	public boolean ShowLogo() {
@@ -75,13 +75,10 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
-		// TODO Auto-generated method stub
-
+		display.Push(new DifficultySelect(Nmania.bm, item.text));
 	}
 
 	public void OnSide(int direction, ListItem item, ListScreen screen, IDisplay display) {
-		// TODO Auto-generated method stub
-
 	}
 
 }
