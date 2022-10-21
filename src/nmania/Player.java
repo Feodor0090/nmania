@@ -12,7 +12,6 @@ import javax.microedition.media.MediaException;
 
 import nmania.Beatmap.Break;
 import nmania.replays.ReplayRecorder;
-import nmania.ui.MainScreen;
 import nmania.ui.ResultsScreen;
 import symnovel.SNUtils;
 import tube42.lib.imagelib.ColorUtils;
@@ -453,7 +452,10 @@ public final class Player extends GameCanvas {
 				isPaused = false;
 				track.Stop();
 				Dispose();
-				Nmania.Push(menu == null ? (new MainScreen()) : menu);
+				if (menu == null)
+					Nmania.PushMainScreen();
+				else
+					Nmania.Push(menu);
 			}
 			return;
 		}
@@ -931,7 +933,10 @@ public final class Player extends GameCanvas {
 			running = false;
 			track.Stop();
 			Dispose();
-			Nmania.Push(menu == null ? (new MainScreen()) : menu);
+			if (menu == null)
+				Nmania.PushMainScreen();
+			else
+				Nmania.Push(menu);
 		} else {
 			track.Pause();
 			isPaused = true;
