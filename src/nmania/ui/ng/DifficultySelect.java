@@ -73,8 +73,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	}
 
 	public void OnOptionActivate(IDisplay d) {
-		// TODO Auto-generated method stub
-
+		d.Push(new ModsSelectScreen(mods));
 	}
 
 	public void OnEnter(IDisplay d) {
