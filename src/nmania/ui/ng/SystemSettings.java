@@ -33,6 +33,7 @@ public class SystemSettings extends ListScreen implements IListSelectHandler {
 		case 3:
 			Settings.recordReplay = !Settings.recordReplay;
 			((SwitchItem) item).state = !((SwitchItem) item).state;
+			break;
 		case 4:
 			Settings.keepMenu = !Settings.keepMenu;
 			((SwitchItem) item).state = !((SwitchItem) item).state;
