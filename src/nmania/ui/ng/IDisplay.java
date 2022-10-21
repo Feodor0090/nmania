@@ -4,22 +4,33 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Image;
 
 import nmania.AudioController;
-import nmania.Beatmap;
+import nmania.BeatmapSet;
 
 public interface IDisplay {
 	void Back();
+
 	void Push(IScreen s);
+
 	/**
 	 * Sets background image.
+	 * 
 	 * @param bg Any image to use. Null to reset.
 	 */
 	void SetBg(Image bg);
+
 	Image GetBg();
-	void SetAudio(Beatmap bm);
+
+	void SetAudio(BeatmapSet set);
+
 	AudioController GetAudio();
+
 	Displayable GetDisplayable();
+
 	void PauseRendering();
+
 	void ResumeRendering();
+
 	void Destroy();
+
 	void Throttle(boolean enable);
 }

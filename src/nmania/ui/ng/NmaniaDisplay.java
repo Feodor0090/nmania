@@ -411,7 +411,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		return bg;
 	}
 
-	public void SetAudio(Beatmap bm) {
+	public void SetAudio(BeatmapSet set) {
 		if (music != null) {
 			music.Stop();
 			music = null;
@@ -420,7 +420,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		if (bm == null)
 			return;
 		try {
-			music = new AudioController(bm);
+			music = new AudioController(set);
 			music.Loop();
 			music.Play();
 		} catch (IOException e) {
