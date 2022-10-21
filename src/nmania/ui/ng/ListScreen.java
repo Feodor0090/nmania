@@ -12,7 +12,7 @@ public abstract class ListScreen implements IScreen {
 	private int selected;
 	private int targetY;
 	private int realY;
-	private Font font = Font.getFont(0, 0, 8);
+	protected Font font = Font.getFont(0, 0, 8);
 	private int fontH = font.getHeight();
 	protected String horSelecrorTitle = null;
 
