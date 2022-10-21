@@ -430,7 +430,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		} catch (OutOfMemoryError e) {
 		}
 	}
-	
+
 	public AudioController GetAudio() {
 		return music;
 	}
@@ -442,6 +442,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public void PauseRendering() {
 		pause = true;
 		th.setPriority(Thread.MIN_PRIORITY);
+		stack[top].OnPause(this);
 	}
 
 	public void ResumeRendering() {
@@ -450,6 +451,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		pause = false;
 		th.interrupt();
 		th.setPriority(Thread.NORM_PRIORITY);
+		stack[top].OnResume(this);
 	}
 
 	public void Throttle(boolean e) {
