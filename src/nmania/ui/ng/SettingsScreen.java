@@ -6,8 +6,8 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler {
 	public SettingsScreen() {
 		SetItems(new ListItem[] { new ListItem(0, "Input settings", this), new ListItem(1, "Visual settings", this),
 				new ListItem(2, "Audio settings", this), new ListItem(3, "System settings", this),
-				new DataItem(4, "Language", this, Settings.locale), new ListItem(4, "Working folder", this),
-				new DataItem(4, "Player's name", this, Settings.name), });
+				new DataItem(4, "Language", this, Settings.locale), new ListItem(5, "Working folder", this),
+				new DataItem(6, "Player's name", this, Settings.name), });
 	}
 
 	public String GetTitle() {
@@ -25,6 +25,9 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler {
 		switch (item.UUID) {
 		case 0:
 			display.Push(new InputSettings());
+			break;
+		case 1:
+			display.Push(new VisualSettings());
 			break;
 		case 2:
 			display.Push(new AudioSettings());
