@@ -39,57 +39,64 @@ public class PlayerLoader extends Thread {
 	private IDisplay display;
 
 	public void run() {
-		Beatmap b;
 		try {
-			Thread.sleep(1);
-			b = BeatmapManager.ReadBeatmap(data).ToBeatmap();
-		} catch (InvalidBeatmapTypeException e) {
-			log.logError("Beatmap is invalid");
-			return;
-		} catch (InterruptedException e) {
-			return;
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.logError("Failed to parse beatmap!");
-			return;
-		}
-		b.set = data.set;
-		try {
-			Thread.sleep(1);
-		} catch (InterruptedException e) {
-			return;
-		}
-		if (Settings.keyLayout[b.columnsCount - 1] == null) {
-			// no keyboard layout
-			if (display != null)
-				display.PauseRendering();
-			KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, back);
-			Nmania.Push(kbs);
-			return;
-		}
-		if (!Settings.keepMenu) {
-			back = null;
-		}
-		try {
-			Player p = new Player(b, data, Nmania.skin, log, back, input);
-			if (display != null) {
-				display.SetAudio(null);
-				if (Settings.keepMenu)
-					display.PauseRendering();
-				else
-					display.Destroy();
-				display = null;
+			Beatmap b;
+			try {
+				Thread.sleep(1);
+				b = BeatmapManager.ReadBeatmap(data).ToBeatmap();
+			} catch (InvalidBeatmapTypeException e) {
+				log.logError("Beatmap is invalid");
+				return;
+			} catch (InterruptedException e) {
+				return;
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.logError("Failed to parse beatmap!");
+				return;
 			}
-			Nmania.Push(p);
-			Thread t = new PlayerThread(p);
-			t.start();
-		} catch (InterruptedException e) {
-			Nmania.Push(back);
-			return;
+			b.set = data.set;
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				return;
+			}
+			if (Settings.keyLayout[b.columnsCount - 1] == null) {
+				// no keyboard layout
+				if (display != null)
+					display.PauseRendering();
+				KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, back);
+				Nmania.Push(kbs);
+				return;
+			}
+			if (!Settings.keepMenu) {
+				back = null;
+			}
+			try {
+				Player p = new Player(b, data, Nmania.skin, log, back, input);
+				if (display != null) {
+					display.SetAudio(null);
+					if (Settings.keepMenu)
+						display.PauseRendering();
+					else
+						display.Destroy();
+					display = null;
+				}
+				Nmania.Push(p);
+				Thread t = new PlayerThread(p);
+				t.start();
+			} catch (InterruptedException e) {
+				Nmania.Push(back);
+				return;
+			} catch (Exception e) {
+				e.printStackTrace();
+				Nmania.Push(back);
+				log.logError(e.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			Nmania.Push(back);
 			log.logError(e.toString());
+		} catch (OutOfMemoryError e) {
+			log.logError("Out of memory");
 		}
 	}
 }
