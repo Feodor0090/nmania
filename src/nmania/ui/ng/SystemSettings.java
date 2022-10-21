@@ -5,11 +5,11 @@ import nmania.Settings;
 public class SystemSettings extends ListScreen implements IListSelectHandler {
 
 	public SystemSettings() {
-		SetItems(new ListItem[] { new SwitchItem(2, "Fullscreen flush", this, false),
-				new SwitchItem(3, "Record replays", this, false),
-				new SwitchItem(4, "Keep UI during gameplay", this, false),
-				new SwitchItem(5, "Throttle gameplay clock", this, false),
-				new SwitchItem(6, "High priority", this, false), new SwitchItem(7, "Switch threads", this, false),
+		SetItems(new ListItem[] { new SwitchItem(2, "Fullscreen flush", this, Settings.fullScreenFlush),
+				new SwitchItem(3, "Record replays", this, Settings.recordReplay),
+				new SwitchItem(4, "Keep UI during gameplay", this, Settings.keepMenu),
+				new SwitchItem(5, "Throttle gameplay clock", this, Settings.throttleGameplay),
+				new SwitchItem(6, "High priority", this, Settings.maxPriority), new SwitchItem(7, "Switch threads", this, Settings.forceThreadSwitch),
 				new SwitchItem(8, "Analyze beatmaps", this, false), });
 	}
 
