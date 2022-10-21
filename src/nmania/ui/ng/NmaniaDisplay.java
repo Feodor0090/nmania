@@ -61,7 +61,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		while (cycle) {
 			if (pause) {
 				try {
-					Thread.sleep(Integer.MAX_VALUE);
+					Thread.sleep(Integer.MAX_VALUE*10L);
 				} catch (InterruptedException e) {
 					pause = false;
 				}
@@ -129,7 +129,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			flushGraphics();
 			if (throttle)
 				try {
-					Thread.sleep(60);
+					Thread.sleep(40);
 				} catch (InterruptedException e) {
 				}
 		}
