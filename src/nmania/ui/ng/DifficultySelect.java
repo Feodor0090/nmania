@@ -9,12 +9,9 @@ import nmania.BeatmapManager;
 import nmania.BeatmapSet;
 import nmania.IInputOverrider;
 import nmania.ModsState;
-import nmania.Nmania;
 import nmania.PlayerBootstrapData;
 import nmania.Settings;
 import nmania.replays.AutoplayRunner;
-import nmania.ui.ReplaySelector;
-import nmania.ui.BeatmapSetPage.Difficulty;
 import tube42.lib.imagelib.ColorUtils;
 
 public class DifficultySelect extends ListScreen implements Runnable, IListSelectHandler {
@@ -50,6 +47,8 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	public void Paint(Graphics g, int w, int h) {
 		int bottomY = h - font.getHeight() * 2;
 		int bottomH = h - bottomY + keysH;
+		super.Paint(g, w, bottomY - 10);
+
 		for (int i = 0; i <= bottomH; i++) {
 			g.setColor(ColorUtils.blend(NmaniaDisplay.DARKER_COLOR, NmaniaDisplay.NMANIA_COLOR, (i * 255 / bottomH)));
 			g.drawLine(0, bottomY + i, w, bottomY + i);
@@ -76,7 +75,6 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 				Graphics.TOP | Graphics.RIGHT);
 		NmaniaDisplay.print(g, "Beatmap analysis disabled.", 10, bottomY + font.getHeight(), -1, NmaniaDisplay.BG_COLOR,
 				0);
-		super.Paint(g, w, bottomY - 10);
 	}
 
 	public void OnOptionActivate(IDisplay d) {
@@ -98,15 +96,6 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 				return;
 			}
 
-			try {
-				Image img = BeatmapManager.getImgFromFS(set.wdPath + set.folderName + set.image);
-				d.SetBg(img);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} catch (OutOfMemoryError e) {
-				e.printStackTrace();
-			}
-
 			title = set.artist + " - " + set.title;
 
 			Vector items = new Vector();
@@ -118,6 +107,15 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 			}
 			SetItems(items);
 			loadingState = false;
+			Thread.sleep(200);
+			try {
+				Image img = BeatmapManager.getImgFromFS(set.wdPath + set.folderName + set.image);
+				d.SetBg(img);
+			} catch (Exception e) {
+				e.printStackTrace();
+			} catch (OutOfMemoryError e) {
+				e.printStackTrace();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -140,6 +138,10 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 		opts.set = set;
 		opts.mods = mods;
 		opts.mapFileName = ((DifficultyItem) item).fileName;
+		if (mode == 2) {
+			display.Push(new ReplaySelect(opts));
+			return;
+		}
 		IInputOverrider input = mode == 1 ? new AutoplayRunner() : null;
 		display.Push(new PlayerLoaderScreen(input, opts));
 	}
