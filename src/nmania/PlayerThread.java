@@ -10,11 +10,15 @@ public final class PlayerThread extends Thread {
 	final Player player;
 
 	public void run() {
-		if (Settings.maxPriority)
-			this.setPriority(MAX_PRIORITY);
-		player.Refill();
-		if (!player.track.Play())
-			throw new RuntimeException("Failed to start music!");
-		player.Loop();
+		try {
+			if (Settings.maxPriority)
+				this.setPriority(MAX_PRIORITY);
+			player.Refill();
+			if (!player.track.Play())
+				throw new RuntimeException("Failed to start music!");
+			player.Loop();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
