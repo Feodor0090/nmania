@@ -47,7 +47,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private String lastValidLeftButton = "";
 	private boolean leftButtonActive = false;
 	private float rightButtonState = 0f;
-	Image logo;
+	public static Image logo;
 	int w;
 	int h;
 	long time = System.currentTimeMillis();
@@ -55,14 +55,23 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	boolean cycle = true;
 	boolean pause = false;
 	Image bg;
+	Thread th;
 
 	public void run() {
 		while (cycle) {
-			while (pause) {
+			if (pause) {
 				try {
-					Thread.sleep(100);
+					Thread.sleep(Integer.MAX_VALUE);
 				} catch (InterruptedException e) {
 					pause = false;
+				}
+				if (!cycle) {
+					stack = null;
+					g = null;
+					bg = null;
+					th = null;
+					System.gc();
+					return;
 				}
 			}
 			long delta = System.currentTimeMillis() - time;
@@ -118,11 +127,22 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					g.drawImage(logo, w - logo.getWidth(), 0, 0);
 			}
 			flushGraphics();
+			if (throttle)
+				try {
+					Thread.sleep(60);
+				} catch (InterruptedException e) {
+				}
 		}
+		stack = null;
+		g = null;
+		bg = null;
+		th = null;
+		System.gc();
 	}
 
 	public int keysH = buttons.getHeight() * 2, keysH2 = buttons.getHeight();
 	int keysW = 20, keysW2 = 15;
+	private boolean throttle;
 
 	private static float clamp1(float val) {
 		if (val < 0f)
@@ -311,7 +331,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	protected void keyPressed(int k) {
-		pause = false;
+		if (pause)
+			ResumeRendering();
 		if (trFrw != -1)
 			return;
 		if (trBrw != -1)
@@ -347,9 +368,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public Thread Start() {
-		Thread t = new Thread(this);
-		t.start();
-		return t;
+		th = new Thread(this);
+		th.start();
+		return th;
 	}
 
 	public void Back() {
@@ -384,6 +405,23 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
 	public void PauseRendering() {
 		pause = true;
+		th.setPriority(Thread.MIN_PRIORITY);
+	}
+
+	public void ResumeRendering() {
+		if (!pause)
+			return;
+		pause = false;
+		th.interrupt();
+		th.setPriority(Thread.NORM_PRIORITY);
+	}
+
+	public void Throttle(boolean e) {
+		throttle = e;
+		if (e)
+			th.setPriority(Thread.MIN_PRIORITY);
+		else
+			th.setPriority(Thread.NORM_PRIORITY);
 	}
 
 	/**
@@ -437,5 +475,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			t.printStackTrace();
 			return null;
 		}
+	}
+
+	public void Destroy() {
+		 cycle = false;
+		 ResumeRendering();
 	}
 }

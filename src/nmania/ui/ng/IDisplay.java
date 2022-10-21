@@ -13,4 +13,7 @@ public interface IDisplay {
 	void SetBg(Image bg);
 	Displayable GetDisplayable();
 	void PauseRendering();
+	void ResumeRendering();
+	void Destroy();
+	void Throttle(boolean enable);
 }

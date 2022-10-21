@@ -14,6 +14,7 @@ import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
 import nmania.ui.MainScreen;
+import nmania.ui.ng.IDisplay;
 import symnovel.SNUtils;
 
 public final class Nmania extends MIDlet implements CommandListener {
@@ -58,6 +59,8 @@ public final class Nmania extends MIDlet implements CommandListener {
 
 	public static void Push(Displayable d) {
 		Display.getDisplay(inst).setCurrent(d);
+		if (d instanceof IDisplay)
+			((IDisplay) d).ResumeRendering();
 	}
 
 	public static void exit() {
