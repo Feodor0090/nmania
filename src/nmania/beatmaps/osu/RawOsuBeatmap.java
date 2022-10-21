@@ -77,7 +77,7 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 				v.addElement(b);
 			}
 		}
-		v.addElement(new Break(Integer.MAX_VALUE - 2, 1)); //this is requered by player to optimize MORE checks
+		v.addElement(new Break(Integer.MAX_VALUE - 2, 1)); // this is requered by player to optimize MORE checks
 		Break[] arr = new Break[v.size()];
 		v.copyInto(arr);
 		return arr;
@@ -89,7 +89,7 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		b.diffName = getValue("Version");
 		b.difficulty = Float.parseFloat(getValue("OverallDifficulty"));
 		b.points = new TimingPoint[0];
-		b.audio = getValue("AudioFilename");
+		b.audio = GetAudio();
 		b.image = GetImage();
 		b.breaks = breaks();
 		String[] rawObjs = hitObjects();
@@ -184,6 +184,10 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 
 	public String GetMapper() {
 		return getValue("Creator");
+	}
+
+	public String GetAudio() {
+		return getValue("AudioFilename");
 	}
 
 	public String GetMode() {

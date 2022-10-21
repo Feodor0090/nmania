@@ -59,7 +59,7 @@ public final class BeatmapSet {
 		return null;
 	}
 
-	public String GetFullBeatmapPath(String diffFileName) {
+	public String ToGlobalPath(String diffFileName) {
 		return wdPath + folderName + diffFileName;
 	}
 

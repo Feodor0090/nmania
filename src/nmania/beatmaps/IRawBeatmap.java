@@ -13,6 +13,7 @@ public interface IRawBeatmap {
 	
 	Beatmap ToBeatmap() throws InvalidBeatmapTypeException;
 	String GetImage();
+	String GetAudio();
 	String GetTitle();
 	String GetArtist();
 	String GetMapper();

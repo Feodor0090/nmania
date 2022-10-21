@@ -60,4 +60,8 @@ public class RawNmaniaBeatmap extends JSONObject implements IRawBeatmap {
 		return IRawBeatmap.VSRG;
 	}
 
+	public String GetAudio() {
+		return getString("audio");
+	}
+
 }
