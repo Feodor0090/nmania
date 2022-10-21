@@ -7,7 +7,10 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
+import javax.microedition.media.MediaException;
 
+import nmania.AudioController;
+import nmania.Beatmap;
 import nmania.Nmania;
 import nmania.Settings;
 import symnovel.SNUtils;
@@ -56,12 +59,13 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	boolean pause = false;
 	Image bg;
 	Thread th;
+	AudioController music;
 
 	public void run() {
 		while (cycle) {
 			if (pause) {
 				try {
-					Thread.sleep(Integer.MAX_VALUE*10L);
+					Thread.sleep(Integer.MAX_VALUE * 10L);
 				} catch (InterruptedException e) {
 					pause = false;
 				}
@@ -70,6 +74,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					g = null;
 					bg = null;
 					th = null;
+					music.Stop();
+					music = null;
 					System.gc();
 					return;
 				}
@@ -137,6 +143,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		g = null;
 		bg = null;
 		th = null;
+		music.Stop();
+		music = null;
 		System.gc();
 	}
 
@@ -399,6 +407,29 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		this.bg = CreateBackground(bg);
 	}
 
+	public Image GetBg() {
+		return bg;
+	}
+
+	public void SetAudio(Beatmap bm) {
+		if (music != null) {
+			music.Stop();
+			music = null;
+			System.gc();
+		}
+		if (bm == null)
+			return;
+		try {
+			music = new AudioController(bm);
+			music.Play();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (MediaException e) {
+			e.printStackTrace();
+		} catch (OutOfMemoryError e) {
+		}
+	}
+
 	public Displayable GetDisplayable() {
 		return this;
 	}
@@ -478,7 +509,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Destroy() {
-		 cycle = false;
-		 ResumeRendering();
+		cycle = false;
+		ResumeRendering();
 	}
 }
