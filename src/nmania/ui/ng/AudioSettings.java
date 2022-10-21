@@ -4,7 +4,7 @@ import nmania.Settings;
 
 public class AudioSettings extends ListScreen implements IListSelectHandler {
 	public AudioSettings() {
-		SetItems(new ListItem[] { new SwitchItem(0, "Play music in menu", this, false),
+		SetItems(new ListItem[] { new SwitchItem(0, "Play music in menu", this, Settings.musicInMenu),
 				new SwitchItem(1, "Enable hitsounds", this, Settings.hitSamples),
 				new SwitchItem(2, "Enable feedback samples", this, Settings.gameplaySamples),
 				new SwitchItem(3, "Use BMS's sounds", this, Settings.useBmsSamples),
