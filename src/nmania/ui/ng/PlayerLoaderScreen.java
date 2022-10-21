@@ -82,7 +82,6 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 
 	public void OnEnter(IDisplay d) {
 		this.d = d;
-		d.Throttle(true);
 		th = new Thread(this);
 		th.start();
 	}
@@ -105,7 +104,8 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 		} catch (InterruptedException e) {
 			return;
 		}
-		hash = "hash: " + BeatmapManager.ReadBeatmapMd5(data);
+		d.Throttle(true);
+		hash = BeatmapManager.ReadBeatmapMd5(data);
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
