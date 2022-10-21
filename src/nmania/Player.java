@@ -763,6 +763,9 @@ public final class Player extends GameCanvas {
 			} else if (!breakActive) {
 				Redraw();
 			}
+
+			if (Settings.forceThreadSwitch)
+				Thread.yield();
 		}
 	}
 
