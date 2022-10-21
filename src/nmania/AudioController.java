@@ -74,4 +74,11 @@ public final class AudioController {
 		} catch (MediaException e) {
 		}
 	}
+	
+	/**
+	 * Loops this track.
+	 */
+	public void Loop() {
+		player.setLoopCount(-1);
+	}
 }
