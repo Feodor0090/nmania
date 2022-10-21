@@ -122,7 +122,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		}
 	}
 
-	int keysH = buttons.getHeight() * 2, keysH2 = buttons.getHeight();
+	public int keysH = buttons.getHeight() * 2, keysH2 = buttons.getHeight();
 	int keysW = 20, keysW2 = 15;
 
 	private static float clamp1(float val) {
