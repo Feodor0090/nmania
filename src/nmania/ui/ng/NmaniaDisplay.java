@@ -10,7 +10,7 @@ import javax.microedition.lcdui.game.GameCanvas;
 import javax.microedition.media.MediaException;
 
 import nmania.AudioController;
-import nmania.Beatmap;
+import nmania.BeatmapSet;
 import nmania.Nmania;
 import nmania.Settings;
 import symnovel.SNUtils;
@@ -417,7 +417,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			music = null;
 			System.gc();
 		}
-		if (bm == null)
+		if (set == null)
 			return;
 		try {
 			music = new AudioController(set);
