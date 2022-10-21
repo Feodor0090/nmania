@@ -15,9 +15,19 @@ import javax.microedition.media.Player;
 public final class AudioController {
 
 	private int lastTime;
-	
+
 	public AudioController(Beatmap map) throws IOException, MediaException {
 		String file = map.ToGlobalPath(map.audio);
+		// this supposes that all "builtin" files are mp3
+		player = file.startsWith("file://") ? Manager.createPlayer(file)
+				: Manager.createPlayer(getClass().getResourceAsStream(file), "audio/mpeg");
+		player.realize();
+		player.prefetch();
+		offset = Settings.gameplayOffset;
+	}
+
+	public AudioController(BeatmapSet set) throws IOException, MediaException {
+		String file = set.ToGlobalPath(set.audio);
 		// this supposes that all "builtin" files are mp3
 		player = file.startsWith("file://") ? Manager.createPlayer(file)
 				: Manager.createPlayer(getClass().getResourceAsStream(file), "audio/mpeg");
@@ -31,7 +41,8 @@ public final class AudioController {
 
 	public int Now() {
 		long mt = player.getMediaTime();
-		if(mt<0) return lastTime;
+		if (mt < 0)
+			return lastTime;
 		return lastTime = offset + (int) (mt / 1000);
 	}
 
@@ -74,7 +85,7 @@ public final class AudioController {
 		} catch (MediaException e) {
 		}
 	}
-	
+
 	/**
 	 * Loops this track.
 	 */

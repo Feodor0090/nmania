@@ -25,6 +25,7 @@ public final class BeatmapSet {
 	public String artist;
 	public String mapper;
 	public String image;
+	public String audio;
 	public String wdPath;
 	public String folderName;
 	public String[] files;
