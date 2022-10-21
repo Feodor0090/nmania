@@ -5,8 +5,7 @@ import nmania.Settings;
 public class SystemSettings extends ListScreen implements IListSelectHandler {
 
 	public SystemSettings() {
-		SetItems(new ListItem[] { new SwitchItem(0, "Draw backgrounds", this, false),
-				new SwitchItem(1, "Draw profiler", this, false), new SwitchItem(2, "Fullscreen flush", this, false),
+		SetItems(new ListItem[] { new SwitchItem(2, "Fullscreen flush", this, false),
 				new SwitchItem(3, "Record replays", this, false),
 				new SwitchItem(4, "Keep UI during gameplay", this, false),
 				new SwitchItem(5, "Throttle gameplay clock", this, false),
@@ -27,13 +26,6 @@ public class SystemSettings extends ListScreen implements IListSelectHandler {
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
 		switch (item.UUID) {
-		case 0:
-
-			break;
-		case 1:
-			Settings.profiler = !Settings.profiler;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
-			break;
 		case 2:
 			Settings.fullScreenFlush = !Settings.fullScreenFlush;
 			((SwitchItem) item).state = !((SwitchItem) item).state;
