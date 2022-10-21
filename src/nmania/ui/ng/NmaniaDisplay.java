@@ -37,7 +37,6 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private Graphics g;
 	private IScreen[] stack = new IScreen[10];
 	private int top = 0;
-	private IOverlay overlay = null;
 
 	// drawing vars
 	static Font header = Font.getFont(0, 0, 0);
@@ -373,16 +372,6 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		stack[top] = s;
 		s.OnEnter(this);
 		trFrw = System.currentTimeMillis();
-	}
-
-	public void CloseOverlay() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void OpenOverlay(IOverlay o) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void SetBg(Image bg) {
