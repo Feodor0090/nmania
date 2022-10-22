@@ -384,7 +384,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Back() {
-		stack[top].OnExit(this);
+		if (stack[top].OnExit(this))
+			return;
 		if (top == 0) {
 			cycle = false;
 			pause = false;

@@ -116,7 +116,8 @@ public class ModsSelectScreen implements IScreen {
 	public void OnEnter(IDisplay d) {
 	}
 
-	public void OnExit(IDisplay d) {
+	public boolean OnExit(IDisplay d) {
+		return false;
 	}
 
 	public void OnPause(IDisplay d) {

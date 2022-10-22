@@ -86,9 +86,10 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 		th.start();
 	}
 
-	public void OnExit(IDisplay d) {
+	public boolean OnExit(IDisplay d) {
 		d.Throttle(false);
 		th.interrupt();
+		return false;
 	}
 
 	public void OnPause(IDisplay d) {

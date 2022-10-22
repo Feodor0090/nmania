@@ -43,8 +43,9 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler {
 	public void OnSide(int direction, ListItem item, ListScreen screen, IDisplay display) {
 	}
 
-	public void OnExit(IDisplay d) {
+	public boolean OnExit(IDisplay d) {
 		Settings.Save();
+		return false;
 	}
 
 	public boolean ShowLogo() {

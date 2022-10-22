@@ -70,6 +70,8 @@ public abstract class ListScreen implements IScreen {
 			diff += add;
 			realY += diff;
 		}
+		if (items == null)
+			return;
 		int y = realY;
 		for (int i = 0; i < items.length; i++) {
 			if (y > -fontH * 2) {
@@ -132,7 +134,8 @@ public abstract class ListScreen implements IScreen {
 	public void OnEnter(IDisplay d) {
 	}
 
-	public void OnExit(IDisplay d) {
+	public boolean OnExit(IDisplay d) {
+		return false;
 	}
 
 	public void OnPause(IDisplay d) {
