@@ -426,7 +426,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void SetBg(Image bg) {
-		this.bg = CreateBackground(bg);
+		this.bg = CreateBackground(bg, getWidth(), getHeight());
 	}
 
 	public Image GetBg() {
@@ -491,13 +491,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	 * @param raw Image to work on.
 	 * @return Image to use, null if solid color must be used instead.
 	 */
-	public Image CreateBackground(Image raw) {
+	public static Image CreateBackground(Image raw, int scrW, int scrH) {
 		if (raw == null)
 			return null;
 		if (Settings.bgDim >= 1f)
 			return null;
 		try {
-			int scrW = getWidth(), scrH = getHeight();
 			final float screenAR = scrW / (float) scrH;
 			final float bgAR = raw.getWidth() / (float) raw.getHeight();
 			int tw;

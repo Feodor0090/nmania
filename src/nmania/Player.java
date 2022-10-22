@@ -13,6 +13,7 @@ import javax.microedition.media.MediaException;
 import nmania.Beatmap.Break;
 import nmania.replays.ReplayRecorder;
 import nmania.ui.ResultsScreen;
+import nmania.ui.ng.NmaniaDisplay;
 import symnovel.SNUtils;
 import tube42.lib.imagelib.ColorUtils;
 import tube42.lib.imagelib.ImageFxUtils;
@@ -42,42 +43,7 @@ public final class Player extends GameCanvas {
 		}
 		if (_bg != null) {
 			try {
-				Thread.sleep(1);
-				final float screenAR = scrW / (float) scrH;
-				final float bgAR = _bg.getWidth() / (float) _bg.getHeight();
-				int tw;
-				int th;
-				if (screenAR == bgAR) {
-					tw = scrW;
-					th = scrH;
-				} else if (screenAR > bgAR) {
-					// screen is wider
-					tw = scrW;
-					th = (int) (tw / bgAR);
-				} else {
-					// screen is taller
-					th = scrH;
-					tw = (int) (th * bgAR);
-				}
-				_bg = ImageUtils.resize(_bg, tw, th, Settings.bgDim <= 0.95f, false);
-				Thread.sleep(1);
-				if (tw != scrW || th != scrH) {
-					int x0 = (tw - scrW) / 2;
-					int y0 = (th - scrH) / 2;
-					_bg = ImageUtils.crop(_bg, x0, y0, x0 + scrW, y0 + scrH);
-				}
-				Thread.sleep(1);
-				if (Settings.bgDim > 0.01f) {
-					_bg = ImageFxUtils.applyModifier(_bg, new PixelModifier() {
-						final int blendLevel = (int) ((1f - Settings.bgDim) * 255);
-
-						public void apply(int[] p, int[] o, int count, int y) {
-							for (int i = 0; i < p.length; i++) {
-								o[i] = ColorUtils.blend(p[i], 0xff000000, blendLevel);
-							}
-						}
-					});
-				}
+				_bg = NmaniaDisplay.CreateBackground(_bg, scrW, scrH);
 			} catch (OutOfMemoryError e) {
 				_bg = null;
 			}
