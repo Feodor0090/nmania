@@ -32,6 +32,7 @@ public class Alert implements IScreen {
 
 	public void Paint(Graphics g, int w, int h) {
 		Font f = Font.getFont(0, 0, 8);
+		g.setFont(f);
 		int y = 0;
 		int x = 10;
 		int sp = f.charWidth(' ');
@@ -44,6 +45,7 @@ public class Alert implements IScreen {
 				y += f.getHeight();
 			}
 			NmaniaDisplay.print(g, word, x, y, -1, 0, 0);
+			lineHasWords = true;
 			x += ww + sp;
 		}
 	}
