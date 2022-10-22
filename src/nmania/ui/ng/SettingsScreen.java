@@ -4,10 +4,6 @@ import nmania.Settings;
 
 public class SettingsScreen extends ListScreen implements IListSelectHandler {
 	public SettingsScreen() {
-		SetItems(new ListItem[] { new ListItem(0, "Input settings", this), new ListItem(1, "Visual settings", this),
-				new ListItem(2, "Audio settings", this), new ListItem(3, "System settings", this),
-				new DataItem(4, "Language", this, Settings.locale), new ListItem(5, "Working folder", this),
-				new DataItem(6, "Player's name", this, Settings.name), });
 	}
 
 	public String GetTitle() {
@@ -35,7 +31,8 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler {
 		case 3:
 			display.Push(new SystemSettings());
 			break;
-		default:
+		case 5:
+			display.Push(new DiskSelectScreen());
 			break;
 		}
 	}
@@ -46,6 +43,18 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler {
 	public boolean OnExit(IDisplay d) {
 		Settings.Save();
 		return false;
+	}
+
+	public void OnResume(IDisplay d) {
+		SetItems(new ListItem[] { new ListItem(0, "Input settings", this), new ListItem(1, "Visual settings", this),
+				new ListItem(2, "Audio settings", this), new ListItem(3, "System settings", this),
+				// new DataItem(4, "Language", this, Settings.locale),
+				new DataItem(5, "Working folder", this, Settings.workingFolder),
+				new DataItem(6, "Player's name", this, Settings.name), });
+	}
+
+	public void OnEnter(IDisplay d) {
+		OnResume(d);
 	}
 
 	public boolean ShowLogo() {
