@@ -85,10 +85,17 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			time += delta;
 			boolean kiai = false;
 			float bp = 0f;
+			float abp = 0f;
+			LogoOffset = 0;
 			if (music != null) {
-				kiai = music.IsKiai();
-				bp = music.Get4BeatDelta();
-				bp = Math.abs(1f - bp * 2f);
+				try {
+					kiai = music.IsKiai();
+					abp = music.Get4BeatDelta();
+					bp = Math.abs(1f - abp * 2f);
+					LogoOffset = (int) (bp * 2);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			if (kiai) {
 				HeaderBgDarkColor = ColorUtils.blend(NMANIA_COLOR, BG_COLOR, (int) (255 * bp));
@@ -147,8 +154,23 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				g.translate(0, -g.getTranslateY());
 				DrawButtons();
 				DrawHeader(stack[top].GetTitle());
-				if (stack[top].ShowLogo())
-					g.drawImage(logo, w - logo.getWidth(), 0, 0);
+				if (stack[top].ShowLogo()) {
+					int s = logo.getHeight();
+					int lx = w - logo.getWidth() + LogoOffset;
+					int ly = -LogoOffset;
+
+					if (music != null) {
+						g.setColor(PINK_COLOR);
+						g.fillArc(lx, ly, s, s, (int) (360 * abp), 90);
+						g.setColor(NMANIA_COLOR);
+						g.fillArc(lx, ly, s, s, (int) (360 * abp) + 90, 90);
+						g.setColor(NEGATIVE_COLOR);
+						g.fillArc(lx, ly, s, s, (int) (360 * abp) - 90, 90);
+						g.setColor(BG_COLOR);
+						g.fillArc(lx, ly, s, s, (int) (360 * abp) + 180, 90);
+					}
+					g.drawImage(logo, lx, ly, 0);
+				}
 			}
 			flushGraphics();
 			if (throttle)
@@ -384,7 +406,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public final static int BG_COLOR = SNUtils.toARGB("0x2a2115");
 	public final static int PINK_COLOR = SNUtils.toARGB("0xe75480");
 	public final static int NEGATIVE_COLOR = SNUtils.toARGB("0x0042aa");
-	public static int HeaderBgDarkColor, HeaderBgLightColor, HeaderTextColor, SoftkeysOutlineColor;
+	public static int HeaderBgDarkColor, HeaderBgLightColor, HeaderTextColor, SoftkeysOutlineColor, LogoOffset;
 
 	public static final void print(Graphics g, String s, int x, int y, int color, int bgColor, int anchor) {
 		g.setColor(bgColor);
