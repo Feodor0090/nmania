@@ -5,7 +5,6 @@ import java.util.Vector;
 import nmania.Beatmap;
 import nmania.Beatmap.Break;
 import nmania.Beatmap.ManiaNote;
-import nmania.Beatmap.TimingPoint;
 import nmania.beatmaps.IRawBeatmap;
 import nmania.beatmaps.InvalidBeatmapTypeException;
 import symnovel.SNUtils;
@@ -88,7 +87,9 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 
 		b.diffName = getValue("Version");
 		b.difficulty = Float.parseFloat(getValue("OverallDifficulty"));
-		b.points = new TimingPoint[0];
+		float[][] td = GetTimingData();
+		if (td != null)
+			b.timingPoints = td[0];
 		b.audio = GetAudio();
 		b.image = GetImage();
 		b.breaks = breaks();

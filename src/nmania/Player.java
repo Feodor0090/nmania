@@ -16,8 +16,6 @@ import nmania.ui.ResultsScreen;
 import nmania.ui.ng.NmaniaDisplay;
 import symnovel.SNUtils;
 import tube42.lib.imagelib.ColorUtils;
-import tube42.lib.imagelib.ImageFxUtils;
-import tube42.lib.imagelib.ImageFxUtils.PixelModifier;
 import tube42.lib.imagelib.ImageUtils;
 
 public final class Player extends GameCanvas {

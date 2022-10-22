@@ -16,19 +16,21 @@ public abstract class ListScreen implements IScreen {
 	private int fontH = font.getHeight();
 	protected String horSelecrorTitle = null;
 
-	public void SetItems(ListItem[] list) {
+	public final void SetItems(ListItem[] list) {
 		items = list;
 		if (selected >= list.length)
 			selected = list.length - 1;
 	}
 
-	public void SetItems(Vector v) {
+	public final void SetItems(Vector v) {
 		ListItem[] arr = new ListItem[v.size()];
 		v.copyInto(arr);
 		SetItems(arr);
 	}
 
-	public ListItem GetSelected() {
+	public final ListItem GetSelected() {
+		if (items == null)
+			return null;
 		if (selected < 0)
 			selected = 0;
 		if (selected >= items.length)

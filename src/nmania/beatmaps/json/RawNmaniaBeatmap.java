@@ -5,16 +5,14 @@ import org.json.me.JSONObject;
 
 import nmania.Beatmap;
 import nmania.Beatmap.ManiaNote;
-import nmania.Beatmap.TimingPoint;
 import nmania.beatmaps.IRawBeatmap;
-import symnovel.SNUtils;
 
 public class RawNmaniaBeatmap extends JSONObject implements IRawBeatmap {
 
 	public RawNmaniaBeatmap(String text) {
 		super(text);
 	}
-	
+
 	public String GetImage() {
 		return getString("image");
 	}
@@ -29,12 +27,14 @@ public class RawNmaniaBeatmap extends JSONObject implements IRawBeatmap {
 		b.difficulty = Float.parseFloat(getString("difficulty"));
 
 		final JSONArray p = getJSONArray("timings");
-		b.points = new TimingPoint[p.length()];
-		for (int i = 0; i < p.length(); i++) {
-			String[] s = SNUtils.split(p.getString(i), ';', 4);
-			float beatLen = s[2].equals("bpm") ? (60000f / Float.parseFloat(s[3])) : Float.parseFloat(s[3]);
-			b.points[i] = new TimingPoint(Integer.parseInt(s[0]), Integer.parseInt(s[1]), beatLen);
-		}
+		/*
+		 * b.points = new TimingPoint[p.length()]; for (int i = 0; i < p.length(); i++)
+		 * { String[] s = SNUtils.split(p.getString(i), ';', 4); float beatLen =
+		 * s[2].equals("bpm") ? (60000f / Float.parseFloat(s[3])) :
+		 * Float.parseFloat(s[3]); b.points[i] = new TimingPoint(Integer.parseInt(s[0]),
+		 * Integer.parseInt(s[1]), beatLen); }
+		 */
+		// TODO finish
 
 		final JSONArray n = getJSONArray("notes");
 		b.notes = new ManiaNote[n.length()];
