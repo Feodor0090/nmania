@@ -1,5 +1,8 @@
 package nmania.ui.ng;
 
+import nmania.Nmania;
+import nmania.ui.InfoScreen;
+
 public class MainScreen extends ListScreen implements IListSelectHandler {
 
 	public MainScreen() {
@@ -25,9 +28,12 @@ public class MainScreen extends ListScreen implements IListSelectHandler {
 		case 0:
 			display.Push(new BMSSelect());
 			break;
-
 		case 3:
 			display.Push(new SkinSelectScreen(display));
+			break;
+		case 4:
+			display.PauseRendering();
+			Nmania.Push(new InfoScreen(display.GetDisplayable()));
 			break;
 		}
 	}
