@@ -92,4 +92,58 @@ public final class AudioController {
 	public void Loop() {
 		player.setLoopCount(-1);
 	}
+
+	public void SetTimingData(float[][] data) {
+		if (data == null)
+			return;
+		if (data.length != 2)
+			return;
+		points = data[0];
+		kiai = data[1];
+	}
+
+	float[] points;
+	float[] kiai;
+
+	/**
+	 * Queries local timings data for kiai time.
+	 * 
+	 * @return False if it's not or not known.
+	 */
+	public boolean IsKiai() {
+		if (kiai == null)
+			return false;
+		if (kiai.length < 2)
+			return false;
+		float now = Now();
+		for (int i = 0; i < kiai.length; i++) {
+			if (now > kiai[i]) {
+				// previous point is active, flipping statement below.
+				// odd - active
+				// non-odd - inactive
+				return i % 2 != 0;
+			}
+		}
+		return false;
+	}
+
+	public float Get4BeatDelta() {
+		if (points == null)
+			return 0f;
+		if (points.length == 0)
+			return 0f;
+		float now = Now();
+		int i;
+		for (i = 0; i < points.length; i += 2) {
+			if (now > points[i])
+				break;
+		}
+		i -= 2;
+		if (i < 0)
+			i = 0;
+		float local = Math.abs(now - points[i]);
+		float bl4 = points[i + 1] * 4f;
+		float bp = local % bl4;
+		return bp / bl4;
+	}
 }
