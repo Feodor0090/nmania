@@ -39,6 +39,7 @@ public class ReplaySelect extends ListScreen implements IListSelectHandler, Runn
 					display.GetDisplayable()));
 		} catch (IOException e) {
 			e.printStackTrace();
+			display.Push(new nmania.ui.ng.Alert("Could not read replay", e.toString()));
 		}
 	}
 
@@ -50,7 +51,7 @@ public class ReplaySelect extends ListScreen implements IListSelectHandler, Runn
 	}
 
 	public boolean ShowLogo() {
-		return true;
+		return false;
 	}
 
 	public String GetOption() {

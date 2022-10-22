@@ -2,7 +2,6 @@ package nmania;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Vector;
 
 import javax.microedition.io.Connector;
@@ -85,7 +84,6 @@ public final class BeatmapSet {
 		FileConnection fc = null;
 		String ln = replay.playerName + " - " + GetDifficultyNameFast(data.mapFileName) + " at "
 				+ ResultsScreen.formatDate(replay.PlayedAt(), "-");
-		lastReplayName = ln;
 		String name = wdPath + folderName + ln;
 		int sub = 0;
 		try {
@@ -102,6 +100,7 @@ public final class BeatmapSet {
 			if (fc != null)
 				fc.close();
 		}
+		lastReplayName = addOsrNum(ln, sub);
 		return addOsrNum(name, sub);
 	}
 
