@@ -57,10 +57,11 @@ public class BeatmapManager {
 					if (RawBeatmapConverter.CanReadFile(f)) {
 						try {
 							fm = getStringFromFS(directory + dir + f);
+							break;
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						break;
+
 					}
 				}
 			}

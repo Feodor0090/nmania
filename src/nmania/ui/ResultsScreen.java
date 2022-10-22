@@ -296,6 +296,7 @@ public final class ResultsScreen extends Canvas implements ILogger {
 			fc = (FileConnection) Connector.open(data.set.GetFilenameForNewReplay(r, data), Connector.READ_WRITE);
 			fc.create();
 			r.write(fc.openOutputStream(), replay.GetReplay());
+			data.set.AddLastReplay();
 		} catch (Throwable e) {
 			e.printStackTrace();
 		} finally {

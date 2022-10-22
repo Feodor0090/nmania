@@ -2,6 +2,7 @@ package nmania;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.microedition.io.Connector;
@@ -59,24 +60,41 @@ public final class BeatmapSet {
 		return null;
 	}
 
+	public void AddFile(String localPath) {
+		String[] n = new String[files.length + 1];
+		for (int i = 0; i < files.length; i++) {
+			n[i] = files[i];
+		}
+		n[files.length] = localPath;
+		files = n;
+	}
+
 	public String ToGlobalPath(String diffFileName) {
 		return wdPath + folderName + diffFileName;
 	}
 
+	String lastReplayName;
+
+	public void AddLastReplay() {
+		if (lastReplayName != null)
+			AddFile(lastReplayName);
+		lastReplayName = null;
+	}
+
 	public String GetFilenameForNewReplay(OsuReplay replay, PlayerBootstrapData data) throws IOException {
 		FileConnection fc = null;
-		String name = wdPath + folderName + replay.playerName + " playing "
-				+ data.mapFileName.substring(0, data.mapFileName.length() - 4) + " at "
+		String ln = replay.playerName + " - " + GetDifficultyNameFast(data.mapFileName) + " at "
 				+ ResultsScreen.formatDate(replay.PlayedAt(), "-");
+		lastReplayName = ln;
+		String name = wdPath + folderName + ln;
 		int sub = 0;
 		try {
 			while (true) {
 				fc = (FileConnection) Connector.open(addOsrNum(name, sub), Connector.READ);
-				if(fc.exists()) {
+				if (fc.exists()) {
 					sub++;
 					fc.close();
-				}
-				else {
+				} else {
 					break;
 				}
 			}
@@ -127,7 +145,7 @@ public final class BeatmapSet {
 		}
 		return replay;
 	}
-	
+
 	public static String GetDifficultyNameFast(String fileName) {
 		return fileName.substring(fileName.indexOf('[') + 1, fileName.lastIndexOf(']'));
 	}

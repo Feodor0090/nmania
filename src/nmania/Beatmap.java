@@ -53,6 +53,7 @@ public final class Beatmap {
 			else
 				holds++;
 		}
+		Thread.yield();
 		float bl = 60000f;
 		for (int i = 1; i < timingPoints.length; i += 2) {
 			bl = Math.min(bl, timingPoints[i]);
@@ -60,6 +61,7 @@ public final class Beatmap {
 		int time = (lastNoteTime - firstNoteTime) / 1000;
 		int min = time / 60;
 		int sec = time % 60;
+		Thread.yield();
 		String dur = min + ":" + (sec < 10 ? "0" : "") + sec;
 		int nps = (int) (((hits + holds) / (float) time) * 100);
 		return columnsCount + "K, " + (int) (60000f / bl) + "BPM, " + dur + ", " + hits + "+" + holds + "notes, "
