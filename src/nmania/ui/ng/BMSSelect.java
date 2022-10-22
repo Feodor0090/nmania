@@ -1,9 +1,9 @@
 package nmania.ui.ng;
 
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.AlertType;
 
 import nmania.Nmania;
@@ -11,6 +11,8 @@ import nmania.Settings;
 import nmania.Skin;
 
 public class BMSSelect extends ListScreen implements Runnable, IListSelectHandler {
+
+	private IDisplay disp;
 
 	public String GetTitle() {
 		return "SELECT A CHART";
@@ -31,12 +33,23 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 
 	public void OnEnter(IDisplay d) {
 		loadingState = true;
+		disp = d;
 		(new Thread(this)).start();
 	}
 
 	public void run() {
 		try {
-			Nmania.LoadManager(Settings.workingFolder);
+			Enumeration en;
+			try {
+				Nmania.LoadManager(Settings.workingFolder);
+				en = Nmania.bm.list();
+			} catch (IOException e) {
+				Thread.sleep(1001);
+				loadingState = false;
+				disp.Push(new Alert("Failed to load charts", "Current working folder " + Settings.workingFolder
+						+ " can't be accessed. Visit settings section and choose an existing folder."));
+				return;
+			}
 			if (Nmania.skin == null) {
 				Nmania.skin = new Skin();
 			}
@@ -44,19 +57,15 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 				try {
 					Nmania.skin.LoadRich(false);
 				} catch (IllegalStateException e) {
-					Thread.yield();
-					Alert a = new Alert("nmania",
-							"Failed to load your rich skin. A vector one will be used. Visit skinning menu to learn what went wrong.",
-							null, AlertType.ERROR);
-					a.setTimeout(Alert.FOREVER);
-					Nmania.Push(a);
+					Thread.sleep(1001);
+					disp.Push(new Alert("Failed to load rich skin",
+							"A vector one will be used. Visit skinning menu to learn what went wrong."));
 				}
 			}
-			Enumeration e = Nmania.bm.list();
 			Vector v = new Vector();
 
-			while (e.hasMoreElements()) {
-				String s = e.nextElement().toString();
+			while (en.hasMoreElements()) {
+				String s = en.nextElement().toString();
 				if (s.charAt(0) == '_')
 					continue;
 				if (s.charAt(s.length() - 1) != '/')
