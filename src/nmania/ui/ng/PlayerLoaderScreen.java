@@ -101,7 +101,7 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 
 	public void run() {
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(1100);
 		} catch (InterruptedException e) {
 			return;
 		}
