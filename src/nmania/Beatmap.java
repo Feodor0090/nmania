@@ -20,7 +20,7 @@ public final class Beatmap {
 	public int columnsCount;
 	public float difficulty;
 	public ManiaNote[] notes;
-	public TimingPoint[] points;
+	public float[] timingPoints;
 	public Break[] breaks;
 	public BeatmapSet set;
 	public int defaultSampleSet = 0;
@@ -30,6 +30,38 @@ public final class Beatmap {
 
 	public String ToGlobalPath(String local) {
 		return set.ToGlobalPath(local);
+	}
+
+	/**
+	 * Provides quick info about the beatmap.
+	 * 
+	 * @return Text to display in diff select.
+	 */
+	public String Analyze() {
+		int hits = 0;
+		int holds = 0;
+		int firstNoteTime = Integer.MAX_VALUE;
+		int lastNoteTime = 0;
+		for (int i = 0; i < notes.length; i++) {
+			ManiaNote n = notes[i];
+			firstNoteTime = Math.min(n.time, firstNoteTime);
+			lastNoteTime = Math.max(n.time + n.duration, lastNoteTime);
+			if (n.duration <= 0)
+				hits++;
+			else
+				holds++;
+		}
+		float bl = 60000f;
+		for (int i = 1; i < timingPoints.length; i += 2) {
+			bl = Math.min(bl, timingPoints[i]);
+		}
+		int time = (lastNoteTime - firstNoteTime) / 1000;
+		int min = time / 60;
+		int sec = time % 60;
+		String dur = min + ":" + (sec < 10 ? "0" : "") + sec;
+		int nps = (int) (((hits + holds) / (float) time) * 100);
+		return columnsCount + "K, " + (int) (60000f / bl) + "BPM, " + dur + ", " + hits + "+" + holds + "notes, "
+				+ (nps / 100) + "." + (nps % 100) + "n/s";
 	}
 
 	/**
@@ -92,24 +124,6 @@ public final class Beatmap {
 				arr[i * 2 + 1] = breaks[i].duration;
 			}
 			return arr;
-		}
-	}
-
-	// TODO use somewhere or delete at all
-	public static final class TimingPoint {
-		final int time;
-		final int signature;
-		final float msPerBeat;
-
-		public TimingPoint(int time, int signature, float msPerBeat) {
-			super();
-			this.time = time;
-			this.signature = signature;
-			this.msPerBeat = msPerBeat;
-		}
-
-		public float GetBpm() {
-			return 60000f / msPerBeat;
 		}
 	}
 
