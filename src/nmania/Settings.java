@@ -62,8 +62,8 @@ public final class Settings {
 	 */
 	public static boolean profiler = false;
 	/**
-	 * Folder from which we read all the data. Must contain trailing slash. Must
-	 * not contain file:///.
+	 * Folder from which we read all the data. Must contain trailing slash. Must not
+	 * contain file:///.
 	 */
 	public static String workingFolder = GetDefaultFolder();
 	/**
@@ -94,6 +94,7 @@ public final class Settings {
 	 * Negative - gameplay is behind the music.
 	 */
 	public static int gameplayOffset = 0;
+	public static boolean analyzeMaps;
 
 	public static final void Save() {
 		if (!workingFolder.endsWith("/"))
@@ -131,6 +132,7 @@ public final class Settings {
 			j.accumulate("throttle", new Boolean(throttleGameplay));
 			j.accumulate("maxpr", new Boolean(maxPriority));
 			j.accumulate("threadswitch", new Boolean(forceThreadSwitch));
+			j.accumulate("analyze", new Boolean(analyzeMaps));
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -196,6 +198,7 @@ public final class Settings {
 			throttleGameplay = j.optBoolean("throttle");
 			maxPriority = j.optBoolean("maxpr");
 			forceThreadSwitch = j.optBoolean("threadswitch");
+			analyzeMaps = j.optBoolean("analyze");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

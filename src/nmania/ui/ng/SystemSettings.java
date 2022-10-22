@@ -9,8 +9,9 @@ public class SystemSettings extends ListScreen implements IListSelectHandler {
 				new SwitchItem(3, "Record replays", this, Settings.recordReplay),
 				new SwitchItem(4, "Keep UI during gameplay", this, Settings.keepMenu),
 				new SwitchItem(5, "Throttle gameplay clock", this, Settings.throttleGameplay),
-				new SwitchItem(6, "High priority", this, Settings.maxPriority), new SwitchItem(7, "Switch threads", this, Settings.forceThreadSwitch),
-				new SwitchItem(8, "Analyze beatmaps", this, false), });
+				new SwitchItem(6, "High priority", this, Settings.maxPriority),
+				new SwitchItem(7, "Switch threads", this, Settings.forceThreadSwitch),
+				new SwitchItem(8, "Analyze beatmaps", this, Settings.analyzeMaps), });
 	}
 
 	public String GetTitle() {
@@ -51,6 +52,8 @@ public class SystemSettings extends ListScreen implements IListSelectHandler {
 			Settings.forceThreadSwitch = !Settings.forceThreadSwitch;
 			break;
 		case 8:
+			Settings.analyzeMaps = !Settings.analyzeMaps;
+			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		default:
 			break;
