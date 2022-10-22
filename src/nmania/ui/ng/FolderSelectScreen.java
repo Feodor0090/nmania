@@ -48,6 +48,7 @@ public class FolderSelectScreen extends ListScreen implements IListSelectHandler
 	public void OnOptionActivate(IDisplay d) {
 		if (!failed) {
 			Settings.workingFolder = CombinePath();
+			Settings.Save();
 			path.removeAllElements();
 			d.Back();
 			d.Back();
