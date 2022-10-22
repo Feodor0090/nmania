@@ -13,8 +13,8 @@ import nmania.Settings;
 
 public class InfoScreen extends MultisectionList implements CommandListener {
 
-	public InfoScreen(boolean touch) {
-		super(touch);
+	public InfoScreen(Displayable d) {
+		super(d);
 		Switch(list);
 		_this = this;
 	}

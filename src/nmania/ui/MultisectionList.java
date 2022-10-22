@@ -1,19 +1,23 @@
 package nmania.ui;
 
 import javax.microedition.lcdui.Canvas;
+import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 import nmania.Nmania;
 import nmania.Settings;
+import nmania.ui.ng.NmaniaDisplay;
 
 public abstract class MultisectionList extends Canvas {
 
-	public MultisectionList(boolean touch) {
+	private Displayable d;
+
+	public MultisectionList(Displayable d) {
+		this.d = d;
 		setFullScreenMode(true);
-		selected = touch ? -1 : 0;
+		selected = 0;
 		repaint();
-		this.touch = touch;
 	}
 
 	int iy;
@@ -41,7 +45,7 @@ public abstract class MultisectionList extends Canvas {
 					}
 					selected = touch ? -1 : 0;
 					if (ss == null)
-						Nmania.Push(new MainScreen());
+						Nmania.Push(d);
 					else {
 						switching = false;
 						repaint();
@@ -72,7 +76,7 @@ public abstract class MultisectionList extends Canvas {
 			activateItem();
 		} else if (k == -7) {
 			Settings.Save();
-			Nmania.Push(new MainScreen());
+			Nmania.Push(d);
 		}
 		repaint();
 	}
@@ -108,7 +112,7 @@ public abstract class MultisectionList extends Canvas {
 			int x = (getWidth() * (40 - switchOffset)) / 20;
 			g.setColor(0);
 			g.fillRect(0, 0, getWidth() - x, getHeight());
-			g.setColor(MainScreen.bgColor);
+			g.setColor(NmaniaDisplay.NMANIA_COLOR);
 			g.fillRect(getWidth() - x, 0, Math.min(x, getWidth()), getHeight());
 			g.translate(-x, 0);
 			if (prev != null && x < getWidth()) {
@@ -132,7 +136,7 @@ public abstract class MultisectionList extends Canvas {
 		int h = getHeight();
 		String[] items = s.GetItems();
 		iy = (h - th * items.length) / 2;
-		g.setColor(MainScreen.bgColor);
+		g.setColor(NmaniaDisplay.NMANIA_COLOR);
 		if (selected >= 0 && !switching)
 			g.fillRect(5, iy + th * selected, getWidth() - 10, th);
 		g.setColor(-1);

@@ -11,7 +11,6 @@ import javax.microedition.lcdui.Graphics;
 
 import nmania.Nmania;
 import nmania.Skin;
-import nmania.ui.MainScreen;
 import nmania.ui.VectorSkinSetup;
 import tube42.lib.imagelib.ColorUtils;
 
@@ -73,7 +72,7 @@ public class SkinSelectScreen implements IScreen, CommandListener {
 	}
 
 	static void drawVectorSkinIcon(Graphics g, int x, int y) {
-		g.setColor(MainScreen.bgColor);
+		g.setColor(NmaniaDisplay.NMANIA_COLOR);
 		g.fillRect(x - 50, y - 45, 50, 20);
 		g.fillRect(x, y - 15, 50, 20);
 		g.fillRect(x - 50, y + 15, 50, 20);
@@ -88,7 +87,7 @@ public class SkinSelectScreen implements IScreen, CommandListener {
 	static void drawRichSkinIcon(Graphics g, int x, int y) {
 		for (int i = x - 50; i < x + 49; i++) {
 			int bl = Math.abs(i - x);
-			g.setColor(ColorUtils.blend(0, MainScreen.bgColor, bl * 255 / 50));
+			g.setColor(ColorUtils.blend(0, NmaniaDisplay.NMANIA_COLOR, bl * 255 / 50));
 			g.drawLine(i, y - 50, i, y + 50);
 		}
 	}
