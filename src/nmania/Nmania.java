@@ -119,7 +119,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 
 	public void commandAction(Command arg0, Displayable d) {
 		if (d instanceof TextBox) {
-			String name = ((TextBox) d).getString();
+			String name = ((TextBox) d).getString().trim();
 			if (name.length() == 0)
 				return;
 			name = name.replace('\n', ' ');

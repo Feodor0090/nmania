@@ -1,8 +1,14 @@
 package nmania.ui.ng;
 
+import javax.microedition.lcdui.Command;
+import javax.microedition.lcdui.CommandListener;
+import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.TextBox;
+
+import nmania.Nmania;
 import nmania.Settings;
 
-public class SettingsScreen extends ListScreen implements IListSelectHandler {
+public class SettingsScreen extends ListScreen implements IListSelectHandler, CommandListener {
 	public SettingsScreen() {
 	}
 
@@ -16,6 +22,8 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler {
 
 	public void OnOptionActivate(IDisplay d) {
 	}
+
+	IDisplay disp;
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
 		switch (item.UUID) {
@@ -33,6 +41,14 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler {
 			break;
 		case 5:
 			display.Push(new DiskSelectScreen());
+			break;
+		case 6:
+			display.PauseRendering();
+			disp = display;
+			final TextBox box = new TextBox("What's your name?", "", 50, 0);
+			box.addCommand(new Command("Next", Command.OK, 0));
+			box.setCommandListener(this);
+			Nmania.Push(box);
 			break;
 		}
 	}
@@ -59,5 +75,16 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler {
 
 	public boolean ShowLogo() {
 		return true;
+	}
+
+	public void commandAction(Command arg0, Displayable d) {
+		if (d instanceof TextBox) {
+			String name = ((TextBox) d).getString().trim();
+			if (name.length() == 0)
+				return;
+			name = name.replace('\n', ' ');
+			Settings.name = name;
+			Nmania.Push(disp.GetDisplayable());
+		}
 	}
 }
