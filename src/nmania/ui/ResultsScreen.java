@@ -16,6 +16,7 @@ import javax.microedition.lcdui.Image;
 
 import nmania.AudioController;
 import nmania.BeatmapManager;
+import nmania.BeatmapSet;
 import nmania.IInputOverrider;
 import nmania.ILogger;
 import nmania.IScore;
@@ -105,8 +106,8 @@ public final class ResultsScreen extends Canvas implements ILogger {
 		g.setFont(Font.getFont(0, 0, 8));
 		print(g, data.set.artist + " - " + data.set.title, w / 2, th16 + 3, -1, Graphics.HCENTER | Graphics.TOP);
 		int y = th16 + th8 + 4 + 1;
-		print(g, "by " + score.GetPlayerName() + " at " + formatDate(score.PlayedAt(), ":"), w / 2, y, -1,
-				Graphics.HCENTER | Graphics.TOP);
+		print(g, BeatmapSet.GetDifficultyNameFast(data.mapFileName) + " by " + score.GetPlayerName() + " "
+				+ formatDate(score.PlayedAt(), ":"), w / 2, y, -1, Graphics.HCENTER | Graphics.TOP);
 		y += th8 + 2;
 
 		// stats
