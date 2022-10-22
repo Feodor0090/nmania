@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
-import javax.microedition.lcdui.AlertType;
-
 import nmania.Nmania;
 import nmania.Settings;
 import nmania.Skin;
@@ -27,8 +25,8 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 	}
 
 	public void OnOptionActivate(IDisplay d) {
-		// TODO Auto-generated method stub
-
+		d.Push(new Alert("SELECT A CHART", "Your working folder is \"" + Settings.workingFolder
+				+ "\". Place folders with charts there to see them ingame. Check \"information\" section in main menu for more info."));
 	}
 
 	public void OnEnter(IDisplay d) {
@@ -46,8 +44,10 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 			} catch (IOException e) {
 				Thread.sleep(1001);
 				loadingState = false;
-				disp.Push(new Alert("Failed to load charts", "Current working folder " + Settings.workingFolder
-						+ " can't be accessed. Visit settings section and choose an existing folder."));
+				disp.Push(new Alert("Failed to load charts",
+						"Current working folder " + Settings.workingFolder
+								+ " can't be accessed. Visit settings section and choose an existing folder.",
+						"CHANGE NOW", new DiskSelectScreen(), 2));
 				return;
 			}
 			if (Nmania.skin == null) {
