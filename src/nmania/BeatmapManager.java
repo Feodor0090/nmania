@@ -72,6 +72,7 @@ public class BeatmapManager {
 			bms.artist = bm.GetArtist();
 			bms.mapper = bm.GetMapper();
 			bms.audio = bm.GetAudio();
+			bms.timings = bm.GetTimingData();
 			bms.files = bakeEnum(bmsFc.list());
 			bmsFc.close();
 			return bms;

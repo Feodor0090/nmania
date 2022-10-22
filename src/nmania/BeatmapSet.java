@@ -28,6 +28,7 @@ public final class BeatmapSet {
 	public String wdPath;
 	public String folderName;
 	public String[] files;
+	public float[][] timings;
 
 	public boolean hasFile(String eqName) {
 		for (int i = 0; i < files.length; i++) {

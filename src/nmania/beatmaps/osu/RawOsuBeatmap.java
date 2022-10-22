@@ -194,4 +194,55 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 		return IRawBeatmap.VSRG;
 	}
 
+	public float[][] GetTimingData() {
+		try {
+			int start = raw.indexOf("[TimingPoints]") + "[TimingPoints]".length();
+			int end = raw.indexOf('[', start + 1);
+			if (end == -1)
+				end = raw.length();
+			String[] lines = SNUtils.splitFull(raw.substring(start, end), '\n');
+			Vector timings = new Vector();
+			Vector kiai = new Vector();
+			float kiaiStart = -1;
+			for (int i = 0; i < lines.length; i++) {
+				if (lines[i].length() < 3)
+					continue;
+				String[] line = SNUtils.splitFull(lines[i], ',');
+				if (line.length != 8)
+					continue;
+				float time = Float.parseFloat(line[0]);
+				char c = line[7].charAt(0);
+				if (c == '1' || c == '4') {
+					if (kiaiStart < 0)
+						kiaiStart = time;
+				} else {
+					if (kiaiStart >= 0) {
+						kiai.addElement(new Float(kiaiStart));
+						kiai.addElement(new Float(time));
+						kiaiStart = -1;
+					}
+				}
+				if (line[1].charAt(0) != '-') {
+					timings.addElement(new Float(time));
+					timings.addElement(new Float(Float.parseFloat(line[1])));
+				}
+			}
+			lines = null;
+			float[] timingsArr = new float[timings.size()];
+			for (int i = 0; i < timingsArr.length; i++) {
+				timingsArr[i] = ((Float) timings.elementAt(i)).floatValue();
+			}
+			timings = null;
+			float[] kiaiArr = new float[kiai.size()];
+			for (int i = 0; i < kiaiArr.length; i++) {
+				kiaiArr[i] = ((Float) kiai.elementAt(i)).floatValue();
+			}
+			return new float[][] { timingsArr, kiaiArr };
+		} catch (Exception e) {
+			e.printStackTrace();
+		} catch (OutOfMemoryError e) {
+		}
+		return null;
+	}
+
 }
