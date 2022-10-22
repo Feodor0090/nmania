@@ -1,9 +1,7 @@
 package nmania.ui.ng;
 
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Image;
 
 import nmania.ModsState;
 

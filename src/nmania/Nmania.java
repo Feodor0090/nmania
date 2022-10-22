@@ -13,7 +13,6 @@ import javax.microedition.lcdui.TextBox;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import nmania.ui.MainScreen;
 import nmania.ui.ng.IDisplay;
 import nmania.ui.ng.NmaniaDisplay;
 import symnovel.SNUtils;
