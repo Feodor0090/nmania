@@ -38,6 +38,8 @@ public final class Beatmap {
 	 * @return Text to display in diff select.
 	 */
 	public String Analyze() {
+		if (columnsCount > 10)
+			return columnsCount + "K (not supported)";
 		int hits = 0;
 		int holds = 0;
 		int firstNoteTime = Integer.MAX_VALUE;

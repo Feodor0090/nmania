@@ -192,7 +192,19 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 	}
 
 	public String GetMode() {
-		return IRawBeatmap.VSRG;
+		switch (Integer.parseInt(getValue("Mode"))) {
+		case 3:
+			return IRawBeatmap.VSRG;
+		case 0:
+			return "osu!";
+		case 1:
+			return "taiko";
+		case 2:
+			return "fruits";
+		default:
+			return "???";
+		}
+
 	}
 
 	public float[][] GetTimingData() {

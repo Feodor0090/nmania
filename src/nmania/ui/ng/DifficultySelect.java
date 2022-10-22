@@ -5,12 +5,14 @@ import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
+import nmania.Beatmap;
 import nmania.BeatmapManager;
 import nmania.BeatmapSet;
 import nmania.IInputOverrider;
 import nmania.ModsState;
 import nmania.PlayerBootstrapData;
 import nmania.Settings;
+import nmania.beatmaps.IRawBeatmap;
 import nmania.replays.AutoplayRunner;
 import tube42.lib.imagelib.ColorUtils;
 
@@ -50,7 +52,8 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 		super.Paint(g, w, bottomY - 10);
 
 		for (int i = 0; i <= bottomH; i++) {
-			g.setColor(ColorUtils.blend(NmaniaDisplay.HeaderBgDarkColor, NmaniaDisplay.HeaderBgLightColor, (i * 255 / bottomH)));
+			g.setColor(ColorUtils.blend(NmaniaDisplay.HeaderBgDarkColor, NmaniaDisplay.HeaderBgLightColor,
+					(i * 255 / bottomH)));
 			g.drawLine(0, bottomY + i, w, bottomY + i);
 		}
 		g.setFont(font);
@@ -72,8 +75,19 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 		}
 		NmaniaDisplay.print(g, "Mods: " + mods.toString(), w - 10, bottomY, -1, NmaniaDisplay.BG_COLOR,
 				Graphics.TOP | Graphics.RIGHT);
-		NmaniaDisplay.print(g, "Beatmap analysis disabled.", 10, bottomY + font.getHeight(), -1, NmaniaDisplay.BG_COLOR,
-				0);
+		String info;
+		if (Settings.analyzeMaps) {
+			DifficultyItem di = (DifficultyItem) GetSelected();
+			if (di == null)
+				info = "Nothing selected.";
+			else if (di.info == null || di.info.length() == 0)
+				info = "Analyzing...";
+			else
+				info = di.info;
+		} else {
+			info = "Beatmap analysis disabled.";
+		}
+		NmaniaDisplay.print(g, info, 10, bottomY + font.getHeight(), -1, NmaniaDisplay.BG_COLOR, 0);
 	}
 
 	public void OnOptionActivate(IDisplay d) {
@@ -120,6 +134,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 				return;
 			Thread.sleep(50);
 			d.SetAudio(set);
+			OnItemChange();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -128,12 +143,41 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	public class DifficultyItem extends ListItem {
 
 		public String fileName;
+		public String info;
 
 		public DifficultyItem(String fileName, IListSelectHandler handler) {
 			super(BeatmapSet.GetDifficultyNameFast(fileName), handler);
 			this.fileName = fileName;
 		}
 
+	}
+
+	protected void OnItemChange() {
+		if (!Settings.analyzeMaps)
+			return;
+		final DifficultyItem di = (DifficultyItem) GetSelected();
+		if (di == null)
+			return;
+		if (di.info == null) {
+			di.info = "";
+			Thread t = new Thread(new Runnable() {
+
+				public void run() {
+					try {
+						IRawBeatmap b = BeatmapManager.ReadBeatmap(set, di.fileName);
+						if (b.GetMode() != IRawBeatmap.VSRG) {
+							di.info = "Unsupported osu! mode (" + b.GetMode() + ")";
+							return;
+						}
+						di.info = b.ToBeatmap().Analyze();
+					} catch (Exception e) {
+						e.printStackTrace();
+						di.info = "Error";
+					}
+				}
+			});
+			t.start();
+		}
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
