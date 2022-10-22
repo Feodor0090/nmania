@@ -83,6 +83,23 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			}
 			long delta = System.currentTimeMillis() - time;
 			time += delta;
+			boolean kiai = false;
+			float bp = 0f;
+			if (music != null) {
+				kiai = music.IsKiai();
+				bp = music.Get4BeatDelta();
+				bp = Math.abs(1f - bp * 2f);
+			}
+			if (kiai) {
+				HeaderBgDarkColor = ColorUtils.blend(NMANIA_COLOR, BG_COLOR, (int) (255 * bp));
+				HeaderBgLightColor = ColorUtils.blend(PINK_COLOR, NMANIA_COLOR, (int) (255 * bp));
+			} else {
+				HeaderBgDarkColor = DARKER_COLOR;
+				HeaderBgLightColor = ColorUtils.blend(-1, NMANIA_COLOR, (int) (255 * bp));
+			}
+			HeaderTextColor = ColorUtils.blend(0xffaaaaaa, -1, (int) (255 * bp));
+			SoftkeysOutlineColor = ColorUtils.blend(NEGATIVE_COLOR, 0, (int) (255 * bp));
+
 			w = getWidth();
 			h = getHeight();
 			if (leftButtonState > 0f) {
@@ -321,23 +338,24 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		int lkh2 = (int) (keysH2 * clamp1(leftButtonContract * 2f - 1f));
 		g.fillTriangle(0, h - lkh, 0, h, w / 2 - keysW, h);
 		g.fillTriangle(0, h - lkh, w / 2 - keysW2, h - lkh2, w / 2 - keysW, h);
-		print(g, lastValidLeftButton, 1, (int) (h - 1 + keysH2 * (1f - leftButtonContract)), clri, 0,
+		print(g, lastValidLeftButton, 1, (int) (h - 1 + keysH2 * (1f - leftButtonContract)), clri, SoftkeysOutlineColor,
 				Graphics.BOTTOM | Graphics.LEFT);
 
 		clri = ColorUtils.blend(NEGATIVE_COLOR, PINK_COLOR, (int) (255 * rightButtonState));
 		g.setColor(clri);
 		g.fillTriangle(w, h - keysH, w, h, w / 2 + keysW, h);
 		g.fillTriangle(w, h - keysH, w / 2 + keysW2, h - keysH2, w / 2 + keysW, h);
-		print(g, top == 0 ? "QUIT" : "BACK", w - 1, h - 1, clri, 0, Graphics.BOTTOM | Graphics.RIGHT);
+		print(g, top == 0 ? "QUIT" : "BACK", w - 1, h - 1, clri, SoftkeysOutlineColor,
+				Graphics.BOTTOM | Graphics.RIGHT);
 	}
 
 	private void DrawHeader(String title) {
 		for (int i = 0; i <= headerH; i++) {
-			g.setColor(ColorUtils.blend(NMANIA_COLOR, DARKER_COLOR, (i * 255 / headerH)));
+			g.setColor(ColorUtils.blend(HeaderBgLightColor, HeaderBgDarkColor, (i * 255 / headerH)));
 			g.drawLine(0, i, w, i);
 		}
 		g.setFont(header);
-		print(g, title, 1, 1, -1, BG_COLOR, 0);
+		print(g, title, 1, 1, HeaderTextColor, BG_COLOR, 0);
 	}
 
 	protected void keyPressed(int k) {
@@ -366,6 +384,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public final static int BG_COLOR = SNUtils.toARGB("0x2a2115");
 	public final static int PINK_COLOR = SNUtils.toARGB("0xe75480");
 	public final static int NEGATIVE_COLOR = SNUtils.toARGB("0x0042aa");
+	public static int HeaderBgDarkColor, HeaderBgLightColor, HeaderTextColor, SoftkeysOutlineColor;
 
 	public static final void print(Graphics g, String s, int x, int y, int color, int bgColor, int anchor) {
 		g.setColor(bgColor);
@@ -426,6 +445,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			music = new AudioController(set);
 			music.Loop();
 			music.Play();
+			music.SetTimingData(set.timings);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (MediaException e) {

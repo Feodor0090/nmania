@@ -50,7 +50,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 		super.Paint(g, w, bottomY - 10);
 
 		for (int i = 0; i <= bottomH; i++) {
-			g.setColor(ColorUtils.blend(NmaniaDisplay.DARKER_COLOR, NmaniaDisplay.NMANIA_COLOR, (i * 255 / bottomH)));
+			g.setColor(ColorUtils.blend(NmaniaDisplay.HeaderBgDarkColor, NmaniaDisplay.HeaderBgLightColor, (i * 255 / bottomH)));
 			g.drawLine(0, bottomY + i, w, bottomY + i);
 		}
 		g.setFont(font);
