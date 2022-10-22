@@ -12,7 +12,7 @@ public final class Settings {
 	public static final String GetDefaultFolder() {
 		String dir = System.getProperty("fileconn.dir.music");
 		if (dir == null)
-			dir = "file:///C:/Data/Sounds/";
+			dir = "C:/Data/Sounds/";
 		return dir + "nmania/";
 	}
 
@@ -63,7 +63,7 @@ public final class Settings {
 	public static boolean profiler = false;
 	/**
 	 * Folder from which we read all the data. Must contain trailing slash. Must
-	 * contain file:///.
+	 * not contain file:///.
 	 */
 	public static String workingFolder = GetDefaultFolder();
 	/**

@@ -113,7 +113,7 @@ public class Skin {
 	public void LoadRich(boolean force) throws IllegalStateException {
 		rich = true;
 		if (force || richSkin == null) {
-			richSkin = new RichSkin(Settings.workingFolder + "_skin/");
+			richSkin = new RichSkin("file:///"+Settings.workingFolder + "_skin/");
 			try {
 				richSkin.Check();
 			} catch (IllegalStateException e) {

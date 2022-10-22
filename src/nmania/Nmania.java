@@ -37,8 +37,13 @@ public final class Nmania extends MIDlet implements CommandListener {
 	protected void pauseApp() {
 	}
 
+	/**
+	 * Loads BM on a folder.
+	 * @param dir Directory to use. Must contain trailing slash. Must not contain file:///.
+	 * @throws IOException
+	 */
 	public static void LoadManager(String dir) throws IOException {
-		bm = new BeatmapManager(dir);
+		bm = new BeatmapManager("file:///"+dir);
 		bm.Init();
 	}
 
