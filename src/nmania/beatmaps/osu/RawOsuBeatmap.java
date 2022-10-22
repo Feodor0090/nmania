@@ -70,7 +70,7 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 			if (lines[i].indexOf("2,") == 0) {
 				String[] values = SNUtils.splitFull(lines[i], ',');
 				int st = Integer.parseInt(SNUtils.split2(values[1], '.')[0]);
-				int dur = Integer.parseInt(SNUtils.split2(values[2], '.')[0]) - st;
+				int dur = Integer.parseInt(SNUtils.split2(SNUtils.split2(values[2], '.')[0], '\r')[0]) - st;
 				if (dur < 3000)
 					continue;
 				Break b = new Break(st, dur);
