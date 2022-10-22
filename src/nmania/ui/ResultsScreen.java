@@ -217,13 +217,14 @@ public final class ResultsScreen extends Canvas implements ILogger {
 	}
 
 	protected void keyPressed(int k) {
-		if (loadingLog != null)
-			return;
 		if (k == -1 || k == -2 || k == -3 || k == -4 || k == '2' || k == '4' || k == '6' || k == '8') {
 			itemSelected = !itemSelected;
 			repaint();
 			return;
 		}
+
+		if (loadingLog != null)
+			return;
 
 		if (k == -6) {
 			if (activeMenu == 0) {
