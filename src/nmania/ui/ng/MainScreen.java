@@ -4,8 +4,8 @@ public class MainScreen extends ListScreen implements IListSelectHandler {
 
 	public MainScreen() {
 		SetItems(new ListItem[] { new ListItem(0, "Play solo", this), // new ListItem(1, "Play online", this),
-				new ListItem(2, "Browse maps", this), new ListItem(3, "Skinning", this),
-				new ListItem(4, "Information", this) });
+				// new ListItem(2, "Browse maps", this),
+				new ListItem(3, "Skinning", this), new ListItem(4, "Information", this) });
 	}
 
 	public String GetTitle() {
@@ -26,7 +26,8 @@ public class MainScreen extends ListScreen implements IListSelectHandler {
 			display.Push(new BMSSelect());
 			break;
 
-		default:
+		case 3:
+			display.Push(new SkinSelectScreen(display));
 			break;
 		}
 	}

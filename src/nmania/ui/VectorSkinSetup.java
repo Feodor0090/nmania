@@ -17,7 +17,7 @@ import nmania.Skin;
 
 public class VectorSkinSetup extends Form implements CommandListener, ItemCommandListener {
 
-	public VectorSkinSetup(SkinSelect ss) {
+	public VectorSkinSetup(Displayable ss) {
 		super("Vector skin setup");
 		prev = ss;
 		addCommand(back);
@@ -46,7 +46,7 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 
 	private final Command back = new Command(Nmania.commonText[0], Command.BACK, 2);
 	private final Command edit = new Command(Nmania.commonText[13], Command.ITEM, 1);
-	final SkinSelect prev;
+	final Displayable prev;
 	final Skin skin = Nmania.skin;
 
 	Gauge colW = new Gauge("Column width", true, 150, skin.columnWidth);
