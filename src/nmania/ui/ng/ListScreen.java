@@ -107,12 +107,14 @@ public abstract class ListScreen implements IScreen {
 			selected--;
 			if (selected < 0)
 				selected = items.length - 1;
+			OnItemChange();
 			return;
 		}
 		if (k == -2 || k == '8') {
 			selected++;
 			if (selected >= items.length)
 				selected = 0;
+			OnItemChange();
 			return;
 		}
 		if (items.length == 0)
@@ -142,6 +144,9 @@ public abstract class ListScreen implements IScreen {
 	}
 
 	public void OnResume(IDisplay d) {
+	}
+
+	protected void OnItemChange() {
 	}
 
 }
