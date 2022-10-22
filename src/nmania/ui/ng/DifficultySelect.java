@@ -101,6 +101,11 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 		(new Thread(this)).start();
 	}
 
+	public void OnResume(IDisplay d) {
+		if (d.GetAudio() == null)
+			d.SetAudio(set);
+	}
+
 	public void run() {
 		try {
 			Thread.sleep(1000);

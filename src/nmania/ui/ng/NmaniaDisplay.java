@@ -477,6 +477,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public AudioController GetAudio() {
+		if (music != null && !music.IsAlive())
+			music = null;
 		return music;
 	}
 

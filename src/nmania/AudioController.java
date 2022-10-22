@@ -38,6 +38,7 @@ public final class AudioController {
 
 	private final Player player;
 	private final int offset;
+	private boolean alive = true;
 
 	public int Now() {
 		long mt = player.getMediaTime();
@@ -74,6 +75,7 @@ public final class AudioController {
 		}
 		player.deallocate();
 		player.close();
+		alive = false;
 	}
 
 	/**
@@ -91,6 +93,10 @@ public final class AudioController {
 	 */
 	public void Loop() {
 		player.setLoopCount(-1);
+	}
+	
+	public boolean IsAlive() {
+		return alive;
 	}
 
 	public void SetTimingData(float[][] data) {
