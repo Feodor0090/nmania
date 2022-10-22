@@ -9,10 +9,30 @@ public class Alert implements IScreen {
 
 	private String title;
 	private String[] text;
+	private String button = null;
+	private IScreen next;
+	private int backsCount;
 
 	public Alert(String title, String text) {
 		this.title = title;
 		this.text = SNUtils.splitFull(text, ' ');
+	}
+
+	/**
+	 * Initializes alert.
+	 * 
+	 * @param title      Title of the screen.
+	 * @param text       Text to show.
+	 * @param button     Text for left button.
+	 * @param next       Screen to open by left button.
+	 * @param backsCount Pass 0 to stay on alert, 1 to close the alert on return,
+	 *                   1+N to close alert and N underlaying screens.
+	 */
+	public Alert(String title, String text, String button, IScreen next, int backsCount) {
+		this(title, text);
+		this.button = button;
+		this.next = next;
+		this.backsCount = backsCount;
 	}
 
 	public String GetTitle() {
@@ -24,10 +44,13 @@ public class Alert implements IScreen {
 	}
 
 	public String GetOption() {
-		return null;
+		return button;
 	}
 
 	public void OnOptionActivate(IDisplay d) {
+		if (next != null) {
+			d.Push(next);
+		}
 	}
 
 	public void Paint(Graphics g, int w, int h) {
@@ -64,6 +87,8 @@ public class Alert implements IScreen {
 	}
 
 	public void OnResume(IDisplay d) {
+		for (int i = 0; i < backsCount; i++)
+			d.Back();
 	}
 
 }
