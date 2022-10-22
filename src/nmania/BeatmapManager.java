@@ -71,6 +71,7 @@ public class BeatmapManager {
 			bms.title = bm.GetTitle();
 			bms.artist = bm.GetArtist();
 			bms.mapper = bm.GetMapper();
+			bms.audio = bm.GetAudio();
 			bms.files = bakeEnum(bmsFc.list());
 			bmsFc.close();
 			return bms;
@@ -197,7 +198,7 @@ public class BeatmapManager {
 	}
 
 	public final static IRawBeatmap ReadBeatmap(PlayerBootstrapData data) throws InvalidBeatmapTypeException {
-		String raw = getStringFromFS(data.set.GetFullBeatmapPath(data.mapFileName));
+		String raw = getStringFromFS(data.set.ToGlobalPath(data.mapFileName));
 		IRawBeatmap rb = RawBeatmapConverter.FromText(raw);
 		return rb;
 	}

@@ -84,6 +84,36 @@ public class ModsState {
 			value = value | 16384;
 	}
 
+	public void ToggleDA(int dir) {
+		int v = GetDA();
+		v += dir;
+		if (v <= -2)
+			v = 1;
+		if (v >= 2)
+			v = -1;
+		SetDA(v);
+	}
+	
+	public void ToggleFA(int dir) {
+		int v = GetFA();
+		v += dir;
+		if (v <= -2)
+			v = 1;
+		if (v >= 2)
+			v = -1;
+		SetFA(v);
+	}
+	
+	public void ToggleFAFull(int dir) {
+		int v = GetFA();
+		v += dir;
+		if (v <= -1)
+			v = 2;
+		if (v >= 3)
+			v = -1;
+		SetFA(v);
+	}
+
 	public int GetMask() {
 		return value;
 	}

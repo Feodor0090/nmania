@@ -12,7 +12,6 @@ import javax.microedition.media.MediaException;
 
 import nmania.Beatmap.Break;
 import nmania.replays.ReplayRecorder;
-import nmania.ui.MainScreen;
 import nmania.ui.ResultsScreen;
 import symnovel.SNUtils;
 import tube42.lib.imagelib.ColorUtils;
@@ -453,7 +452,10 @@ public final class Player extends GameCanvas {
 				isPaused = false;
 				track.Stop();
 				Dispose();
-				Nmania.Push(menu == null ? (new MainScreen()) : menu);
+				if (menu == null)
+					Nmania.PushMainScreen();
+				else
+					Nmania.Push(menu);
 			}
 			return;
 		}
@@ -763,6 +765,9 @@ public final class Player extends GameCanvas {
 			} else if (!breakActive) {
 				Redraw();
 			}
+
+			if (Settings.forceThreadSwitch)
+				Thread.yield();
 		}
 	}
 
@@ -928,7 +933,10 @@ public final class Player extends GameCanvas {
 			running = false;
 			track.Stop();
 			Dispose();
-			Nmania.Push(menu == null ? (new MainScreen()) : menu);
+			if (menu == null)
+				Nmania.PushMainScreen();
+			else
+				Nmania.Push(menu);
 		} else {
 			track.Pause();
 			isPaused = true;
@@ -993,15 +1001,15 @@ public final class Player extends GameCanvas {
 			String t = input == null ? "REC" : input.GetName();
 			final int x = leftOffset + 11 + (columnsCount * colWp1);
 			g.setColor(-1);
-			g.drawString(t, x + 1, 0, 0);
-			g.drawString(t, x - 1, 0, 0);
-			g.drawString(t, x + 1, 2, 0);
-			g.drawString(t, x - 1, 2, 0);
+			g.drawString(t, x + 1, 40, 0);
+			g.drawString(t, x - 1, 40, 0);
+			g.drawString(t, x + 1, 42, 0);
+			g.drawString(t, x - 1, 42, 0);
 			if (input == null)
 				g.setColor(255, 0, 0);
 			else
 				g.setColor(0, 200, 0);
-			g.drawString(t, x, 1, 0);
+			g.drawString(t, x, 41, 0);
 		}
 		flushGraphics();
 	}

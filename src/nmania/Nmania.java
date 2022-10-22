@@ -13,7 +13,8 @@ import javax.microedition.lcdui.TextBox;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
 
-import nmania.ui.MainScreen;
+import nmania.ui.ng.IDisplay;
+import nmania.ui.ng.NmaniaDisplay;
 import symnovel.SNUtils;
 
 public final class Nmania extends MIDlet implements CommandListener {
@@ -52,12 +53,21 @@ public final class Nmania extends MIDlet implements CommandListener {
 			box.setCommandListener(this);
 			Push(box);
 		} else {
-			Push(new MainScreen());
+			PushMainScreen();
 		}
+
+	}
+
+	public static void PushMainScreen() {
+		NmaniaDisplay d = new NmaniaDisplay(new nmania.ui.ng.MainScreen());
+		Push(d);
+		d.Start();
 	}
 
 	public static void Push(Displayable d) {
 		Display.getDisplay(inst).setCurrent(d);
+		if (d instanceof IDisplay)
+			((IDisplay) d).ResumeRendering();
 	}
 
 	public static void exit() {
@@ -103,13 +113,14 @@ public final class Nmania extends MIDlet implements CommandListener {
 	}
 
 	public void commandAction(Command arg0, Displayable d) {
-		if(d instanceof TextBox) {
+		if (d instanceof TextBox) {
 			String name = ((TextBox) d).getString();
-			if(name.length()==0) return;
+			if (name.length() == 0)
+				return;
 			name = name.replace('\n', ' ');
 			Settings.name = name;
 			Settings.Save();
-			Push(new MainScreen());
+			PushMainScreen();
 		}
 	}
 

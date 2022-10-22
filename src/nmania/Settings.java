@@ -17,12 +17,13 @@ public final class Settings {
 	}
 
 	/**
-	 * % of background dimming during gameplay. 0f - not touched, 1f - completely black.
+	 * % of background dimming during gameplay. 0f - not touched, 1f - completely
+	 * black.
 	 */
 	public static float bgDim = 0.75f;
 	/**
-	 * Array with keyboard layouts. Zero element is layout for 1K, the 9th is for 10K.
-	 * Each layout has keys for all columns and for pause key.
+	 * Array with keyboard layouts. Zero element is layout for 1K, the 9th is for
+	 * 10K. Each layout has keys for all columns and for pause key.
 	 */
 	public static int[][] keyLayout = new int[10][];
 
@@ -52,8 +53,8 @@ public final class Settings {
 	 */
 	public static boolean drawHUD = true;
 	/**
-	 * Do we want to use single full flush?
-	 * If false, three partial will be performed.
+	 * Do we want to use single full flush? If false, three partial will be
+	 * performed.
 	 */
 	public static boolean fullScreenFlush = false;
 	/**
@@ -61,7 +62,8 @@ public final class Settings {
 	 */
 	public static boolean profiler = false;
 	/**
-	 * Folder from which we read all the data. Must contain trailing slash. Must contain file:///.
+	 * Folder from which we read all the data. Must contain trailing slash. Must
+	 * contain file:///.
 	 */
 	public static String workingFolder = GetDefaultFolder();
 	/**
@@ -76,6 +78,14 @@ public final class Settings {
 	 * Should replays be recorded by default?
 	 */
 	public static boolean recordReplay = false;
+
+	public static boolean musicInMenu = true;
+
+	public static boolean throttleGameplay = false;
+
+	public static boolean maxPriority = false;
+
+	public static boolean forceThreadSwitch = false;
 
 	/**
 	 * Audio/gameplay clocks offset. <br>
@@ -117,6 +127,10 @@ public final class Settings {
 			j.accumulate("locale", locale);
 			j.accumulate("name", name);
 			j.accumulate("record", new Boolean(recordReplay));
+			j.accumulate("musicinmenu", new Boolean(musicInMenu));
+			j.accumulate("throttle", new Boolean(throttleGameplay));
+			j.accumulate("maxpr", new Boolean(maxPriority));
+			j.accumulate("threadswitch", new Boolean(forceThreadSwitch));
 
 			// writing
 			byte[] d = j.toString().getBytes();
@@ -178,6 +192,10 @@ public final class Settings {
 			locale = j.optString("locale", systemLocale);
 			name = j.optString("name", null);
 			recordReplay = j.optBoolean("record");
+			musicInMenu = j.optBoolean("musicinmenu", true);
+			throttleGameplay = j.optBoolean("throttle");
+			maxPriority = j.optBoolean("maxpr");
+			forceThreadSwitch = j.optBoolean("threadswitch");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -7,7 +7,6 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 
-import nmania.replays.IReplayProvider;
 import nmania.replays.osu.OsuReplay;
 import nmania.ui.ResultsScreen;
 
@@ -25,6 +24,7 @@ public final class BeatmapSet {
 	public String artist;
 	public String mapper;
 	public String image;
+	public String audio;
 	public String wdPath;
 	public String folderName;
 	public String[] files;
@@ -58,7 +58,7 @@ public final class BeatmapSet {
 		return null;
 	}
 
-	public String GetFullBeatmapPath(String diffFileName) {
+	public String ToGlobalPath(String diffFileName) {
 		return wdPath + folderName + diffFileName;
 	}
 
@@ -125,5 +125,9 @@ public final class BeatmapSet {
 				fc.close();
 		}
 		return replay;
+	}
+	
+	public static String GetDifficultyNameFast(String fileName) {
+		return fileName.substring(fileName.indexOf('[') + 1, fileName.lastIndexOf(']'));
 	}
 }

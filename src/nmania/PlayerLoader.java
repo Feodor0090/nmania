@@ -1,107 +1,102 @@
 package nmania;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
-import javax.microedition.lcdui.Gauge;
 
 import nmania.beatmaps.InvalidBeatmapTypeException;
-import nmania.ui.BeatmapSetPage;
 import nmania.ui.KeyboardSetup;
-import nmania.ui.MainScreen;
+import nmania.ui.ng.IDisplay;
 
 /**
- * Utility for starting player. Construct it and start the thread to begin player preparation.
+ * Utility for starting player. Construct it and start the thread to begin
+ * player preparation.
  * 
  * @author Feodor0090
  *
  */
-public class PlayerLoader extends Thread implements ILogger, CommandListener {
+public class PlayerLoader extends Thread {
 
-
-	public PlayerLoader(PlayerBootstrapData data, IInputOverrider input, Displayable page) {
+	public PlayerLoader(PlayerBootstrapData data, IInputOverrider input, ILogger log, IDisplay disp) {
 		super("Player loader");
 		this.input = input;
-		this.page = page;
+		this.log = log;
 		this.data = data;
+		display = disp;
+		this.back = disp.GetDisplayable();
+	}
+
+	public PlayerLoader(PlayerBootstrapData data, IInputOverrider input, ILogger log, Displayable back) {
+		super("Player loader");
+		this.input = input;
+		this.log = log;
+		this.data = data;
+		this.back = back;
 	}
 
 	private final IInputOverrider input;
-	Displayable page;
+	private ILogger log;
 	final PlayerBootstrapData data;
-	Alert a;
-	Command cancelCmd = new Command(Nmania.commonText[8], Command.STOP, 1);
+	private Displayable back;
+	private IDisplay display;
 
 	public void run() {
-		a = new Alert("nmania", "Reading beatmap file", null, AlertType.INFO);
-		a.setTimeout(Alert.FOREVER);
-		a.addCommand(cancelCmd);
-		a.setIndicator(new Gauge(null, false, Gauge.INDEFINITE, Gauge.CONTINUOUS_RUNNING));
-		a.setCommandListener(this);
-		Nmania.Push(a);
-		Beatmap b;
 		try {
-			Thread.sleep(1);
-			b = BeatmapManager.ReadBeatmap(data).ToBeatmap();
-		} catch (InvalidBeatmapTypeException e) {
-			PushWaitPush(page, new Alert("Beatmap is invalid", e.getMessage(), null, AlertType.ERROR));
-			return;
-		} catch (InterruptedException e) {
-			Nmania.Push(page);
-			return;
+			Beatmap b;
+			try {
+				Thread.sleep(1);
+				b = BeatmapManager.ReadBeatmap(data).ToBeatmap();
+			} catch (InvalidBeatmapTypeException e) {
+				log.logError("Beatmap is invalid");
+				return;
+			} catch (InterruptedException e) {
+				return;
+			} catch (Exception e) {
+				e.printStackTrace();
+				log.logError("Failed to parse beatmap!");
+				return;
+			}
+			b.set = data.set;
+			try {
+				Thread.sleep(1);
+			} catch (InterruptedException e) {
+				return;
+			}
+			if (Settings.keyLayout[b.columnsCount - 1] == null) {
+				// no keyboard layout
+				if (display != null)
+					display.PauseRendering();
+				KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, back);
+				Nmania.Push(kbs);
+				return;
+			}
+			if (!Settings.keepMenu) {
+				back = null;
+			}
+			try {
+				Player p = new Player(b, data, Nmania.skin, log, back, input);
+				if (display != null) {
+					display.SetAudio(null);
+					if (Settings.keepMenu)
+						display.PauseRendering();
+					else
+						display.Destroy();
+					display = null;
+				}
+				Nmania.Push(p);
+				Thread t = new PlayerThread(p);
+				t.start();
+			} catch (InterruptedException e) {
+				Nmania.Push(back);
+				return;
+			} catch (Exception e) {
+				e.printStackTrace();
+				Nmania.Push(back);
+				log.logError(e.toString());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			PushWaitPush(page, new Alert("Failed to parse beatmap", e.toString(), null, AlertType.ERROR));
-			return;
+			log.logError(e.toString());
+		} catch (OutOfMemoryError e) {
+			log.logError("Out of memory");
 		}
-		b.set = data.set;
-		try {
-			Thread.sleep(1);
-		} catch (InterruptedException e) {
-			Nmania.Push(page);
-		}
-		if (Settings.keyLayout[b.columnsCount - 1] == null) {
-			// no keyboard layout
-			KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, page);
-			Nmania.Push(kbs);
-			return;
-		}
-		if (!Settings.keepMenu) {
-			page = null;
-		}
-		try {
-			Player p = new Player(b, data, Nmania.skin, this, page, input);
-			Nmania.Push(p);
-			Thread t = new PlayerThread(p);
-			t.start();
-		} catch (InterruptedException e) {
-			Displayable next = page == null ? new MainScreen() : page;
-			Nmania.Push(next);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.toString());
-		}
-	}
-
-	private final static void PushWaitPush(Displayable s1, Alert s2) {
-		Nmania.Push(s1);
-		try {
-			Thread.sleep(50);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		Nmania.Push(s2);
-		return;
-	}
-
-	public void log(String s) {
-		a.setString(s);
-	}
-
-	public void commandAction(Command arg0, Displayable arg1) {
-		if (arg0 == cancelCmd)
-			this.interrupt();
 	}
 }

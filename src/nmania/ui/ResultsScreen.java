@@ -17,6 +17,7 @@ import javax.microedition.lcdui.Image;
 import nmania.AudioController;
 import nmania.BeatmapManager;
 import nmania.IInputOverrider;
+import nmania.ILogger;
 import nmania.IScore;
 import nmania.Nmania;
 import nmania.Player;
@@ -28,7 +29,7 @@ import nmania.replays.ReplayChunk;
 import nmania.replays.ReplayPlayer;
 import nmania.replays.osu.OsuReplay;
 
-public final class ResultsScreen extends Canvas {
+public final class ResultsScreen extends Canvas implements ILogger {
 
 	/**
 	 * 
@@ -75,6 +76,7 @@ public final class ResultsScreen extends Canvas {
 	private PlayerBootstrapData data;
 	Sample applause = null;
 	String title;
+	String loadingLog = null;
 	/**
 	 * 0 - watch/quit 1 - retry/quit 2 - save/discard -> quit 3 - save/discard ->
 	 * watch
@@ -109,10 +111,10 @@ public final class ResultsScreen extends Canvas {
 
 		// stats
 		print(g, "Score", 10, y, -1, 0);
-		print(g, String.valueOf(score.GetScore()), cl, y ,-1, anchorRT);
+		print(g, String.valueOf(score.GetScore()), cl, y, -1, anchorRT);
 		print(g, "Mods", cr, y, -1, 0);
 		print(g, data.mods.toString(), w - 10, y, -1, anchorRT);
-		
+
 		y += th8 + 2;
 		print(g, "Accuracy", 10, y, -1, 0);
 		int acc = score.GetAccuracy();
@@ -137,6 +139,10 @@ public final class ResultsScreen extends Canvas {
 		print(g, Player.judgements[0], cr, y, Player.judgementColors[0], 0);
 		print(g, String.valueOf(score.GetMisses()), w - 10, y, -1, anchorRT);
 
+		if (loadingLog != null) {
+			print(g, loadingLog, w / 2, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
+			return;
+		}
 		String info = null;
 		String left = null;
 		String right = null;
@@ -196,7 +202,10 @@ public final class ResultsScreen extends Canvas {
 
 	private final void Exit() {
 		Dispose();
-		Nmania.Push(next == null ? new MainScreen() : next);
+		if (next == null)
+			Nmania.PushMainScreen();
+		else
+			Nmania.Push(next);
 	}
 
 	private final void Dispose() {
@@ -207,6 +216,8 @@ public final class ResultsScreen extends Canvas {
 	}
 
 	protected void keyPressed(int k) {
+		if (loadingLog != null)
+			return;
 		if (k == -1 || k == -2 || k == -3 || k == -4 || k == '2' || k == '4' || k == '6' || k == '8') {
 			itemSelected = !itemSelected;
 			repaint();
@@ -221,11 +232,11 @@ public final class ResultsScreen extends Canvas {
 				} else {
 					// we are watching foreign replay
 					Dispose();
-					(new PlayerLoader(data, input, next)).start();
+					(new PlayerLoader(data, input, this, next)).start();
 				}
 			} else if (activeMenu == 1) {
 				Dispose();
-				(new PlayerLoader(data, null, next)).start();
+				(new PlayerLoader(data, null, this, next)).start();
 			} else if (activeMenu == 2) {
 				SaveReplay();
 				Exit();
@@ -239,7 +250,7 @@ public final class ResultsScreen extends Canvas {
 					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
 				} else {
 					Dispose();
-					(new PlayerLoader(data, new ReplayPlayer(chunk, score), next)).start();
+					(new PlayerLoader(data, new ReplayPlayer(chunk, score), this, next)).start();
 				}
 			}
 		}
@@ -262,7 +273,7 @@ public final class ResultsScreen extends Canvas {
 					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
 				} else {
 					Dispose();
-					(new PlayerLoader(data, new ReplayPlayer(chunk, score), next)).start();
+					(new PlayerLoader(data, new ReplayPlayer(chunk, score), this, next)).start();
 				}
 			}
 		}
@@ -299,5 +310,15 @@ public final class ResultsScreen extends Canvas {
 		if (y < getHeight() / 2)
 			return;
 		keyPressed(x < getWidth() / 2 ? -6 : -7);
+	}
+
+	public void logError(String s) {
+		loadingLog = s;
+		repaint();
+	}
+
+	public void log(String s) {
+		loadingLog = s;
+		repaint();
 	}
 }
