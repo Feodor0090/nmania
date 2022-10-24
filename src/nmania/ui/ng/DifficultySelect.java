@@ -102,7 +102,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	}
 
 	public void OnResume(IDisplay d) {
-		if (d.GetAudio() == null)
+		if (d.GetAudio() == null && Settings.musicInMenu)
 			d.SetAudio(set);
 	}
 
