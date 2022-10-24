@@ -15,7 +15,6 @@ import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
 import nmania.AudioController;
-import nmania.BeatmapManager;
 import nmania.BeatmapSet;
 import nmania.GL;
 import nmania.IInputOverrider;
@@ -296,7 +295,7 @@ public final class ResultsScreen extends Canvas implements ILogger {
 		GL.Log("Score data written");
 		r.SetMods(data.mods);
 		GL.Log("Mods set");
-		r.beatmapHash = BeatmapManager.ReadBeatmapMd5(data);
+		r.beatmapHash = data.ReadBeatmapMd5();
 		GL.Log("Hash written");
 		FileConnection fc = null;
 		try {

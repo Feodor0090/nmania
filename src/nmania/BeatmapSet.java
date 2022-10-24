@@ -7,6 +7,9 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 
+import nmania.beatmaps.IRawBeatmap;
+import nmania.beatmaps.InvalidBeatmapTypeException;
+import nmania.beatmaps.RawBeatmapConverter;
 import nmania.replays.osu.OsuReplay;
 import nmania.ui.ResultsScreen;
 
@@ -151,5 +154,18 @@ public final class BeatmapSet {
 
 	public static String GetDifficultyNameFast(String fileName) {
 		return fileName.substring(fileName.indexOf('[') + 1, fileName.lastIndexOf(']'));
+	}
+
+	/**
+	 * Reads beatmap in this folder.
+	 * 
+	 * @param fileName Name of difficulty file.
+	 * @return Raw beatmap.
+	 * @throws InvalidBeatmapTypeException If could not read.
+	 */
+	public final IRawBeatmap ReadBeatmap(String fileName) throws InvalidBeatmapTypeException {
+		String raw = BeatmapManager.getStringFromFS(ToGlobalPath(fileName));
+		IRawBeatmap rb = RawBeatmapConverter.FromText(raw);
+		return rb;
 	}
 }

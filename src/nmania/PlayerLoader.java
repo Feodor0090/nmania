@@ -43,7 +43,7 @@ public class PlayerLoader extends Thread {
 			Beatmap b;
 			try {
 				Thread.sleep(1);
-				b = BeatmapManager.ReadBeatmap(data).ToBeatmap();
+				b = data.ReadBeatmap().ToBeatmap();
 			} catch (InvalidBeatmapTypeException e) {
 				log.logError("Beatmap is invalid");
 				return;

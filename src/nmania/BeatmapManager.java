@@ -22,14 +22,19 @@ import nmania.beatmaps.RawBeatmapConverter;
  * @author Feodor0090
  *
  */
-public class BeatmapManager {
+public final class BeatmapManager {
 
+	/**
+	 * Loads the manager for specific URL.
+	 * 
+	 * @param wd Absolute path to folder with file:///.
+	 */
 	public BeatmapManager(String wd) {
 		directory = wd;
 	}
 
 	public final String directory;
-	FileConnection fc;
+	private FileConnection fc;
 
 	public void Init() throws IOException {
 		fc = (FileConnection) Connector.open(directory, Connector.READ_WRITE);
@@ -159,13 +164,21 @@ public class BeatmapManager {
 		}
 	}
 
+	/**
+	 * Reads file's hash.
+	 * 
+	 * @param path Path to file. Must be global and contain file:///.
+	 * @return String with MD5.
+	 */
 	public static String getMD5FromFs(String path) {
 		InputStream is = null;
 		FileConnection fcon = null;
 		try {
 			fcon = (FileConnection) Connector.open(path, Connector.READ);
-			if (!fcon.exists())
+			if (!fcon.exists()) {
+				GL.Log("Requested MD5 of non-existing " + path);
 				return null;
+			}
 			is = fcon.openInputStream();
 
 			MD5 md5 = new MD5();
@@ -197,19 +210,5 @@ public class BeatmapManager {
 		String[] a = new String[v.size()];
 		v.copyInto(a);
 		return a;
-	}
-
-	public final static IRawBeatmap ReadBeatmap(PlayerBootstrapData data) throws InvalidBeatmapTypeException {
-		return ReadBeatmap(data.set, data.mapFileName);
-	}
-
-	public final static IRawBeatmap ReadBeatmap(BeatmapSet set, String fileName) throws InvalidBeatmapTypeException {
-		String raw = getStringFromFS(set.ToGlobalPath(fileName));
-		IRawBeatmap rb = RawBeatmapConverter.FromText(raw);
-		return rb;
-	}
-
-	public final static String ReadBeatmapMd5(PlayerBootstrapData data) {
-		return getMD5FromFs(data.set.wdPath + data.set.folderName + data.mapFileName);
 	}
 }

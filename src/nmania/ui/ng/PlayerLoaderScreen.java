@@ -3,7 +3,6 @@ package nmania.ui.ng;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
-import nmania.BeatmapManager;
 import nmania.BeatmapSet;
 import nmania.GL;
 import nmania.IInputOverrider;
@@ -107,7 +106,7 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 			return;
 		}
 		d.Throttle(true);
-		hash = BeatmapManager.ReadBeatmapMd5(data);
+		hash = data.ReadBeatmapMd5();
 		GL.LogStats();
 		GL.Log("Loading BM with hash " + hash);
 		GL.Log(data.set.toString());
