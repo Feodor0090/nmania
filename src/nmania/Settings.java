@@ -13,6 +13,8 @@ public final class Settings {
 		String dir = System.getProperty("fileconn.dir.music");
 		if (dir == null)
 			dir = "C:/Data/Sounds/";
+		if (dir.startsWith("file:///"))
+			dir = dir.substring(8);
 		return dir + "nmania/";
 	}
 
