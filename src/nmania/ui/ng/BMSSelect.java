@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import nmania.GL;
 import nmania.Nmania;
 import nmania.Settings;
 import nmania.Skin;
@@ -33,6 +34,7 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 		loadingState = true;
 		disp = d;
 		(new Thread(this)).start();
+		GL.Create();// ?dbg
 	}
 
 	public void run() {
