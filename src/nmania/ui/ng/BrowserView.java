@@ -5,6 +5,8 @@ import java.util.Vector;
 import org.json.me.JSONArray;
 import org.json.me.JSONObject;
 
+import nmania.Settings;
+
 public class BrowserView extends ListScreen {
 
 	private JSONObject beatmap;
@@ -69,6 +71,10 @@ public class BrowserView extends ListScreen {
 	}
 
 	public void OnOptionActivate(IDisplay d) {
+		String url = "http://nnp.nnchan.ru/glype/browse.php?u=https://kitsu.moe/api/d/" + beatmap.optInt("SetID");
+		String filename = "file:///" + Settings.workingFolder + beatmap.optInt("SetID") + " "
+				+ beatmap.optString("Title") + ".osz";
+		d.Push(new BrowserDownloader(title, url, filename));
 	}
 
 }
