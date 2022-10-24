@@ -625,9 +625,6 @@ public final class Player extends GameCanvas {
 									// log += "\nHit note at " + columns[column][currentNote[column]] + " is scored
 									// at "+ j + ", column " + column + ", time " + time;
 									CountHit(j);
-									score.CountHit(j);
-									lastJudgement = j;
-									lastJudgementTime = time;
 									currentNote[column] += 2;
 									if (hitSounds != null && j != 0)
 										hitSounds[defaultHSSet][0].Play();
@@ -650,9 +647,6 @@ public final class Player extends GameCanvas {
 									// log += "\nHold note at " + columns[column][currentNote[column]] + " is scored
 									// at " + j + ", column " + column + ", time " + time;
 									CountHit(j);
-									score.CountHit(j);
-									lastJudgement = j;
-									lastJudgementTime = time;
 									if (hitSounds != null && j != 0)
 										hitSounds[defaultHSSet][0].Play();
 									holdHeadScored[column] = true;
@@ -683,9 +677,6 @@ public final class Player extends GameCanvas {
 								// log += "\nTail note at " + (columns[column][currentNote[column]] + dur)
 								// + " is scored at " + j + ", column " + column + ", time " + time;
 								CountHit(j);
-								score.CountHit(j);
-								lastJudgement = j;
-								lastJudgementTime = time;
 								currentNote[column] += 2;
 								holdHeadScored[column] = false;
 								if (hitSounds != null && j != 0)
@@ -697,9 +688,6 @@ public final class Player extends GameCanvas {
 							// log += "\nTail note at " + (columns[column][currentNote[column]] + dur)
 							// + " is missed, column " + column + ", time " + time;
 							CountHit(0);
-							score.CountHit(0);
-							lastJudgement = 0;
-							lastJudgementTime = time;
 							currentNote[column] += 2;
 							holdHeadScored[column] = false;
 						}
@@ -710,11 +698,8 @@ public final class Player extends GameCanvas {
 				// missing unpressed notes
 				if (diff > hitWindows[0]) {
 					CountHit(0); // holds decreasing health only once
-					score.CountHit(0);
 					if (dur != 0)
 						score.CountHit(0);
-					lastJudgement = 0;
-					lastJudgementTime = time;
 					currentNote[column] += 2;
 					continue;
 				}
@@ -928,12 +913,17 @@ public final class Player extends GameCanvas {
 	}
 
 	/**
-	 * Adjusts health and plays miss sfx if needed.
+	 * Manages incoming hit: notifies score manager, adjusts health, plays miss sfx
+	 * if needed, sets visuals.
 	 * 
 	 * @param j Type of hit to count
 	 */
 	private final void CountHit(final int j) {
+		score.CountHit(j);
 		health += healthValues[j];
+		lastJudgement = j;
+		lastJudgementTime = time;
+
 		if (health > 1000)
 			health = 1000;
 		if (health < 0) {
