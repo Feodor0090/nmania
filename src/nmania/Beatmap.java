@@ -36,8 +36,9 @@ public final class Beatmap {
 	 * Provides quick info about the beatmap.
 	 * 
 	 * @return Text to display in diff select.
+	 * @throws InterruptedException 
 	 */
-	public String Analyze() {
+	public String Analyze() throws InterruptedException {
 		if (columnsCount > 10)
 			return columnsCount + "K (not supported)";
 		int hits = 0;
@@ -53,7 +54,7 @@ public final class Beatmap {
 			else
 				holds++;
 		}
-		Thread.yield();
+		Thread.sleep(1);
 		float bl = 60000f;
 		for (int i = 1; i < timingPoints.length; i += 2) {
 			bl = Math.min(bl, timingPoints[i]);
@@ -61,7 +62,7 @@ public final class Beatmap {
 		int time = (lastNoteTime - firstNoteTime) / 1000;
 		int min = time / 60;
 		int sec = time % 60;
-		Thread.yield();
+		Thread.sleep(1);
 		String dur = min + ":" + (sec < 10 ? "0" : "") + sec;
 		int nps = (int) (((hits + holds) / (float) time) * 100);
 		return columnsCount + "K, " + (int) (60000f / bl) + "BPM, " + dur + ", " + hits + "+" + holds + "notes, "

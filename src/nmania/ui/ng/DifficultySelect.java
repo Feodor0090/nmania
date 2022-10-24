@@ -157,7 +157,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 					DifficultyItem di = (DifficultyItem) it[i];
 					try {
 						IRawBeatmap b = BeatmapManager.ReadBeatmap(set, di.fileName);
-						Thread.yield();
+						Thread.sleep(1);
 						if (b.GetMode() != IRawBeatmap.VSRG) {
 							di.info = "Unsupported osu! mode (" + b.GetMode() + ")";
 							return;
