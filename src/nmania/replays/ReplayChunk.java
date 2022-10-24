@@ -7,13 +7,14 @@ package nmania.replays;
  *
  */
 public final class ReplayChunk implements IReplayProvider {
-	
+
 	/**
 	 * Allocates new chunk. Must not be called directly.
 	 */
 	private ReplayChunk() {
 		data = new int[FRAMES_IN_CHUNK * 2];
 	}
+
 	/**
 	 * First node of this linked list. If this node is first, this must be a
 	 * cyclical reference. Must not be null.
@@ -51,5 +52,15 @@ public final class ReplayChunk implements IReplayProvider {
 
 	public ReplayChunk GetReplay() {
 		return firstChunk;
+	}
+
+	public static int CountTotalFrames(ReplayChunk c) {
+		c = c.firstChunk;
+		int l = 0;
+		while (c != null) {
+			l += c.framesCount;
+			c = c.nextChunk;
+		}
+		return l;
 	}
 }
