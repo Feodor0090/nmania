@@ -52,15 +52,16 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private boolean leftButtonActive = false;
 	private float rightButtonState = 0f;
 	public static Image logo;
-	int w;
-	int h;
-	long time = System.currentTimeMillis();
-	long trFrw = -1, trBrw = -1;
-	boolean cycle = true;
-	boolean pause = false;
-	Image bg;
-	Thread th;
-	AudioController music;
+	private int w;
+	private int h;
+	private long time = System.currentTimeMillis();
+	private long trFrw = -1, trBrw = -1;
+	private boolean cycle = true;
+	private boolean pause = false;
+	private Image bg;
+	private Thread th;
+	private AudioController music;
+	private String lastMusicDir;
 
 	public void run() {
 		while (cycle) {
@@ -463,6 +464,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
 	public void SetAudio(BeatmapSet set) {
 		if (music != null) {
+			if (set != null && set.folderName.equals(lastMusicDir)) {
+				return;
+			}
 			music.Stop();
 			music = null;
 			System.gc();
@@ -474,6 +478,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			music.Loop();
 			music.Play();
 			music.SetTimingData(set.timings);
+			lastMusicDir = set.folderName;
 		} catch (Exception e) {
 			e.printStackTrace();
 			GL.Log(e.toString());
