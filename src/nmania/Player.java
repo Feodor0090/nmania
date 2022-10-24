@@ -530,6 +530,7 @@ public final class Player extends GameCanvas {
 				FailSequence(exitNow);
 				return;
 			}
+
 			boolean breakActive = false;
 			if (breaks[currentBreak] - time < 0) {
 				// break is in progress
@@ -596,7 +597,8 @@ public final class Player extends GameCanvas {
 					emptyColumns++; // this column is empty
 					continue; // nothing to do here anymore
 				}
-				// diff between current time and note hit time.
+
+				// diff between current time and note head hit time.
 				// positive - it's late, negative - it's early.
 				final int diff = time - columns[column][currentNote[column]];
 				final int adiff = Math.abs(diff);
@@ -616,7 +618,7 @@ public final class Player extends GameCanvas {
 				if (holdKeys[column]) {
 					// it is a single note
 					if (dur == 0) {
-						// we are waiting press, not hold
+						// we are waiting press, not enter with hold.
 						if (!lastHoldKeys[column]) {
 							// checking hitwindows
 							for (int j = 5; j > -1; j--) {
@@ -630,9 +632,6 @@ public final class Player extends GameCanvas {
 									break;
 								}
 							}
-						} else {
-							// log += "\nHit note at " + columns[column][currentNote[column]] + " is
-							// preholded, column " + column + ", time " + time;
 						}
 					} else {
 						// it is a hold
@@ -650,7 +649,8 @@ public final class Player extends GameCanvas {
 								}
 							}
 							holdHoldingTimes[column] = 0; // ready to count holding ms
-						} else {
+						} else if (holdHeadScored[column]) {
+							// quick guard not to start holding hit without hitting it's head
 							// holding the hold!
 							holdHoldingTimes[column] += delta;
 							if (holdHoldingTimes[column] > 100) {
@@ -659,8 +659,8 @@ public final class Player extends GameCanvas {
 							}
 						}
 					}
-					continue;
-				} else if (!holdKeys[column] && lastHoldKeys[column]) {
+				} else if (lastHoldKeys[column]) {
+					// releases
 					if (dur != 0) {
 						// released hold
 
@@ -684,7 +684,6 @@ public final class Player extends GameCanvas {
 							currentNote[column] += 2;
 							holdHeadScored[column] = false;
 						}
-						continue;
 					}
 				}
 
@@ -697,6 +696,7 @@ public final class Player extends GameCanvas {
 					continue;
 				}
 			}
+
 			System.arraycopy(holdKeys, 0, lastHoldKeys, 0, columnsCount);
 
 			if (emptyColumns == columnsCount) {
@@ -709,6 +709,7 @@ public final class Player extends GameCanvas {
 			if (Settings.forceThreadSwitch)
 				Thread.yield();
 		}
+
 	}
 
 	private final void DrawBreakCountdown(int msLeft) {
