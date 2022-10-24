@@ -19,11 +19,15 @@ public final class ReplayRecorder implements IReplayProvider, IScoreData {
 	private int state = 0;
 
 	public void Receive(int time, int key, boolean newstate) {
+		int ns;
 		if (newstate) {
-			state = state | (1 << key);
+			ns = state | (1 << key);
 		} else {
-			state = state & (~(1 << key));
+			ns = state & (~(1 << key));
 		}
+		if (ns == state)
+			return;
+		state = ns;
 		if (nextFrame >= ReplayChunk.FRAMES_IN_CHUNK) {
 			nextFrame = 0;
 			chunk = ReplayChunk.Chain(chunk);
