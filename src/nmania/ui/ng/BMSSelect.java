@@ -70,15 +70,14 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 				String s = en.nextElement().toString();
 				if (s.charAt(0) == '_')
 					continue;
-				if (s.charAt(s.length() - 1) != '/')
-					continue;
-				v.addElement(s.substring(0, s.length() - 1));
+				if (s.charAt(s.length() - 1) == '/') {
+					v.addElement(new ListItem(1, s.substring(0, s.length() - 1), this));
+				}
+				if (s.endsWith(".osz")) {
+					v.addElement(new ListItem(-1, s, this));
+				}
 			}
-			ListItem[] l = new ListItem[v.size()];
-			for (int i = 0; i < v.size(); i++) {
-				l[i] = new ListItem(i, v.elementAt(i).toString(), this);
-			}
-			SetItems(l);
+			SetItems(v);
 			loadingState = false;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -86,7 +85,13 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
-		display.Push(new DifficultySelect(Nmania.bm, item.text));
+		if (item.UUID == 1)
+			display.Push(new DifficultySelect(Nmania.bm, item.text));
+		else if (item.UUID == -1) {
+			display.Push(new Alert("Packed beatmapset",
+					item.text + " is an OSZ (zipped beatmapset). Do you want to unpack it?", "Unpack",
+					new BeatmapUnpacker(item.text), 2));
+		}
 	}
 
 	public void OnSide(int direction, ListItem item, ListScreen screen, IDisplay display) {

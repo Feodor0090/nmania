@@ -47,6 +47,10 @@ public class Alert implements IScreen {
 		return button;
 	}
 
+	public void SetText(String str) {
+		this.text = SNUtils.splitFull(str, ' ');
+	}
+
 	public void OnOptionActivate(IDisplay d) {
 		if (next != null) {
 			d.Push(next);
