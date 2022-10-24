@@ -12,6 +12,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 
 	private String fileName;
 	private String url;
+	Thread t;
 
 	public BrowserDownloader(String title, String url, String fileName) {
 		super("Connecting...", "Downloading beatmap " + title + ". Closing this screen will cancel the action.");
@@ -24,7 +25,14 @@ public class BrowserDownloader extends Alert implements Runnable {
 	}
 
 	public void OnEnter(IDisplay d) {
-		(new Thread(this, "BM downloader")).start();
+		t = new Thread(this, "BM downloader");
+		t.start();
+	}
+
+	public boolean OnExit(IDisplay d) {
+		if (t != null)
+			t.interrupt();
+		return super.OnExit(d);
 	}
 
 	public void download() {
@@ -69,7 +77,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 			out = fc.openOutputStream();
 			in = hc.openInputStream();
 			title = "Downloading";
-			final int bufSize = 4096;
+			final int bufSize = 1024 * 8;
 			byte[] buf = new byte[bufSize];
 			int read = 0;
 			int total = 0;
@@ -77,12 +85,14 @@ public class BrowserDownloader extends Alert implements Runnable {
 				out.write(buf, 0, read);
 				total += read;
 				title = "Downloaded " + (total / 1024) / 10 / 100f + "MB, wait...";
+				Thread.sleep(1);
 			}
 			title = "Done! Close this menu.";
 		} catch (Exception e) {
 			e.printStackTrace();
 			title = "Error: " + e.toString();
 		} finally {
+			t = null;
 			try {
 				if (out != null)
 					out.close();
