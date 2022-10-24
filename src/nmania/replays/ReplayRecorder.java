@@ -2,6 +2,7 @@ package nmania.replays;
 
 import java.util.Date;
 
+import nmania.GL;
 import nmania.IScoreData;
 import nmania.ScoreController;
 
@@ -31,6 +32,7 @@ public final class ReplayRecorder implements IReplayProvider, IScoreData {
 		if (nextFrame >= ReplayChunk.FRAMES_IN_CHUNK) {
 			nextFrame = 0;
 			chunk = ReplayChunk.Chain(chunk);
+			GL.Log("Replay chunk overflow, creating a new one.");
 		}
 		chunk.data[nextFrame << 1] = time;
 		chunk.data[(nextFrame << 1) + 1] = state;
