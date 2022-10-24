@@ -587,12 +587,12 @@ public final class Player extends GameCanvas {
 
 				if (currentNote[column] >= columns[column].length) {
 					// checks for columns with no more notes
-					if (holdKeys[column] && !holdKeys[column])
+					if (holdKeys[column] && !lastHoldKeys[column])
 						DrawKey(column, true);
-					else if (!holdKeys[column] && holdKeys[column])
+					else if (!holdKeys[column] && lastHoldKeys[column])
 						DrawKey(column, false);
-					emptyColumns++;
-					continue; // this column is empty
+					emptyColumns++; // this column is empty
+					continue; // nothing to do here anymore
 				}
 				// diff between current time and note hit time.
 				// positive - it's late, negative - it's early.
