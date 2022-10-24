@@ -405,6 +405,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		stack[top].OnKey(this, k);
 	}
 
+	protected void pointerPressed(int aX, int aY) {
+		if (aY > getHeight() - keysH) {
+			keyPressed(aX < (getWidth() >> 1) ? -6 : -7);
+		}
+	}
+
 	public final static int NMANIA_COLOR = SNUtils.toARGB("0xffbd55");
 	public final static int DARKER_COLOR = SNUtils.toARGB("0xffa311");
 	public final static int BG_COLOR = SNUtils.toARGB("0x2a2115");
