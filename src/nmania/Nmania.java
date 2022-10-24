@@ -25,6 +25,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 	public static Skin skin;
 	public static String[] commonText;
 	public static String version;
+	private static Display disp;
 
 	public Nmania() {
 		inst = this;
@@ -39,11 +40,13 @@ public final class Nmania extends MIDlet implements CommandListener {
 
 	/**
 	 * Loads BM on a folder.
-	 * @param dir Directory to use. Must contain trailing slash. Must not contain file:///.
+	 * 
+	 * @param dir Directory to use. Must contain trailing slash. Must not contain
+	 *            file:///.
 	 * @throws IOException
 	 */
 	public static void LoadManager(String dir) throws IOException {
-		bm = new BeatmapManager("file:///"+dir);
+		bm = new BeatmapManager("file:///" + dir);
 		bm.Init();
 	}
 
@@ -70,7 +73,15 @@ public final class Nmania extends MIDlet implements CommandListener {
 	}
 
 	public static void Push(Displayable d) {
-		Display.getDisplay(inst).setCurrent(d);
+		if (disp == null)
+			disp = Display.getDisplay(inst);
+
+		Displayable curr = disp.getCurrent();
+		if (curr == d)
+			return;
+		if (curr instanceof IDisplay)
+			((IDisplay) curr).PauseRendering();
+		disp.setCurrent(d);
 		if (d instanceof IDisplay)
 			((IDisplay) d).ResumeRendering();
 	}

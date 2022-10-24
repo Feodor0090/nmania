@@ -7,7 +7,6 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 import javax.microedition.lcdui.game.GameCanvas;
-import javax.microedition.media.MediaException;
 
 import nmania.AudioController;
 import nmania.BeatmapSet;
@@ -498,6 +497,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void PauseRendering() {
+		if (pause)
+			return;
 		pause = true;
 		th.setPriority(Thread.MIN_PRIORITY);
 		stack[top].OnPause(this);
