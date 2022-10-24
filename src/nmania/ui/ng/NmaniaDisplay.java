@@ -32,7 +32,6 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		try {
 			logo = Image.createImage("/ui/nmania-logo-0.12x.png");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -429,7 +428,6 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Back() {
-		GL.Log("Returning on screen stack from " + stack[top].getClass().getName());
 		if (stack[top].OnExit(this))
 			return;
 		if (top == 0) {
@@ -438,6 +436,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			Nmania.exit();
 			return;
 		}
+		GL.Log("(ui) Returning on screen stack from " + stack[top].getClass().getName() + " to "
+				+ stack[top - 1].getClass().getName()); // ?dbg
 		stack[top + 1] = null;
 		top--;
 		stack[top].OnResume(this);
@@ -445,7 +445,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Push(IScreen s) {
-		GL.Log("Pushing " + s.getClass().getName() + " to screen stack");
+		GL.Log("(ui) Pushing " + s.getClass().getName() + " to screen stack");
 		stack[top].OnPause(this);
 		top++;
 		stack[top] = s;
@@ -482,7 +482,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			e.printStackTrace();
 			GL.Log(e.toString());
 		} catch (OutOfMemoryError e) {
-			GL.Log("Not enough memory to play background music!");
+			GL.Log("(ui) Not enough memory to play background music!");
 		}
 	}
 
@@ -568,7 +568,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			}
 			return raw;
 		} catch (Throwable t) {
-			GL.Log("Failed to create BG with " + t.toString());
+			GL.Log("(ui) Failed to create BG with " + t.toString());
 			t.printStackTrace();
 			return null;
 		}
