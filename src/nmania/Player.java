@@ -585,12 +585,14 @@ public final class Player extends GameCanvas {
 			for (int column = 0; column < columnsCount; column++) {
 				// loop for each column
 
+				// drawing keys (if changed)
+				if (holdKeys[column] && !lastHoldKeys[column])
+					DrawKey(column, true);
+				else if (!holdKeys[column] && lastHoldKeys[column])
+					DrawKey(column, false);
+
+				// checks for columns with no more notes
 				if (currentNote[column] >= columns[column].length) {
-					// checks for columns with no more notes
-					if (holdKeys[column] && !lastHoldKeys[column])
-						DrawKey(column, true);
-					else if (!holdKeys[column] && lastHoldKeys[column])
-						DrawKey(column, false);
 					emptyColumns++; // this column is empty
 					continue; // nothing to do here anymore
 				}
@@ -616,7 +618,6 @@ public final class Player extends GameCanvas {
 					if (dur == 0) {
 						// we are waiting press, not hold
 						if (!lastHoldKeys[column]) {
-							DrawKey(column, true);
 							// checking hitwindows
 							for (int j = 5; j > -1; j--) {
 								if (adiff < hitWindows[j]) {
@@ -636,7 +637,6 @@ public final class Player extends GameCanvas {
 					} else {
 						// it is a hold
 						if (!lastHoldKeys[column]) {
-							DrawKey(column, true);
 							// checking hitwindow
 							for (int j = 5; j > -1; j--) {
 								if (adiff < hitWindows[j]) {
@@ -661,7 +661,6 @@ public final class Player extends GameCanvas {
 					}
 					continue;
 				} else if (!holdKeys[column] && lastHoldKeys[column]) {
-					DrawKey(column, false);
 					if (dur != 0) {
 						// released hold
 
