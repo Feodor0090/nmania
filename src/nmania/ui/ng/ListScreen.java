@@ -81,6 +81,7 @@ public abstract class ListScreen implements IScreen {
 		if (items == null)
 			return;
 		int y = realY;
+		int bb = h * 3 / 2;
 		for (int i = 0; i < items.length; i++) {
 			if (y > -fontH * 2) {
 				if (selected == i) {
@@ -108,7 +109,8 @@ public abstract class ListScreen implements IScreen {
 
 			}
 			y += fontH;
-
+			if (y > bb)
+				break;
 		}
 	}
 
