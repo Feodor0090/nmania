@@ -381,8 +381,19 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.drawLine(0, i, w, i);
 		}
 		g.setFont(header);
-		print(g, title, 1, 1, HeaderTextColor, BG_COLOR, 0);
+		int sw = header.stringWidth(title);
+		if (sw > w) {
+			if (sw - lastHeaderX > 0)
+				lastHeaderX += 3;
+			else
+				lastHeaderX = -w;
+		} else {
+			lastHeaderX = 0;
+		}
+		print(g, title, 1 - lastHeaderX, 1, HeaderTextColor, BG_COLOR, 0);
 	}
+
+	int lastHeaderX = 0;
 
 	protected void keyPressed(int k) {
 		if (pause)
