@@ -57,10 +57,21 @@ public class Alert implements IScreen {
 		}
 	}
 
+	int scroll = 0;
+	int totalY;
+	boolean allowScroll = false;
+
 	public void Paint(Graphics g, int w, int h) {
+		if (allowScroll) {
+			if (scroll < 0)
+				scroll = 0;
+			if (totalY - scroll < h)
+				scroll = totalY - h;
+		} else
+			scroll = 0;
 		Font f = Font.getFont(0, 0, 8);
 		g.setFont(f);
-		int y = 0;
+		int y = -scroll;
 		int x = 10;
 		int sp = f.charWidth(' ');
 		boolean lineHasWords = false;
@@ -75,9 +86,17 @@ public class Alert implements IScreen {
 			lineHasWords = true;
 			x += ww + sp;
 		}
+		totalY = y + f.getHeight() + scroll;
+		allowScroll = totalY > h;
 	}
 
 	public void OnKey(IDisplay d, int k) {
+		if (allowScroll) {
+			if (k == -1 || k == '2')
+				scroll -= 30;
+			if (k == -2 || k == '8')
+				scroll += 30;
+		}
 	}
 
 	public void OnEnter(IDisplay d) {
