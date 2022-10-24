@@ -174,11 +174,14 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				}
 			}
 			flushGraphics();
-			if (throttle)
-				try {
+
+			try {
+				if (throttle)
 					Thread.sleep(40);
-				} catch (InterruptedException e) {
-				}
+				else
+					Thread.sleep(1);
+			} catch (InterruptedException e) {
+			}
 		}
 		stack = null;
 		g = null;

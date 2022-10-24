@@ -5,7 +5,6 @@ import java.util.Vector;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
 
-import nmania.Beatmap;
 import nmania.BeatmapManager;
 import nmania.BeatmapSet;
 import nmania.IInputOverrider;
@@ -27,6 +26,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	public ModsState mods = new ModsState();
 	public int mode;
 	public String[] modes = new String[] { "normal", "autoplay", "replay" };
+	private Thread t;
 
 	public DifficultySelect(BeatmapManager bm, String folder) {
 		this.bm = bm;
@@ -98,7 +98,15 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 		this.d = d;
 		keysH = ((NmaniaDisplay) d).keysH;
 		loadingState = true;
-		(new Thread(this, "BMS loader")).start();
+		t = new Thread(this, "BMS loader");
+		t.start();
+	}
+
+	public boolean OnExit(IDisplay d) {
+		if (t != null)
+			t.interrupt();
+		t = null;
+		return super.OnExit(d);
 	}
 
 	public void OnResume(IDisplay d) {
@@ -140,9 +148,12 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 				d.SetAudio(set);
 			}
 
+			loadingState = false;
+
 			if (Settings.analyzeMaps) {
 				ListItem[] it = GetAllItems();
 				for (int i = 0; i < it.length; i++) {
+					Thread.sleep(50);
 					DifficultyItem di = (DifficultyItem) it[i];
 					try {
 						IRawBeatmap b = BeatmapManager.ReadBeatmap(set, di.fileName);
@@ -160,10 +171,10 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 					}
 				}
 			}
-			loadingState = false;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		t = null;
 	}
 
 	public class DifficultyItem extends ListItem {
@@ -179,6 +190,10 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
+		if (t != null) {
+			t.interrupt();
+			t = null;
+		}
 		PlayerBootstrapData opts = new PlayerBootstrapData();
 		opts.recordReplay = Settings.recordReplay;
 		opts.set = set;
