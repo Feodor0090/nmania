@@ -17,6 +17,7 @@ import javax.microedition.lcdui.Image;
 import nmania.AudioController;
 import nmania.BeatmapManager;
 import nmania.BeatmapSet;
+import nmania.GL;
 import nmania.IInputOverrider;
 import nmania.ILogger;
 import nmania.IScore;
@@ -29,6 +30,7 @@ import nmania.replays.IReplayProvider;
 import nmania.replays.ReplayChunk;
 import nmania.replays.ReplayPlayer;
 import nmania.replays.osu.OsuReplay;
+import nmania.ui.ng.NmaniaDisplay;
 
 public final class ResultsScreen extends Canvas implements ILogger {
 
@@ -285,19 +287,37 @@ public final class ResultsScreen extends Canvas implements ILogger {
 	}
 
 	private void SaveReplay() {
+		GL.Log("Attempting to write replay");
+		GL.LogStats();
 		OsuReplay r = new OsuReplay();
+		GL.Log("Replay created");
 		r.gameMode = 3;
 		r.gameVersion = 292;
 		r.WriteScoreDataFrom(score);
+		GL.Log("Score data written");
 		r.SetMods(data.mods);
+		GL.Log("Mods set");
 		r.beatmapHash = BeatmapManager.ReadBeatmapMd5(data);
+		GL.Log("Hash written");
 		FileConnection fc = null;
 		try {
-			fc = (FileConnection) Connector.open(data.set.GetFilenameForNewReplay(r, data), Connector.READ_WRITE);
+			String path = data.set.GetFilenameForNewReplay(r, data);
+			GL.Log("Path is " + path);
+			fc = (FileConnection) Connector.open(path, Connector.READ_WRITE);
 			fc.create();
-			r.write(fc.openOutputStream(), replay.GetReplay());
+			GL.Log("Getting replay chunks");
+			ReplayChunk rc = replay.GetReplay();
+			GL.Log("Frames count: " + ReplayChunk.CountTotalFrames(rc));
+			GL.Log("Begin of IO...");
+			GL.LogStats();
+			r.write(fc.openOutputStream(), rc);
+			GL.Log("Replay written!");
 			data.set.AddLastReplay();
+			GL.Log("New file added to BMS");
 		} catch (Throwable e) {
+			GL.Log("Reolay writing failed!");
+			GL.Log(e.toString());
+			Nmania.Push(new Alert("Could not write replay", e.toString(), null, AlertType.ERROR));
 			e.printStackTrace();
 		} finally {
 			if (fc != null)
