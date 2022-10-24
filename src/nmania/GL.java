@@ -1,6 +1,5 @@
 package nmania;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.microedition.io.Connector;
@@ -34,7 +33,7 @@ public class GL {
 			stream.write(s.getBytes());// ?dbg
 			stream.write('\n');// ?dbg
 			stream.flush();// ?dbg
-		} catch (IOException e) {// ?dbg
+		} catch (Exception e) {// ?dbg
 		} // ?dbg
 	}// ?dbg
 
