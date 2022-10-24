@@ -134,12 +134,33 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 			} catch (OutOfMemoryError e) {
 				e.printStackTrace();
 			}
+
+			if (Settings.musicInMenu) {
+				Thread.sleep(50);
+				d.SetAudio(set);
+			}
+
+			if (Settings.analyzeMaps) {
+				ListItem[] it = GetAllItems();
+				for (int i = 0; i < it.length; i++) {
+					DifficultyItem di = (DifficultyItem) it[i];
+					try {
+						IRawBeatmap b = BeatmapManager.ReadBeatmap(set, di.fileName);
+						Thread.yield();
+						if (b.GetMode() != IRawBeatmap.VSRG) {
+							di.info = "Unsupported osu! mode (" + b.GetMode() + ")";
+							return;
+						}
+						di.info = b.ToBeatmap().Analyze();
+					} catch (Exception e) {
+						e.printStackTrace();
+						di.info = "Error";
+					} catch (OutOfMemoryError e) {
+						break;
+					}
+				}
+			}
 			loadingState = false;
-			if (!Settings.musicInMenu)
-				return;
-			Thread.sleep(50);
-			d.SetAudio(set);
-			OnItemChange();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -155,35 +176,6 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 			this.fileName = fileName;
 		}
 
-	}
-
-	protected void OnItemChange() {
-		if (!Settings.analyzeMaps)
-			return;
-		final DifficultyItem di = (DifficultyItem) GetSelected();
-		if (di == null)
-			return;
-		if (di.info == null) {
-			di.info = "";
-			Thread t = new Thread(new Runnable() {
-
-				public void run() {
-					try {
-						IRawBeatmap b = BeatmapManager.ReadBeatmap(set, di.fileName);
-						Thread.yield();
-						if (b.GetMode() != IRawBeatmap.VSRG) {
-							di.info = "Unsupported osu! mode (" + b.GetMode() + ")";
-							return;
-						}
-						di.info = b.ToBeatmap().Analyze();
-					} catch (Exception e) {
-						e.printStackTrace();
-						di.info = "Error";
-					}
-				}
-			});
-			t.start();
-		}
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
