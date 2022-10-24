@@ -67,7 +67,7 @@ public class Alert implements IScreen {
 		for (int i = 0; i < text.length; i++) {
 			String word = text[i];
 			int ww = f.stringWidth(word);
-			if (x + ww > w && lineHasWords) {
+			if (word.equals("\n") || (x + ww > w && lineHasWords)) {
 				x = 10;
 				y += f.getHeight();
 			}
