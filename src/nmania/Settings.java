@@ -98,6 +98,13 @@ public final class Settings {
 	public static int gameplayOffset = 0;
 	public static boolean analyzeMaps;
 
+	public static String GetLastDir() {
+		int i = workingFolder.lastIndexOf('/', workingFolder.length() - 2);
+		if (i == -1)
+			return workingFolder;
+		return workingFolder.substring(i, workingFolder.length());
+	}
+
 	public static final void Save() {
 		if (!workingFolder.endsWith("/"))
 			workingFolder = workingFolder + "/";

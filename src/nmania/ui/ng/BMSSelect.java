@@ -26,8 +26,11 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 	}
 
 	public void OnOptionActivate(IDisplay d) {
-		d.Push(new Alert("SELECT A CHART", "Your working folder is \"" + Settings.workingFolder
-				+ "\". Place folders with charts there to see them ingame. Check \"information\" section in main menu for more info."));
+		d.Push(new Alert("SELECT A CHART",
+				"Your working folder is \"" + Settings.workingFolder
+						+ "\". Place folders with charts there to see them ingame. Look at the structure: \n "
+						+ Settings.GetLastDir()
+						+ " \n > chart1/ \n > > map [easy].osu \n > > background.jpg \n > > track.mp3"));
 	}
 
 	public void OnEnter(IDisplay d) {
