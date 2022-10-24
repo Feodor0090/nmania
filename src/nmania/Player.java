@@ -454,6 +454,9 @@ public final class Player extends GameCanvas {
 		score.Reset();
 		for (int i = 0; i < currentNote.length; i++) {
 			currentNote[i] = 0;
+			holdHeadScored[i] = false;
+			holdKeys[i] = false;
+			lastHoldKeys[i] = false;
 		}
 		// System.out.println(log);
 		// log = "";
