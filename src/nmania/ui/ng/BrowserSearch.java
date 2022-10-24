@@ -60,7 +60,6 @@ public class BrowserSearch extends ListScreen implements IListSelectHandler, Com
 			if (name.length() == 0)
 				return;
 			name = name.replace('\n', ' ');
-			Settings.name = name;
 			Nmania.Push(disp.GetDisplayable());
 			request.data = name;
 		}
