@@ -27,6 +27,9 @@ public class AudioSettings extends ListScreen implements IListSelectHandler {
 		case 0:
 			Settings.musicInMenu = !Settings.musicInMenu;
 			((SwitchItem) item).state = !((SwitchItem) item).state;
+			if (!Settings.musicInMenu) {
+				display.SetAudio(null);
+			}
 			break;
 		case 1:
 			Settings.hitSamples = !Settings.hitSamples;
