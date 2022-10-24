@@ -21,6 +21,10 @@ public abstract class ListScreen implements IScreen {
 		if (selected >= list.length)
 			selected = list.length - 1;
 	}
+	
+	public final ListItem[] GetAllItems() {
+		return items;
+	}
 
 	public final void SetItems(Vector v) {
 		ListItem[] arr = new ListItem[v.size()];
