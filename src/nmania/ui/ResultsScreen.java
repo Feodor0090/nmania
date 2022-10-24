@@ -30,7 +30,6 @@ import nmania.replays.IReplayProvider;
 import nmania.replays.ReplayChunk;
 import nmania.replays.ReplayPlayer;
 import nmania.replays.osu.OsuReplay;
-import nmania.ui.ng.NmaniaDisplay;
 
 public final class ResultsScreen extends Canvas implements ILogger {
 

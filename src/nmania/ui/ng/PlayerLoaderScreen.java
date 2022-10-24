@@ -108,9 +108,9 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 		}
 		d.Throttle(true);
 		hash = BeatmapManager.ReadBeatmapMd5(data);
-		GL.LogStats();// ?dbg
-		GL.Log("Loading BM with hash " + hash);// ?dbg
-		GL.Log(data.set.toString());// ?dbg
+		GL.LogStats();
+		GL.Log("Loading BM with hash " + hash);
+		GL.Log(data.set.toString());
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
@@ -123,14 +123,13 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 	public void logError(String s) {
 		state = s;
 		failed = true;
-		GL.Log("Player loading failed");// ?dbg
-		GL.Log(s);// ?dbg
+		GL.Log("Player loading failed");
+		GL.Log(s);
 	}
 
 	public void log(String s) {
 		state = s;
-		GL.Log(s);// ?dbg
-		GL.LogStats();// ?dbg
+		GL.Log(s);// ?dbg=
 	}
 
 }

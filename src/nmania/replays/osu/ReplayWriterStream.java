@@ -11,26 +11,27 @@ import nmania.replays.ReplayChunk;
  *
  */
 class ReplayWriterStream extends InputStream {
-	
+
 	ReplayChunk r;
 
 	int nextFrame = 0;
 	int lastTime = 0;
-	byte[] chunkEnd = { '|', '0', '|', '0'};
+	byte[] chunkEnd = { '|', '0', '|', '0' };
 	boolean writeComma = false;
-	
+
 	byte[] chunk = new byte[96];
-	
+
 	int pos = 0;
 	int len = 0;
-	
+
 	ReplayWriterStream(ReplayChunk r) {
 		this.r = r.firstChunk;
 	}
 
 	public int read() throws IOException {
-		if(pos >= len) {
-			if(!nextChunk()) return -1;
+		if (pos >= len) {
+			if (!nextChunk())
+				return -1;
 			pos = 0;
 		}
 		return (int) (chunk[pos++] & 0xFF);
@@ -44,8 +45,10 @@ class ReplayWriterStream extends InputStream {
 			nextFrame = 0;
 		}
 		int _pos = 0;
-		if(writeComma) chunk[_pos++] = ',';
-		else writeComma = true;
+		if (writeComma)
+			chunk[_pos++] = ',';
+		else
+			writeComma = true;
 		int time = r.data[nextFrame * 2];
 		int keys = r.data[nextFrame * 2 + 1];
 		int delta = time - lastTime;
@@ -59,7 +62,7 @@ class ReplayWriterStream extends InputStream {
 		System.arraycopy(k, 0, chunk, _pos, k.length);
 		_pos += k.length;
 		System.arraycopy(chunkEnd, 0, chunk, _pos, 4);
-		len = _pos+4;
+		len = _pos + 4;
 		return true;
 	}
 };

@@ -11,6 +11,7 @@ import java.util.Date;
 
 import lzma.LZMADecoder;
 import lzma.LZMAEncoder;
+import nmania.GL;
 import nmania.IScore;
 import nmania.ModsState;
 import nmania.ScoreController;
@@ -65,9 +66,9 @@ public final class OsuReplay implements IExtendedReplay {
 		maxCombo = r.nextShort();
 		perfectCombo = r.nextByte() == 1;
 		modsUsed = r.nextInt();
-
 		lifeBarGraph = r.nextString();
 		timestamp = r.nextLong();
+
 		int replayLength = r.nextInt();
 		replayData = new byte[replayLength];
 		in.readFully(replayData, 0, replayLength);
@@ -84,7 +85,7 @@ public final class OsuReplay implements IExtendedReplay {
 			if (in.read(properties) != 5) {
 				throw new IOException("LZMA file has no header!");
 			}
-	
+
 			if (!decoder.setDecoderProperties(properties)) {
 				throw new IOException("Decoder properties cannot be set!");
 			}
@@ -95,7 +96,7 @@ public final class OsuReplay implements IExtendedReplay {
 					throw new IOException("Can't read stream size");
 				outSize |= ((long) v) << (8 * i);
 			}
-	
+
 			if (!decoder.code(in, out, outSize)) {
 				throw new IOException("Decoding unsuccessful!");
 			}
@@ -109,6 +110,7 @@ public final class OsuReplay implements IExtendedReplay {
 	public void write(OutputStream outputStream, ReplayChunk r) throws IOException {
 		DataOutputStream dataOut = new DataOutputStream(outputStream);
 		OsrWriter writer = new OsrWriter(dataOut);
+		GL.Log("Writer initialized");
 		writer.writeByte(gameMode);
 		writer.writeInt(gameVersion);
 		writer.writeString(beatmapHash);
@@ -124,22 +126,33 @@ public final class OsuReplay implements IExtendedReplay {
 		writer.writeShort(maxCombo);
 		writer.writeByte(perfectCombo ? 1 : 0);
 		writer.writeInt(modsUsed);
-
 		writer.writeString(lifeBarGraph);
 		writer.writeLong(timestamp);
+		GL.Log("Score written");
+		GL.LogStats();
+
 		ByteArrayOutputStream compressedBytes = new ByteArrayOutputStream();
 		LZMAEncoder encoder = new LZMAEncoder();
 		encoder.setDictionarySize(4194304);
 		encoder.setEndMarkerMode(true);
 		encoder.setMatchFinder(LZMAEncoder.EMatchFinderTypeBT4);
 		encoder.setNumFastBytes(0x20);
-		
-        encoder.writeCoderProperties(compressedBytes);
-        compressedBytes.write(new byte[] { -1, -1, -1, -1, -1, -1, -1, -1 });
+		GL.Log("LZMA ready");
+		GL.LogStats();
+
+		encoder.writeCoderProperties(compressedBytes);
+		compressedBytes.write(new byte[] { -1, -1, -1, -1, -1, -1, -1, -1 });
+		GL.Log("LZMA starts");
 		encoder.code(new ReplayWriterStream(r), compressedBytes, -1, -1, null);
-		
-		writer.writeInt(compressedBytes.size());
+		GL.Log("LZMA finished");
+		GL.LogStats();
+
+		int blobLength = compressedBytes.size();
+		GL.Log("Blob size: " + blobLength);
+		writer.writeInt(blobLength);
 		dataOut.write(compressedBytes.toByteArray());
+		GL.Log("Blob written");
+
 		writer.writeLong(onlineScoreID);
 		dataOut.close();
 		compressedBytes = null;
@@ -227,11 +240,11 @@ public final class OsuReplay implements IExtendedReplay {
 	public String GetPlayerName() {
 		return playerName;
 	}
-	
+
 	public ModsState GetMods() {
 		return new ModsState(modsUsed);
 	}
-	
+
 	public void SetMods(ModsState mods) {
 		modsUsed = mods.GetMask();
 	}
