@@ -32,8 +32,8 @@ public final class ReplayRecorder implements IReplayProvider, IScoreData {
 			nextFrame = 0;
 			chunk = ReplayChunk.Chain(chunk);
 		}
-		chunk.data[nextFrame * 2] = time;
-		chunk.data[nextFrame * 2 + 1] = state;
+		chunk.data[nextFrame << 1] = time;
+		chunk.data[(nextFrame << 1) + 1] = state;
 		chunk.framesCount++;
 		nextFrame++;
 	}
