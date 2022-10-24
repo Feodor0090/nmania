@@ -5,6 +5,8 @@ import java.util.Vector;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import tube42.lib.imagelib.ColorUtils;
+
 public abstract class ListScreen implements IScreen {
 
 	private ListItem[] items;
@@ -21,7 +23,7 @@ public abstract class ListScreen implements IScreen {
 		if (selected >= list.length)
 			selected = list.length - 1;
 	}
-	
+
 	public final ListItem[] GetAllItems() {
 		return items;
 	}
@@ -84,8 +86,12 @@ public abstract class ListScreen implements IScreen {
 				if (selected == i) {
 					g.setColor(NmaniaDisplay.PINK_COLOR);
 					g.fillArc(fontH / 2, y, fontH, fontH, 0, 360);
-					g.fillArc(w - fontH * 3 / 2, y, fontH, fontH, 0, 360);
-					g.fillRect(fontH, y, w - fontH * 2, fontH);
+					g.fillRect(fontH, y, w - fontH, fontH);
+					g.setColor(
+							ColorUtils.blend(NmaniaDisplay.PINK_COLOR, -1, (int) (255 * NmaniaDisplay.beatProgress)));
+					int x = w - (int) (w * NmaniaDisplay.beatProgress);
+					g.fillArc(x + fontH / 2, y, fontH, fontH, 0, 360);
+					g.fillRect(x + fontH, y, w - fontH, fontH);
 				}
 				ListItem item = items[i];
 				int x = fontH;

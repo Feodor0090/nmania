@@ -91,6 +91,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				try {
 					kiai = music.IsKiai();
 					abp = music.Get4BeatDelta();
+					beatProgress = abp;
 					bp = Math.abs(1f - abp * 2f);
 					LogoOffset = (int) (bp * 2);
 				} catch (Exception e) {
@@ -410,6 +411,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public final static int PINK_COLOR = SNUtils.toARGB("0xe75480");
 	public final static int NEGATIVE_COLOR = SNUtils.toARGB("0x0042aa");
 	public static int HeaderBgDarkColor, HeaderBgLightColor, HeaderTextColor, SoftkeysOutlineColor, LogoOffset;
+	public static float beatProgress = 0f;
 
 	public static final void print(Graphics g, String s, int x, int y, int color, int bgColor, int anchor) {
 		g.setColor(bgColor);
