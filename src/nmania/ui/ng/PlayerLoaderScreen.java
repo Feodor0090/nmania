@@ -110,6 +110,7 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 		GL.LogStats();
 		GL.Log("Loading BM with hash " + hash);
 		GL.Log(data.set.toString());
+		GL.Log(data.mapFileName);
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
