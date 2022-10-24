@@ -121,6 +121,10 @@ public final class BeatmapSet {
 		return arr;
 	}
 
+	public String toString() {
+		return artist + " - " + title + " (" + mapper + ")";
+	}
+
 	/**
 	 * Reads OSR.
 	 * 
