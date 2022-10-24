@@ -1,14 +1,13 @@
 package nmania.ui.ng;
 
 import nmania.Nmania;
-import nmania.ui.InfoScreen;
 
 public class MainScreen extends ListScreen implements IListSelectHandler {
 
 	public MainScreen() {
 		SetItems(new ListItem[] { new ListItem(0, "Play solo", this), // new ListItem(1, "Play online", this),
 				new ListItem(2, "Browse maps", this), new ListItem(3, "Skinning", this),
-				new ListItem(4, "Information", this) });
+				new ListItem(4, "About (v" + Nmania.version + ")", this) });
 	}
 
 	public String GetTitle() {
@@ -35,8 +34,7 @@ public class MainScreen extends ListScreen implements IListSelectHandler {
 			display.Push(new SkinSelectScreen(display));
 			break;
 		case 4:
-			display.PauseRendering();
-			Nmania.Push(new InfoScreen(display.GetDisplayable()));
+			display.Push(new AboutScreen());
 			break;
 		}
 	}
