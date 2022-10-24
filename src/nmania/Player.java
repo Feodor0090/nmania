@@ -597,7 +597,7 @@ public final class Player extends GameCanvas {
 				// diff between current time and note hit time.
 				// positive - it's late, negative - it's early.
 				final int diff = time - columns[column][currentNote[column]];
-
+				final int adiff = Math.abs(diff);
 				// hold length
 				final int dur = columns[column][currentNote[column] + 1];
 
@@ -617,8 +617,6 @@ public final class Player extends GameCanvas {
 						// we are waiting press, not hold
 						if (!lastHoldKeys[column]) {
 							DrawKey(column, true);
-							// absolute difference
-							final int adiff = Math.abs(diff);
 							// checking hitwindows
 							for (int j = 5; j > -1; j--) {
 								if (adiff < hitWindows[j]) {
@@ -639,8 +637,6 @@ public final class Player extends GameCanvas {
 						// it is a hold
 						if (!lastHoldKeys[column]) {
 							DrawKey(column, true);
-							// absolute difference
-							final int adiff = Math.abs(diff);
 							// checking hitwindow
 							for (int j = 5; j > -1; j--) {
 								if (adiff < hitWindows[j]) {
@@ -669,8 +665,6 @@ public final class Player extends GameCanvas {
 					if (dur != 0) {
 						// released hold
 
-						// absolute difference
-						final int adiff = Math.abs(diff - dur);
 						// checking hitwindow
 						for (int j = 5; j > -1; j--) {
 							if (adiff < hitWindows[j]) {
