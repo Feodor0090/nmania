@@ -5,6 +5,7 @@ import javax.microedition.lcdui.Graphics;
 
 import nmania.BeatmapManager;
 import nmania.BeatmapSet;
+import nmania.GL;
 import nmania.IInputOverrider;
 import nmania.ILogger;
 import nmania.PlayerBootstrapData;
@@ -107,6 +108,9 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 		}
 		d.Throttle(true);
 		hash = BeatmapManager.ReadBeatmapMd5(data);
+		GL.LogStats();// ?dbg
+		GL.Log("Loading BM with hash " + hash);// ?dbg
+		GL.Log(data.set.toString());// ?dbg
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
@@ -119,10 +123,14 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 	public void logError(String s) {
 		state = s;
 		failed = true;
+		GL.Log("Player loading failed");// ?dbg
+		GL.Log(s);// ?dbg
 	}
 
 	public void log(String s) {
 		state = s;
+		GL.Log(s);// ?dbg
+		GL.LogStats();// ?dbg
 	}
 
 }
