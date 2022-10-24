@@ -443,6 +443,7 @@ public final class Player extends GameCanvas {
 	 * Performs gameplay restart.
 	 */
 	private final void ResetPlayer() {
+		GL.Log("(player) Reset requested!");
 		if (restart != null)
 			restart.Play();
 		track.Reset();
@@ -458,8 +459,6 @@ public final class Player extends GameCanvas {
 			holdKeys[i] = false;
 			lastHoldKeys[i] = false;
 		}
-		// System.out.println(log);
-		// log = "";
 		if (input != null)
 			input.Reset();
 		if (recorder != null)
@@ -468,6 +467,8 @@ public final class Player extends GameCanvas {
 		isPaused = false;
 		failed = false;
 		track.Play();
+		GL.Log("");
+		GL.Log("(player) Player was reset. Now: " + track.Now() + "ms");
 	}
 
 	protected final void keyReleased(final int k) {
@@ -485,7 +486,7 @@ public final class Player extends GameCanvas {
 
 	public final void ToggleColumnInputState(int column, boolean state) {
 		holdKeys[column] = state;
-		GL.Log("Received input " + state + " on " + column + " at time " + time + ", global frame " + framesPassed);
+		GL.Log("(input) " + state + " on column " + column + " at time " + time + ", global frame " + framesPassed);
 		if (recorder != null)
 			recorder.Receive(time, column, state);
 	}
@@ -519,10 +520,6 @@ public final class Player extends GameCanvas {
 			if (input != null) {
 				// replay handling
 				time = input.UpdatePlayer(this, time);
-			}
-			int delta = time - prevtime;
-			if (delta < 0) {
-				delta = 0;
 			}
 
 			if (isPaused) {
@@ -604,9 +601,12 @@ public final class Player extends GameCanvas {
 				// diff between current time and note head hit time.
 				// positive - it's late, negative - it's early.
 				final int diff = time - columns[column][currentNote[column]];
+				// abs of diff
 				final int adiff = Math.abs(diff);
 				// hold length
 				final int dur = columns[column][currentNote[column] + 1];
+				// diff between time and note tail. Negative=early
+				final int taildiff = diff - dur;
 
 				// is it too early to handle?
 				if (diff < -hitWindows[0]) {
@@ -622,40 +622,47 @@ public final class Player extends GameCanvas {
 					// it is a single note
 					if (dur == 0) {
 						// we are waiting press, not enter with hold.
-						if (!lastHoldKeys[column]) {
+						if (!lastHoldKeys[column]) { // press, not prehold
 							// checking hitwindows
 							for (int j = 5; j > -1; j--) {
 								if (adiff < hitWindows[j]) {
-									// log += "\nHit note at " + columns[column][currentNote[column]] + " is scored
-									// at "+ j + ", column " + column + ", time " + time;
+									GL.Log("(detect) Hit note at " + columns[column][currentNote[column]] + " c="
+											+ column + " is hit"); // ?dbg
 									CountHit(j);
 									currentNote[column] += 2;
 									if (hitSounds != null && j != 0)
 										hitSounds[defaultHSSet][0].Play();
-									break;
+									break; // loop on HW
 								}
 							}
+							continue;
 						}
 					} else {
 						// it is a hold
-						if (!lastHoldKeys[column]) {
-							// checking hitwindow
-							for (int j = 5; j > -1; j--) {
-								if (adiff < hitWindows[j]) {
-									// log += "\nHold note at " + columns[column][currentNote[column]] + " is scored
-									// at " + j + ", column " + column + ", time " + time;
-									CountHit(j);
-									if (hitSounds != null && j != 0)
-										hitSounds[defaultHSSet][0].Play();
-									holdHeadScored[column] = true;
-									break;
+						if (!lastHoldKeys[column]) { // head press
+							if (holdHeadScored[column]) {
+								GL.Log("(detect) Head note at " + columns[column][currentNote[column]] + " c=" + column
+										+ " not hit because it was already hit"); // ?dbg
+							} else {
+								// checking hitwindow
+								for (int j = 5; j > -1; j--) {
+									if (adiff < hitWindows[j]) {
+										GL.Log("(detect) Head note at " + columns[column][currentNote[column]] + " c="
+												+ column + " is hit"); // ?dbg
+										CountHit(j);
+										if (hitSounds != null && j != 0)
+											hitSounds[defaultHSSet][0].Play();
+										holdHeadScored[column] = true;
+										break; // loop on HW
+									}
 								}
+								continue;
 							}
 							holdHoldingTimes[column] = 0; // ready to count holding ms
 						} else if (holdHeadScored[column]) {
 							// quick guard not to start holding hit without hitting it's head
 							// holding the hold!
-							holdHoldingTimes[column] += delta;
+							holdHoldingTimes[column] += time - prevtime;
 							if (holdHoldingTimes[column] > 100) {
 								holdHoldingTimes[column] -= 100;
 								score.CountTick();
@@ -664,39 +671,56 @@ public final class Player extends GameCanvas {
 					}
 				} else if (lastHoldKeys[column]) {
 					// releases
-					if (dur != 0) {
+					if (dur != 0) { // nothing to do with hit notes
 						// released hold
-
-						// checking hitwindow
-						for (int j = 5; j > -1; j--) {
-							if (adiff < hitWindows[j]) {
-								// log += "\nTail note at " + (columns[column][currentNote[column]] + dur)
-								// + " is scored at " + j + ", column " + column + ", time " + time;
-								CountHit(j);
-								currentNote[column] += 2;
-								holdHeadScored[column] = false;
-								if (hitSounds != null && j != 0)
-									hitSounds[defaultHSSet][2].Play();
-								break;
-							}
-						}
-						if (adiff >= hitWindows[0] && holdHeadScored[column]) {
-							// log += "\nTail note at " + (columns[column][currentNote[column]] + dur)
-							// + " is missed, column " + column + ", time " + time;
-							CountHit(0);
-							currentNote[column] += 2;
-							holdHeadScored[column] = false;
-						}
+						if (holdHeadScored[column]) {
+							if (taildiff > -hitWindows[0]) {
+								// it's its tail
+								final int ataildiff = Math.abs(taildiff);
+								for (int j = 5; j > -1; j--) {
+									if (ataildiff < hitWindows[j]) {
+										int time = columns[column][currentNote[column]]; // ?dbg
+										GL.Log("(detect) Tail note at " + time + "+" + dur + "=" + (time + dur) + " c="
+												+ column + " is hit"); // ?dbg
+										CountHit(j);
+										currentNote[column] += 2;
+										holdHeadScored[column] = false;
+										if (hitSounds != null && j != 0)
+											hitSounds[defaultHSSet][2].Play();
+										break;
+									}
+								}
+								continue;
+							} // else it's still body of hold
+						} // else do nothing
 					}
 				}
 
 				// missing unpressed notes
 				if (diff > hitWindows[0]) {
-					CountHit(0); // holds decreasing health only once
-					if (dur != 0)
-						score.CountHit(0);
-					currentNote[column] += 2;
+					if (dur == 0) {
+						GL.Log("(detect) Hit on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
+								+ diff + "ms diff, skipping");
+						CountHit(0);
+						currentNote[column] += 2;
+					} else {
+						if (!holdHeadScored[column]) {
+							GL.Log("(detect) Head on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
+									+ diff + "ms diff, skipping");
+							CountHit(0); // counting hit only for head
+							holdHeadScored[column] = true;
+						} // else hold is holded
+					}
 					continue;
+				}
+				if (dur != 0) {
+					if (taildiff > hitWindows[0]) {
+						GL.Log("(detect) Tail on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
+								+ taildiff + "ms diff, skipping");
+						CountHit(0);
+						currentNote[column] += 2;
+						holdHeadScored[column] = false;
+					}
 				}
 			}
 
@@ -704,7 +728,7 @@ public final class Player extends GameCanvas {
 
 			if (emptyColumns == columnsCount) {
 				PassSequence();
-				GL.Log("Beatmap passed!");
+				GL.Log("(player) Beatmap passed!");
 			} else if (!breakActive) {
 				Redraw();
 			}
@@ -916,6 +940,7 @@ public final class Player extends GameCanvas {
 	 * @param j Type of hit to count
 	 */
 	private final void CountHit(final int j) {
+		GL.Log("(judgment) " + judgements[j] + " on " + time);
 		score.CountHit(j);
 		health += healthValues[j];
 		lastJudgement = j;
