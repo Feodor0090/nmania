@@ -98,7 +98,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 		this.d = d;
 		keysH = ((NmaniaDisplay) d).keysH;
 		loadingState = true;
-		(new Thread(this)).start();
+		(new Thread(this, "BMS loader")).start();
 	}
 
 	public void OnResume(IDisplay d) {

@@ -419,7 +419,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public Thread Start() {
-		th = new Thread(this);
+		th = new Thread(this, "Screen loop");
 		th.start();
 		return th;
 	}
