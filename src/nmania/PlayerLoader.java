@@ -62,8 +62,10 @@ public class PlayerLoader extends Thread {
 			}
 			if (Settings.keyLayout[b.columnsCount - 1] == null) {
 				// no keyboard layout
-				if (display != null)
+				if (display != null) {
+					display.Back();
 					display.PauseRendering();
+				}
 				KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, back);
 				Nmania.Push(kbs);
 				return;
