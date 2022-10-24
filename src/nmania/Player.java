@@ -482,8 +482,7 @@ public final class Player extends GameCanvas {
 
 	public final void ToggleColumnInputState(int column, boolean state) {
 		holdKeys[column] = state;
-		// log += "\nReveived input " + state + " on " + column + " at time " + time +
-		// ", global frame " + framesPassed;
+		GL.Log("Received input " + state + " on " + column + " at time " + time + ", global frame " + framesPassed);
 		if (recorder != null)
 			recorder.Receive(time, column, state);
 	}
@@ -521,8 +520,6 @@ public final class Player extends GameCanvas {
 			int delta = time - prevtime;
 			if (delta < 0) {
 				delta = 0;
-				// log += "\nDelta is " + delta + "! Time " + time + ", global frame " +
-				// framesPassed;
 			}
 
 			if (isPaused) {
@@ -726,6 +723,7 @@ public final class Player extends GameCanvas {
 
 			if (emptyColumns == columnsCount) {
 				PassSequence();
+				GL.Log("Beatmap passed!");
 			} else if (!breakActive) {
 				Redraw();
 			}
