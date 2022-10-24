@@ -11,6 +11,7 @@ import javax.microedition.media.MediaException;
 
 import nmania.AudioController;
 import nmania.BeatmapSet;
+import nmania.GL;
 import nmania.Nmania;
 import nmania.Settings;
 import symnovel.SNUtils;
@@ -425,6 +426,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Back() {
+		GL.Log("Returning on screen stack from " + stack[top].getClass().getName());
 		if (stack[top].OnExit(this))
 			return;
 		if (top == 0) {
@@ -440,6 +442,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Push(IScreen s) {
+		GL.Log("Pushing " + s.getClass().getName() + " to screen stack");
 		stack[top].OnPause(this);
 		top++;
 		stack[top] = s;
@@ -468,11 +471,11 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			music.Loop();
 			music.Play();
 			music.SetTimingData(set.timings);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (MediaException e) {
-			e.printStackTrace();
+			GL.Log(e.toString());
 		} catch (OutOfMemoryError e) {
+			GL.Log("Not enough memory to play background music!");
 		}
 	}
 
@@ -556,6 +559,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			}
 			return raw;
 		} catch (Throwable t) {
+			GL.Log("Failed to create BG with " + t.toString());
 			t.printStackTrace();
 			return null;
 		}
