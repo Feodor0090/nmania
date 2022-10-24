@@ -7,7 +7,7 @@ import symnovel.SNUtils;
 
 public class Alert implements IScreen {
 
-	private String title;
+	protected String title;
 	private String[] text;
 	private String button = null;
 	private IScreen next;
