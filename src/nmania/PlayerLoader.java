@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Displayable;
 
 import nmania.beatmaps.InvalidBeatmapTypeException;
 import nmania.ui.KeyboardSetup;
+import nmania.ui.ng.Alert;
 import nmania.ui.ng.IDisplay;
 
 /**
@@ -38,6 +39,12 @@ public class PlayerLoader extends Thread {
 	private Displayable back;
 	private IDisplay display;
 
+	private void alert(String title, String msg) {
+		if (display == null)
+			return;
+		display.Push(new Alert(title, msg));
+	}
+
 	public void run() {
 		try {
 			Beatmap b;
@@ -46,12 +53,13 @@ public class PlayerLoader extends Thread {
 				b = data.ReadBeatmap().ToBeatmap();
 			} catch (InvalidBeatmapTypeException e) {
 				log.logError("Beatmap is invalid");
+				alert("Beatmap is invalid", e.toString());
 				return;
 			} catch (InterruptedException e) {
 				return;
 			} catch (Exception e) {
 				e.printStackTrace();
-				log.logError("Failed to parse beatmap!");
+				log.logError("Failed to parse beatmap! " + e.toString());
 				return;
 			}
 			b.set = data.set;
@@ -93,12 +101,15 @@ public class PlayerLoader extends Thread {
 				e.printStackTrace();
 				Nmania.Push(back);
 				log.logError(e.toString());
+				alert("Failed to load player", e.toString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			alert("Failed to load player", e.toString());
 			log.logError(e.toString());
 		} catch (OutOfMemoryError e) {
 			log.logError("Out of memory");
+			alert("Failed to load player", e.toString());
 		}
 	}
 }
