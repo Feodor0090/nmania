@@ -700,15 +700,15 @@ public final class Player extends GameCanvas {
 								+ diff + "ms diff, skipping");
 						CountHit(0);
 						currentNote[column] += 2;
-					} else {
-						if (!holdHeadScored[column]) {
-							GL.Log("(detect) Head on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
-									+ diff + "ms diff, skipping");
-							CountHit(0); // counting hit only for head
-							holdHeadScored[column] = true;
-						} // else hold is holded
+						continue;
 					}
-					continue;
+					if (!holdHeadScored[column]) {
+						GL.Log("(detect) Head on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
+								+ diff + "ms diff, skipping");
+						CountHit(0); // counting hit only for head
+						holdHeadScored[column] = true;
+						continue;
+					} // else hold is holded
 				}
 				if (dur != 0) {
 					if (taildiff > hitWindows[0]) {
