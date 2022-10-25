@@ -1,10 +1,17 @@
 package nmania;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.microedition.io.Connector;
+import javax.microedition.io.file.FileConnection;
 import javax.microedition.rms.RecordStore;
 
 import org.json.me.JSONArray;
 import org.json.me.JSONObject;
 
+import nmania.ui.ng.Alert;
+import nmania.ui.ng.IDisplay;
 import symnovel.SNUtils;
 
 public final class Settings {
@@ -208,6 +215,29 @@ public final class Settings {
 			analyzeMaps = j.optBoolean("analyze"); // ?full
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public static final void Export(IDisplay d) {
+		FileConnection fc = null;
+		try {
+			fc = (FileConnection) Connector.open("file:///" + workingFolder + "_sets.json");
+			if (fc.exists())
+				fc.truncate(0);
+			else
+				fc.create();
+			OutputStream s = fc.openOutputStream();
+			s.write(Serialize().getBytes("UTF-8"));
+			s.flush();
+			s.close();
+			d.Push(new Alert("Settings exported", "They are in _sets.json file."));
+		} catch (Throwable t) {
+			try {
+				if (fc != null)
+					fc.close();
+			} catch (IOException e) {
+			}
+			d.Push(new Alert("Could not export settings", t.toString()));
 		}
 	}
 }
