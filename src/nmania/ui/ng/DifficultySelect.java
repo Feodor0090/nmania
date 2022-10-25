@@ -110,8 +110,8 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	}
 
 	public void OnResume(IDisplay d) {
-		if (d.GetAudio() == null && Settings.musicInMenu)
-			d.SetAudio(set);
+		if (d.GetAudio() == null && Settings.musicInMenu)  // ?full
+			d.SetAudio(set);  // ?full
 	}
 
 	public void run() {
@@ -133,44 +133,44 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 				}
 			}
 			SetItems(items);
-			Thread.sleep(50);
-			try {
-				Image img = BeatmapManager.getImgFromFS(set.wdPath + set.folderName + set.image);
-				d.SetBg(img);
-			} catch (Exception e) {
-				e.printStackTrace();
-			} catch (OutOfMemoryError e) {
-				e.printStackTrace();
-			}
+			Thread.sleep(50);  // ?full
+			try {  // ?full
+				Image img = BeatmapManager.getImgFromFS(set.wdPath + set.folderName + set.image);  // ?full
+				d.SetBg(img);  // ?full
+			} catch (Exception e) {  // ?full
+				e.printStackTrace();  // ?full
+			} catch (OutOfMemoryError e) {  // ?full
+				e.printStackTrace();  // ?full
+			}  // ?full
 
-			if (Settings.musicInMenu) {
-				Thread.sleep(50);
-				d.SetAudio(set);
-			}
+			if (Settings.musicInMenu) { // ?full
+				Thread.sleep(50); // ?full
+				d.SetAudio(set); // ?full
+			} // ?full
 
 			loadingState = false;
 
-			if (Settings.analyzeMaps) {
-				ListItem[] it = GetAllItems();
-				for (int i = 0; i < it.length; i++) {
-					Thread.sleep(50);
-					DifficultyItem di = (DifficultyItem) it[i];
-					try {
-						IRawBeatmap b = set.ReadBeatmap(di.fileName);
-						Thread.sleep(1);
-						if (b.GetMode() != IRawBeatmap.VSRG) {
-							di.info = "Unsupported osu! mode (" + b.GetMode() + ")";
-							return;
-						}
-						di.info = b.ToBeatmap().Analyze();
-					} catch (Exception e) {
-						e.printStackTrace();
-						di.info = "Error";
-					} catch (OutOfMemoryError e) {
-						break;
-					}
-				}
-			}
+			if (Settings.analyzeMaps) { // ?full
+				ListItem[] it = GetAllItems(); // ?full
+				for (int i = 0; i < it.length; i++) { // ?full
+					Thread.sleep(50); // ?full
+					DifficultyItem di = (DifficultyItem) it[i]; // ?full
+					try { // ?full
+						IRawBeatmap b = set.ReadBeatmap(di.fileName); // ?full
+						Thread.sleep(1); // ?full
+						if (b.GetMode() != IRawBeatmap.VSRG) { // ?full
+							di.info = "Unsupported osu! mode (" + b.GetMode() + ")"; // ?full
+							return; // ?full
+						} // ?full
+						di.info = b.ToBeatmap().Analyze(); // ?full
+					} catch (Exception e) { // ?full
+						e.printStackTrace(); // ?full
+						di.info = "Error"; // ?full
+					} catch (OutOfMemoryError e) { // ?full
+						break; // ?full
+					} // ?full
+				} // ?full
+			} // ?full
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
