@@ -303,6 +303,7 @@ public final class Player extends GameCanvas {
 	private final boolean verticalGr;
 	private final boolean colorHoldHeadsAsHolds;
 	private final char[] accText;
+	private static final char[] hudCache = new char[16];
 	private final int kbH, kbY, colW, colWp1;
 	private final int fillColsW, fillCountersH, fillScoreW, fillAccW, fillScoreX, fillAccX;
 	private final int judgmentCenter;
