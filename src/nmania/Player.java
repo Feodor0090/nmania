@@ -611,10 +611,6 @@ public final class Player extends GameCanvas {
 
 				// is it too early to handle?
 				if (diff < -hitWindows[0]) {
-					if (holdKeys[column] && !lastHoldKeys[column])
-						DrawKey(column, true);
-					else if (!holdKeys[column] && lastHoldKeys[column])
-						DrawKey(column, false);
 					continue; // note can't be hit yet
 				}
 
