@@ -120,7 +120,8 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 			Thread.sleep(1000);
 			set = bm.FromBMSDirectory(folder + "/");
 			if (set == null) {
-				// TODO error
+				d.Push(new Alert("Could not read beatmapset", "Please check it's structure."));
+				loadingState = false;
 				return;
 			}
 
