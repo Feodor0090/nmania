@@ -19,9 +19,9 @@ chmod +x ./build_sub.sh
 
 APP=nmania_debug ./build_sub.sh
 
-# filtering debug data
+echo Filtering debug data...
 IFS=$'\n'
-for file in `find ./ -type f -name "*"`
+for file in `find ./ -type f -name "*.java"`
 	do cat $file | grep -v "GL.Log" | grep -v "// ?dbg" > temp.txt
 	temp.txt > $file
 done
@@ -29,7 +29,7 @@ rm ./temp.txt
 
 APP=nmania ./build_sub.sh
 
-# filtering full data
+echo Filtering full data...
 IFS=$'\n'
 for file in `find ./ -type f -name "*"`
 	do cat $file | grep -v "// ?lite" > temp.txt
