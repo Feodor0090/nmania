@@ -63,119 +63,120 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
 	public void run() {
 		while (cycle) {
-			if (pause) {
-				try {
-					Thread.sleep(Integer.MAX_VALUE * 10L);
-				} catch (InterruptedException e) {
-					pause = false;
-				}
-				if (!cycle) {
-					stack = null;
-					g = null;
-					bg = null;
-					th = null;
-					if (music != null)
-						music.Stop();
-					music = null;
-					System.gc();
-					return;
-				}
-			}
-			long delta = System.currentTimeMillis() - time;
-			time += delta;
-			boolean kiai = false;
-			float bp = 0f;
-			float abp = 0f;
-			LogoOffset = 0;
-			if (music != null) {
-				try {
-					kiai = music.IsKiai();
-					abp = music.Get4BeatDelta();
-					beatProgress = abp;
-					bp = Math.abs(1f - abp * 2f);
-					LogoOffset = (int) (bp * 2);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-			if (kiai) {
-				HeaderBgDarkColor = ColorUtils.blend(NMANIA_COLOR, BG_COLOR, (int) (255 * bp));
-				HeaderBgLightColor = ColorUtils.blend(PINK_COLOR, NMANIA_COLOR, (int) (255 * bp));
-			} else {
-				HeaderBgDarkColor = DARKER_COLOR;
-				HeaderBgLightColor = ColorUtils.blend(-1, NMANIA_COLOR, (int) (255 * bp));
-			}
-			HeaderTextColor = ColorUtils.blend(0xffaaaaaa, -1, (int) (255 * bp));
-			SoftkeysOutlineColor = ColorUtils.blend(NEGATIVE_COLOR, 0, (int) (255 * bp));
-
-			w = getWidth();
-			h = getHeight();
-			if (leftButtonState > 0f) {
-				leftButtonState -= 0.004f * delta;
-				if (leftButtonState <= 0f)
-					leftButtonState = 0f;
-			}
-			if (rightButtonState > 0f) {
-				rightButtonState -= 0.004f * delta;
-				if (rightButtonState <= 0f)
-					rightButtonState = 0f;
-			}
-			{
-				String o = stack[top].GetOption();
-				if (o == null) {
-					leftButtonActive = false;
-				} else {
-					lastValidLeftButton = o;
-					leftButtonActive = true;
-				}
-			}
-			if (leftButtonActive) {
-				if (leftButtonContract < 1f)
-					leftButtonContract += delta * 0.002f;
-				if (leftButtonContract > 1f)
-					leftButtonContract = 1f;
-			} else {
-				if (leftButtonContract > 0f)
-					leftButtonContract -= delta * 0.002f;
-			}
-
-			if (trFrw != -1) {
-				PlayForwardTransition((time - trFrw) / 250f, stack[top - 1], stack[top]);
-			} else if (trBrw != -1) {
-				PlayBackwardsTransition((time - trBrw) / 250f, stack[top + 1], stack[top]);
-			} else {
-				if (bg == null) {
-					g.setColor(BG_COLOR);
-					g.fillRect(0, 0, w, h);
-				} else {
-					g.drawImage(bg, 0, 0, 0);
-				}
-				g.translate(0, headerH + 10);
-				stack[top].Paint(g, w, h - headerH - 10 - keysH);
-				g.translate(0, -g.getTranslateY());
-				DrawButtons();
-				DrawHeader(stack[top].GetTitle());
-				if (stack[top].ShowLogo()) {
-					int s = logo.getHeight();
-					int lx = w - logo.getWidth() + LogoOffset;
-					int ly = -LogoOffset;
-
-					if (music != null) {
-						g.setColor(PINK_COLOR);
-						g.fillArc(lx, ly, s, s, (int) (360 * abp), 90);
-						g.setColor(NMANIA_COLOR);
-						g.fillArc(lx, ly, s, s, (int) (360 * abp) + 90, 90);
-						g.setColor(NEGATIVE_COLOR);
-						g.fillArc(lx, ly, s, s, (int) (360 * abp) - 90, 90);
-						g.setColor(BG_COLOR);
-						g.fillArc(lx, ly, s, s, (int) (360 * abp) + 180, 90);
-					}
-					g.drawImage(logo, lx, ly, 0);
-				}
-			}
-			flushGraphics();
-
 			try {
+
+				if (pause) {
+					try {
+						Thread.sleep(Integer.MAX_VALUE * 10L);
+					} catch (InterruptedException e) {
+						pause = false;
+					}
+					if (!cycle) {
+						stack = null;
+						g = null;
+						bg = null;
+						th = null;
+						if (music != null)
+							music.Stop();
+						music = null;
+						System.gc();
+						return;
+					}
+				}
+				long delta = System.currentTimeMillis() - time;
+				time += delta;
+				boolean kiai = false;
+				float bp = 0f;
+				float abp = 0f;
+				LogoOffset = 0;
+				if (music != null) {
+					try {
+						kiai = music.IsKiai();
+						abp = music.Get4BeatDelta();
+						beatProgress = abp;
+						bp = Math.abs(1f - abp * 2f);
+						LogoOffset = (int) (bp * 2);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				if (kiai) {
+					HeaderBgDarkColor = ColorUtils.blend(NMANIA_COLOR, BG_COLOR, (int) (255 * bp));
+					HeaderBgLightColor = ColorUtils.blend(PINK_COLOR, NMANIA_COLOR, (int) (255 * bp));
+				} else {
+					HeaderBgDarkColor = DARKER_COLOR;
+					HeaderBgLightColor = ColorUtils.blend(-1, NMANIA_COLOR, (int) (255 * bp));
+				}
+				HeaderTextColor = ColorUtils.blend(0xffaaaaaa, -1, (int) (255 * bp));
+				SoftkeysOutlineColor = ColorUtils.blend(NEGATIVE_COLOR, 0, (int) (255 * bp));
+
+				w = getWidth();
+				h = getHeight();
+				if (leftButtonState > 0f) {
+					leftButtonState -= 0.004f * delta;
+					if (leftButtonState <= 0f)
+						leftButtonState = 0f;
+				}
+				if (rightButtonState > 0f) {
+					rightButtonState -= 0.004f * delta;
+					if (rightButtonState <= 0f)
+						rightButtonState = 0f;
+				}
+				{
+					String o = stack[top].GetOption();
+					if (o == null) {
+						leftButtonActive = false;
+					} else {
+						lastValidLeftButton = o;
+						leftButtonActive = true;
+					}
+				}
+				if (leftButtonActive) {
+					if (leftButtonContract < 1f)
+						leftButtonContract += delta * 0.002f;
+					if (leftButtonContract > 1f)
+						leftButtonContract = 1f;
+				} else {
+					if (leftButtonContract > 0f)
+						leftButtonContract -= delta * 0.002f;
+				}
+
+				if (trFrw != -1) {
+					PlayForwardTransition((time - trFrw) / 250f, stack[top - 1], stack[top]);
+				} else if (trBrw != -1) {
+					PlayBackwardsTransition((time - trBrw) / 250f, stack[top + 1], stack[top]);
+				} else {
+					if (bg == null) {
+						g.setColor(BG_COLOR);
+						g.fillRect(0, 0, w, h);
+					} else {
+						g.drawImage(bg, 0, 0, 0);
+					}
+					g.translate(0, headerH + 10);
+					stack[top].Paint(g, w, h - headerH - 10 - keysH);
+					g.translate(0, -g.getTranslateY());
+					DrawButtons();
+					DrawHeader(stack[top].GetTitle());
+					if (stack[top].ShowLogo()) {
+						int s = logo.getHeight();
+						int lx = w - logo.getWidth() + LogoOffset;
+						int ly = -LogoOffset;
+
+						if (music != null) {
+							g.setColor(PINK_COLOR);
+							g.fillArc(lx, ly, s, s, (int) (360 * abp), 90);
+							g.setColor(NMANIA_COLOR);
+							g.fillArc(lx, ly, s, s, (int) (360 * abp) + 90, 90);
+							g.setColor(NEGATIVE_COLOR);
+							g.fillArc(lx, ly, s, s, (int) (360 * abp) - 90, 90);
+							g.setColor(BG_COLOR);
+							g.fillArc(lx, ly, s, s, (int) (360 * abp) + 180, 90);
+						}
+						g.drawImage(logo, lx, ly, 0);
+					}
+				}
+				flushGraphics();
+
 				if (throttle)
 					Thread.sleep(40);
 				else
@@ -549,7 +550,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public static Image CreateBackground(Image raw, int scrW, int scrH) {
 		if (raw == null)
 			return null;
-		if (Settings.bgDim >= 1f)
+		if (Settings.bgDim >= 0.99f)
 			return null;
 		try {
 			final float screenAR = scrW / (float) scrH;
