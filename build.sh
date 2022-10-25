@@ -21,8 +21,8 @@ APP=nmania_debug ./build_sub.sh
 
 echo Filtering debug data...
 for file in `find ./ -type f -name "*.java"`
-	do cat $file | grep -v "GL.Log" | grep -v "// ?dbg" > temp.txt
-	temp.txt > $file
+	do cat $file | grep -v "GL.Log" | grep -v "// ?dbg" > ./temp.txt
+	cat ./temp.txt > $file
 done
 rm ./temp.txt
 
@@ -30,8 +30,8 @@ APP=nmania ./build_sub.sh
 
 echo Filtering full data...
 for file in `find ./ -type f -name "*"`
-	do cat $file | grep -v "// ?lite" > temp.txt
-	temp.txt > $file
+	do cat $file | grep -v "// ?lite" > ./temp.txt
+	cat ./temp.txt > $file
 done
 rm ./temp.txt
 rm ./res/sfx/*
