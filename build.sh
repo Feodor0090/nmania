@@ -12,20 +12,6 @@ cd ..
 
 cp Application\ Descriptor manifest.mf
 
-######## CONFIG ########
-export PATHSEP=":"
-export JAVA_HOME=./j2me_compiler/jdk1.6.0_45
-export WTK_HOME=./j2me_compiler/WTK2.5.2
-export JAVAC=javac
-export JAR=jar
-TCP=${LIB_DIR}/*
-export CLASSPATH=`echo $TCP | sed "s/ /:/g"`
-
-if [ -n "${JAVA_HOME}" ] ; then
-  export JAVAC=${JAVA_HOME}/bin/javac
-  export JAR=${JAVA_HOME}/bin/jar
-fi
-
 WORK_DIR=`dirname $0`
 cd ${WORK_DIR}
 
