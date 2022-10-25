@@ -20,12 +20,13 @@ APP=nmania   # Output jar name
 MANIFEST=Application\ Descriptor
 
 LIB_DIR=${WTK_HOME}/lib
-CLASSPATH=${LIB_DIR}/*
+TCP=${LIB_DIR}/*
 CLDCAPI=${LIB_DIR}/cldcapi11.jar
 MIDPAPI=${LIB_DIR}/midpapi20.jar
 PREVERIFY=${WTK_HOME}/bin/preverify
 JAVAC=javac
 JAR=jar
+CLASSPATH=`echo $TCP | sed "s/ /:/g"`
 
 if [ -n "${JAVA_HOME}" ] ; then
   JAVAC=${JAVA_HOME}/bin/javac
