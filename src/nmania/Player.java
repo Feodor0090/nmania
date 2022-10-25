@@ -34,10 +34,10 @@ public final class Player extends GameCanvas {
 		log.log("Loading map background");
 
 		Image _bg = null;
-		try {  // ?full
-			_bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image));  // ?full
-		} catch (OutOfMemoryError e) {  // ?full
-		}  // ?full
+		try { // ?full
+			_bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image)); // ?full
+		} catch (OutOfMemoryError e) { // ?full
+		} // ?full
 		if (_bg != null) {
 			try {
 				_bg = NmaniaDisplay.CreateBackground(_bg, scrW, scrH);
@@ -161,17 +161,17 @@ public final class Player extends GameCanvas {
 			applause = null;
 		}
 		if (Settings.hitSamples) {
-			String[] sets = new String[] { "normal", "soft", "drum" };
-			String[] types = new String[] { "normal", "whistle", "finish", "clap" };
+			String[] sets = new String[] { "normal", "soft", "drum" }; // ?full
+			String[] types = new String[] { "normal", "whistle", "finish", "clap" }; // ?full
 			hitSounds = new MultiSample[sets.length][];
-			for (int i = 0; i < sets.length; i++) {
-				hitSounds[i] = new MultiSample[types.length];
-				for (int j = 0; j < types.length; j++) {
-					hitSounds[i][j] = new MultiSample(true, "/sfx/" + sets[i] + "-hit" + types[j] + ".wav", "audio/wav",
-							4);
-					Thread.sleep(1);
-				}
-			}
+			for (int i = 0; i < sets.length; i++) { // ?full
+				hitSounds[i] = new MultiSample[types.length]; // ?full
+				for (int j = 0; j < types.length; j++) { // ?full
+					hitSounds[i][j] = new MultiSample(true, "/sfx/" + sets[i] + "-hit" + types[j] + ".wav", "audio/wav", // ?full
+							4); // ?full
+					Thread.sleep(1); // ?full
+				} // ?full
+			} // ?full
 		} else {
 			hitSounds = null;
 		}
@@ -357,13 +357,13 @@ public final class Player extends GameCanvas {
 	 * Clears allocated samples.
 	 */
 	public final void Dispose() {
-		if (hitSounds != null) {
-			for (int i = 0; i < hitSounds.length; i++) {
-				for (int j = 0; j < hitSounds[i].length; j++) {
-					hitSounds[i][j].Dispose();
-				}
-			}
-		}
+		if (hitSounds != null) { // ?full
+			for (int i = 0; i < hitSounds.length; i++) { // ?full
+				for (int j = 0; j < hitSounds[i].length; j++) { // ?full
+					hitSounds[i][j].Dispose(); // ?full
+				} // ?full
+			} // ?full
+		} // ?full
 		if (restart != null)
 			restart.Dispose();
 		if (combobreak != null)
@@ -626,8 +626,10 @@ public final class Player extends GameCanvas {
 											+ column + " is hit"); // ?dbg
 									CountHit(j);
 									currentNote[column] += 2;
-									if (hitSounds != null && j != 0)
-										hitSounds[defaultHSSet][0].Play();
+									if (hitSounds != null) { // ?full
+										if (j != 0) // ?full
+											hitSounds[defaultHSSet][0].Play(); // ?full
+									} // ?full
 									break; // loop on HW
 								}
 							}
@@ -646,8 +648,10 @@ public final class Player extends GameCanvas {
 										GL.Log("(detect) Head note at " + columns[column][currentNote[column]] + " c="
 												+ column + " is hit"); // ?dbg
 										CountHit(j);
-										if (hitSounds != null && j != 0)
-											hitSounds[defaultHSSet][0].Play();
+										if (hitSounds != null) { // ?full
+											if (j != 0) // ?full
+												hitSounds[defaultHSSet][0].Play(); // ?full
+										} // ?full
 										holdHeadScored[column] = true;
 										break; // loop on HW
 									}
@@ -681,8 +685,10 @@ public final class Player extends GameCanvas {
 										CountHit(j);
 										currentNote[column] += 2;
 										holdHeadScored[column] = false;
-										if (hitSounds != null && j != 0)
-											hitSounds[defaultHSSet][2].Play();
+										if (hitSounds != null) { // ?full
+											if (j != 0) // ?full
+												hitSounds[defaultHSSet][2].Play(); // ?full
+										} // ?full
 										break;
 									}
 								}
