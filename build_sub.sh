@@ -1,5 +1,19 @@
 #!/bin/sh -e
 
+# VARS
+PATHSEP=":"
+JAVA_HOME=./j2me_compiler/jdk1.6.0_45
+WTK_HOME=./j2me_compiler/WTK2.5.2
+RES=res
+MANIFEST=manifest.mf
+LIB_DIR=${WTK_HOME}/lib
+TCP=${LIB_DIR}/*
+CLDCAPI=${LIB_DIR}/cldcapi11.jar
+MIDPAPI=${LIB_DIR}/midpapi20.jar
+PREVERIFY=${WTK_HOME}/bin/preverify
+
+# ACTION
+echo "Working on" ${APP}
 echo "Creating or cleaning directories..."
 mkdir -p ./tmpclasses
 mkdir -p ./classes
