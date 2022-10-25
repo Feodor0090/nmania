@@ -999,18 +999,22 @@ public final class Player extends GameCanvas {
 			if (realScore != rollingScore) {
 				rollingScore += (realScore - rollingScore) / 60 + 1;
 			}
-			g.drawImage(scoreBg, scrW, 0, 24);
+
+			// score calc
 			int num = rollingScore;
-			int x1 = scrW - 0;
+			int l = 15;
 			while (true) {
 				final int d = num % 10;
-				g.drawChar((char) (d + '0'), x1, 0, 24);
-				x1 -= numsWidthCache[d];
+				hudCache[l] = (char) (d + '0');
 				if (num < 10)
 					break;
 				num /= 10;
+				l--;
 			}
-
+			// score
+			g.drawImage(scoreBg, scrW, 0, 24);
+			g.drawChars(hudCache, l, 16 - l, scrW, 0, 24);
+			// acc
 			g.drawImage(accBg, scrW, scrH, 40);
 			g.drawChars(accText, 0, 7, scrW, scrH, 40);
 		}
