@@ -13,13 +13,14 @@ cd ..
 cp Application\ Descriptor manifest.mf
 
 ######## CONFIG ########
-JAVAC=javac
-JAR=jar
-CLASSPATH=`echo $TCP | sed "s/ /:/g"`
+export JAVAC=javac
+export JAR=jar
+TCP=${LIB_DIR}/*
+export CLASSPATH=`echo $TCP | sed "s/ /:/g"`
 
 if [ -n "${JAVA_HOME}" ] ; then
-  JAVAC=${JAVA_HOME}/bin/javac
-  JAR=${JAVA_HOME}/bin/jar
+  export JAVAC=${JAVA_HOME}/bin/javac
+  export JAR=${JAVA_HOME}/bin/jar
 fi
 
 WORK_DIR=`dirname $0`

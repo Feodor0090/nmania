@@ -7,7 +7,6 @@ WTK_HOME=./j2me_compiler/WTK2.5.2
 RES=res
 MANIFEST=manifest.mf
 LIB_DIR=${WTK_HOME}/lib
-TCP=${LIB_DIR}/*
 CLDCAPI=${LIB_DIR}/cldcapi11.jar
 MIDPAPI=${LIB_DIR}/midpapi20.jar
 PREVERIFY=${WTK_HOME}/bin/preverify
