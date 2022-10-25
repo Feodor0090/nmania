@@ -26,17 +26,8 @@ MANIFEST=Application\ Descriptor
 
 
 if [ ! -e ${MANIFEST} ] ; then
-	MANIFEST=../MANIFEST.MF
-	if [ ! -e ${MANIFEST} ] ; then
-		MANIFEST=./manifest.mf
-		if [ ! -e ${MANIFEST} ] ; then
-			MANIFEST=./MANIFEST.MF
-			if [ ! -e ${MANIFEST} ] ; then
-				echo "No MANIFEST.MF or manifest.mf found in ./ or ../"
-				exit 2
-			fi
-		fi
-	fi
+	echo "No manifest found!!!"
+	exit 2
 fi
 
 LIB_DIR=${WTK_HOME}/lib
@@ -78,7 +69,7 @@ ${JAVAC} \
     -d ../tmpclasses \
     -classpath ../tmpclasses${PATHSEP}${CLASSPATH} \
 	-extdirs ../lib \
-    `find ../src -name '*'.java`
+    `find ./src -name '*'.java`
 
 echo "Preverifying class files..."
 
