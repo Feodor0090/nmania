@@ -17,9 +17,7 @@ cp Application\ Descriptor manifest.mf
 
 ######## CONFIG ########
 RES=res
-APP=nmania   # Output jar name
 MANIFEST=manifest.mf
-
 LIB_DIR=${WTK_HOME}/lib
 TCP=${LIB_DIR}/*
 CLDCAPI=${LIB_DIR}/cldcapi11.jar
@@ -37,32 +35,38 @@ fi
 WORK_DIR=`dirname $0`
 cd ${WORK_DIR}
 
-echo "Creating or cleaning directories..."
-mkdir -p ./tmpclasses
-mkdir -p ./classes
-rm -rf ./tmpclasses/*
-rm -rf ./classes/*
+chmod +x ./build_sub.sh
 
-echo "Compiling source files..."
-${JAVAC} \
-    -bootclasspath ${CLDCAPI}${PATHSEP}${MIDPAPI} \
-    -source 1.3 \
-    -target 1.3 \
-    -d ./tmpclasses \
-    -classpath ./tmpclasses${PATHSEP}${CLASSPATH} \
-    `find ./src -name '*'.java`
-echo $CLASSPATH
-echo "Preverifying class files..."
-${PREVERIFY} \
-    -classpath ${CLDCAPI}${PATHSEP}${MIDPAPI}${PATHSEP}${CLASSPATH}${PATHSEP}./tmpclasses \
-    -d ./classes \
-    ./tmpclasses
+APP=nmania_debug   # Output jar name
 
-echo "Jaring preverified class files..."
-${JAR} cmf ${MANIFEST} ${APP}.jar -C ./classes .
+./build_sub.sh
 
-if [ -d ${RES} ] ; then
-  ${JAR} uf ${APP}.jar -C ${RES} .
-fi
+# filtering debug data
+IFS=$'\n'
+for file in `find ./ -type f -name "*"` do 
+	cat $file | grep -v "GL.Log" | grep -v "// ?dbg" > temp.txt
+	temp.txt > $file
+done
+rm ./temp.txt
 
-echo "Done!" ./${APP}.jar
+APP=nmania
+
+./build_sub.sh
+
+# filtering full data
+IFS=$'\n'
+for file in `find ./ -type f -name "*"` do 
+	cat $file | grep -v "// ?lite" > temp.txt
+	temp.txt > $file
+done
+rm ./temp.txt
+rm ./res/sfx/*
+
+APP=nmania_lite
+
+./build_sub.sh
+
+mkdir -p jar
+cp nmania.jar ./jar/nmania.jar
+cp nmania_debug.jar ./jar/nmania_debug.jar
+cp nmania_lite.jar ./jar/nmania_lite.jar
