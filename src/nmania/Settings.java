@@ -1,6 +1,8 @@
 package nmania;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.microedition.io.Connector;
@@ -156,7 +158,7 @@ public final class Settings {
 	public static final void Save() {
 		try {
 			// writing
-			byte[] d = Serialize().getBytes();
+			byte[] d = Serialize().getBytes("UTF-8");
 			RecordStore r = RecordStore.openRecordStore("nmania_prefs", true);
 
 			if (r.getNumRecords() == 0) {
@@ -238,6 +240,40 @@ public final class Settings {
 			} catch (IOException e) {
 			}
 			d.Push(new Alert("Could not export settings", t.toString()));
+		}
+	}
+
+	public static final void Import(IDisplay d) {
+		FileConnection fc = null;
+		try {
+			fc = (FileConnection) Connector.open("file:///" + workingFolder + "_sets.json", Connector.READ);
+			InputStream s = fc.openInputStream();
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			int read = 0;
+			byte[] buf = new byte[1024];
+			while ((read = s.read(buf)) != -1) {
+				baos.write(buf, 0, read);
+			}
+			s.close();
+
+			RecordStore r = RecordStore.openRecordStore("nmania_prefs", true);
+
+			if (r.getNumRecords() == 0) {
+				r.addRecord(new byte[1], 0, 1);
+			}
+			r.setRecord(1, baos.toByteArray(), 0, baos.size());
+			baos.close();
+			r.closeRecordStore();
+			d.Back();
+			d.Back();
+		} catch (Throwable t) {
+			try {
+				if (fc != null)
+					fc.close();
+			} catch (IOException e) {
+			}
+			d.Push(new Alert("Could not import settings", t.toString()));
 		}
 	}
 }
