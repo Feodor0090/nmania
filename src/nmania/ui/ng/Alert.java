@@ -78,11 +78,13 @@ public class Alert implements IScreen {
 		for (int i = 0; i < text.length; i++) {
 			String word = text[i];
 			int ww = f.stringWidth(word);
-			if (word.equals("\n") || (x + ww > w && lineHasWords)) {
+			boolean nl = word.equals("\n");
+			if (nl || (x + ww > w && lineHasWords)) {
 				x = 10;
 				y += f.getHeight();
 			}
-			NmaniaDisplay.print(g, word, x, y, -1, 0, 0);
+			if (!nl)
+				NmaniaDisplay.print(g, word, x, y, -1, 0, 0);
 			lineHasWords = true;
 			x += ww + sp;
 		}
