@@ -741,67 +741,38 @@ public final class Player extends GameCanvas {
 	}
 
 	private final void DrawBreakCountdown(int msLeft) {
-		int timeleft = (msLeft / 1000) + 1;
-		int tl = timeleft; // won't change, used for coloring
-		if (timeleft > 999)
-			timeleft = 999;
-		int center = scrW / 2;
-		int ch = scrH / 2;
-		char c = (char) ('0' + timeleft % 10);
-		int zw2 = zeroW >> 1;
-		g.setColor(-1);
-		g.drawChar('<', center + 1 + zeroW * 2, ch + 1, 36);
-		g.drawChar('<', center - 1 + zeroW * 2, ch + 1, 36);
-		g.drawChar('<', center + 1 + zeroW * 2, ch - 1, 36);
-		g.drawChar('<', center - 1 + zeroW * 2, ch - 1, 36);
-		setColorForCountdown(tl);
-		g.drawChar('<', center + zeroW * 2, ch, 36);
-		g.setColor(-1);
-		g.drawChar(c, center + 1 + zw2, ch + 1, 36);
-		g.drawChar(c, center - 1 + zw2, ch + 1, 36);
-		g.drawChar(c, center + 1 + zw2, ch - 1, 36);
-		g.drawChar(c, center - 1 + zw2, ch - 1, 36);
-		setColorForCountdown(tl);
-		g.drawChar(c, center + zw2, ch, 36);
-		timeleft /= 10;
-		c = (char) ('0' + timeleft % 10);
-		g.setColor(-1);
-		g.drawChar(c, center + 1, ch + 1, 33);
-		g.drawChar(c, center - 1, ch + 1, 33);
-		g.drawChar(c, center + 1, ch - 1, 33);
-		g.drawChar(c, center - 1, ch - 1, 33);
-		setColorForCountdown(tl);
-		g.drawChar(c, center, ch, 33);
-		timeleft /= 10;
-		c = (char) ('0' + timeleft);
-		g.setColor(-1);
-		g.drawChar(c, center + 1 - zw2, ch + 1, 40);
-		g.drawChar(c, center - 1 - zw2, ch + 1, 40);
-		g.drawChar(c, center + 1 - zw2, ch - 1, 40);
-		g.drawChar(c, center - 1 - zw2, ch - 1, 40);
-		setColorForCountdown(tl);
-		g.drawChar(c, center - zw2, ch, 40);
-		g.setColor(-1);
-		g.drawChar('>', center + 1 - zeroW * 2, ch + 1, 40);
-		g.drawChar('>', center - 1 - zeroW * 2, ch + 1, 40);
-		g.drawChar('>', center + 1 - zeroW * 2, ch - 1, 40);
-		g.drawChar('>', center - 1 - zeroW * 2, ch - 1, 40);
-		setColorForCountdown(tl);
-		g.drawChar('>', center - zeroW * 2, ch, 40);
-	}
-
-	private final void setColorForCountdown(int secLeft) {
-		if (secLeft <= 2) {
-			g.setColor(255, 0, 0);
-		} else if (secLeft == 3) {
-			g.setColor(191, 0, 0);
-		} else if (secLeft == 4) {
-			g.setColor(127, 0, 0);
-		} else if (secLeft == 4) {
-			g.setColor(63, 0, 0);
+		int tl = (msLeft / 1000) + 1;
+		if (tl > 999)
+			tl = 999;
+		final int center = scrW >> 1;
+		final int ch = scrH >> 1;
+		int red;
+		if (tl <= 2) {
+			red = 255;
+		} else if (tl == 3) {
+			red = 191;
+		} else if (tl == 4) {
+			red = 127;
+		} else if (tl == 4) {
+			red = 63;
 		} else {
-			g.setColor(0, 0, 0);
+			red = 0;
 		}
+		hudCache[0] = '<';
+		hudCache[4] = '>';
+		hudCache[3] = (char) ('0' + tl % 10);
+		tl /= 10;
+		hudCache[2] = (char) ('0' + tl % 10);
+		tl /= 10;
+		hudCache[1] = (char) ('0' + tl);
+
+		g.setColor(-1);
+		g.drawChars(hudCache, 0, 5, center - 1, ch - 1, 33);
+		g.drawChars(hudCache, 0, 5, center - 1, ch + 1, 33);
+		g.drawChars(hudCache, 0, 5, center + 1, ch - 1, 33);
+		g.drawChars(hudCache, 0, 5, center + 1, ch + 1, 33);
+		g.setColor(red, 0, 0);
+		g.drawChars(hudCache, 0, 5, center, ch, 33);
 	}
 
 	private final void PassSequence() {
