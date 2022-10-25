@@ -265,8 +265,8 @@ public final class Settings {
 			r.setRecord(1, baos.toByteArray(), 0, baos.size());
 			baos.close();
 			r.closeRecordStore();
-			d.Back();
-			d.Back();
+			Load();
+			d.Push(new Alert("Settings imported", "They were in _sets.json file."));
 		} catch (Throwable t) {
 			try {
 				if (fc != null)
