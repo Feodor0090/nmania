@@ -18,8 +18,8 @@ public final class PlayerThread extends Thread {
 				throw new RuntimeException("Failed to start music!");
 			player.Loop();
 		} catch (Exception e) {
-			GL.Log("Player thread crashed!");
-			GL.Log(e.toString());
+			GL.Log("(player) Player thread crashed!");
+			GL.Log("(player) " + e.toString());
 			e.printStackTrace();
 		}
 	}
