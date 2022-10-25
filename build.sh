@@ -13,11 +13,12 @@ PATHSEP=":"
 JAVA_HOME=./j2me_compiler/jdk1.6.0_45
 WTK_HOME=./j2me_compiler/WTK2.5.2
 
+cp Application\ Descriptor manifest.mf
 
 ######## CONFIG ########
 RES=res
 APP=nmania   # Output jar name
-MANIFEST=Application\ Descriptor
+MANIFEST=manifest.mf
 
 LIB_DIR=${WTK_HOME}/lib
 TCP=${LIB_DIR}/*
