@@ -84,7 +84,13 @@ public final class Player extends GameCanvas {
 		currentNote = new int[columnsCount];
 		holdKeys = new boolean[columnsCount];
 		lastHoldKeys = new boolean[columnsCount];
-		keyMappings = Settings.keyLayout[columnsCount - 1];
+		int[] kbl = Settings.keyLayout[columnsCount - 1];
+		if (kbl == null) {
+			// this is a fallback to allow autoplay without set layout
+			kbl = new int[columnsCount + 1];
+			kbl[columnsCount] = -7;
+		}
+		keyMappings = kbl;
 		holdHeadScored = new boolean[columnsCount];
 		Thread.sleep(1);
 

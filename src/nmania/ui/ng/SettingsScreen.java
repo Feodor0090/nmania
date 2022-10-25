@@ -71,7 +71,6 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler, Co
 	public void OnResume(IDisplay d) {
 		SetItems(new ListItem[] { new ListItem(0, "Input settings", this), new ListItem(1, "Visual settings", this),
 				new ListItem(2, "Audio settings", this), new ListItem(3, "System settings", this),
-				// new DataItem(4, "Language", this, Settings.locale),
 				new DataItem(5, "Working folder", this, Settings.workingFolder),
 				new DataItem(6, "Player's name", this, Settings.name), new ListItem(7, "Import...", this),
 				new ListItem(8, "Export...", this) });

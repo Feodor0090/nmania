@@ -68,7 +68,7 @@ public class PlayerLoader extends Thread {
 			} catch (InterruptedException e) {
 				return;
 			}
-			if (Settings.keyLayout[b.columnsCount - 1] == null) {
+			if (input == null && Settings.keyLayout[b.columnsCount - 1] == null) {
 				// no keyboard layout
 				if (display != null) {
 					display.Back();
