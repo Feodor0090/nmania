@@ -34,11 +34,10 @@ public final class Player extends GameCanvas {
 		log.log("Loading map background");
 
 		Image _bg = null;
-		try {
-			_bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image));
-		} catch (OutOfMemoryError e) {
-
-		}
+		try {  // ?full
+			_bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image));  // ?full
+		} catch (OutOfMemoryError e) {  // ?full
+		}  // ?full
 		if (_bg != null) {
 			try {
 				_bg = NmaniaDisplay.CreateBackground(_bg, scrW, scrH);
