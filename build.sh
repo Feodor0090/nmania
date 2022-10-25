@@ -14,15 +14,10 @@ JAVA_HOME=./j2me_compiler/jdk1.6.0_45
 WTK_HOME=./j2me_compiler/WTK2.5.2
 
 
-
-
 ######## CONFIG ########
-########
 RES=res
 APP=nmania   # Output jar name
 MANIFEST=Application\ Descriptor
-########
-########
 
 LIB_DIR=${WTK_HOME}/lib
 CLASSPATH=${LIB_DIR}/*
@@ -32,20 +27,11 @@ PREVERIFY=${WTK_HOME}/bin/preverify
 JAVAC=javac
 JAR=jar
 
-#ls ${JAVA_HOME}
-#file ${JAVA_HOME}/bin/javac
-#file ${JAVA_HOME}/bin/jar
-#ldd ${JAVA_HOME}/bin/javac
-#ls -la ${JAVA_HOME}/bin/javac
-
 if [ -n "${JAVA_HOME}" ] ; then
   JAVAC=${JAVA_HOME}/bin/javac
   JAR=${JAVA_HOME}/bin/jar
 fi
 
-#
-# Make possible to run this script from any directory'`
-#
 WORK_DIR=`dirname $0`
 cd ${WORK_DIR}
 
@@ -63,9 +49,8 @@ ${JAVAC} \
     -d ./tmpclasses \
     -classpath ./tmpclasses${PATHSEP}${CLASSPATH} \
     `find ./src -name '*'.java`
-
+echo $CLASSPATH
 echo "Preverifying class files..."
-
 ${PREVERIFY} \
     -classpath ${CLDCAPI}${PATHSEP}${MIDPAPI}${PATHSEP}${CLASSPATH}${PATHSEP}./tmpclasses \
     -d ./classes \
