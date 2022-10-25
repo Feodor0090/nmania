@@ -1,10 +1,19 @@
 package nmania;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.microedition.io.Connector;
+import javax.microedition.io.file.FileConnection;
 import javax.microedition.rms.RecordStore;
 
 import org.json.me.JSONArray;
 import org.json.me.JSONObject;
 
+import nmania.ui.ng.Alert;
+import nmania.ui.ng.IDisplay;
 import symnovel.SNUtils;
 
 public final class Settings {
@@ -101,45 +110,55 @@ public final class Settings {
 		return workingFolder.substring(i, workingFolder.length());
 	}
 
-	public static final void Save() {
+	/**
+	 * Serializes this object.
+	 * 
+	 * @return JSON string.
+	 */
+	public static final String Serialize() {
 		if (!workingFolder.endsWith("/"))
 			workingFolder = workingFolder + "/";
-		try {
-			JSONObject j = new JSONObject();
-			j.accumulate("bgdim", String.valueOf(bgDim));
-			j.accumulate("speed", new Integer(speedDiv));
-			JSONArray keys = new JSONArray();
-			for (int i = 0; i < keyLayout.length; i++) {
-				JSONArray layout = new JSONArray();
-				if (keyLayout[i] == null) {
-					keys.put(JSONObject.NULL);
-					continue;
-				}
-				for (int k = 0; k < keyLayout[i].length; k++) {
-					layout.put(keyLayout[i][k]);
-				}
-				keys.put(layout);
-			}
-			j.accumulate("keys", keys);
-			j.accumulate("samples", new Boolean(gameplaySamples));
-			j.accumulate("hitsounds", new Boolean(hitSamples));
-			j.accumulate("keepmenu", new Boolean(keepMenu));
-			j.accumulate("drawcounters", new Boolean(drawHUD));
-			j.accumulate("fullscreenflush", new Boolean(fullScreenFlush));
-			j.accumulate("dir", workingFolder);
-			j.accumulate("gameplayoffset", new Integer(gameplayOffset));
-			j.accumulate("usebmssamples", new Boolean(useBmsSamples));
-			j.accumulate("profiler", new Boolean(profiler));
-			j.accumulate("name", name);
-			j.accumulate("record", new Boolean(recordReplay));
-			j.accumulate("musicinmenu", new Boolean(musicInMenu));
-			j.accumulate("throttle", new Boolean(throttleGameplay));
-			j.accumulate("maxpr", new Boolean(maxPriority));
-			j.accumulate("threadswitch", new Boolean(forceThreadSwitch));
-			j.accumulate("analyze", new Boolean(analyzeMaps));
 
+		JSONObject j = new JSONObject();
+		j.accumulate("bgdim", String.valueOf(bgDim));
+		j.accumulate("speed", new Integer(speedDiv));
+		JSONArray keys = new JSONArray();
+		for (int i = 0; i < keyLayout.length; i++) {
+			JSONArray layout = new JSONArray();
+			if (keyLayout[i] == null) {
+				keys.put(JSONObject.NULL);
+				continue;
+			}
+			for (int k = 0; k < keyLayout[i].length; k++) {
+				layout.put(keyLayout[i][k]);
+			}
+			keys.put(layout);
+		}
+		j.accumulate("keys", keys);
+		j.accumulate("samples", new Boolean(gameplaySamples));
+		j.accumulate("hitsounds", new Boolean(hitSamples));
+		j.accumulate("keepmenu", new Boolean(keepMenu));
+		j.accumulate("drawcounters", new Boolean(drawHUD));
+		j.accumulate("fullscreenflush", new Boolean(fullScreenFlush));
+		j.accumulate("dir", workingFolder);
+		j.accumulate("gameplayoffset", new Integer(gameplayOffset));
+		j.accumulate("usebmssamples", new Boolean(useBmsSamples));
+		j.accumulate("profiler", new Boolean(profiler));
+		j.accumulate("name", name);
+		j.accumulate("record", new Boolean(recordReplay));
+		j.accumulate("musicinmenu", new Boolean(musicInMenu));
+		j.accumulate("throttle", new Boolean(throttleGameplay));
+		j.accumulate("maxpr", new Boolean(maxPriority));
+		j.accumulate("threadswitch", new Boolean(forceThreadSwitch));
+		j.accumulate("analyze", new Boolean(analyzeMaps));
+
+		return j.toString();
+	}
+
+	public static final void Save() {
+		try {
 			// writing
-			byte[] d = j.toString().getBytes();
+			byte[] d = Serialize().getBytes("UTF-8");
 			RecordStore r = RecordStore.openRecordStore("nmania_prefs", true);
 
 			if (r.getNumRecords() == 0) {
@@ -198,6 +217,63 @@ public final class Settings {
 			analyzeMaps = j.optBoolean("analyze"); // ?full
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public static final void Export(IDisplay d) {
+		FileConnection fc = null;
+		try {
+			fc = (FileConnection) Connector.open("file:///" + workingFolder + "_sets.json");
+			if (fc.exists())
+				fc.truncate(0);
+			else
+				fc.create();
+			OutputStream s = fc.openOutputStream();
+			s.write(Serialize().getBytes("UTF-8"));
+			s.flush();
+			s.close();
+			d.Push(new Alert("Settings exported", "They are in _sets.json file."));
+		} catch (Throwable t) {
+			try {
+				if (fc != null)
+					fc.close();
+			} catch (IOException e) {
+			}
+			d.Push(new Alert("Could not export settings", t.toString()));
+		}
+	}
+
+	public static final void Import(IDisplay d) {
+		FileConnection fc = null;
+		try {
+			fc = (FileConnection) Connector.open("file:///" + workingFolder + "_sets.json", Connector.READ);
+			InputStream s = fc.openInputStream();
+
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			int read = 0;
+			byte[] buf = new byte[1024];
+			while ((read = s.read(buf)) != -1) {
+				baos.write(buf, 0, read);
+			}
+			s.close();
+
+			RecordStore r = RecordStore.openRecordStore("nmania_prefs", true);
+
+			if (r.getNumRecords() == 0) {
+				r.addRecord(new byte[1], 0, 1);
+			}
+			r.setRecord(1, baos.toByteArray(), 0, baos.size());
+			baos.close();
+			r.closeRecordStore();
+			Load();
+			d.Push(new Alert("Settings imported", "They were in _sets.json file."));
+		} catch (Throwable t) {
+			try {
+				if (fc != null)
+					fc.close();
+			} catch (IOException e) {
+			}
+			d.Push(new Alert("Could not import settings", t.toString()));
 		}
 	}
 }

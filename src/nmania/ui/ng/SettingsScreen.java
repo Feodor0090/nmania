@@ -50,6 +50,13 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler, Co
 			box.setCommandListener(this);
 			Nmania.Push(box);
 			break;
+		case 7:
+			Settings.Import(display);
+			break;
+		case 8:
+			Settings.Save();
+			Settings.Export(display);
+			break;
 		}
 	}
 
@@ -66,7 +73,8 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler, Co
 				new ListItem(2, "Audio settings", this), new ListItem(3, "System settings", this),
 				// new DataItem(4, "Language", this, Settings.locale),
 				new DataItem(5, "Working folder", this, Settings.workingFolder),
-				new DataItem(6, "Player's name", this, Settings.name), });
+				new DataItem(6, "Player's name", this, Settings.name), new ListItem(7, "Import...", this),
+				new ListItem(8, "Export...", this) });
 	}
 
 	public void OnEnter(IDisplay d) {
