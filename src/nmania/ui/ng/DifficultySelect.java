@@ -47,7 +47,8 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	}
 
 	public void Paint(Graphics g, int w, int h) {
-		int bottomY = h - font.getHeight() * 2;
+		int bottomY = h - font.getHeight();
+		bottomY -= font.getHeight(); // ?full
 		int bottomH = h - bottomY + keysH;
 		super.Paint(g, w, bottomY - 10);
 
@@ -87,7 +88,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 		} else {
 			info = "Beatmap analysis disabled.";
 		}
-		NmaniaDisplay.print(g, info, 10, bottomY + font.getHeight(), -1, NmaniaDisplay.BG_COLOR, 0);
+		NmaniaDisplay.print(g, info, 10, bottomY + font.getHeight(), -1, NmaniaDisplay.BG_COLOR, 0); // ?full
 	}
 
 	public void OnOptionActivate(IDisplay d) {
@@ -110,8 +111,8 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	}
 
 	public void OnResume(IDisplay d) {
-		if (d.GetAudio() == null && Settings.musicInMenu)  // ?full
-			d.SetAudio(set);  // ?full
+		if (d.GetAudio() == null && Settings.musicInMenu) // ?full
+			d.SetAudio(set); // ?full
 	}
 
 	public void run() {
@@ -133,15 +134,15 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 				}
 			}
 			SetItems(items);
-			Thread.sleep(50);  // ?full
-			try {  // ?full
-				Image img = BeatmapManager.getImgFromFS(set.wdPath + set.folderName + set.image);  // ?full
-				d.SetBg(img);  // ?full
-			} catch (Exception e) {  // ?full
-				e.printStackTrace();  // ?full
-			} catch (OutOfMemoryError e) {  // ?full
-				e.printStackTrace();  // ?full
-			}  // ?full
+			Thread.sleep(50); // ?full
+			try { // ?full
+				Image img = BeatmapManager.getImgFromFS(set.wdPath + set.folderName + set.image); // ?full
+				d.SetBg(img); // ?full
+			} catch (Exception e) { // ?full
+				e.printStackTrace(); // ?full
+			} catch (OutOfMemoryError e) { // ?full
+				e.printStackTrace(); // ?full
+			} // ?full
 
 			if (Settings.musicInMenu) { // ?full
 				Thread.sleep(50); // ?full
