@@ -162,7 +162,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 						Thread.sleep(1); // ?full
 						if (b.GetMode() != IRawBeatmap.VSRG) { // ?full
 							di.info = "Unsupported osu! mode (" + b.GetMode() + ")"; // ?full
-							return; // ?full
+							continue; // ?full
 						} // ?full
 						di.info = b.ToBeatmap().Analyze(); // ?full
 					} catch (Exception e) { // ?full
