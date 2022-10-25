@@ -101,45 +101,55 @@ public final class Settings {
 		return workingFolder.substring(i, workingFolder.length());
 	}
 
-	public static final void Save() {
+	/**
+	 * Serializes this object.
+	 * 
+	 * @return JSON string.
+	 */
+	public static final String Serialize() {
 		if (!workingFolder.endsWith("/"))
 			workingFolder = workingFolder + "/";
-		try {
-			JSONObject j = new JSONObject();
-			j.accumulate("bgdim", String.valueOf(bgDim));
-			j.accumulate("speed", new Integer(speedDiv));
-			JSONArray keys = new JSONArray();
-			for (int i = 0; i < keyLayout.length; i++) {
-				JSONArray layout = new JSONArray();
-				if (keyLayout[i] == null) {
-					keys.put(JSONObject.NULL);
-					continue;
-				}
-				for (int k = 0; k < keyLayout[i].length; k++) {
-					layout.put(keyLayout[i][k]);
-				}
-				keys.put(layout);
-			}
-			j.accumulate("keys", keys);
-			j.accumulate("samples", new Boolean(gameplaySamples));
-			j.accumulate("hitsounds", new Boolean(hitSamples));
-			j.accumulate("keepmenu", new Boolean(keepMenu));
-			j.accumulate("drawcounters", new Boolean(drawHUD));
-			j.accumulate("fullscreenflush", new Boolean(fullScreenFlush));
-			j.accumulate("dir", workingFolder);
-			j.accumulate("gameplayoffset", new Integer(gameplayOffset));
-			j.accumulate("usebmssamples", new Boolean(useBmsSamples));
-			j.accumulate("profiler", new Boolean(profiler));
-			j.accumulate("name", name);
-			j.accumulate("record", new Boolean(recordReplay));
-			j.accumulate("musicinmenu", new Boolean(musicInMenu));
-			j.accumulate("throttle", new Boolean(throttleGameplay));
-			j.accumulate("maxpr", new Boolean(maxPriority));
-			j.accumulate("threadswitch", new Boolean(forceThreadSwitch));
-			j.accumulate("analyze", new Boolean(analyzeMaps));
 
+		JSONObject j = new JSONObject();
+		j.accumulate("bgdim", String.valueOf(bgDim));
+		j.accumulate("speed", new Integer(speedDiv));
+		JSONArray keys = new JSONArray();
+		for (int i = 0; i < keyLayout.length; i++) {
+			JSONArray layout = new JSONArray();
+			if (keyLayout[i] == null) {
+				keys.put(JSONObject.NULL);
+				continue;
+			}
+			for (int k = 0; k < keyLayout[i].length; k++) {
+				layout.put(keyLayout[i][k]);
+			}
+			keys.put(layout);
+		}
+		j.accumulate("keys", keys);
+		j.accumulate("samples", new Boolean(gameplaySamples));
+		j.accumulate("hitsounds", new Boolean(hitSamples));
+		j.accumulate("keepmenu", new Boolean(keepMenu));
+		j.accumulate("drawcounters", new Boolean(drawHUD));
+		j.accumulate("fullscreenflush", new Boolean(fullScreenFlush));
+		j.accumulate("dir", workingFolder);
+		j.accumulate("gameplayoffset", new Integer(gameplayOffset));
+		j.accumulate("usebmssamples", new Boolean(useBmsSamples));
+		j.accumulate("profiler", new Boolean(profiler));
+		j.accumulate("name", name);
+		j.accumulate("record", new Boolean(recordReplay));
+		j.accumulate("musicinmenu", new Boolean(musicInMenu));
+		j.accumulate("throttle", new Boolean(throttleGameplay));
+		j.accumulate("maxpr", new Boolean(maxPriority));
+		j.accumulate("threadswitch", new Boolean(forceThreadSwitch));
+		j.accumulate("analyze", new Boolean(analyzeMaps));
+
+		return j.toString();
+	}
+
+	public static final void Save() {
+		try {
 			// writing
-			byte[] d = j.toString().getBytes();
+			byte[] d = Serialize().getBytes();
 			RecordStore r = RecordStore.openRecordStore("nmania_prefs", true);
 
 			if (r.getNumRecords() == 0) {
