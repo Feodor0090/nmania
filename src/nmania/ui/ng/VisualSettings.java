@@ -5,7 +5,8 @@ import nmania.Settings;
 public class VisualSettings extends ListScreen implements IListSelectHandler {
 
 	public VisualSettings() {
-		SetItems(new ListItem[] { new DataItem(0, "Dim level", this, ((int) (Settings.bgDim * 100f)) + "%"),
+		SetItems(new ListItem[] { //
+				new DataItem(0, "Dim level", this, ((int) (Settings.bgDim * 100f)) + "%"), // ?full
 				new DataItem(1, "Scroll speed", this, "1px/" + Settings.speedDiv + "ms"),
 				new SwitchItem(2, "Show HUD", this, Settings.drawHUD),
 				new SwitchItem(3, "Show fps", this, Settings.profiler), });

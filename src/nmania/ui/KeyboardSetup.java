@@ -48,7 +48,7 @@ public final class KeyboardSetup extends Canvas {
 		// top text
 		g.setColor(-1);
 		g.setFont(large);
-		g.drawString(Nmania.commonText[4] + " (" + columns + "K)", w / 2, 0, 17);
+		g.drawString("keybinds setup (" + columns + "K)", w / 2, 0, 17);
 		String keyCapt;
 		switch (currentColumn) {
 		case 0:
@@ -65,12 +65,12 @@ public final class KeyboardSetup extends Canvas {
 			break;
 		}
 		if (currentColumn == columns) {
-			keyCapt = Nmania.commonText[5];
+			keyCapt = "pause/quit";
 		} else {
-			keyCapt = keyCapt + " " + Nmania.commonText[6];
+			keyCapt = keyCapt + " column";
 		}
 		g.setFont(small);
-		g.drawString(Nmania.commonText[7] + " " + keyCapt, w / 2, large.getHeight(), 17);
+		g.drawString("press a key for the " + keyCapt, w / 2, large.getHeight(), 17);
 
 		// cols
 		int colW = w / columns;

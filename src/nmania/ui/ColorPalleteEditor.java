@@ -16,7 +16,7 @@ import symnovel.SNUtils;
 public class ColorPalleteEditor extends Form implements CommandListener {
 
 	public ColorPalleteEditor(int[] colors, Displayable prev) {
-		super(Nmania.commonText[2]);
+		super("Pallete editor");
 		this.prev = prev;
 		this.colors = colors;
 		fields = new TextField[colors.length];
@@ -32,8 +32,8 @@ public class ColorPalleteEditor extends Form implements CommandListener {
 		addCommand(view);
 	}
 
-	private final Command back = new Command(Nmania.commonText[0], Command.BACK, 1);
-	private final Command view = new Command(Nmania.commonText[3], Command.SCREEN, 2);
+	private final Command back = new Command("Back", Command.BACK, 1);
+	private final Command view = new Command("Check", Command.SCREEN, 2);
 	final Displayable prev;
 	public final int[] colors;
 	TextField[] fields;
@@ -50,7 +50,7 @@ public class ColorPalleteEditor extends Form implements CommandListener {
 				Nmania.Push(new ColorPalletePreview(this));
 		} catch (Exception e) {
 			e.printStackTrace();
-			Nmania.Push(new Alert(Nmania.commonText[2], "Color " + (i + 1) + " is invalid. Check the field.", null,
+			Nmania.Push(new Alert("Pallete editor", "Color " + (i + 1) + " is invalid. Check the field.", null,
 					AlertType.ERROR));
 		}
 

@@ -22,7 +22,7 @@ public final class Settings {
 	 * % of background dimming during gameplay. 0f - not touched, 1f - completely
 	 * black.
 	 */
-	public static float bgDim = 0.75f;
+	public static float bgDim = 1f;
 	/**
 	 * Array with keyboard layouts. Zero element is layout for 1K, the 9th is for
 	 * 10K. Each layout has keys for all columns and for pause key.
@@ -37,7 +37,7 @@ public final class Settings {
 	/**
 	 * Are exit/fail/pass/restart samples enabled?
 	 */
-	public static boolean gameplaySamples = true;
+	public static boolean gameplaySamples = false;
 	/**
 	 * Are hit samples enabled?
 	 */
@@ -45,11 +45,11 @@ public final class Settings {
 	/**
 	 * If hit samples are enabled, do we want to load them from beatmap?
 	 */
-	public static boolean useBmsSamples = true;
+	public static boolean useBmsSamples = false;
 	/**
 	 * If false, menu's displayables will be lost when loading player.
 	 */
-	public static boolean keepMenu = true;
+	public static boolean keepMenu = false;
 	/**
 	 * Are we drawing HUD?
 	 */
@@ -69,10 +69,6 @@ public final class Settings {
 	 */
 	public static String workingFolder = GetDefaultFolder();
 	/**
-	 * Language prefix.
-	 */
-	public static String locale;
-	/**
 	 * Player's nickname.
 	 */
 	public static String name = null;
@@ -81,11 +77,11 @@ public final class Settings {
 	 */
 	public static boolean recordReplay = false;
 
-	public static boolean musicInMenu = true;
+	public static boolean musicInMenu = false;
 
 	public static boolean throttleGameplay = false;
 
-	public static boolean maxPriority = false;
+	public static boolean maxPriority = true;
 
 	public static boolean forceThreadSwitch = false;
 
@@ -134,7 +130,6 @@ public final class Settings {
 			j.accumulate("gameplayoffset", new Integer(gameplayOffset));
 			j.accumulate("usebmssamples", new Boolean(useBmsSamples));
 			j.accumulate("profiler", new Boolean(profiler));
-			j.accumulate("locale", locale);
 			j.accumulate("name", name);
 			j.accumulate("record", new Boolean(recordReplay));
 			j.accumulate("musicinmenu", new Boolean(musicInMenu));
@@ -173,7 +168,7 @@ public final class Settings {
 			} else {
 				j = new JSONObject(new String(d));
 			}
-			bgDim = Float.parseFloat(j.optString("bgdim", "0.90"));
+			bgDim = Float.parseFloat(j.optString("bgdim", "0.60")); // ?full
 			speedDiv = j.optInt("speed", 3);
 			JSONArray keys = j.optJSONArray("keys");
 			if (keys != null) {
@@ -183,9 +178,9 @@ public final class Settings {
 					keyLayout[i] = SNUtils.json2intArray(keys.getJSONArray(i));
 				}
 			}
-			gameplaySamples = j.optBoolean("samples", true);
-			hitSamples = j.optBoolean("hitsounds", false);
-			keepMenu = j.optBoolean("keepmenu", false);
+			gameplaySamples = j.optBoolean("samples", true); // ?full
+			hitSamples = j.optBoolean("hitsounds", false); // ?full
+			keepMenu = j.optBoolean("keepmenu", false); // ?full
 			drawHUD = j.optBoolean("drawcounters", true);
 			final String device = Nmania.GetDevice();
 			fullScreenFlush = j.optBoolean("fullscreenflush",
@@ -194,20 +189,13 @@ public final class Settings {
 			gameplayOffset = j.optInt("gameplayoffset", 0);
 			useBmsSamples = j.optBoolean("usebmssamples", true);
 			profiler = j.optBoolean("profiler", false);
-			String systemLocale = System.getProperty("microedition.locale");
-			if (systemLocale == null) {
-				systemLocale = "en";
-			} else {
-				systemLocale = systemLocale.substring(0, 2).toLowerCase();
-			}
-			locale = j.optString("locale", systemLocale);
 			name = j.optString("name", null);
 			recordReplay = j.optBoolean("record");
-			musicInMenu = j.optBoolean("musicinmenu", true);
+			musicInMenu = j.optBoolean("musicinmenu", true); // ?full
 			throttleGameplay = j.optBoolean("throttle");
 			maxPriority = j.optBoolean("maxpr");
 			forceThreadSwitch = j.optBoolean("threadswitch");
-			analyzeMaps = j.optBoolean("analyze");
+			analyzeMaps = j.optBoolean("analyze"); // ?full
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

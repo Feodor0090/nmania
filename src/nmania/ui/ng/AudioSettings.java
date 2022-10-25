@@ -4,10 +4,11 @@ import nmania.Settings;
 
 public class AudioSettings extends ListScreen implements IListSelectHandler {
 	public AudioSettings() {
-		SetItems(new ListItem[] { new SwitchItem(0, "Play music in menu", this, Settings.musicInMenu),
-				new SwitchItem(1, "Enable hitsounds", this, Settings.hitSamples),
-				new SwitchItem(2, "Enable feedback samples", this, Settings.gameplaySamples),
-				new SwitchItem(3, "Use BMS's sounds", this, Settings.useBmsSamples),
+		SetItems(new ListItem[] { //
+				new SwitchItem(0, "Play music in menu", this, Settings.musicInMenu), // ?full
+				new SwitchItem(1, "Enable hitsounds", this, Settings.hitSamples), // ?full
+				new SwitchItem(2, "Enable feedback samples", this, Settings.gameplaySamples), // ?full
+				new SwitchItem(3, "Use BMS's sounds", this, Settings.useBmsSamples), // ?full
 				new DataItem(4, "Clock offset", this, Settings.gameplayOffset + "ms"), });
 	}
 

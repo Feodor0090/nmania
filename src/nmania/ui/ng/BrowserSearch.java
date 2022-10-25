@@ -6,7 +6,6 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.TextBox;
 
 import nmania.Nmania;
-import nmania.Settings;
 
 public class BrowserSearch extends ListScreen implements IListSelectHandler, CommandListener {
 

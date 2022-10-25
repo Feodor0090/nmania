@@ -800,6 +800,8 @@ public final class Player extends GameCanvas {
 		Nmania.Push(new ResultsScreen(data, score, input, recorder, track, applause, bg, menu));
 	}
 
+	public final static String[] pt = new String[] { "Continue", "Retry", "Quit" };
+
 	/**
 	 * Loop method, that handles pause menu redrawing.
 	 */
@@ -814,7 +816,7 @@ public final class Player extends GameCanvas {
 				g.setColor((i == pauseItem ? 255 : 0), 0, 0);
 				g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
 				g.setColor(-1);
-				g.drawString(Nmania.commonText[24 + i], scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
+				g.drawString(pt[i], scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
 			}
 			flushGraphics();
 			try {
@@ -886,7 +888,7 @@ public final class Player extends GameCanvas {
 					g.setColor((i == pauseItem ? 255 : 0), 0, 0);
 					g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
 					g.setColor(-1);
-					g.drawString(Nmania.commonText[25 + i], scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
+					g.drawString(i == 0 ? "Retry" : "Quit", scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
 				}
 				flushGraphics();
 				try {

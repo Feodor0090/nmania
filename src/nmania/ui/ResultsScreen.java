@@ -101,7 +101,7 @@ public final class ResultsScreen extends Canvas implements ILogger {
 
 		// header
 		g.setFont(Font.getFont(0, 0, 16));
-		print(g, input == null ? Nmania.commonText[11] : input.GetName(), w / 2, 1, input == null ? -1 : (200 << 8),
+		print(g, input == null ? "Results" : input.GetName(), w / 2, 1, input == null ? -1 : (200 << 8),
 				Graphics.HCENTER | Graphics.TOP);
 		g.setFont(Font.getFont(0, 0, 8));
 		print(g, data.set.artist + " - " + data.set.title, w / 2, th16 + 3, -1, Graphics.HCENTER | Graphics.TOP);

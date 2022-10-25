@@ -19,7 +19,7 @@ public class InfoScreen extends MultisectionList implements CommandListener {
 		_this = this;
 	}
 
-	final Command toList = new Command(Nmania.commonText[0], Command.BACK, 1);
+	final Command toList = new Command("Back", Command.BACK, 1);
 	final CommandListener _this;
 
 	public final void commandAction(Command c, Displayable d) {

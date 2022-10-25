@@ -26,7 +26,7 @@ public class RawNmaniaBeatmap extends JSONObject implements IRawBeatmap {
 		b.columnsCount = getInt("columns");
 		b.difficulty = Float.parseFloat(getString("difficulty"));
 
-		final JSONArray p = getJSONArray("timings");
+		//final JSONArray p = getJSONArray("timings");
 		/*
 		 * b.points = new TimingPoint[p.length()]; for (int i = 0; i < p.length(); i++)
 		 * { String[] s = SNUtils.split(p.getString(i), ';', 4); float beatLen =

@@ -16,7 +16,7 @@ import tube42.lib.imagelib.ColorUtils;
 
 public class SkinSelectScreen implements IScreen, CommandListener {
 
-	private final Command back = new Command(Nmania.commonText[0], Command.BACK, 2);
+	private final Command back = new Command("Back", Command.BACK, 2);
 	private IDisplay d;
 
 	public SkinSelectScreen(IDisplay d) {
