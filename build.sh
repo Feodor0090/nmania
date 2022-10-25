@@ -18,7 +18,6 @@ WTK_HOME=./j2me_compiler/WTK2.5.2
 
 ######## CONFIG ########
 ########
-YOUR_LIBS=lib       # YOUR LIBRARIES
 RES=res
 APP=nmania   # Output jar name
 MANIFEST=Application\ Descriptor
@@ -70,13 +69,6 @@ mkdir -p ../tmpclasses
 mkdir -p ../classes
 rm -rf ../tmpclasses/*
 rm -rf ../classes/*
-
-echo "Unpacking your libraries: " ${YOUR_LIBS}/*.jar
-cd ../tmpclasses
-../bin/${JAR} xf ${YOUR_LIBS}/*.jar
-rm -rf META-INF
-cd ../bin
-
 
 echo "Compiling source files..."
 ${JAVAC} \
