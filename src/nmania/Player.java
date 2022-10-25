@@ -163,7 +163,7 @@ public final class Player extends GameCanvas {
 		if (Settings.hitSamples) {
 			String[] sets = new String[] { "normal", "soft", "drum" }; // ?full
 			String[] types = new String[] { "normal", "whistle", "finish", "clap" }; // ?full
-			hitSounds = new MultiSample[sets.length][];
+			hitSounds = new MultiSample[3][];
 			for (int i = 0; i < sets.length; i++) { // ?full
 				hitSounds[i] = new MultiSample[types.length]; // ?full
 				for (int j = 0; j < types.length; j++) { // ?full
