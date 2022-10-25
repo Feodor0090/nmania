@@ -9,11 +9,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
-      - name: Test
-        run: cd ${{ github.workspace }} && ls .
+      - name: Setup
+        run: sudo dpkg --add-architecture i386 && sudo apt update && sudo apt-get install gcc-multilib libxt6:i386
       - name: Build
-        run: sudo dpkg --add-architecture i386 && sudo apt update && sudo apt-get install gcc-multilib libxt6:i386 && cd ${{ github.workspace }} && ./build.sh
+        run: cd ${{ github.workspace }} && chmod +x ./build.sh && ./build.sh
       - name: Upload jar
         uses: actions/upload-artifact@v2
         with:
