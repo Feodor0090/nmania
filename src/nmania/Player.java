@@ -1028,116 +1028,26 @@ public final class Player extends GameCanvas {
 			g.setColor(judgementColors[lastJudgement]);
 			g.drawString(j, judgmentCenter, 100, 17);
 		}
-		// TODO is there a better way to do this? May be we should compose a char array
-		// (like with accuracy) inside ScoreCounter and expose a drawing method for it?
-		int combo = score.GetGameplayCombo();
-		// This shit was written because we mustn't allocate strings during gameplay. Do
-		// not try to touch something here, i even don't know how this works...
-		if (Settings.drawHUD && combo > 0) {
-			if (combo < 10) {
-				final char c = (char) ('0' + combo);
-				g.setColor(-1);
-				g.drawChar(c, judgmentCenter + 1, 99, 33);
-				g.drawChar(c, judgmentCenter - 1, 99, 33);
-				g.drawChar(c, judgmentCenter + 1, 97, 33);
-				g.drawChar(c, judgmentCenter - 1, 97, 33);
-				g.setColor(255, 200, 10);
-				g.drawChar(c, judgmentCenter, 98, 33);
-			} else if (combo < 100) {
-				char c = (char) ('0' + combo % 10);
-				g.setColor(-1);
-				g.drawChar(c, judgmentCenter + 1, 99, 36);
-				g.drawChar(c, judgmentCenter - 1, 99, 36);
-				g.drawChar(c, judgmentCenter + 1, 97, 36);
-				g.drawChar(c, judgmentCenter - 1, 97, 36);
-				g.setColor(255, 200, 10);
-				g.drawChar(c, judgmentCenter, 98, 36);
-				char c2 = (char) ('0' + combo / 10);
-				g.setColor(-1);
-				g.drawChar(c2, judgmentCenter + 1, 99, 40);
-				g.drawChar(c2, judgmentCenter - 1, 99, 40);
-				g.drawChar(c2, judgmentCenter + 1, 97, 40);
-				g.drawChar(c2, judgmentCenter - 1, 97, 40);
-				g.setColor(255, 200, 10);
-				g.drawChar(c2, judgmentCenter, 98, 40);
-			} else if (combo < 1000) {
-				char c = (char) ('0' + combo % 10);
-				int zw2 = zeroW >> 1;
-				g.setColor(-1);
-				g.drawChar(c, judgmentCenter + 1 + zw2, 99, 36);
-				g.drawChar(c, judgmentCenter - 1 + zw2, 99, 36);
-				g.drawChar(c, judgmentCenter + 1 + zw2, 97, 36);
-				g.drawChar(c, judgmentCenter - 1 + zw2, 97, 36);
-				g.setColor(255, 200, 10);
-				g.drawChar(c, judgmentCenter + zw2, 98, 36);
-				combo /= 10;
-				c = (char) ('0' + combo % 10);
-				g.setColor(-1);
-				g.drawChar(c, judgmentCenter + 1, 99, 33);
-				g.drawChar(c, judgmentCenter - 1, 99, 33);
-				g.drawChar(c, judgmentCenter + 1, 97, 33);
-				g.drawChar(c, judgmentCenter - 1, 97, 33);
-				g.setColor(255, 200, 10);
-				g.drawChar(c, judgmentCenter, 98, 33);
-				combo /= 10;
-				c = (char) ('0' + combo);
-				g.setColor(-1);
-				g.drawChar(c, judgmentCenter + 1 - zw2, 99, 40);
-				g.drawChar(c, judgmentCenter - 1 - zw2, 99, 40);
-				g.drawChar(c, judgmentCenter + 1 - zw2, 97, 40);
-				g.drawChar(c, judgmentCenter - 1 - zw2, 97, 40);
-				g.setColor(255, 200, 10);
-				g.drawChar(c, judgmentCenter - zw2, 98, 40);
-			} else {
-				char c = (char) ('0' + combo % 10);
-				g.setColor(-1);
-				g.drawChar(c, judgmentCenter + 1 + zeroW, 99, 36);
-				g.drawChar(c, judgmentCenter - 1 + zeroW, 99, 36);
-				g.drawChar(c, judgmentCenter + 1 + zeroW, 97, 36);
-				g.drawChar(c, judgmentCenter - 1 + zeroW, 97, 36);
-				g.setColor(255, 200, 10);
-				g.drawChar(c, judgmentCenter + zeroW, 98, 36);
-				combo /= 10;
-				c = (char) ('0' + combo % 10);
-				g.setColor(-1);
-				g.drawChar(c, judgmentCenter + 1, 99, 36);
-				g.drawChar(c, judgmentCenter - 1, 99, 36);
-				g.drawChar(c, judgmentCenter + 1, 97, 36);
-				g.drawChar(c, judgmentCenter - 1, 97, 36);
-				g.setColor(255, 200, 10);
-				g.drawChar(c, judgmentCenter, 98, 36);
-				combo /= 10;
-				c = (char) ('0' + combo % 10);
-				g.setColor(-1);
-				g.drawChar(c, judgmentCenter + 1, 99, 40);
-				g.drawChar(c, judgmentCenter - 1, 99, 40);
-				g.drawChar(c, judgmentCenter + 1, 97, 40);
-				g.drawChar(c, judgmentCenter - 1, 97, 40);
-				g.setColor(255, 200, 10);
-				g.drawChar(c, judgmentCenter, 98, 40);
-				combo /= 10;
-				c = (char) ('0' + combo % 10);
-				g.setColor(-1);
-				g.drawChar(c, judgmentCenter + 1 - zeroW, 99, 40);
-				g.drawChar(c, judgmentCenter - 1 - zeroW, 99, 40);
-				g.drawChar(c, judgmentCenter + 1 - zeroW, 97, 40);
-				g.drawChar(c, judgmentCenter - 1 - zeroW, 97, 40);
-				g.setColor(255, 200, 10);
-				g.drawChar(c, judgmentCenter - zeroW, 98, 40);
-				// failsafe for 9999+ combo
-				if (combo > 10) {
-					combo /= 10;
-					c = (char) ('0' + combo);
-					g.setColor(-1);
-					g.drawChar(c, judgmentCenter + 1 - zeroW * 2, 99, 40);
-					g.drawChar(c, judgmentCenter - 1 - zeroW * 2, 99, 40);
-					g.drawChar(c, judgmentCenter + 1 - zeroW * 2, 97, 40);
-					g.drawChar(c, judgmentCenter - 1 - zeroW * 2, 97, 40);
-					g.setColor(255, 200, 10);
-					g.drawChar(c, judgmentCenter - zeroW * 2, 98, 40);
-				}
-				// Yeah, 99999+ is not supported.
+		// combo
+		if (Settings.drawHUD) {
+			int num = score.GetGameplayCombo();
+			int l = 15;
+			while (true) {
+				final int d = num % 10;
+				hudCache[l] = (char) (d + '0');
+				if (num < 10)
+					break;
+				num /= 10;
+				l--;
 			}
+			num = 16 - l; // reusing var
+			g.setColor(-1);
+			g.drawChars(hudCache, l, num, judgmentCenter - 1, 99, 33);
+			g.drawChars(hudCache, l, num, judgmentCenter + 1, 99, 33);
+			g.drawChars(hudCache, l, num, judgmentCenter - 1, 97, 33);
+			g.drawChars(hudCache, l, num, judgmentCenter + 1, 97, 33);
+			g.setColor(255, 180, 0);
+			g.drawChars(hudCache, l, num, judgmentCenter, 98, 33);
 		}
 		// health
 		{
