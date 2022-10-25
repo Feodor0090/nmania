@@ -697,14 +697,14 @@ public final class Player extends GameCanvas {
 				if (diff > hitWindows[0]) {
 					if (dur == 0) {
 						GL.Log("(detect) Hit on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
-								+ diff + "ms diff, skipping");
+								+ diff + "ms diff, skipping"); // ?dbg
 						CountHit(0);
 						currentNote[column] += 2;
 						continue;
 					}
 					if (!holdHeadScored[column]) {
 						GL.Log("(detect) Head on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
-								+ diff + "ms diff, skipping");
+								+ diff + "ms diff, skipping"); // ?dbg
 						CountHit(0); // counting hit only for head
 						holdHeadScored[column] = true;
 						continue;
@@ -713,7 +713,7 @@ public final class Player extends GameCanvas {
 				if (dur != 0) {
 					if (taildiff > hitWindows[0]) {
 						GL.Log("(detect) Tail on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
-								+ taildiff + "ms diff, skipping");
+								+ taildiff + "ms diff, skipping"); // ?dbg
 						CountHit(0);
 						currentNote[column] += 2;
 						holdHeadScored[column] = false;

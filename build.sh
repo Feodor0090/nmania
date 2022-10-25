@@ -9,60 +9,36 @@ fi
 cd j2me_compiler
 git pull
 cd ..
-PATHSEP=":"
-JAVA_HOME=./j2me_compiler/jdk1.6.0_45
-WTK_HOME=./j2me_compiler/WTK2.5.2
 
 cp Application\ Descriptor manifest.mf
-
-######## CONFIG ########
-RES=res
-APP=nmania   # Output jar name
-MANIFEST=manifest.mf
-
-LIB_DIR=${WTK_HOME}/lib
-TCP=${LIB_DIR}/*
-CLDCAPI=${LIB_DIR}/cldcapi11.jar
-MIDPAPI=${LIB_DIR}/midpapi20.jar
-PREVERIFY=${WTK_HOME}/bin/preverify
-JAVAC=javac
-JAR=jar
-CLASSPATH=`echo $TCP | sed "s/ /:/g"`
-
-if [ -n "${JAVA_HOME}" ] ; then
-  JAVAC=${JAVA_HOME}/bin/javac
-  JAR=${JAVA_HOME}/bin/jar
-fi
 
 WORK_DIR=`dirname $0`
 cd ${WORK_DIR}
 
-echo "Creating or cleaning directories..."
-mkdir -p ./tmpclasses
-mkdir -p ./classes
-rm -rf ./tmpclasses/*
-rm -rf ./classes/*
+chmod +x ./build_sub.sh
 
-echo "Compiling source files..."
-${JAVAC} \
-    -bootclasspath ${CLDCAPI}${PATHSEP}${MIDPAPI} \
-    -source 1.3 \
-    -target 1.3 \
-    -d ./tmpclasses \
-    -classpath ./tmpclasses${PATHSEP}${CLASSPATH} \
-    `find ./src -name '*'.java`
-echo $CLASSPATH
-echo "Preverifying class files..."
-${PREVERIFY} \
-    -classpath ${CLDCAPI}${PATHSEP}${MIDPAPI}${PATHSEP}${CLASSPATH}${PATHSEP}./tmpclasses \
-    -d ./classes \
-    ./tmpclasses
+APP=nmania_debug ./build_sub.sh
 
-echo "Jaring preverified class files..."
-${JAR} cmf ${MANIFEST} ${APP}.jar -C ./classes .
+echo Filtering debug data...
+for file in `find ./ -type f -name "*.java"`
+	do cat $file | grep -v "GL.Log" | grep -v "?dbg" > ./temp.txt
+	cat ./temp.txt > $file
+done
+rm ./temp.txt
 
-if [ -d ${RES} ] ; then
-  ${JAR} uf ${APP}.jar -C ${RES} .
-fi
+APP=nmania ./build_sub.sh
 
-echo "Done!" ./${APP}.jar
+echo Filtering full data...
+for file in `find ./ -type f -name "*.java"`
+	do cat $file | grep -v "// ?lite" > ./temp.txt
+	cat ./temp.txt > $file
+done
+rm ./temp.txt
+rm ./res/sfx/*
+
+APP=nmania_lite ./build_sub.sh
+
+mkdir -p jar
+cp nmania.jar ./jar/nmania.jar
+cp nmania_debug.jar ./jar/nmania_debug.jar
+cp nmania_lite.jar ./jar/nmania_lite.jar
