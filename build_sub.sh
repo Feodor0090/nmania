@@ -1,9 +1,6 @@
 #!/bin/sh -e
 
 # VARS
-PATHSEP=":"
-JAVA_HOME=./j2me_compiler/jdk1.6.0_45
-WTK_HOME=./j2me_compiler/WTK2.5.2
 RES=res
 MANIFEST=manifest.mf
 LIB_DIR=${WTK_HOME}/lib

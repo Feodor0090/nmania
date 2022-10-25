@@ -13,6 +13,9 @@ cd ..
 cp Application\ Descriptor manifest.mf
 
 ######## CONFIG ########
+export PATHSEP=":"
+export JAVA_HOME=./j2me_compiler/jdk1.6.0_45
+export WTK_HOME=./j2me_compiler/WTK2.5.2
 export JAVAC=javac
 export JAR=jar
 TCP=${LIB_DIR}/*
