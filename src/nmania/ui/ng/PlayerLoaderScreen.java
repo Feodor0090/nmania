@@ -123,7 +123,7 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 	public void logError(String s) {
 		state = s;
 		failed = true;
-		GL.Log("Player loading failed");
+		GL.Log("(loading) Player loading failed");
 		GL.Log("(loading) " + s);
 	}
 
