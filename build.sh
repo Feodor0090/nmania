@@ -29,7 +29,7 @@ rm ./temp.txt
 APP=nmania ./build_sub.sh
 
 echo Filtering full data...
-for file in `find ./ -type f -name "*"`
+for file in `find ./ -type f -name "*.java"`
 	do cat $file | grep -v "// ?lite" > ./temp.txt
 	cat ./temp.txt > $file
 done
