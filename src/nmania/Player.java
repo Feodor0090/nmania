@@ -1053,14 +1053,14 @@ public final class Player extends GameCanvas {
 		{
 			if (health != rollingHealth) {
 				final int delta = (health - rollingHealth);
-				rollingHealth += delta / 10 + (delta > 0 ? 1 : -1);
+				rollingHealth += (delta >> 3) + (delta > 0 ? 1 : -1);
 			}
-			g.setColor(0);
+			final int red = Math.min(255, rollingHealth >> 1);
+			g.setColor(red < 0 ? 0 : (255 - red), 0, 0);
 			g.fillRect(healthX, 0, 6, scrH);
 			if (rollingHealth > 0) {
 				int hh = scrH * rollingHealth / 1000;
-				final int clr = Math.min(255, rollingHealth >> 1);
-				g.setColor(255, clr, clr);
+				g.setColor(-1);
 				g.fillRect(healthX, scrH - hh, 6, hh);
 			}
 		}
