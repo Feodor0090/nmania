@@ -24,12 +24,6 @@ MANIFEST=Application\ Descriptor
 ########
 ########
 
-
-if [ ! -e ${MANIFEST} ] ; then
-	echo "No manifest found!!!"
-	exit 2
-fi
-
 LIB_DIR=${WTK_HOME}/lib
 CLASSPATH=${LIB_DIR}/*
 CLDCAPI=${LIB_DIR}/cldcapi11.jar
