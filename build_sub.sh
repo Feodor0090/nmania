@@ -1,20 +1,21 @@
 #!/bin/sh -e
 
-# VARS
+# STATIC VARS
+JAVA_HOME=./j2me_compiler/jdk1.6.0_45
+WTK_HOME=./j2me_compiler/WTK2.5.2
 RES=res
 MANIFEST=manifest.mf
+PATHSEP=":"
+JAVAC=javac
+JAR=jar
+
+# DYNAMIC VARS
 LIB_DIR=${WTK_HOME}/lib
 CLDCAPI=${LIB_DIR}/cldcapi11.jar
 MIDPAPI=${LIB_DIR}/midpapi20.jar
 PREVERIFY=${WTK_HOME}/bin/preverify
-PATHSEP=":"
-JAVA_HOME=./j2me_compiler/jdk1.6.0_45
-WTK_HOME=./j2me_compiler/WTK2.5.2
-JAVAC=javac
-JAR=jar
 TCP=${LIB_DIR}/*
 CLASSPATH=`echo $TCP | sed "s/ /:/g"`
-
 if [ -n "${JAVA_HOME}" ] ; then
   JAVAC=${JAVA_HOME}/bin/javac
   JAR=${JAVA_HOME}/bin/jar
