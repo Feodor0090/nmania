@@ -9,11 +9,7 @@ import nmania.ui.KeyboardSetup;
 public class InputSettings extends ListScreen implements IListSelectHandler {
 
 	public InputSettings() {
-		ListItem[] items = new ListItem[10];
-		for (int i = 0; i < items.length; i++) {
-			items[i] = new ListItem(i + 1, (i + 1) + "K keyboard layout", this);
-		}
-		SetItems(items);
+
 	}
 
 	public String GetTitle() {
@@ -26,6 +22,7 @@ public class InputSettings extends ListScreen implements IListSelectHandler {
 
 	public void OnOptionActivate(IDisplay d) {
 		Settings.keyLayout = new int[10][];
+		OnEnter(d);
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
@@ -38,6 +35,19 @@ public class InputSettings extends ListScreen implements IListSelectHandler {
 
 	public boolean ShowLogo() {
 		return false;
+	}
+
+	public void OnEnter(IDisplay d) {
+		ListItem[] items = new ListItem[10];
+		for (int i = 0; i < items.length; i++) {
+			items[i] = new DataItem(i + 1, (i + 1) + "K keyboard layout", this,
+					Settings.keyLayout[i] == null ? "not set" : "");
+		}
+		SetItems(items);
+	}
+
+	public void OnResume(IDisplay d) {
+		OnEnter(d);
 	}
 
 }
