@@ -29,7 +29,10 @@ public final class Nmania extends MIDlet implements CommandListener {
 
 	public Nmania() {
 		inst = this;
-		version = getAppProperty("MIDlet-Version");
+		String v = getAppProperty("MIDlet-Version");
+		version = v + " [lite]";
+		version = v; // ?full
+		version = v + " [debug]";// ?dbg
 	}
 
 	protected void destroyApp(boolean arg0) throws MIDletStateChangeException {
