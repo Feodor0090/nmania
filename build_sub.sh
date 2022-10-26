@@ -59,9 +59,22 @@ cp ./${APP}.jar ./jar/${APP}.jar
 
 echo "Optimizing..."
 touch cf.cfg
+
 cat proguard.basecfg > cf.cfg
-echo "-injars ./${APP}.jar" > cf.cfg
-echo "-outjar ./jar/${APP}_opt.jar" > cf.cfg
-echo "-printseeds ./jar/${APP}_opt_seeds.txt" > cf.cfg
-echo "-printmapping ./jar/${APP}_opt_map.txt" > cf.cfg
-echo "-libraryjars ${PGLIBS}"
+echo "-injars ./${APP}.jar" >> cf.cfg
+echo "-outjar ./jar/${APP}_opt.jar" >> cf.cfg
+echo "-printseeds ./jar/${APP}_opt_seeds.txt" >> cf.cfg
+echo "-printmapping ./jar/${APP}_opt_map.txt" >> cf.cfg
+echo "-libraryjars ${PGLIBS}" >> cf.cfg
+
+${PROGUARD} @cf.cfg
+
+cat proguard.basecfg > cf.cfg
+echo "-injars ./${APP}.jar" >> cf.cfg
+echo "-outjar ./jar/${APP}_obf.jar" >> cf.cfg
+echo "-printseeds ./jar/${APP}_obf_seeds.txt" >> cf.cfg
+echo "-printmapping ./jar/${APP}_obf_map.txt" >> cf.cfg
+echo "-libraryjars ${PGLIBS}" >> cf.cfg
+echo "-dontoptimize" >> cf.cfg
+
+${PROGUARD} @cf.cfg
