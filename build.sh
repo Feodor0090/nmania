@@ -16,6 +16,7 @@ WORK_DIR=`dirname $0`
 cd ${WORK_DIR}
 
 chmod +x ./build_sub.sh
+mkdir -p jar
 
 APP=nmania_debug ./build_sub.sh
 
@@ -38,7 +39,7 @@ rm ./res/sfx/*
 
 APP=nmania_lite ./build_sub.sh
 
-mkdir -p jar
+
 cp nmania.jar ./jar/nmania.jar
 cp nmania_debug.jar ./jar/nmania_debug.jar
 cp nmania_lite.jar ./jar/nmania_lite.jar

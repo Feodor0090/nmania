@@ -23,6 +23,7 @@ fi
 
 # ACTION
 echo "Working on" ${APP}
+pwd
 echo "Creating or cleaning directories..."
 mkdir -p ./tmpclasses
 mkdir -p ./classes
@@ -51,3 +52,4 @@ if [ -d ${RES} ] ; then
 fi
 
 echo "Done!" ./${APP}.jar
+cp ./${APP}.jar ./jar/${APP}.jar
