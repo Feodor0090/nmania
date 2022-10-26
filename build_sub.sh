@@ -17,7 +17,6 @@ MIDPAPI=${LIB_DIR}/midpapi20.jar
 PREVERIFY=${WTK_HOME}/bin/preverify
 TCP=${LIB_DIR}/*
 CLASSPATH=`echo $TCP | sed "s/ /:/g"`
-PGLIBS=`echo $TCP | sed "s/ /;/g"`
 
 if [ -n "${JAVA_HOME}" ] ; then
   JAVAC=${JAVA_HOME}/bin/javac
