@@ -58,6 +58,7 @@ echo "Build done!" ./${APP}.jar
 cp ./${APP}.jar ./jar/${APP}.jar
 
 echo "Optimizing..."
+chmod +x ${PROGUARD}
 touch cf.cfg
 
 cat proguard.basecfg > cf.cfg
