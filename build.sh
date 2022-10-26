@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 echo "Downloading and updating compiler..."
-if git clone https://github.com/vipaoL/j2me_compiler.git 2>/dev/null ; then
+if git clone https://github.com/Feodor0090/j2me_compiler.git 2>/dev/null ; then
 	echo "Done."
 else
 	echo "Already downloaded."
