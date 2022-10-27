@@ -26,7 +26,7 @@ public class BrowserSearch extends ListScreen implements IListSelectHandler, Com
 	}
 
 	public void OnOptionActivate(IDisplay d) {
-		d.Push(new BrowserList(request.data, notRanked.state));
+		d.Push(new BrowserList(req, notRanked.state));
 	}
 
 	public void OnEnter(IDisplay d) {
