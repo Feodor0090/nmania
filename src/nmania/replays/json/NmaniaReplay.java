@@ -1,5 +1,7 @@
 package nmania.replays.json;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Date;
 
 import org.json.me.JSONObject;
@@ -68,6 +70,12 @@ public class NmaniaReplay implements IExtendedReplay {
 		o.put("mods", modsUsed);
 		o.put("replay", replay);
 		return o;
+	}
+
+	public void Write(OutputStream outputStream, ReplayChunk r) throws IOException {
+		SetReplay(r);
+		byte[] data = Encode().toString().getBytes("UTF-8");
+		outputStream.write(data);
 	}
 
 	public void WriteScoreDataFrom(IScore score) {
