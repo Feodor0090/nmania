@@ -1176,60 +1176,32 @@ public final class Player extends GameCanvas {
 		{
 			if (health != rollingHealth) {
 				final int delta = (health - rollingHealth);
-				rollingHealth += delta / 10 + (delta > 0 ? 1 : -1);
+				rollingHealth += (delta >> 3) + (delta > 0 ? 1 : -1);
 			}
-			g.setColor(0);
+			final int red = Math.min(255, rollingHealth >> 1);
+			g.setColor(red < 0 ? 0 : (255 - red), 0, 0);
 			g.fillRect(healthX, 0, 6, scrH);
 			if (rollingHealth > 0) {
 				int hh = scrH * rollingHealth / 1000;
-				final int clr = Math.min(255, rollingHealth >> 1);
-				g.setColor(255, clr, clr);
+				g.setColor(-1);
 				g.fillRect(healthX, scrH - hh, 6, hh);
 			}
 		}
-		// profiler
+		// fps
 		if (Settings.profiler) {
-			// recount
-			{
-				if (time < _lastTime) {
-					_lastTime = 0;
-				} else if (time - _lastTime > 1000) {
-					_lastTime += 1000;
-					_lastFps = framesPassed - _lastFrames;
-					_lastFrames = framesPassed;
-					Runtime r = Runtime.getRuntime();
-					_lastMem = (int) (r.totalMemory() - r.freeMemory()) / 1024;
-				}
-			}
 			g.setColor(0, 255, 0);
-			// fps
-			{
-				int num = _lastFps;
-				int x1 = leftOffset + columnsCount * colW;
-				while (true) {
-					final int d = num % 10;
-					g.drawChar((char) (d + '0'), x1, fillCountersH, 24);
-					x1 -= numsWidthCache[d];
-					if (num < 10)
-						break;
-					num /= 10;
-				}
+
+			int num = _lastFps;
+			int l = 15;
+			while (true) {
+				final int d = num % 10;
+				hudCache[l] = (char) (d + '0');
+				if (num < 10)
+					break;
+				num /= 10;
+				l--;
 			}
-			// mem
-			{
-				int num = _lastMem;
-				int x1 = leftOffset + columnsCount * colW;
-				g.drawString("kb", x1, 0, 24);
-				x1 -= fontL.stringWidth("kb");
-				while (true) {
-					final int d = num % 10;
-					g.drawChar((char) (d + '0'), x1, 0, 24);
-					x1 -= numsWidthCache[d];
-					if (num < 10)
-						break;
-					num /= 10;
-				}
-			}
+			g.drawChars(hudCache, l, 16 - l, leftOffset + columnsCount * colW, 0, 24);
 		}
 	}
 
