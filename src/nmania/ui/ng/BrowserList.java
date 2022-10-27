@@ -53,8 +53,9 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 	public void run() {
 		try {
 			String s = encodeUrl(search);
-			String r = getUtf("http://nnp.nnchan.ru/glype/browse.php?u=https://kitsu.moe/api/search?query=" + s
+			String url = encodeUrl("https://kitsu.moe/api/search?query=" + s
 					+ "&mode=3&amount=100" + (notRanked ? "" : "&status=1"));
+			String r = getUtf("http://nnp.nnchan.ru/glype/browse.php?u="+url);
 			arr = new JSONArray(r);
 			Vector items = new Vector();
 			for (int i = 0; i < arr.length(); i++) {
