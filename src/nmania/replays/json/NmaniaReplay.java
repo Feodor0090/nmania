@@ -11,6 +11,7 @@ import nmania.ModsState;
 import nmania.ScoreController;
 import nmania.replays.IExtendedReplay;
 import nmania.replays.ReplayChunk;
+import nmania.replays.ReplayReaderStream;
 import nmania.replays.ReplayWriterStream;
 
 public class NmaniaReplay implements IExtendedReplay {
@@ -42,6 +43,16 @@ public class NmaniaReplay implements IExtendedReplay {
 		o.put("combo", maxCombo);
 		o.put("fc", perfectCombo);
 		return o;
+	}
+	
+	public ReplayChunk GetReplay() {
+		try {
+			ReplayReaderStream rrs = new ReplayReaderStream();
+			rrs.write(replay.getBytes());
+			return rrs.GetReplay();
+		} catch (IOException e) {
+			return null;
+		}
 	}
 
 	public void SetReplay(ReplayChunk r) {
