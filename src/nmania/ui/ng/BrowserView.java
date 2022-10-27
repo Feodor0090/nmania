@@ -7,30 +7,15 @@ import org.json.me.JSONObject;
 
 import nmania.Settings;
 
-public class BrowserView extends ListScreen {
+public class BrowserView extends Alert {
 
 	private JSONObject beatmap;
 	private String title;
 
 	public BrowserView(JSONObject beatmap) {
+		super(beatmap.optString("Artist") + " - " + beatmap.optString("Title") + " (" + beatmap.optString("Creator")
+				+ ")", null);
 		this.beatmap = beatmap;
-		title = beatmap.optString("Artist") + " - " + beatmap.optString("Title") + " (" + beatmap.optString("Creator")
-				+ ")";
-	}
-
-	public String GetTitle() {
-		return title;
-	}
-
-	public boolean ShowLogo() {
-		return false;
-	}
-
-	public String GetOption() {
-		return "DOWNLOAD";
-	}
-
-	public void OnEnter(IDisplay d) {
 		Vector v = new Vector();
 		v.addElement("Title: " + beatmap.optString("Title"));
 		v.addElement("Artist: " + beatmap.optString("Artist"));
@@ -46,11 +31,25 @@ public class BrowserView extends ListScreen {
 				continue;
 			v.addElement(bm.getString("DiffName") + " (" + bm.optDouble("DifficultyRating", 0) + "*)");
 		}
-		ListItem[] items = new ListItem[v.size()];
-		for (int i = 0; i < items.length; i++) {
-			items[i] = new ListItem(v.elementAt(i).toString(), null);
+		StringBuffer sb = new StringBuffer();
+		for (int i = 0; i < v.size(); i++) {
+			if (i != 0)
+				sb.append('\n');
+			sb.append(v.elementAt(i).toString());
 		}
-		SetItems(items);
+		SetText(sb.toString());
+	}
+
+	public String GetTitle() {
+		return title;
+	}
+
+	public boolean ShowLogo() {
+		return false;
+	}
+
+	public String GetOption() {
+		return "DOWNLOAD";
 	}
 
 	private String status(int s) {
