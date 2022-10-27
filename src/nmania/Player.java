@@ -1041,8 +1041,9 @@ public final class Player extends GameCanvas {
 			g.drawString(j, judgmentCenter, 100, 17);
 		}
 		// combo
-		if (Settings.drawHUD) {
-			int num = score.GetGameplayCombo();
+		final int combo = score.GetGameplayCombo();
+		if (Settings.drawHUD && combo > 0) {
+			int num = combo;
 			int l = 15;
 			while (true) {
 				final int d = num % 10;
