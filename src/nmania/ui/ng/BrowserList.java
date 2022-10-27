@@ -11,6 +11,8 @@ import javax.microedition.io.HttpConnection;
 import org.json.me.JSONArray;
 import org.json.me.JSONObject;
 
+import nmania.GL;
+
 public class BrowserList extends ListScreen implements Runnable, IListSelectHandler {
 
 	private String search;
@@ -69,6 +71,7 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 			arr = null;
 			SetItems(new ListItem[] { new ListItem("Failed to load.", this) });
 			search = e.toString();
+			GL.Log("(browser) API request failed with " + e.toString());
 			e.printStackTrace();
 		}
 		loadingState = false;

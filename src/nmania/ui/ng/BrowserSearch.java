@@ -5,6 +5,7 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.TextBox;
 
+import nmania.GL;
 import nmania.Nmania;
 
 public class BrowserSearch extends ListScreen implements IListSelectHandler, CommandListener {
@@ -26,6 +27,7 @@ public class BrowserSearch extends ListScreen implements IListSelectHandler, Com
 	}
 
 	public void OnOptionActivate(IDisplay d) {
+		GL.Log("(browser) Going to look for " + req + ", ranked filter: " + notRanked.state);
 		d.Push(new BrowserList(req, notRanked.state));
 	}
 

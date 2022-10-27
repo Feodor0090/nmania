@@ -8,6 +8,8 @@ import javax.microedition.io.*;
 import javax.microedition.io.HttpConnection;
 import javax.microedition.io.file.FileConnection;
 
+import nmania.GL;
+
 public class BrowserDownloader extends Alert implements Runnable {
 
 	private String fileName;
@@ -77,6 +79,9 @@ public class BrowserDownloader extends Alert implements Runnable {
 			out = fc.openOutputStream();
 			in = hc.openInputStream();
 			int len = (int) hc.getLength();
+			GL.Log("(browser) Downloading " + title);
+			GL.Log("(browser) Target file: " + fileName);
+			GL.Log("(browser) Expected size: " + (len >> 10) + "KB");
 			title = "Downloading";
 			final int bufSize = 1024 * 8;
 			byte[] buf = new byte[bufSize];
@@ -96,6 +101,8 @@ public class BrowserDownloader extends Alert implements Runnable {
 		} catch (Exception e) {
 			e.printStackTrace();
 			title = "Error: " + e.toString();
+			GL.Log("(browser) Download failed");
+			GL.Log("(browser) " + e.toString());
 		} finally {
 			t = null;
 			try {
@@ -107,6 +114,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 				if (fc != null)
 					fc.close();
 			} catch (Exception e) {
+				GL.Log("(browser) Could not close file: " + e.toString());
 			}
 			try {
 				if (in != null)
