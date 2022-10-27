@@ -306,7 +306,7 @@ public final class ResultsScreen extends Canvas implements ILogger {
 		return true;
 	}
 
-	private void TryWriteOsr() throws IOException {
+	private void TryWriteOsr() throws Throwable {
 		OsuReplay r = new OsuReplay();
 		r.gameMode = 3;
 		r.gameVersion = 292;
@@ -321,6 +321,20 @@ public final class ResultsScreen extends Canvas implements ILogger {
 			ReplayChunk rc = replay.GetReplay();
 			r.write(fc.openOutputStream(), rc);
 			data.set.AddLastReplay();
+		} catch (Throwable e) {
+			try {
+				fc.delete();
+			} catch (Throwable e1) {
+				GL.Log("Failed to cleanup replay!");
+			}
+			if (fc != null) {
+				try {
+					fc.close();
+				} catch (IOException e2) {
+				}
+			}
+			fc = null;
+			throw e;
 		} finally {
 			if (fc != null) {
 				try {
