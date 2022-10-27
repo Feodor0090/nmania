@@ -1009,7 +1009,7 @@ public final class Player extends GameCanvas {
 		if (Settings.drawHUD) {
 			final int realScore = score.currentHitScore;
 			if (realScore != rollingScore) {
-				rollingScore += (realScore - rollingScore) / 60 + 1;
+				rollingScore += ((realScore - rollingScore) >>> 6) + 1;
 			}
 
 			// score calc
@@ -1297,7 +1297,7 @@ public final class Player extends GameCanvas {
 						int ly = lastY;
 						final int x2 = x + colW - 1;
 						for (int j = 0; j < noteH; j++) {
-							g.setColor(ColorUtils.blend(noteClr[column2], noteClr[column21], 255 * j / noteH));
+							g.setColor(ColorUtils.blend(noteClr[column2], noteClr[column21], (j << 8) / noteH));
 							g.drawLine(x, ly, x2, ly);
 							ly++;
 						}
