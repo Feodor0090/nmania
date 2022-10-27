@@ -51,7 +51,7 @@ public final class ReplayReaderStream extends OutputStream {
 			addChunk();
 		}
 		
-		ReplayChunk getChunk() {
+		public ReplayChunk getChunk() {
 			return chunk;
 		}
 	};
