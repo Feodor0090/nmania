@@ -33,7 +33,7 @@ public class BrowserView extends Alert {
 		StringBuffer sb = new StringBuffer();
 		for (int i = 0; i < v.size(); i++) {
 			if (i != 0)
-				sb.append('\n');
+				sb.append(" \n ");
 			sb.append(v.elementAt(i).toString());
 		}
 		SetText(sb.toString());
