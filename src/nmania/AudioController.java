@@ -17,23 +17,49 @@ public final class AudioController {
 	private int lastTime;
 
 	public AudioController(Beatmap map) throws IOException, MediaException {
-		String file = map.ToGlobalPath(map.audio);
-		// this supposes that all "builtin" files are mp3
-		player = file.startsWith("file://") ? Manager.createPlayer(file)
-				: Manager.createPlayer(getClass().getResourceAsStream(file), "audio/mpeg");
-		player.realize();
-		player.prefetch();
-		offset = Settings.gameplayOffset;
+		this(map.ToGlobalPath(map.audio));
 	}
 
 	public AudioController(BeatmapSet set) throws IOException, MediaException {
-		String file = set.ToGlobalPath(set.audio);
-		// this supposes that all "builtin" files are mp3
-		player = file.startsWith("file://") ? Manager.createPlayer(file)
-				: Manager.createPlayer(getClass().getResourceAsStream(file), "audio/mpeg");
-		player.realize();
-		player.prefetch();
+		this(set.ToGlobalPath(set.audio));
+	}
+
+	public AudioController(String file) throws MediaException, IOException {
+		Player p = TryInit(file, null);
+		if (p == null)
+			p = TryInit(file, "mp3");
+		if (p == null)
+			p = TryInit(file, "aac");
+		if (p == null)
+			p = TryInit(file, "amr");
+		if (p == null)
+			p = TryInit(file, "wav");
+		if (p == null)
+			throw new IOException("Could not load any files on this MRL");
+		player = p;
 		offset = Settings.gameplayOffset;
+	}
+
+	private final Player TryInit(String mrl, String ext) throws MediaException {
+		if (ext != null) {
+			mrl = mrl.substring(0, mrl.lastIndexOf('.') + 1);
+			mrl += ext;
+			GL.Log("(misc) Falling to " + mrl);
+		}
+		try {
+			Player p;
+			p = mrl.startsWith("file://") ? Manager.createPlayer(mrl)
+					: Manager.createPlayer(getClass().getResourceAsStream(mrl), "audio/mpeg");
+			p.realize();
+			p.prefetch();
+			return p;
+		} catch (MediaException e) {
+			if (e.toString().indexOf("not") != -1 && e.toString().indexOf("allowed") != -1)
+				throw e;
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
 	}
 
 	private final Player player;
@@ -94,7 +120,7 @@ public final class AudioController {
 	public void Loop() {
 		player.setLoopCount(-1);
 	}
-	
+
 	public boolean IsAlive() {
 		return alive;
 	}
