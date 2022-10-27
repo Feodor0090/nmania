@@ -1081,34 +1081,21 @@ public final class Player extends GameCanvas {
 				g.fillRect(healthX, scrH - hh, 6, hh);
 			}
 		}
-		// profiler
+		// fps
 		if (Settings.profiler) {
-			// recount
-			{
-				if (time < _lastTime) {
-					_lastTime = 0;
-				} else if (time - _lastTime > 1000) {
-					_lastTime += 1000;
-					_lastFps = framesPassed - _lastFrames;
-					_lastFrames = framesPassed;
-					Runtime r = Runtime.getRuntime();
-					_lastMem = (int) (r.totalMemory() - r.freeMemory()) / 1024;
-				}
-			}
 			g.setColor(0, 255, 0);
-			// fps
-			{
-				int num = _lastFps;
-				int x1 = leftOffset + columnsCount * colW;
-				while (true) {
-					final int d = num % 10;
-					g.drawChar((char) (d + '0'), x1, 0, 24);
-					x1 -= numsWidthCache[d];
-					if (num < 10)
-						break;
-					num /= 10;
-				}
+
+			int num = _lastFps;
+			int l = 15;
+			while (true) {
+				final int d = num % 10;
+				hudCache[l] = (char) (d + '0');
+				if (num < 10)
+					break;
+				num /= 10;
+				l--;
 			}
+			g.drawChars(hudCache, l, 16 - l, leftOffset + columnsCount * colW, 0, 24);
 		}
 	}
 
