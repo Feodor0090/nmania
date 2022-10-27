@@ -102,6 +102,8 @@ public final class Settings {
 	 */
 	public static int gameplayOffset = 0;
 	public static boolean analyzeMaps;
+	
+	public static int defaultMods = 0;
 
 	public static String GetLastDir() {
 		int i = workingFolder.lastIndexOf('/', workingFolder.length() - 2);
@@ -151,6 +153,7 @@ public final class Settings {
 		j.accumulate("maxpr", new Boolean(maxPriority));
 		j.accumulate("threadswitch", new Boolean(forceThreadSwitch));
 		j.accumulate("analyze", new Boolean(analyzeMaps));
+		j.accumulate("mods", new Integer(defaultMods));
 
 		return j.toString();
 	}
@@ -215,6 +218,7 @@ public final class Settings {
 			maxPriority = j.optBoolean("maxpr");
 			forceThreadSwitch = j.optBoolean("threadswitch");
 			analyzeMaps = j.optBoolean("analyze"); // ?full
+			defaultMods = j.optInt("mods");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

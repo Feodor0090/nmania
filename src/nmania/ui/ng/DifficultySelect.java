@@ -23,7 +23,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 	BeatmapSet set;
 	IDisplay d;
 	int keysH;
-	public ModsState mods = new ModsState();
+	public ModsState mods = new ModsState(Settings.defaultMods);
 	public int mode;
 	public String[] modes = new String[] { "normal", "autoplay", "replay" };
 	private Thread t;
