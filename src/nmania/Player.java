@@ -941,8 +941,9 @@ public final class Player extends GameCanvas {
 				health = 0;
 			}
 		}
-		if (j == 0 && !failed && score.currentCombo >= 20 && combobreak != null)
-			combobreak.Play();
+		if (combobreak != null) // ?full
+			if (j == 0 && !failed && score.currentCombo >= 20) // ?full
+				combobreak.Play();// ?full
 	}
 
 	/**
