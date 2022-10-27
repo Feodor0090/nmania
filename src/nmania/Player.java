@@ -1240,17 +1240,17 @@ public final class Player extends GameCanvas {
 		final int x = leftOffset + 1 + (k * colWp1);
 		if (rich == null) {
 			final int x2 = colW + x - 1;
-			final int topClr = (hold ? holdKeysColors : keysColors)[k * 2];
-			final int btmClr = (hold ? holdKeysColors : keysColors)[k * 2 + 1];
+			final int topClr = (hold ? holdKeysColors : keysColors)[k << 1];
+			final int btmClr = (hold ? holdKeysColors : keysColors)[(k << 1) + 1];
 			int y = kbY;
 			for (int i = 1; i < kbH; i++) {
 				y++;
-				g.setColor(ColorUtils.blend(btmClr, topClr, i * 255 / kbH));
+				g.setColor(ColorUtils.blend(btmClr, topClr, (i << 8) / kbH));
 				g.drawLine(x, y, x2, y);
 			}
 		} else {
 			if (hold)
-				g.drawImage(rich[18 + columnsCount * 2 + k], x, kbY, 0);
+				g.drawImage(rich[18 + (columnsCount << 1) + k], x, kbY, 0);
 			else
 				g.drawImage(rich[18 + k], x, kbY, 0);
 		}
