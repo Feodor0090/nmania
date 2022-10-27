@@ -145,6 +145,7 @@ public final class BeatmapSet {
 			String raw = BeatmapManager.getStringFromFS(ToGlobalPath(name));
 			NmaniaReplay nmr = new NmaniaReplay();
 			nmr.ReadFrom(new JSONObject(raw));
+			return nmr;
 		}
 		OsuReplay replay = new OsuReplay();
 		FileConnection fc = null;
