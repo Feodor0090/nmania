@@ -168,10 +168,10 @@ public final class Player extends GameCanvas {
 			restart = null;
 			applause = null;
 		}
-		if (Settings.hitSamples) {
+		if (Settings.hitSamples) { // ?full
 			String[] sets = new String[] { "normal", "soft", "drum" }; // ?full
 			String[] types = new String[] { "normal", "whistle", "finish", "clap" }; // ?full
-			hitSounds = new MultiSample[3][];
+			hitSounds = new MultiSample[3][]; // ?full
 			for (int i = 0; i < sets.length; i++) { // ?full
 				hitSounds[i] = new MultiSample[types.length]; // ?full
 				for (int j = 0; j < types.length; j++) { // ?full
@@ -180,10 +180,10 @@ public final class Player extends GameCanvas {
 					Thread.sleep(1); // ?full
 				} // ?full
 			} // ?full
-		} else {
-			hitSounds = null;
-		}
-		defaultHSSet = map.defaultSampleSet;
+		} else { // ?full
+			hitSounds = null; // ?full
+		} // ?full
+		defaultHSSet = map.defaultSampleSet; // ?full
 
 		// step 7: cache data for HUD drawing
 		log.log("Caching service data");
@@ -350,9 +350,9 @@ public final class Player extends GameCanvas {
 	private final Sample sectionFail;
 	private final Sample fail = null;
 	private final Sample restart;
-	private final MultiSample[][] hitSounds;
+	private final MultiSample[][] hitSounds; // ?full
 	private final String applause;
-	private final int defaultHSSet;
+	private final int defaultHSSet; // ?full
 
 	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
 	public final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
