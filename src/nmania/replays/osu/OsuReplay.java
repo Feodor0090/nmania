@@ -102,7 +102,7 @@ public final class OsuReplay implements IExtendedReplay {
 			if (!decoder.code(in, out, outSize)) {
 				throw new IOException("Decoding unsuccessful!");
 			}
-			return out.getChunk();
+			return out.GetReplay();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

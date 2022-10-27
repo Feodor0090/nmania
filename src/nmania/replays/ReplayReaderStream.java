@@ -10,7 +10,7 @@ import symnovel.SNUtils;
  * @author Shinovon
  *
  */
-public final class ReplayReaderStream extends OutputStream {
+public final class ReplayReaderStream extends OutputStream implements IReplayProvider {
 	int lastKeys = 0;
 	int lastTime = 0;
 	int nextFrame = 0;
@@ -54,7 +54,7 @@ public final class ReplayReaderStream extends OutputStream {
 		addChunk();
 	}
 
-	public ReplayChunk getChunk() {
+	public final ReplayChunk GetReplay() {
 		return chunk;
 	}
 };
