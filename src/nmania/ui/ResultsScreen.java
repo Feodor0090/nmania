@@ -241,19 +241,20 @@ public final class ResultsScreen extends Canvas implements ILogger {
 				Dispose();
 				(new PlayerLoader(data, null, this, next)).start();
 			} else if (activeMenu == 2) {
-				SaveReplay();
-				Exit();
+				if (SaveReplay())
+					Exit();
 			} else if (activeMenu == 3) {
-				SaveReplay();
-				// we are watching our own replay
+				if (SaveReplay()) {
+					// we are watching our own replay
 
-				ReplayChunk chunk = replay.GetReplay();
-				if (chunk == null) {
-					activeMenu = 1;
-					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
-				} else {
-					Dispose();
-					(new PlayerLoader(data, new ReplayPlayer(chunk, score), this, next)).start();
+					ReplayChunk chunk = replay.GetReplay();
+					if (chunk == null) {
+						activeMenu = 1;
+						Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
+					} else {
+						Dispose();
+						(new PlayerLoader(data, new ReplayPlayer(chunk, score), this, next)).start();
+					}
 				}
 			}
 		}
@@ -285,7 +286,7 @@ public final class ResultsScreen extends Canvas implements ILogger {
 		}
 	}
 
-	private void SaveReplay() {
+	private boolean SaveReplay() {
 		try {
 			TryWriteOsr();
 		} catch (Throwable e) {
@@ -299,8 +300,10 @@ public final class ResultsScreen extends Canvas implements ILogger {
 				GL.Log(e1.toString());
 				e1.printStackTrace();
 				Nmania.Push(new Alert("Could not write replay", e1.toString(), null, AlertType.ERROR));
+				return false;
 			}
 		}
+		return true;
 	}
 
 	private void TryWriteOsr() throws IOException {
