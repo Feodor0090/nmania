@@ -1031,9 +1031,9 @@ public final class Player extends GameCanvas {
 			g.drawChars(accText, 0, 7, scrW, scrH, 40);
 		}
 		// judgment & combo
-		if (time - lastJudgementTime < 200) {
+		if (time - lastJudgementTime < 256) {
 			final String j = judgements[lastJudgement];
-			int mix = (time - lastJudgementTime) * 255 / 200;
+			int mix = (time - lastJudgementTime);
 			int color = ColorUtils.blend(0, -1, mix);
 			g.setColor(color);
 			g.drawString(j, judgmentCenter + 1, 99, 17);
