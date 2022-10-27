@@ -16,6 +16,7 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 	private String search;
 	private boolean notRanked;
 	private JSONArray arr;
+	Thread t;
 
 	public BrowserList(String search, boolean notRanked) {
 		this.search = search;
@@ -39,7 +40,14 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 
 	public void OnEnter(IDisplay d) {
 		loadingState = true;
-		(new Thread(this, "Browser IO")).start();
+		t = new Thread(this, "Browser IO");
+		t.start();
+	}
+
+	public boolean OnExit(IDisplay d) {
+		if (t != null)
+			t.interrupt();
+		return super.OnExit(d);
 	}
 
 	public void run() {
@@ -51,19 +59,21 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 			Vector items = new Vector();
 			for (int i = 0; i < arr.length(); i++) {
 				JSONObject o = arr.getJSONObject(i);
-				if(o.optInt("RankedStatus")!=1 && !notRanked)
+				if (o.optInt("RankedStatus") != 1 && !notRanked)
 					continue;
-				items.addElement( new ListItem(i,
+				items.addElement(new ListItem(i,
 						o.optString("Artist") + " - " + o.optString("Title") + " (" + o.optString("Creator") + ")",
 						this));
 			}
 			SetItems(items);
-			loadingState = false;
 		} catch (Exception e) {
 			arr = null;
 			SetItems(new ListItem[] { new ListItem("Failed to load.", this) });
+			search = e.toString();
 			e.printStackTrace();
 		}
+		loadingState = false;
+		t = null;
 	}
 
 	public static byte[] get(String url) throws IOException, InterruptedException {
@@ -169,7 +179,10 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
-		display.Push(new BrowserView(arr.getJSONObject(item.UUID)));
+		try {
+			display.Push(new BrowserView(arr.getJSONObject(item.UUID)));
+		} catch (Exception e) {
+		}
 	}
 
 	public void OnSide(int direction, ListItem item, ListScreen screen, IDisplay display) {
