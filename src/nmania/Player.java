@@ -1083,8 +1083,14 @@ public final class Player extends GameCanvas {
 		}
 		// fps
 		if (Settings.profiler) {
+			if (time < _lastTime) {
+				_lastTime = 0;
+			} else if (time - _lastTime > 1000) {
+				_lastTime += 1000;
+				_lastFps = framesPassed - _lastFrames;
+				_lastFrames = framesPassed;
+			}
 			g.setColor(0, 255, 0);
-
 			int num = _lastFps;
 			int l = 15;
 			while (true) {
