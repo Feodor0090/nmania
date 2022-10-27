@@ -1063,7 +1063,7 @@ public final class Player extends GameCanvas {
 			g.drawChars(hudCache, l, num, judgmentCenter + 1, 99, 33);
 			g.drawChars(hudCache, l, num, judgmentCenter - 1, 97, 33);
 			g.drawChars(hudCache, l, num, judgmentCenter + 1, 97, 33);
-			g.setColor(255, 180, 0);
+			g.setColor(255, Math.min(combo >> 1, 150), 0);
 			g.drawChars(hudCache, l, num, judgmentCenter, 98, 33);
 		}
 		// health
