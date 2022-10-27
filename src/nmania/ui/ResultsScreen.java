@@ -28,6 +28,7 @@ import nmania.Sample;
 import nmania.replays.IReplayProvider;
 import nmania.replays.ReplayChunk;
 import nmania.replays.ReplayPlayer;
+import nmania.replays.json.NmaniaReplay;
 import nmania.replays.osu.OsuReplay;
 
 public final class ResultsScreen extends Canvas implements ILogger {
@@ -285,46 +286,69 @@ public final class ResultsScreen extends Canvas implements ILogger {
 	}
 
 	private void SaveReplay() {
-		GL.Log("Attempting to write replay");
-		GL.LogStats();
+		try {
+			TryWriteOsr();
+		} catch (Throwable e) {
+			GL.Log("OSR writing failed!");
+			GL.Log(e.toString());
+			e.printStackTrace();
+			try {
+				TryWriteNmr();
+			} catch (Throwable e1) {
+				GL.Log("NMR writing failed!");
+				GL.Log(e1.toString());
+				e1.printStackTrace();
+				Nmania.Push(new Alert("Could not write replay", e1.toString(), null, AlertType.ERROR));
+			}
+		}
+	}
+
+	private void TryWriteOsr() throws IOException {
 		OsuReplay r = new OsuReplay();
-		GL.Log("Replay created");
 		r.gameMode = 3;
 		r.gameVersion = 292;
 		r.WriteScoreDataFrom(score);
-		GL.Log("Score data written");
 		r.SetMods(data.mods);
-		GL.Log("Mods set");
 		r.beatmapHash = data.ReadBeatmapMd5();
-		GL.Log("Hash written");
 		FileConnection fc = null;
 		try {
 			String path = data.set.GetFilenameForNewReplay(r, data);
-			GL.Log("Path is " + path);
 			fc = (FileConnection) Connector.open(path, Connector.READ_WRITE);
 			fc.create();
-			GL.Log("Getting replay chunks");
 			ReplayChunk rc = replay.GetReplay();
-			GL.Log("Frames count: " + ReplayChunk.CountTotalFrames(rc));
-			GL.Log("Begin of IO...");
-			GL.LogStats();
 			r.write(fc.openOutputStream(), rc);
-			GL.Log("Replay written!");
 			data.set.AddLastReplay();
-			GL.Log("New file added to BMS");
-		} catch (Throwable e) {
-			GL.Log("Reolay writing failed!");
-			GL.Log(e.toString());
-			Nmania.Push(new Alert("Could not write replay", e.toString(), null, AlertType.ERROR));
-			e.printStackTrace();
 		} finally {
-			if (fc != null)
+			if (fc != null) {
 				try {
 					fc.close();
 				} catch (IOException e) {
 				}
+			}
 		}
+	}
 
+	private void TryWriteNmr() throws IOException {
+		NmaniaReplay r = new NmaniaReplay();
+		r.WriteScoreDataFrom(score);
+		r.SetMods(data.mods);
+		r.beatmapHash = data.ReadBeatmapMd5();
+		FileConnection fc = null;
+		try {
+			String path = data.set.GetFilenameForNewReplay(r, data);
+			fc = (FileConnection) Connector.open(path, Connector.READ_WRITE);
+			fc.create();
+			ReplayChunk rc = replay.GetReplay();
+			r.Write(fc.openOutputStream(), rc);
+			data.set.AddLastReplay();
+		} finally {
+			if (fc != null) {
+				try {
+					fc.close();
+				} catch (IOException e) {
+				}
+			}
+		}
 	}
 
 	protected void pointerReleased(int x, int y) {
