@@ -74,9 +74,10 @@ public class Alert implements IScreen {
 			scroll = 0;
 		Font f = Font.getFont(0, 0, 8);
 		g.setFont(f);
-		int y = -scroll;
+		int y=0;
 		int x = 10;
 		int sp = f.charWidth(' ');
+		
 		boolean lineHasWords = false;
 		for (int i = 0; i < text.length; i++) {
 			String word = text[i];
@@ -88,11 +89,11 @@ public class Alert implements IScreen {
 			}
 			if (nl)
 				continue;
-			NmaniaDisplay.print(g, word, x, y, -1, 0, 0);
+			NmaniaDisplay.print(g, word, x, y-scroll, -1, 0, 0);
 			lineHasWords = true;
 			x += ww + sp;
 		}
-		totalY = y + f.getHeight() + scroll;
+		totalY = y + f.getHeight();
 		allowScroll = totalY > h;
 	}
 
