@@ -10,6 +10,7 @@ import javax.microedition.io.file.FileConnection;
 import nmania.beatmaps.IRawBeatmap;
 import nmania.beatmaps.InvalidBeatmapTypeException;
 import nmania.beatmaps.RawBeatmapConverter;
+import nmania.replays.IExtendedReplay;
 import nmania.replays.osu.OsuReplay;
 import nmania.ui.ResultsScreen;
 
@@ -83,15 +84,16 @@ public final class BeatmapSet {
 		lastReplayName = null;
 	}
 
-	public String GetFilenameForNewReplay(OsuReplay replay, PlayerBootstrapData data) throws IOException {
+	public String GetFilenameForNewReplay(IExtendedReplay replay, PlayerBootstrapData data) throws IOException {
 		FileConnection fc = null;
-		String ln = replay.playerName + " - " + GetDifficultyNameFast(data.mapFileName) + " at "
+		String ln = replay.GetPlayerName() + " - " + GetDifficultyNameFast(data.mapFileName) + " at "
 				+ ResultsScreen.formatDate(replay.PlayedAt(), "-");
 		String name = wdPath + folderName + ln;
 		int sub = 0;
+		String ext = (replay instanceof OsuReplay) ? "osr" : "nmr";
 		try {
 			while (true) {
-				fc = (FileConnection) Connector.open(addOsrNum(name, sub), Connector.READ);
+				fc = (FileConnection) Connector.open(addNum(name, sub, ext), Connector.READ);
 				if (fc.exists()) {
 					sub++;
 					fc.close();
@@ -103,14 +105,14 @@ public final class BeatmapSet {
 			if (fc != null)
 				fc.close();
 		}
-		lastReplayName = addOsrNum(ln, sub);
-		return addOsrNum(name, sub);
+		lastReplayName = addNum(ln, sub, ext);
+		return addNum(name, sub, ext);
 	}
 
-	private String addOsrNum(String name, int sub) {
+	private String addNum(String name, int sub, String ext) {
 		if (sub == 0)
-			return name + ".osr";
-		return name + " (" + sub + ").osr";
+			return name + "." + ext;
+		return name + " (" + sub + ")." + ext;
 	}
 
 	public String[] ListAllReplays() {
