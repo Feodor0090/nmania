@@ -42,6 +42,10 @@ public final class AudioController {
 
 	private final Player TryInit(String mrl, String ext) throws MediaException {
 		if (ext != null) {
+			if (mrl.endsWith(ext)) {
+				// already looked for, skipping...
+				return null;
+			}
 			mrl = mrl.substring(0, mrl.lastIndexOf('.') + 1);
 			mrl += ext;
 			GL.Log("(misc) Falling to " + mrl);
