@@ -5,9 +5,9 @@ import java.io.IOException;
 import nmania.IInputOverrider;
 import nmania.Nmania;
 import nmania.PlayerBootstrapData;
+import nmania.replays.IExtendedReplay;
 import nmania.replays.ReplayChunk;
 import nmania.replays.ReplayPlayer;
-import nmania.replays.osu.OsuReplay;
 import nmania.ui.ResultsScreen;
 
 public class ReplaySelect extends ListScreen implements IListSelectHandler, Runnable {
@@ -21,7 +21,7 @@ public class ReplaySelect extends ListScreen implements IListSelectHandler, Runn
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
 		String name = item.text;
 		try {
-			OsuReplay r = data.set.ReadReplay(name);
+			IExtendedReplay r = data.set.ReadReplay(name);
 			ReplayChunk chunk = r.GetReplay();
 			if (chunk == null) {
 				display.Push(new Alert("Could not read replay", null));
