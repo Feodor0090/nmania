@@ -83,8 +83,9 @@ public class Alert implements IScreen {
 				x = 10;
 				y += f.getHeight();
 			}
-			if (!nl)
-				NmaniaDisplay.print(g, word, x, y, -1, 0, 0);
+			if (nl)
+				continue;
+			NmaniaDisplay.print(g, word, x, y, -1, 0, 0);
 			lineHasWords = true;
 			x += ww + sp;
 		}
