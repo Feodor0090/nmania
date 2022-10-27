@@ -89,9 +89,8 @@ public final class BeatmapSet {
 
 	public String GetFilenameForNewReplay(IExtendedReplay replay, PlayerBootstrapData data) throws IOException {
 		FileConnection fc = null;
-		String ln = replay.GetPlayerName() + " - " + GetDifficultyNameFast(data.mapFileName) + " at "
-				+ ResultsScreen.formatDate(replay.PlayedAt(), "-");
-		String name = wdPath + folderName + ln;
+		String name = ToGlobalPath(replay.GetPlayerName() + " - " + GetDifficultyNameFast(data.mapFileName) + " at "
+				+ ResultsScreen.formatDate(replay.PlayedAt(), "-"));
 		int sub = 0;
 		String ext = (replay instanceof OsuReplay) ? "osr" : "nmr";
 		try {
@@ -109,7 +108,7 @@ public final class BeatmapSet {
 				fc.close();
 		}
 
-		return (lastReplayName = addNum(ln, sub, ext));
+		return (lastReplayName = addNum(name, sub, ext));
 	}
 
 	private String addNum(String name, int sub, String ext) {
