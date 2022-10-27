@@ -17,6 +17,8 @@ import nmania.ModsState;
 import nmania.ScoreController;
 import nmania.replays.IExtendedReplay;
 import nmania.replays.ReplayChunk;
+import nmania.replays.ReplayReaderStream;
+import nmania.replays.ReplayWriterStream;
 
 /**
  * Model of OSR file. Contains all header information and replay blob.

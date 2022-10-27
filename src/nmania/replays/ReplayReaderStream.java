@@ -1,9 +1,8 @@
-package nmania.replays.osu;
+package nmania.replays;
 
 import java.io.IOException;
 import java.io.OutputStream;
 
-import nmania.replays.ReplayChunk;
 import symnovel.SNUtils;
 
 /**
@@ -11,7 +10,7 @@ import symnovel.SNUtils;
  * @author Shinovon
  *
  */
-class ReplayReaderStream extends OutputStream {
+public final class ReplayReaderStream extends OutputStream {
 		int lastKeys = 0;
 		int lastTime = 0;
 		int nextFrame = 0;

@@ -1,16 +1,14 @@
-package nmania.replays.osu;
+package nmania.replays;
 
 import java.io.IOException;
 import java.io.InputStream;
-
-import nmania.replays.ReplayChunk;
 
 /**
  * 
  * @author Shinovon
  *
  */
-class ReplayWriterStream extends InputStream {
+public final class ReplayWriterStream extends InputStream {
 
 	ReplayChunk r;
 
@@ -24,7 +22,7 @@ class ReplayWriterStream extends InputStream {
 	int pos = 0;
 	int len = 0;
 
-	ReplayWriterStream(ReplayChunk r) {
+	public ReplayWriterStream(ReplayChunk r) {
 		this.r = r.firstChunk;
 	}
 
