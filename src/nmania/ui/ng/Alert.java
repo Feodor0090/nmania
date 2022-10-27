@@ -15,7 +15,10 @@ public class Alert implements IScreen {
 
 	public Alert(String title, String text) {
 		this.title = title;
-		this.text = SNUtils.splitFull(text, ' ');
+		if (text == null)
+			this.text = new String[0];
+		else
+			this.text = SNUtils.splitFull(text, ' ');
 	}
 
 	/**
