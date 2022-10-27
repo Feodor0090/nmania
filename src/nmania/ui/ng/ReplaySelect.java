@@ -2,9 +2,6 @@ package nmania.ui.ng;
 
 import java.io.IOException;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
-
 import nmania.IInputOverrider;
 import nmania.Nmania;
 import nmania.PlayerBootstrapData;
@@ -27,8 +24,7 @@ public class ReplaySelect extends ListScreen implements IListSelectHandler, Runn
 			OsuReplay r = data.set.ReadReplay(name);
 			ReplayChunk chunk = r.GetReplay();
 			if (chunk == null) {
-				display.PauseRendering();
-				Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
+				display.Push(new Alert("Could not read replay", null));
 				return;
 			}
 
@@ -39,7 +35,7 @@ public class ReplaySelect extends ListScreen implements IListSelectHandler, Runn
 					display.GetDisplayable()));
 		} catch (IOException e) {
 			e.printStackTrace();
-			display.Push(new nmania.ui.ng.Alert("Could not read replay", e.toString()));
+			display.Push(new Alert("Could not read replay", e.toString()));
 		}
 	}
 
