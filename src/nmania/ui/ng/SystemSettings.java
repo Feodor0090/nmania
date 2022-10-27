@@ -5,8 +5,9 @@ import nmania.Settings;
 public class SystemSettings extends ListScreen implements IListSelectHandler {
 
 	public SystemSettings() {
-		SetItems(new ListItem[] { new SwitchItem(2, "Fullscreen flush", this, Settings.fullScreenFlush),
-				new SwitchItem(3, "Record replays", this, Settings.recordReplay),
+		SetItems(new ListItem[] { new SwitchItem(0, "Fullscreen flush", this, Settings.fullScreenFlush),
+				new SwitchItem(2, "Record replays", this, Settings.recordReplay),
+				new SwitchItem(3, "Encode replays into OSR", this, Settings.encodeOsr),
 				new SwitchItem(4, "Keep UI during gameplay", this, Settings.keepMenu), // ?full
 				new SwitchItem(5, "Throttle gameplay clock", this, Settings.throttleGameplay),
 				new SwitchItem(6, "High priority", this, Settings.maxPriority),
@@ -28,12 +29,16 @@ public class SystemSettings extends ListScreen implements IListSelectHandler {
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
 		switch (item.UUID) {
-		case 2:
+		case 0:
 			Settings.fullScreenFlush = !Settings.fullScreenFlush;
 			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
-		case 3:
+		case 2:
 			Settings.recordReplay = !Settings.recordReplay;
+			((SwitchItem) item).state = !((SwitchItem) item).state;
+			break;
+		case 3:
+			Settings.encodeOsr = !Settings.encodeOsr;
 			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		case 4:

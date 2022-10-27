@@ -103,6 +103,8 @@ public final class Settings {
 	public static int gameplayOffset = 0;
 	public static boolean analyzeMaps;
 	
+	public static boolean encodeOsr = true;
+	
 	public static int defaultMods = 0;
 
 	public static String GetLastDir() {
@@ -154,6 +156,7 @@ public final class Settings {
 		j.accumulate("threadswitch", new Boolean(forceThreadSwitch));
 		j.accumulate("analyze", new Boolean(analyzeMaps));
 		j.accumulate("mods", new Integer(defaultMods));
+		j.accumulate("osr", new Boolean(encodeOsr));
 
 		return j.toString();
 	}
@@ -219,6 +222,7 @@ public final class Settings {
 			forceThreadSwitch = j.optBoolean("threadswitch");
 			analyzeMaps = j.optBoolean("analyze"); // ?full
 			defaultMods = j.optInt("mods");
+			encodeOsr = j.optBoolean("osr", true);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

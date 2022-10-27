@@ -25,6 +25,7 @@ import nmania.Player;
 import nmania.PlayerBootstrapData;
 import nmania.PlayerLoader;
 import nmania.Sample;
+import nmania.Settings;
 import nmania.replays.IReplayProvider;
 import nmania.replays.ReplayChunk;
 import nmania.replays.ReplayPlayer;
@@ -307,6 +308,8 @@ public final class ResultsScreen extends Canvas implements ILogger {
 	}
 
 	private void TryWriteOsr() throws Throwable {
+		if (!Settings.encodeOsr)
+			throw new RuntimeException("OSR encoding is disabled");
 		OsuReplay r = new OsuReplay();
 		r.gameMode = 3;
 		r.gameVersion = 292;
