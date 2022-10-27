@@ -10,7 +10,6 @@ import nmania.Settings;
 public class BrowserView extends Alert {
 
 	private JSONObject beatmap;
-	private String title;
 
 	public BrowserView(JSONObject beatmap) {
 		super(beatmap.optString("Artist") + " - " + beatmap.optString("Title") + " (" + beatmap.optString("Creator")
@@ -38,10 +37,6 @@ public class BrowserView extends Alert {
 			sb.append(v.elementAt(i).toString());
 		}
 		SetText(sb.toString());
-	}
-
-	public String GetTitle() {
-		return title;
 	}
 
 	public boolean ShowLogo() {
