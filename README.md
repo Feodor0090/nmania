@@ -45,7 +45,17 @@ To apply a localization, pack your files into jar under names `CATEGORY_LANG.txt
 ### Flush rate troubles
 Default HUD rendering requires 3 flushes in a game frame. This can limit FPS to 20 or even 16 on some devices. Try to enable `fullscreen flush`. Now there will be 1 flush in 1 frame, but yeah, the whole screen. Still bad? Disable HUD at all (`draw counters`) (don't forget to disable `fullscreen flush` too!). Now you will have 1 partial flush in 1 frame. This should be enough. And yeah, buy a normal device like E5 (:
 
-## Manual building
-Find a SDK for your device, install it. Look for futher instructions in it's documentation (you want to package a `MIDlet suite`).
+## Ready binaries
+### Stable
+Look in [releases](https://github.com/Feodor0090/nmania/releases/latest). Use "obf" version if you don't know differences between them. Use "lite_obf" version for low-end devices like S40.
 
-If you want an IDE, i can recommend `Eclipse IDE for Java` with `Mobile Tools for Java` (`MTJ`) plugin for it. You also need J2SE 1.5 and an SDK for your device. Set up them to work together and create a JAR package from `Application Descriptor` screen.
+### SID
+On commit panel find green checkmark (if you see red cross, look in commit history for latest working), click it. Go to "summary" tab. Scroll down. Here are the latest builds.
+
+## Manual build
+### Linux
+Run `build.sh`. **Note that it modifies source code! Do not forget to reset all changes using git after building!** Look for files in `./jar/` folder.
+### Windows
+Install 1.6.0 jdk and latest WTK or your device's SDK. Look for futher instructions in it's documentation (you want to package a `MIDlet suite`).
+### IDE
+This game was created using `Eclipse IDE for Java` with `Mobile Tools for Java` (`MTJ`) plugin for it. You also need J2SE 1.5 and an SDK for your device. Set up them to work together and create a JAR package from `Application Descriptor` screen.
