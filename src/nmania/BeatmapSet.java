@@ -105,8 +105,8 @@ public final class BeatmapSet {
 			if (fc != null)
 				fc.close();
 		}
-		lastReplayName = addNum(ln, sub, ext);
-		return addNum(name, sub, ext);
+
+		return (lastReplayName = addNum(ln, sub, ext));
 	}
 
 	private String addNum(String name, int sub, String ext) {
