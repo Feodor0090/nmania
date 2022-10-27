@@ -7,10 +7,13 @@ import java.util.Vector;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 
+import org.json.me.JSONObject;
+
 import nmania.beatmaps.IRawBeatmap;
 import nmania.beatmaps.InvalidBeatmapTypeException;
 import nmania.beatmaps.RawBeatmapConverter;
 import nmania.replays.IExtendedReplay;
+import nmania.replays.json.NmaniaReplay;
 import nmania.replays.osu.OsuReplay;
 import nmania.ui.ResultsScreen;
 
@@ -72,8 +75,8 @@ public final class BeatmapSet {
 		files = n;
 	}
 
-	public String ToGlobalPath(String diffFileName) {
-		return wdPath + folderName + diffFileName;
+	public String ToGlobalPath(String name) {
+		return wdPath + folderName + name;
 	}
 
 	String lastReplayName;
@@ -137,12 +140,17 @@ public final class BeatmapSet {
 	 * @return Read replay. Always not null.
 	 * @throws IOException If file reading failed.
 	 */
-	public OsuReplay ReadReplay(String name) throws IOException {
+	public IExtendedReplay ReadReplay(String name) throws IOException {
+		if (!name.endsWith(".osr")) {
+			String raw = BeatmapManager.getStringFromFS(ToGlobalPath(name));
+			NmaniaReplay nmr = new NmaniaReplay();
+			nmr.ReadFrom(new JSONObject(raw));
+		}
 		OsuReplay replay = new OsuReplay();
 		FileConnection fc = null;
 		InputStream is = null;
 		try {
-			fc = (FileConnection) Connector.open(wdPath + folderName + name, Connector.READ);
+			fc = (FileConnection) Connector.open(ToGlobalPath(name), Connector.READ);
 			is = fc.openInputStream();
 			replay.read(is);
 		} finally {
