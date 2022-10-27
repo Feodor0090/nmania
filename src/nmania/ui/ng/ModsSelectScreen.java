@@ -4,6 +4,7 @@ import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
 import nmania.ModsState;
+import nmania.Settings;
 
 public class ModsSelectScreen implements IScreen {
 
@@ -38,7 +39,12 @@ public class ModsSelectScreen implements IScreen {
 		g.setFont(f);
 		int y = drawTripleSelection(g, 0, w, selected == 0, mods.GetDA(), "Difficulty adjustment", da);
 		y = drawTripleSelection(g, y, w, selected == 1, mods.GetFA(), "Failing adjustment", fa);
-		
+		if (selected == 2) {
+			g.setColor(NmaniaDisplay.PINK_COLOR);
+			g.fillArc(fontH / 2, y, fontH, fontH, 0, 360);
+			g.fillRect(fontH, y, w - fontH, fontH);
+		}
+		NmaniaDisplay.print(g, "Save as default", fontH, y, -1, 0, 0);
 	}
 
 	private int drawTripleSelection(Graphics g, int y, int w, boolean selected, int item, String title,
@@ -83,12 +89,12 @@ public class ModsSelectScreen implements IScreen {
 		if (k == -1 || k == '2') {
 			selected--;
 			if (selected < 0)
-				selected = 1;
+				selected = 2;
 			return;
 		}
 		if (k == -2 || k == '8') {
 			selected++;
-			if (selected >= 2)
+			if (selected >= 3)
 				selected = 0;
 			return;
 		}
@@ -110,6 +116,10 @@ public class ModsSelectScreen implements IScreen {
 		case 1:
 			mods.ToggleFA(dir);
 			break;
+		}
+		if (selected == 2 && (k == 32 || k == '5' || k == 10 || k == -5)) {
+			Settings.defaultMods = mods.GetMask();
+			Settings.Save();
 		}
 	}
 
