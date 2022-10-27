@@ -44,7 +44,7 @@ public class NmaniaReplay implements IExtendedReplay {
 		o.put("fc", perfectCombo);
 		return o;
 	}
-	
+
 	public ReplayChunk GetReplay() {
 		try {
 			ReplayReaderStream rrs = new ReplayReaderStream();
@@ -101,6 +101,25 @@ public class NmaniaReplay implements IExtendedReplay {
 		totalScore = (int) score.GetScore();
 		timestamp = score.PlayedAt().getTime();
 		playerName = score.GetPlayerName();
+	}
+
+	public void ReadFrom(JSONObject o) {
+		playerName = o.getString("name");
+		beatmapHash = o.getString("hash");
+		timestamp = o.getLong("time");
+		modsUsed = o.getInt("mods");
+		replay = o.getString("replay");
+
+		JSONObject s = o.getJSONObject("score");
+		countMisses = s.getInt("miss");
+		count50 = s.getInt("meh");
+		count100 = s.getInt("ok");
+		countKatus = s.getInt("good");
+		count300 = s.getInt("great");
+		countGekis = s.getInt("perfect");
+		maxCombo = s.getInt("combo");
+		totalScore = s.getInt("score");
+		perfectCombo = s.getBoolean("fc");
 	}
 
 	public String GetMode() {
