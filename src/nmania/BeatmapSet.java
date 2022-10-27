@@ -121,7 +121,7 @@ public final class BeatmapSet {
 	public String[] ListAllReplays() {
 		Vector v = new Vector(files.length / 2, 8);
 		for (int i = 0; i < files.length; i++) {
-			if (files[i].endsWith(".osr"))
+			if (files[i].endsWith(".osr") || files[i].endsWith(".nmr"))
 				v.addElement(files[i]);
 		}
 		String[] arr = new String[v.size()];
