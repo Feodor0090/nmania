@@ -53,15 +53,13 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 	public void run() {
 		try {
 			String s = encodeUrl(search);
-			String url = encodeUrl("https://kitsu.moe/api/search?query=" + s
-					+ "&mode=3&amount=100" + (notRanked ? "" : "&status=1"));
-			String r = getUtf("http://nnp.nnchan.ru/glype/browse.php?u="+url);
+			String url = encodeUrl(
+					"https://kitsu.moe/api/search?query=" + s + "&mode=3&amount=100" + (notRanked ? "" : "&status=1"));
+			String r = getUtf("http://nnp.nnchan.ru/glype/browse.php?u=" + url);
 			arr = new JSONArray(r);
 			Vector items = new Vector();
 			for (int i = 0; i < arr.length(); i++) {
 				JSONObject o = arr.getJSONObject(i);
-				if (o.optInt("RankedStatus") != 1 && !notRanked)
-					continue;
 				items.addElement(new ListItem(i,
 						o.optString("Artist") + " - " + o.optString("Title") + " (" + o.optString("Creator") + ")",
 						this));
