@@ -1,6 +1,7 @@
 package nmania.replays;
 
 import nmania.IScore;
+import nmania.ModsState;
 
 /**
  * Replay that can provide info about it.
@@ -13,5 +14,5 @@ public interface IExtendedReplay extends IReplayProvider, IScore {
 	 * @return Always must be "VSRG".
 	 */
 	public String GetMode();
-	
+	public ModsState GetMods();
 }
