@@ -56,8 +56,6 @@ public class BrowserSearch extends ListScreen implements IListSelectHandler, Com
 	public void commandAction(Command arg0, Displayable d) {
 		if (d instanceof TextBox) {
 			String name = ((TextBox) d).getString().trim();
-			if (name.length() == 0)
-				return;
 			name = name.replace('\n', ' ');
 			Nmania.Push(disp.GetDisplayable());
 			request.data = name;
