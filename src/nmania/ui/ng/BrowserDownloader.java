@@ -76,6 +76,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 			}
 			out = fc.openOutputStream();
 			in = hc.openInputStream();
+			int len = (int) hc.getLength();
 			title = "Downloading";
 			final int bufSize = 1024 * 8;
 			byte[] buf = new byte[bufSize];
@@ -84,7 +85,11 @@ public class BrowserDownloader extends Alert implements Runnable {
 			while ((read = in.read(buf)) != -1) {
 				out.write(buf, 0, read);
 				total += read;
-				title = "Downloaded " + (total / 1024) / 10 / 100f + "MB, wait...";
+				String pc = "";
+				if (len != 0) {
+					pc = " (" + (total * 100 / len) + "%)";
+				}
+				title = "Downloaded " + (total / 1024) / 10 / 100f + "MB" + pc + ", wait...";
 				Thread.sleep(1);
 			}
 			title = "Done! Close this menu.";
