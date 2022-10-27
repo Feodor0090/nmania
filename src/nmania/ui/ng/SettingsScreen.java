@@ -45,7 +45,7 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler, Co
 		case 6:
 			display.PauseRendering();
 			disp = display;
-			final TextBox box = new TextBox("What's your name?", "", 50, 0);
+			final TextBox box = new TextBox("What's your name?", Settings.name, 50, 0);
 			box.addCommand(new Command("Next", Command.OK, 0));
 			box.setCommandListener(this);
 			Nmania.Push(box);
