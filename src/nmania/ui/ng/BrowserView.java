@@ -49,10 +49,6 @@ public class BrowserView extends Alert {
 
 	private String status(int s) {
 		switch (s) {
-		case -2:
-		case -1:
-		case 0:
-			return "not ranked";
 		case 1:
 		case 2:
 			return "ranked";
@@ -60,8 +56,9 @@ public class BrowserView extends Alert {
 			return "qualified";
 		case 4:
 			return "loved";
+		default:
+			return "not ranked";
 		}
-		return "unknown";
 	}
 
 	public void OnOptionActivate(IDisplay d) {

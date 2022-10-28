@@ -55,9 +55,27 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 	public void run() {
 		try {
 			String s = encodeUrl(search);
+			if (search.length() == 0)
+				search = "BEATMAPS LISTING";
 			String url = encodeUrl(
 					"https://kitsu.moe/api/search?query=" + s + "&mode=3&amount=100" + (notRanked ? "" : "&status=1"));
 			String r = getUtf("http://nnp.nnchan.ru/glype/browse.php?u=" + url);
+			if (r.charAt(0) != '{') {
+				GL.Log("(browser) Non-json answer from server!");
+				SetNoItems();
+				if (r.startsWith("<doctype")
+						&& (r.indexOf("502") != -1 || r.indexOf("500") != -1 || r.indexOf("400") != -1)) {
+					search = "Proxy is in bad state, try again later";
+					GL.Log("(browser) http error recieved");
+				} else {
+					search = "Unknown error. Try debug version.";
+					search = "Unknown error. Check logs"; // ?dbg
+					GL.Log(r);
+				}
+				loadingState = false;
+				t = null;
+				return;
+			}
 			arr = new JSONArray(r);
 			Vector items = new Vector();
 			for (int i = 0; i < arr.length(); i++) {
@@ -69,13 +87,19 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 			SetItems(items);
 		} catch (Exception e) {
 			arr = null;
-			SetItems(new ListItem[] { new ListItem("Failed to load.", this) });
+			SetNoItems();
 			search = e.toString();
 			GL.Log("(browser) API request failed with " + e.toString());
 			e.printStackTrace();
+		} catch (OutOfMemoryError e) {
+			search = "Not enough memory!";
 		}
 		loadingState = false;
 		t = null;
+	}
+
+	private void SetNoItems() {
+		SetItems(new ListItem[] { new ListItem("Failed to load.", this) });
 	}
 
 	public static byte[] get(String url) throws IOException, InterruptedException {

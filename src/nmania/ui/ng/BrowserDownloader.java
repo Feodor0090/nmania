@@ -24,6 +24,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 
 	public void run() {
 		download();
+		t = null;
 	}
 
 	public void OnEnter(IDisplay d) {
@@ -38,6 +39,8 @@ public class BrowserDownloader extends Alert implements Runnable {
 	}
 
 	public void download() {
+		GL.Log("(browser) Downloading " + title);
+		GL.Log("(browser) Target file: " + fileName);
 		FileConnection fc = null;
 		OutputStream out = null;
 		HttpConnection hc = null;
@@ -47,25 +50,30 @@ public class BrowserDownloader extends Alert implements Runnable {
 
 			if (fc.exists()) {
 				fc.close();
+				title = "File already exists. Aborted.";
 				return;
 			}
 			fc.create();
 			hc = (HttpConnection) Connector.open(url);
+			hc.setRequestMethod("GET");
 			int r;
 			try {
 				r = hc.getResponseCode();
 			} catch (IOException e) {
 				try {
+					fc.delete();
+					fc.close();
 					hc.close();
 				} catch (Exception e2) {
+					GL.Log("(browser) Failed to close OSZ connection! " + e2.toString());
 				}
-				Thread.sleep(2000);
-				hc = (HttpConnection) Connector.open(url);
-				hc.setRequestMethod("GET");
-				r = hc.getResponseCode();
+				GL.Log("(browser) Failed to get response code");
+				title = "Failed to connect!";
+				return;
 			}
 			while (r == 301 || r == 302) {
 				String redir = hc.getHeaderField("Location");
+				GL.Log("(browser) Redirected to " + redir + " with code " + r);
 				if (redir.startsWith("/")) {
 					String tmp = url.substring(url.indexOf("//") + 2);
 					String host = url.substring(0, url.indexOf("//")) + "//" + tmp.substring(0, tmp.indexOf("/"));
@@ -76,13 +84,40 @@ public class BrowserDownloader extends Alert implements Runnable {
 				hc.setRequestMethod("GET");
 				r = hc.getResponseCode();
 			}
+			if (r >= 400) {
+				GL.Log("(browser) HTTP error " + r);
+				title = "Connection failed (http code " + r + ")";
+				try {
+					fc.delete();
+					fc.close();
+					hc.close();
+				} catch (Exception e2) {
+					GL.Log("(browser) Failed to close OSZ connection! " + e2.toString());
+				}
+				return;
+			}
+
+			int len = (int) hc.getLength();
+			GL.Log("(browser) Expected size: " + (len >> 10) + "KB");
+			long aval = fc.availableSize(); // leave 128KB
+			if (len > aval - (1024L * 128)) {
+				GL.Log("(browser) Available space is " + (aval >> 10) + "KB but " + (len >> 10) + "KB is needed");
+				title = "Not enough space!";
+				SetText("Beatmap file is " + (len >> 10)
+						+ "KB in size. Your memory card on which game is working has only " + (aval >> 10)
+						+ "KB available. Free up more space or use another disk.");
+				try {
+					fc.delete();
+					fc.close();
+					hc.close();
+				} catch (Exception e2) {
+					GL.Log("(browser) Failed to close OSZ connection! " + e2.toString());
+				}
+				return;
+			}
+			title = "Downloading";
 			out = fc.openOutputStream();
 			in = hc.openInputStream();
-			int len = (int) hc.getLength();
-			GL.Log("(browser) Downloading " + title);
-			GL.Log("(browser) Target file: " + fileName);
-			GL.Log("(browser) Expected size: " + (len >> 10) + "KB");
-			title = "Downloading";
 			final int bufSize = 1024 * 8;
 			byte[] buf = new byte[bufSize];
 			int read = 0;
@@ -98,13 +133,13 @@ public class BrowserDownloader extends Alert implements Runnable {
 				Thread.sleep(1);
 			}
 			title = "Done! Close this menu.";
+			SetText("Your beatmap was successfully downloaded.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			title = "Error: " + e.toString();
 			GL.Log("(browser) Download failed");
 			GL.Log("(browser) " + e.toString());
 		} finally {
-			t = null;
 			try {
 				if (out != null)
 					out.close();
