@@ -89,6 +89,8 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 			search = e.toString();
 			GL.Log("(browser) API request failed with " + e.toString());
 			e.printStackTrace();
+		} catch (OutOfMemoryError e) {
+			search = "Not enough memory!";
 		}
 		loadingState = false;
 		t = null;
