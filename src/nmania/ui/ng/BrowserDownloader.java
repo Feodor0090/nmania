@@ -77,6 +77,16 @@ public class BrowserDownloader extends Alert implements Runnable {
 				hc.setRequestMethod("GET");
 				r = hc.getResponseCode();
 			}
+			if (r >= 400) {
+				GL.Log("(browser) HTTP error " + r);
+				title = "Connection failed (http code " + r + ")";
+				try {
+					hc.close();
+				} catch (Exception e2) {
+					GL.Log("(browser) Failed to close OSZ connection! " + e2.toString());
+				}
+				return;
+			}
 			out = fc.openOutputStream();
 			in = hc.openInputStream();
 			int len = (int) hc.getLength();
