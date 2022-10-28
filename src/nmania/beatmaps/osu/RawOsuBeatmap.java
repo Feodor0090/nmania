@@ -158,7 +158,7 @@ public final class RawOsuBeatmap implements IRawBeatmap {
 				notes.addElement(new ManiaNote(time, column + 1, dur));
 			}
 		} else {
-			throw new InvalidBeatmapTypeException("This is an osu! or osu!catch beatmap. They are not supported.");
+			throw new InvalidBeatmapTypeException("This is an osu! or osu!catch beatmap. They are not supported. Only osu!mania beatmaps are accepted.");
 		}
 		b.notes = new ManiaNote[notes.size()];
 		notes.copyInto(b.notes);
