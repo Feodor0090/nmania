@@ -56,6 +56,10 @@ fi
 echo "Build done!" ./${APP}.jar
 cp ./${APP}.jar ./jar/${APP}.jar
 
+if [[ ${APP} == "nmania_debug" ]] ; then
+  exit 0
+fi
+
 echo "Optimizing..."
 chmod +x ${PROGUARD}
 touch cf.cfg
