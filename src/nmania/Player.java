@@ -1016,11 +1016,12 @@ public final class Player extends GameCanvas {
 			int num = rollingScore;
 			int l = 15;
 			while (true) {
-				final int d = num % 10;
+				final int nnum = (int) ((num * 0x66666667L) >>> 34);
+				final int d = num - nnum * 10;
 				hudCache[l] = (char) (d + '0');
 				if (num < 10)
 					break;
-				num /= 10;
+				num = nnum;
 				l--;
 			}
 			// score
@@ -1050,11 +1051,12 @@ public final class Player extends GameCanvas {
 			int num = combo;
 			int l = 15;
 			while (true) {
-				final int d = num % 10;
+				final int nnum = (int) ((num * 0x66666667L) >>> 34);
+				final int d = num - nnum * 10;
 				hudCache[l] = (char) (d + '0');
 				if (num < 10)
 					break;
-				num /= 10;
+				num = nnum;
 				l--;
 			}
 			num = 16 - l; // reusing var
@@ -1094,11 +1096,12 @@ public final class Player extends GameCanvas {
 			int num = _lastFps;
 			int l = 15;
 			while (true) {
-				final int d = num % 10;
+				final int nnum = (int) ((num * 0x66666667L) >>> 34);
+				final int d = num - nnum * 10;
 				hudCache[l] = (char) (d + '0');
 				if (num < 10)
 					break;
-				num /= 10;
+				num = nnum;
 				l--;
 			}
 			g.drawChars(hudCache, l, 16 - l, leftOffset + columnsCount * colW, 0, 24);
