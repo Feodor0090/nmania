@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash
 
 # STATIC VARS
 JAVA_HOME=./j2me_compiler/jdk1.6.0_45
