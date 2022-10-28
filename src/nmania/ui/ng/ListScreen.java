@@ -17,6 +17,8 @@ public abstract class ListScreen implements IScreen {
 	protected Font font = Font.getFont(0, 0, 8);
 	private int fontH = font.getHeight();
 	protected String horSelecrorTitle = null;
+	private String selectedText = null;
+	int textScroll = 0;
 
 	public final void SetItems(ListItem[] list) {
 		items = list;
@@ -101,7 +103,27 @@ public abstract class ListScreen implements IScreen {
 					x += item.icon.getWidth();
 				}
 				if (item.text != null) {
-					NmaniaDisplay.print(g, item.text, x, y, -1, 0, 0);
+					if (selected == i) {
+						if (selectedText != item.text) {
+							selectedText = item.text;
+							textScroll = 0;
+						} else {
+							int tw = font.stringWidth(selectedText);
+							int atw = w - fontH;
+							if (tw > atw) {
+								if (tw - textScroll > 0)
+									textScroll += 3;
+								else
+									textScroll = -w;
+							} else {
+								textScroll = 0;
+							}
+						}
+						g.setClip(fontH >> 1, y, w - fontH, fontH);
+						NmaniaDisplay.print(g, selectedText, x - textScroll, y, -1, 0, 0);
+						g.setClip(-1000, -1000, 9999, 9999);
+					} else
+						NmaniaDisplay.print(g, item.text, x, y, -1, 0, 0);
 				}
 				if (item instanceof ICustomListItem) {
 					((ICustomListItem) item).Paint(g, y, w, fontH);
