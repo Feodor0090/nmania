@@ -2,7 +2,7 @@ package nmania.ui.ng;
 
 import nmania.Settings;
 
-public class AudioSettings extends ListScreen implements IListSelectHandler {
+public class AudioSettings extends ListScreen implements IListSelectHandler, INumberBoxHandler {
 	public AudioSettings() {
 		SetItems(new ListItem[] { //
 				new SwitchItem(0, "Play music in menu", this, Settings.musicInMenu), // ?full
@@ -45,10 +45,7 @@ public class AudioSettings extends ListScreen implements IListSelectHandler {
 			((SwitchItem) item).Toggle();
 			break;
 		case 4:
-
-			break;
-
-		default:
+			display.Push(new NumberBox("Clock offset", 0, this, Settings.gameplayOffset, true));
 			break;
 		}
 	}
@@ -58,11 +55,26 @@ public class AudioSettings extends ListScreen implements IListSelectHandler {
 			OnSelect(item, screen, display);
 			return;
 		}
-		Settings.gameplayOffset += direction * 5;
+		int newNumber = Settings.gameplayOffset + direction * 5;
+		if (newNumber < -1000)
+			newNumber = -1000;
+		if (newNumber > 1000)
+			newNumber = 1000;
+		Settings.gameplayOffset = newNumber;
 		((DataItem) item).data = Settings.gameplayOffset + "ms";
 	}
 
 	public boolean ShowLogo() {
 		return false;
+	}
+
+	public void OnNumberEntered(int UUID, int newNumber, IDisplay d) {
+		if (newNumber < -1000)
+			newNumber = -1000;
+		if (newNumber > 1000)
+			newNumber = 1000;
+		Settings.gameplayOffset = newNumber;
+		d.Back();
+		((DataItem) GetSelected()).data = Settings.gameplayOffset + "ms";
 	}
 }
