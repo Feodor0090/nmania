@@ -39,6 +39,8 @@ public class BrowserDownloader extends Alert implements Runnable {
 	}
 
 	public void download() {
+		GL.Log("(browser) Downloading " + title);
+		GL.Log("(browser) Target file: " + fileName);
 		FileConnection fc = null;
 		OutputStream out = null;
 		HttpConnection hc = null;
@@ -61,14 +63,15 @@ public class BrowserDownloader extends Alert implements Runnable {
 				try {
 					hc.close();
 				} catch (Exception e2) {
+					GL.Log("(browser) Failed to close OSZ connection! " + e2.toString());
 				}
-				Thread.sleep(2000);
-				hc = (HttpConnection) Connector.open(url);
-				hc.setRequestMethod("GET");
-				r = hc.getResponseCode();
+				GL.Log("(browser) Failed to get response code");
+				title = "Failed to connect!";
+				return;
 			}
 			while (r == 301 || r == 302) {
 				String redir = hc.getHeaderField("Location");
+				GL.Log("(browser) Redirected to " + redir + " with code " + r);
 				if (redir.startsWith("/")) {
 					String tmp = url.substring(url.indexOf("//") + 2);
 					String host = url.substring(0, url.indexOf("//")) + "//" + tmp.substring(0, tmp.indexOf("/"));
@@ -92,8 +95,6 @@ public class BrowserDownloader extends Alert implements Runnable {
 			out = fc.openOutputStream();
 			in = hc.openInputStream();
 			int len = (int) hc.getLength();
-			GL.Log("(browser) Downloading " + title);
-			GL.Log("(browser) Target file: " + fileName);
 			GL.Log("(browser) Expected size: " + (len >> 10) + "KB");
 			title = "Downloading";
 			final int bufSize = 1024 * 8;
@@ -111,6 +112,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 				Thread.sleep(1);
 			}
 			title = "Done! Close this menu.";
+			SetText("Your beatmap was successfully downloaded.");
 		} catch (Exception e) {
 			e.printStackTrace();
 			title = "Error: " + e.toString();
