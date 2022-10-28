@@ -1,7 +1,6 @@
 name: UI bug
 description: Something in UI don't work as it should.
 title: "UI bug: "
-labels: ["type:ui-bug"]
 body:
   - type: input
     id: version
