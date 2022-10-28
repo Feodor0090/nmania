@@ -1,5 +1,6 @@
 package nmania;
 
+import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.microedition.io.Connector;
@@ -10,9 +11,17 @@ public class GL { // ?dbg
 	private static FileConnection fc;// ?dbg
 	private static OutputStream stream;// ?dbg
 
-	public static void Create() {// ?dbg
+	public static void Create(boolean force) {// ?dbg
 		if (stream != null)// ?dbg
-			return;// ?dbg
+		{ // ?dbg
+			if (!force) // ?dbg
+				return; // ?dbg
+			try { // ?dbg
+				stream.close(); // ?dbg
+				fc.close(); // ?dbg
+			} catch (IOException e) { // ?dbg
+			} // ?dbg
+		} // ?dbg
 		try {// ?dbg
 			fc = (FileConnection) Connector// ?dbg
 					.open("file:///" + Settings.workingFolder + "log-" + System.currentTimeMillis() + ".log");// ?dbg

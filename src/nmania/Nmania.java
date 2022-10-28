@@ -53,6 +53,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 		if (running)
 			return;
 		Settings.Load();
+		GL.Create(true);// ?dbg
 		if (Settings.name == null) {
 			final TextBox box = new TextBox("What's your name?", "", 50, 0);
 			box.addCommand(new Command("Next", Command.OK, 0));
