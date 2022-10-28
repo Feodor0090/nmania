@@ -55,6 +55,8 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 	public void run() {
 		try {
 			String s = encodeUrl(search);
+			if (search.length() == 0)
+				search = "BEATMAPS LISTING";
 			String url = encodeUrl(
 					"https://kitsu.moe/api/search?query=" + s + "&mode=3&amount=100" + (notRanked ? "" : "&status=1"));
 			String r = getUtf("http://nnp.nnchan.ru/glype/browse.php?u=" + url);
