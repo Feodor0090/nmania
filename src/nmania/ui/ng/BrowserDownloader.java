@@ -53,6 +53,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 			}
 			fc.create();
 			hc = (HttpConnection) Connector.open(url);
+			hc.setRequestMethod("GET");
 			int r;
 			try {
 				r = hc.getResponseCode();
