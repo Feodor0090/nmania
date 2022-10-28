@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 
+import nmania.GL;
 import nmania.Settings;
 import zip.ZipEntry;
 import zip.ZipInputStream;
@@ -29,6 +30,8 @@ public class BeatmapUnpacker extends Alert implements Runnable {
 	}
 
 	public void run() {
+		GL.Log("(zip) Going to unpack " + file);
+		GL.LogStats();
 		FileConnection fc = null;
 		String dir = "file:///" + Settings.workingFolder + file.substring(0, file.length() - 4) + "/";
 		try {
@@ -64,10 +67,12 @@ public class BeatmapUnpacker extends Alert implements Runnable {
 			fc.delete();
 			wip = false;
 			SetText("Done. You can leave this view.");
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			wip = false;
 			title = "Failure: " + e.toString();
+			SetText("Could not finish. Please try to unpack manually using external file manager.");
 			e.printStackTrace();
+			GL.Log("(zip) " + e.toString());
 		} finally {
 			try {
 				fc.close();
