@@ -42,7 +42,7 @@ public class FolderSelectScreen extends ListScreen implements IListSelectHandler
 	public String GetOption() {
 		if (failed)
 			return null;
-		return "OPEN HERE";
+		return "USE THIS";
 	}
 
 	public void OnOptionActivate(IDisplay d) {
