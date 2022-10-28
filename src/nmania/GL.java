@@ -1,11 +1,11 @@
-package nmania;
+package nmania; // ?dbg
 
-import java.io.OutputStream;
+import java.io.OutputStream; // ?dbg
 
 import javax.microedition.io.Connector;
 import javax.microedition.io.file.FileConnection;
 
-public class GL {
+public class GL { // ?dbg
 
 	private static FileConnection fc;// ?dbg
 	private static OutputStream stream;// ?dbg
@@ -40,6 +40,7 @@ public class GL {
 	public static void LogStats() {// ?dbg
 		long total = Runtime.getRuntime().totalMemory() / 1024;// ?dbg
 		long free = Runtime.getRuntime().freeMemory() / 1024;// ?dbg
-		Log("(stats) Memory: T=" + total + " F=" + free + " U=" + (total - free) + "; Threads: " + Thread.activeCount());// ?dbg
+		Log("(stats) Memory: T=" + total + " F=" + free + " U=" + (total - free) + "; Threads: "
+				+ Thread.activeCount());// ?dbg
 	}// ?dbg
-}
+} // ?dbg
