@@ -1,7 +1,6 @@
 name: Broken game or beatmap parser logic report
 description: A map that works fine in it's native game breaks nmania gameplay logic, or simply doesn't load.
-title: "Player bug: "
-labels: ["type:broken-game-logic"]
+title: "Broken beatmap or gameplay logic: "
 assignees:
   - Feodor0090
 body:
