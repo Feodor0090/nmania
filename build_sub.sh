@@ -60,7 +60,7 @@ if [[ ${APP} == "nmania_debug" ]] ; then
   exit 0
 fi
 
-echo "Optimizing..."
+echo Optimizing ${APP}
 chmod +x ${PROGUARD}
 touch cf.cfg
 
