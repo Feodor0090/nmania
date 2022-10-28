@@ -565,7 +565,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public static Image CreateBackground(Image raw, int scrW, int scrH) {
 		if (raw == null)
 			return null;
-		if (Settings.bgDim >= 0.99f)
+		if (Settings.dimLevel >= 100)
 			return null;
 		try {
 			final float screenAR = scrW / (float) scrH;
@@ -584,15 +584,15 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				th = scrH;
 				tw = (int) (th * bgAR);
 			}
-			raw = ImageUtils.resize(raw, tw, th, Settings.bgDim <= 0.95f, false);
+			raw = ImageUtils.resize(raw, tw, th, Settings.dimLevel < 95, false);
 			if (tw != scrW || th != scrH) {
 				int x0 = (tw - scrW) / 2;
 				int y0 = (th - scrH) / 2;
 				raw = ImageUtils.crop(raw, x0, y0, x0 + scrW, y0 + scrH);
 			}
-			if (Settings.bgDim > 0.01f) {
+			if (Settings.dimLevel > 0) {
 				raw = ImageFxUtils.applyModifier(raw, new PixelModifier() {
-					final int blendLevel = (int) ((1f - Settings.bgDim) * 255);
+					final int blendLevel = ((100 - Settings.dimLevel) * 255 / 100);
 
 					public void apply(int[] p, int[] o, int count, int y) {
 						for (int i = 0; i < p.length; i++) {
