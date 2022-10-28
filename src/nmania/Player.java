@@ -786,7 +786,7 @@ public final class Player extends GameCanvas {
 
 	private final void PassSequence() {
 		running = false;
-		final String j = "DIFFICULTY PASSED";
+		final String j = "BEATMAP PASSED";
 		final int w2 = scrW / 2;
 		final int h2 = scrH / 2;
 		final int ty = h2 - g.getFont().getHeight() / 2;
