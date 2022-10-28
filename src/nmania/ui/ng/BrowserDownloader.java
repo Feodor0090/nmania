@@ -61,6 +61,8 @@ public class BrowserDownloader extends Alert implements Runnable {
 				r = hc.getResponseCode();
 			} catch (IOException e) {
 				try {
+					fc.delete();
+					fc.close();
 					hc.close();
 				} catch (Exception e2) {
 					GL.Log("(browser) Failed to close OSZ connection! " + e2.toString());
@@ -86,6 +88,8 @@ public class BrowserDownloader extends Alert implements Runnable {
 				GL.Log("(browser) HTTP error " + r);
 				title = "Connection failed (http code " + r + ")";
 				try {
+					fc.delete();
+					fc.close();
 					hc.close();
 				} catch (Exception e2) {
 					GL.Log("(browser) Failed to close OSZ connection! " + e2.toString());
