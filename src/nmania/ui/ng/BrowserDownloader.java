@@ -48,6 +48,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 
 			if (fc.exists()) {
 				fc.close();
+				title = "File already exists. Aborted.";
 				return;
 			}
 			fc.create();
