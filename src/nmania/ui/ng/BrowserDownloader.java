@@ -24,6 +24,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 
 	public void run() {
 		download();
+		t = null;
 	}
 
 	public void OnEnter(IDisplay d) {
@@ -104,7 +105,6 @@ public class BrowserDownloader extends Alert implements Runnable {
 			GL.Log("(browser) Download failed");
 			GL.Log("(browser) " + e.toString());
 		} finally {
-			t = null;
 			try {
 				if (out != null)
 					out.close();
