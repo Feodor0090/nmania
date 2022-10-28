@@ -64,14 +64,16 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public void run() {
 		while (cycle) {
 			try {
-
 				if (pause) {
 					try {
+						GL.Log("(ui) Suspending rendering thread...");
 						Thread.sleep(Integer.MAX_VALUE * 10L);
 					} catch (InterruptedException e) {
+						GL.Log("(ui) Interruption received, wakeing the thread up...");
 						pause = false;
 					}
 					if (!cycle) {
+						GL.Log("(ui) Destroying rendering right after resume!");
 						stack = null;
 						g = null;
 						bg = null;
@@ -182,6 +184,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				else
 					Thread.sleep(1);
 			} catch (InterruptedException e) {
+				GL.Log("(ui) Interruption received out of pause closure!");
 			}
 		}
 		stack = null;
@@ -457,7 +460,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			return;
 		}
 		GL.Log("(ui) Returning on screen stack from " + stack[top].getClass().getName() + " to "
-				+ stack[top - 1].getClass().getName()); // ?dbg
+				+ stack[top - 1].getClass().getName() + "(" + top + ">" + (top - 1) + ")"); // ?dbg
 		stack[top + 1] = null;
 		top--;
 		stack[top].OnResume(this);
@@ -465,7 +468,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Push(IScreen s) {
-		GL.Log("(ui) Pushing " + s.getClass().getName() + " to screen stack");
+		GL.Log("(ui) Pushing " + s.getClass().getName() + " to screen stack, depth " + (top + 1));
 		stack[top].OnPause(this);
 		top++;
 		stack[top] = s;
@@ -474,6 +477,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void SetBg(Image bg) {
+		if (bg == null) // ?dbg
+			GL.Log("(ui) Pushing null background");
+		else // ?dbg
+			GL.Log("(ui) Pushing background " + bg.getWidth() + "x" + bg.getHeight());
 		this.bg = CreateBackground(bg, getWidth(), getHeight());
 	}
 
@@ -500,8 +507,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			lastMusicDir = set.folderName;
 		} catch (Exception e) {
 			e.printStackTrace();
-			GL.Log(e.toString());
+			GL.Log("(ui) Failed to play music: " + e.toString());
 		} catch (OutOfMemoryError e) {
+			GL.LogStats();
 			GL.Log("(ui) Not enough memory to play background music!");
 		}
 	}
@@ -517,16 +525,22 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void PauseRendering() {
-		if (pause)
+		GL.Log("(ui) Rendering pause requested");
+		if (pause) {
+			GL.Log("(ui) Rendering is already paused!");
 			return;
+		}
 		pause = true;
 		th.setPriority(Thread.MIN_PRIORITY);
 		stack[top].OnPause(this);
 	}
 
 	public void ResumeRendering() {
-		if (!pause)
+		GL.Log("(ui) Rendering resume requested");
+		if (!pause) {
+			GL.Log("(ui) Rendering is already running!");
 			return;
+		}
 		pause = false;
 		th.interrupt();
 		th.setPriority(Thread.NORM_PRIORITY);
@@ -534,6 +548,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Throttle(boolean e) {
+		GL.Log("(ui) Throttling state is set to " + e);
 		throttle = e;
 		if (e)
 			th.setPriority(Thread.MIN_PRIORITY);
@@ -588,7 +603,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			}
 			return raw;
 		} catch (Throwable t) {
-			GL.Log("(ui) Failed to create BG with " + t.toString());
+			GL.Log("(ui) Failed to create background with " + t.toString());
 			t.printStackTrace();
 			return null;
 		}
