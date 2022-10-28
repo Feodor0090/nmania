@@ -901,7 +901,7 @@ public final class Player extends GameCanvas {
 					g.setColor((i == pauseItem ? 255 : 0), 0, 0);
 					g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
 					g.setColor(-1);
-					g.drawString(i == 0 ? "Retry" : "Quit", scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
+					g.drawString(i == 0 ? "Retry" : "Quit", scrW >> 1, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
 				}
 				flushGraphics();
 				try {
