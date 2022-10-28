@@ -16,4 +16,7 @@ public class SwitchItem extends ListItem implements ICustomListItem {
 				Graphics.RIGHT | Graphics.TOP);
 	}
 
+	public final void Toggle() {
+		state = !state;
+	}
 }

@@ -31,11 +31,11 @@ public class VisualSettings extends ListScreen implements IListSelectHandler {
 		switch (item.UUID) {
 		case 2:
 			Settings.drawHUD = !Settings.drawHUD;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
+			((SwitchItem) item).Toggle();
 			break;
 		case 3:
 			Settings.profiler = !Settings.profiler;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
+			((SwitchItem) item).Toggle();
 			break;
 		}
 	}

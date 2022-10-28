@@ -27,22 +27,22 @@ public class AudioSettings extends ListScreen implements IListSelectHandler {
 		switch (item.UUID) {
 		case 0:
 			Settings.musicInMenu = !Settings.musicInMenu;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
+			((SwitchItem) item).Toggle();
 			if (!Settings.musicInMenu) {
 				display.SetAudio(null);
 			}
 			break;
 		case 1:
 			Settings.hitSamples = !Settings.hitSamples;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
+			((SwitchItem) item).Toggle();
 			break;
 		case 2:
 			Settings.gameplaySamples = !Settings.gameplaySamples;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
+			((SwitchItem) item).Toggle();
 			break;
 		case 3:
 			Settings.useBmsSamples = !Settings.useBmsSamples;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
+			((SwitchItem) item).Toggle();
 			break;
 		case 4:
 

@@ -28,38 +28,31 @@ public class SystemSettings extends ListScreen implements IListSelectHandler {
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
+		((SwitchItem) item).Toggle();
 		switch (item.UUID) {
 		case 0:
 			Settings.fullScreenFlush = !Settings.fullScreenFlush;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		case 2:
 			Settings.recordReplay = !Settings.recordReplay;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		case 3:
 			Settings.encodeOsr = !Settings.encodeOsr;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		case 4:
 			Settings.keepMenu = !Settings.keepMenu;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		case 5:
 			Settings.throttleGameplay = !Settings.throttleGameplay;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		case 6:
 			Settings.maxPriority = !Settings.maxPriority;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		case 7:
-			((SwitchItem) item).state = !((SwitchItem) item).state;
 			Settings.forceThreadSwitch = !Settings.forceThreadSwitch;
 			break;
 		case 8:
 			Settings.analyzeMaps = !Settings.analyzeMaps;
-			((SwitchItem) item).state = !((SwitchItem) item).state;
 			break;
 		default:
 			break;
