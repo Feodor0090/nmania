@@ -96,11 +96,28 @@ public class BrowserDownloader extends Alert implements Runnable {
 				}
 				return;
 			}
-			out = fc.openOutputStream();
-			in = hc.openInputStream();
+
 			int len = (int) hc.getLength();
 			GL.Log("(browser) Expected size: " + (len >> 10) + "KB");
+			long aval = fc.availableSize(); // leave 128KB
+			if (len > aval - (1024L * 128)) {
+				GL.Log("(browser) Available space is " + (aval >> 10) + "KB but " + (len >> 10) + "KB is needed");
+				title = "Not enough space!";
+				SetText("Beatmap file is " + (len >> 10)
+						+ "KB in size. Your memory card on which game is working has only " + (aval >> 10)
+						+ "KB available. Free up more space or use another disk.");
+				try {
+					fc.delete();
+					fc.close();
+					hc.close();
+				} catch (Exception e2) {
+					GL.Log("(browser) Failed to close OSZ connection! " + e2.toString());
+				}
+				return;
+			}
 			title = "Downloading";
+			out = fc.openOutputStream();
+			in = hc.openInputStream();
 			final int bufSize = 1024 * 8;
 			byte[] buf = new byte[bufSize];
 			int read = 0;
