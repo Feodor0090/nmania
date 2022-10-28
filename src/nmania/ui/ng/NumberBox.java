@@ -19,7 +19,7 @@ public class NumberBox implements IScreen {
 		uuid = UUID;
 		this.handler = handler;
 		this.value = value;
-		sign = value < 0;
+		sign = value >= 0;
 		this.allowNegative = allowNegative;
 	}
 
@@ -43,14 +43,14 @@ public class NumberBox implements IScreen {
 		g.setColor(NmaniaDisplay.NEGATIVE_COLOR);
 		g.setFont(num);
 		int fh = num.getHeight();
-		g.fillRoundRect(fh, 10, w - fh - fh, fh, fh >> 1, fh >> 1);
+		g.fillRoundRect(fh, 10, w - fh - fh, fh, fh, fh);
 		g.setColor(NmaniaDisplay.PINK_COLOR);
-		g.drawRoundRect(fh, 10, w - fh - fh, fh, fh >> 1, fh >> 1);
+		g.drawRoundRect(fh, 10, w - fh - fh, fh, fh, fh);
 		g.setColor(-1);
 		if (value == 0)
-			g.drawString(sign ? "+" : "-", w - fh, 10, Graphics.TOP | Graphics.RIGHT);
+			g.drawString(sign ? "0" : "-0", w - fh - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
 		else
-			g.drawString(String.valueOf(value), w - fh, 10, Graphics.TOP | Graphics.RIGHT);
+			g.drawString(String.valueOf(value), w - fh - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
 	}
 
 	public void OnKey(IDisplay d, int k) {
