@@ -61,6 +61,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private AudioController music;
 	private String lastMusicDir;
 
+	private int pendingKey = 0;
+
 	public void run() {
 		while (cycle) {
 			try {
@@ -184,6 +186,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					Thread.sleep(40);
 				else
 					Thread.sleep(1);
+
+				SynchronizeUiEvents();
 			} catch (InterruptedException e) {
 				GL.Log("(ui) Interruption received out of pause closure!");
 			}
@@ -421,6 +425,23 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			return;
 		if (trBrw != -1)
 			return;
+		ScheduleKey(k);
+	}
+
+	private final void ScheduleKey(int k) {
+		if (pendingKey == 0)
+			pendingKey = k;
+	}
+
+	private final void SynchronizeUiEvents() {
+		if (pendingKey != 0) {
+			int k = pendingKey;
+			pendingKey = 0;
+			KeyPressedSynchronized(k);
+		}
+	}
+
+	private final void KeyPressedSynchronized(int k) {
 		if (k == -6) {
 			leftButtonState = 1f;
 			if (leftButtonActive)
