@@ -36,7 +36,7 @@ public final class Player extends GameCanvas {
 		Image _bg = null;
 		try { // ?full
 				// it won't be used anyway if 100%
-			if (Settings.bgDim < 0.99f) // ?full
+			if (Settings.dimLevel < 100) // ?full
 				_bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image)); // ?full
 		} catch (OutOfMemoryError e) { // ?full
 		} // ?full

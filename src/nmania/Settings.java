@@ -28,10 +28,10 @@ public final class Settings {
 	}
 
 	/**
-	 * % of background dimming during gameplay. 0f - not touched, 1f - completely
+	 * % of background dimming during gameplay. 0 - not touched, 100 - completely
 	 * black.
 	 */
-	public static float bgDim = 1f;
+	public static int dimLevel = 100;
 	/**
 	 * Array with keyboard layouts. Zero element is layout for 1K, the 9th is for
 	 * 10K. Each layout has keys for all columns and for pause key.
@@ -102,9 +102,9 @@ public final class Settings {
 	 */
 	public static int gameplayOffset = 0;
 	public static boolean analyzeMaps;
-	
+
 	public static boolean encodeOsr = true;
-	
+
 	public static int defaultMods = 0;
 
 	public static String GetLastDir() {
@@ -124,7 +124,7 @@ public final class Settings {
 			workingFolder = workingFolder + "/";
 
 		JSONObject j = new JSONObject();
-		j.accumulate("bgdim", String.valueOf(bgDim));
+		j.put("dim", dimLevel);
 		j.accumulate("speed", new Integer(speedDiv));
 		JSONArray keys = new JSONArray();
 		for (int i = 0; i < keyLayout.length; i++) {
@@ -193,7 +193,7 @@ public final class Settings {
 			} else {
 				j = new JSONObject(new String(d));
 			}
-			bgDim = Float.parseFloat(j.optString("bgdim", "0.60")); // ?full
+			dimLevel = j.optInt("dim", 50); // ?full
 			speedDiv = j.optInt("speed", 3);
 			JSONArray keys = j.optJSONArray("keys");
 			if (keys != null) {
