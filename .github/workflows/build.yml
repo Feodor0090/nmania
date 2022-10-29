@@ -26,7 +26,9 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build
-      - name: ls
+      - name: Check files
         run: ls
+      - name: Upload
+        run: curl -F "debug=@./nmania_debug.jar" -F "normal=@./nmania.jar" -F "key=${{ secrets.NNCHAN_KEY }}" -F "branch=`cat ./branch.txt`" -F "commit=`cat ./commit.txt`" http://nnp.nnchan.ru/nm/dev/ci.php
       
     
