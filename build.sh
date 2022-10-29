@@ -94,3 +94,5 @@ fi
 cp nmania.jar ./jar/nmania.jar
 cp nmania_debug.jar ./jar/nmania_debug.jar
 cp nmania_lite.jar ./jar/nmania_lite.jar
+git rev-parse --short HEAD > ./jar/commit.txt
+git branch | grep \* | cut -d ' ' -f2- > ./jar/branch.txt
