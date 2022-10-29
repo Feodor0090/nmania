@@ -41,6 +41,12 @@ else
 fi
 
 APP=nmania_debug ./build_sub.sh
+if [ $? -eq 0 ]
+then
+  echo "Build OK!"
+else
+  exit 1
+fi
 
 echo Filtering debug data...
 for file in `find ./ -type f -name "*.java"`
@@ -56,6 +62,12 @@ done
 rm ./temp.txt
 
 APP=nmania ./build_sub.sh
+if [ $? -eq 0 ]
+then
+  echo "Build OK!"
+else
+  exit 1
+fi
 
 echo Filtering full data...
 for file in `find ./ -type f -name "*.java"`
@@ -72,7 +84,12 @@ rm ./temp.txt
 rm ./res/sfx/*
 
 APP=nmania_lite ./build_sub.sh
-
+if [ $? -eq 0 ]
+then
+  echo "Build OK!"
+else
+  exit 1
+fi
 
 cp nmania.jar ./jar/nmania.jar
 cp nmania_debug.jar ./jar/nmania_debug.jar
