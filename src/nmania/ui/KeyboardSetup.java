@@ -32,7 +32,7 @@ public final class KeyboardSetup extends Canvas {
 		currentColumn++;
 		if (currentColumn > columns) {
 			Settings.keyLayout[columns - 1] = keys;
-			Display.getDisplay(Nmania.inst).setCurrent(prev);
+			Nmania.Push(prev);
 		} else
 			repaint();
 	}
@@ -44,7 +44,7 @@ public final class KeyboardSetup extends Canvas {
 			}
 			keys[columns] = -7;
 			Settings.keyLayout[columns - 1] = keys;
-			Display.getDisplay(Nmania.inst).setCurrent(prev);
+			Nmania.Push(prev);
 		} else {
 			touched = true;
 			repaint();
