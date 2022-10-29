@@ -158,6 +158,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					stack[top].Paint(g, w, h - headerH - 10 - keysH);
 					g.translate(0, -g.getTranslateY());
 					DrawButtons();
+					DrawBuildWarning(); // ?dbg
 					DrawHeader(stack[top].GetTitle());
 					if (stack[top].ShowLogo()) {
 						int s = logo.getHeight();
@@ -211,6 +212,20 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
 	private static int lerp(int a, int b, float p) {
 		return (int) (a + p * (b - a));
+	}
+
+	private void DrawBuildWarning() {
+		int x = (w >> 1) - 40;
+		g.setFont(Font.getFont(0, 0, 8));
+		for (int i = 0; i < 4; i++) {
+			g.setColor(0);
+			g.fillRect(x, h - 10, 20, 10);
+			g.setColor(255, 0, 0);
+			g.fillTriangle(x, h, x + 10, h, x + 10, h - 10);
+			g.fillTriangle(x + 10, h, x + 10, h - 10, x + 20, h - 10);
+			x += 20;
+		}
+		print(g, "debug", w >> 1, h, 0xff0000, -1, Graphics.HCENTER | Graphics.BOTTOM);
 	}
 
 	/**
