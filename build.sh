@@ -3,10 +3,11 @@
 # Define RELEASE=1 before running to build a release.
 
 echo "Downloading and updating compiler..."
-if git clone https://github.com/Feodor0090/j2me_compiler.git 2>/dev/null ; then
-	echo "Done."
+if git clone https://github.com/Feodor0090/j2me_compiler.git 2>/dev/null
+then
+  echo "Done."
 else
-	echo "Already downloaded."
+  echo "Already downloaded."
 fi
 cd j2me_compiler
 git pull
@@ -24,8 +25,14 @@ if [[ ${RELEASE} == "1" ]]
 then
   echo Filtering sid data...
   for file in `find ./ -type f -name "*.java"`
-    do cat $file | grep -v "?sid" > ./temp.txt
-    cat ./temp.txt > $file
+  do
+    if grep -q "??sidonly" $file
+    then
+      rm $file
+    else
+      cat $file | grep -v "?sid" > ./temp.txt
+      cat ./temp.txt > $file
+    fi
   done
   rm ./temp.txt
 else
@@ -37,8 +44,14 @@ APP=nmania_debug ./build_sub.sh
 
 echo Filtering debug data...
 for file in `find ./ -type f -name "*.java"`
-	do cat $file | grep -v "GL.Log" | grep -v "nmania.GL" | grep -v "?dbg" > ./temp.txt
-	cat ./temp.txt > $file
+do
+  if grep -q "??dbgonly" $file
+  then
+    rm $file
+  else
+    cat $file | grep -v "GL.Log" | grep -v "nmania.GL" | grep -v "?dbg" > ./temp.txt
+    cat ./temp.txt > $file
+  fi
 done
 rm ./temp.txt
 
@@ -46,8 +59,14 @@ APP=nmania ./build_sub.sh
 
 echo Filtering full data...
 for file in `find ./ -type f -name "*.java"`
-	do cat $file | grep -v "// ?full" > ./temp.txt
-	cat ./temp.txt > $file
+do
+  if grep -q "??fullonly" $file
+  then
+    rm $file
+  else
+    cat $file | grep -v "// ?full" > ./temp.txt
+    cat ./temp.txt > $file
+  fi
 done
 rm ./temp.txt
 rm ./res/sfx/*
