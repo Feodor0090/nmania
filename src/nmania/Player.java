@@ -337,7 +337,7 @@ public final class Player extends GameCanvas {
 	 */
 	private int framesPassed = 0;
 	// profiler temps
-	private int _lastFrames, _lastTime, _lastMem, _lastFps;
+	private int _lastFrames, _lastTime, _lastFps;
 
 	public boolean isPaused = false;
 	public boolean running = true;
@@ -359,7 +359,6 @@ public final class Player extends GameCanvas {
 			SNUtils.toARGB("0x494"), SNUtils.toARGB("0x0B0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x90F") };
 
 	private final int scrollDiv = Settings.speedDiv;
-	// public String log = "";
 
 	/**
 	 * Clears allocated samples.
