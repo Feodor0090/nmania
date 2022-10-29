@@ -7,7 +7,9 @@ public class MainScreen extends ListScreen implements IListSelectHandler {
 	public MainScreen() {
 		SetItems(new ListItem[] { new ListItem(0, "Play solo", this), // new ListItem(1, "Play online", this),
 				new ListItem(2, "Browse maps", this), new ListItem(3, "Skinning", this),
-				new ListItem(4, "About (v" + Nmania.version + ")", this) });
+				new ListItem(4, "About (v" + Nmania.version + ")", this), //
+				new ListItem(5, "CI builds", this) // ?sid
+		});
 	}
 
 	public String GetTitle() {
@@ -35,6 +37,9 @@ public class MainScreen extends ListScreen implements IListSelectHandler {
 			break;
 		case 4:
 			display.Push(new AboutScreen());
+			break;
+		case 5:
+			display.Push(new CIBrowser()); // ?sid
 			break;
 		}
 	}
