@@ -415,8 +415,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	int lastHeaderX = 0;
 
 	protected void keyPressed(int k) {
-		if (pause)
+		if (pause) {
+			GL.Log("(ui) Keyboard input received while paused. Interrupting...");
 			ResumeRendering();
+		}
 		if (trFrw != -1)
 			return;
 		if (trBrw != -1)
@@ -475,7 +477,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			return;
 		}
 		GL.Log("(ui) Returning on screen stack from " + stack[top].getClass().getName() + " to "
-				+ stack[top - 1].getClass().getName() + "(" + top + ">" + (top - 1) + ")"); // ?dbg
+				+ stack[top - 1].getClass().getName() + " (" + top + ">" + (top - 1) + ")"); // ?dbg
 		stack[top + 1] = null;
 		top--;
 		stack[top].OnResume(this);
@@ -483,7 +485,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Push(IScreen s) {
-		GL.Log("(ui) Pushing " + s.getClass().getName() + " to screen stack, depth " + (top + 1));
+		GL.Log("(ui) Pushing " + s.getClass().getName() + " (" + top + ">" + (top + 1) + ")");
 		stack[top].OnPause(this);
 		top++;
 		stack[top] = s;
