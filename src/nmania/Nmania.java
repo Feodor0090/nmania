@@ -26,6 +26,10 @@ public final class Nmania extends MIDlet implements CommandListener {
 	public Nmania() {
 		inst = this;
 		String v = getAppProperty("MIDlet-Version");
+		String commit = getAppProperty("Commit");
+		if (commit != null) {
+			v = v + "+" + commit;
+		}
 		version = v + " [lite]";
 		version = v; // ?full
 		version = v + " [debug]";// ?dbg
