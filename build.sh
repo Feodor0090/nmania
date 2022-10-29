@@ -20,13 +20,17 @@ cd ${WORK_DIR}
 chmod +x ./build_sub.sh
 mkdir -p jar
 
-if [[ ${RELEASE} == "1" ]] ; then
+if [[ ${RELEASE} == "1" ]]
+then
   echo Filtering sid data...
   for file in `find ./ -type f -name "*.java"`
     do cat $file | grep -v "?sid" > ./temp.txt
     cat ./temp.txt > $file
   done
   rm ./temp.txt
+else
+  echo -en "Commit: " >> manifest.mf
+  git rev-parse --short HEAD >> manifest.mf
 fi
 
 APP=nmania_debug ./build_sub.sh
