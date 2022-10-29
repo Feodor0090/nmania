@@ -1,4 +1,6 @@
-#!/bin/sh -e
+#!/bin/bash
+
+# Define RELEASE=1 before running to build a release.
 
 echo "Downloading and updating compiler..."
 if git clone https://github.com/Feodor0090/j2me_compiler.git 2>/dev/null ; then
@@ -17,6 +19,15 @@ cd ${WORK_DIR}
 
 chmod +x ./build_sub.sh
 mkdir -p jar
+
+if [[ ${RELEASE} == "1" ]] ; then
+  echo Filtering sid data...
+  for file in `find ./ -type f -name "*.java"`
+    do cat $file | grep -v "?sid" > ./temp.txt
+    cat ./temp.txt > $file
+  done
+  rm ./temp.txt
+fi
 
 APP=nmania_debug ./build_sub.sh
 
