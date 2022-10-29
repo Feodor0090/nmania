@@ -8,3 +8,4 @@ MIDlet-Description: Open source piano-like rhythm game for J2ME, compatible with
 MicroEdition-Profile: MIDP-2.0
 MIDlet-Jar-URL: nmania.jar
 Nokia-MIDlet-On-Screen-Keypad: no
+Nokia-UI-Enhancement: EnableMultiPointTouchEvents
