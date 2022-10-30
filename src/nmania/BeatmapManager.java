@@ -63,10 +63,12 @@ public final class BeatmapManager {
 			bms.wdPath = directory;
 			bms.folderName = dir;
 			String fm = null;
+			String all = ""; // ?dbg
 			{
 				Enumeration bmsFiles = bmsFc.list();
 				while (bmsFiles.hasMoreElements()) {
 					String f = bmsFiles.nextElement().toString();
+					all += " " + f; // ?dbg
 					if (RawBeatmapConverter.CanReadFile(f)) {
 						try {
 							fm = getStringFromFS(directory + dir + f);
@@ -78,8 +80,12 @@ public final class BeatmapManager {
 					}
 				}
 			}
-			if (fm == null)
+			if (fm == null) {
+				GL.Log("(bm) Attempt to read " + dir + " chart was made, but no beatmaps here.");
+				GL.Log("(bm) Full path: " + directory + dir);
+				GL.Log("(bm) Files here: " + all);
 				return null;
+			}
 			IRawBeatmap bm = RawBeatmapConverter.FromText(fm);
 			bms.image = bm.GetImage();
 			bms.title = bm.GetTitle();
