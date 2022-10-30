@@ -168,6 +168,10 @@ public abstract class ListScreen extends Screen {
 			return;
 		}
 	}
+	
+	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
+		
+	}
 
 	protected void OnItemChange() {
 	}
