@@ -447,6 +447,13 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			pendingKey = 0;
 			KeyPressedSynchronized(k);
 		}
+		if (pointerState != 0) {
+			stack[top].OnTouch(this, pointerState, px, py, w, h);
+			if (pointerState == 1)
+				pointerState = 2;
+			if (pointerState == 3)
+				pointerState = 0;
+		}
 	}
 
 	private final void KeyPressedSynchronized(int k) {
