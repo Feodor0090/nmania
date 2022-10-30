@@ -7,5 +7,5 @@ MIDlet-Name: nmania
 MIDlet-Description: Open source piano-like rhythm game for J2ME, compatible with osu!mania beatmaps
 MicroEdition-Profile: MIDP-2.0
 MIDlet-Jar-URL: nmania.jar
-Nokia-MIDlet-On-Screen-Keypad: navigationkeys
+Nokia-MIDlet-On-Screen-Keypad: gameactions
 Nokia-UI-Enhancement: EnableMultiPointTouchEvents
