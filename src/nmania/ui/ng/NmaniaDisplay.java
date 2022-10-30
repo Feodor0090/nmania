@@ -21,7 +21,7 @@ import tube42.lib.imagelib.ImageFxUtils.PixelModifier;
 
 public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
-	public NmaniaDisplay(IScreen first) {
+	public NmaniaDisplay(Screen first) {
 		super(false);
 		setFullScreenMode(true);
 		stack[0] = first;
@@ -37,7 +37,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	private Graphics g;
-	private IScreen[] stack = new IScreen[10];
+	private Screen[] stack = new Screen[10];
 	private int top = 0;
 
 	// drawing vars
@@ -248,7 +248,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	 * @param prev
 	 * @param next
 	 */
-	public void PlayForwardTransition(float progress, IScreen prev, IScreen next) {
+	public void PlayForwardTransition(float progress, Screen prev, Screen next) {
 		if (progress < 1f) {
 			if (bg == null) {
 				g.setColor(BG_COLOR);
@@ -331,7 +331,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		trFrw = -1;
 	}
 
-	public void PlayBackwardsTransition(float progress, IScreen top, IScreen target) {
+	public void PlayBackwardsTransition(float progress, Screen top, Screen target) {
 		if (progress < 1f) {
 			if (bg == null) {
 				g.setColor(BG_COLOR);
@@ -532,7 +532,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		trBrw = System.currentTimeMillis();
 	}
 
-	public void Push(IScreen s) {
+	public void Push(Screen s) {
 		GL.Log("(ui) Pushing " + s.getClass().getName() + " to screen stack, depth " + (top + 1));
 		stack[top].OnPause(this);
 		top++;
