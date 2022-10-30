@@ -514,14 +514,14 @@ public final class Player extends GameCanvas {
 				return;
 			}
 			final int column = (x - leftOffset) / colWp1;
-			if (pointersNumbers[column] != -1) {
-				String pn = System.getProperty("com.nokia.pointer.number");
-				pointersNumbers[column] = pn == null ? 0 : (pn.charAt(0) - '0');
-				ToggleColumnInputState(column, true);
-			}
 			if (column >= columnsCount) {
 				TriggerPause();
 				return;
+			}
+			if (pointersNumbers[column] == -1) {
+				String pn = System.getProperty("com.nokia.pointer.number");
+				pointersNumbers[column] = pn == null ? 0 : (pn.charAt(0) - '0');
+				ToggleColumnInputState(column, true);
 			}
 		}
 	}
