@@ -7,6 +7,7 @@ import javax.microedition.lcdui.Image;
 
 import nmania.BeatmapManager;
 import nmania.BeatmapSet;
+import nmania.GL;
 import nmania.IInputOverrider;
 import nmania.ModsState;
 import nmania.PlayerBootstrapData;
@@ -174,6 +175,8 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 				} // ?full
 			} // ?full
 		} catch (Exception e) {
+			title = e.toString();
+			GL.Log("(ds) Failed to init screen: " + e.toString());
 			e.printStackTrace();
 		}
 		t = null;
