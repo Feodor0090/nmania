@@ -14,7 +14,7 @@ import nmania.Skin;
 import nmania.ui.VectorSkinSetup;
 import tube42.lib.imagelib.ColorUtils;
 
-public class SkinSelectScreen implements IScreen, CommandListener {
+public class SkinSelectScreen extends Screen implements CommandListener {
 
 	private final Command back = new Command("Back", Command.BACK, 2);
 	private IDisplay d;
@@ -98,17 +98,8 @@ public class SkinSelectScreen implements IScreen, CommandListener {
 		}
 	}
 
-	public void OnEnter(IDisplay d) {
-	}
+	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
 
-	public boolean OnExit(IDisplay d) {
-		return false;
-	}
-
-	public void OnPause(IDisplay d) {
-	}
-
-	public void OnResume(IDisplay d) {
 	}
 
 	private final void DisplayRichInfo() {
