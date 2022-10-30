@@ -22,6 +22,8 @@ public final class Settings {
 		String dir = System.getProperty("fileconn.dir.music");
 		if (dir == null)
 			dir = "C:/Data/Sounds/";
+		else if (dir.charAt(dir.length() - 1) != '/')
+			dir = dir + "/";
 		if (dir.startsWith("file:///"))
 			dir = dir.substring(8);
 		return dir + "nmania/";
