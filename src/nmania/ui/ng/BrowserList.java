@@ -55,7 +55,7 @@ public class BrowserList extends ListScreen implements Runnable, IListSelectHand
 			String url = Nmania.encodeUrl(
 					"https://kitsu.moe/api/search?query=" + s + "&mode=3&amount=100" + (notRanked ? "" : "&status=1"));
 			String r = Nmania.getUtf("http://nnp.nnchan.ru/glype/browse.php?u=" + url);
-			if (r.charAt(0) != '{') {
+			if (r.charAt(0) != '{' && r.charAt(0) != '[') {
 				GL.Log("(browser) Non-json answer from server!");
 				SetNoItems();
 				if (r.startsWith("<doctype")
