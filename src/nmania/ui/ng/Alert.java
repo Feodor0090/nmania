@@ -5,12 +5,12 @@ import javax.microedition.lcdui.Graphics;
 
 import symnovel.SNUtils;
 
-public class Alert implements IScreen {
+public class Alert extends Screen {
 
 	protected String title;
 	private String[] text;
 	private String button = null;
-	private IScreen next;
+	private Screen next;
 	private int backsCount;
 
 	public Alert(String title, String text) {
@@ -31,7 +31,7 @@ public class Alert implements IScreen {
 	 * @param backsCount Pass 0 to stay on alert, 1 to close the alert on return,
 	 *                   1+N to close alert and N underlaying screens.
 	 */
-	public Alert(String title, String text, String button, IScreen next, int backsCount) {
+	public Alert(String title, String text, String button, Screen next, int backsCount) {
 		this(title, text);
 		this.button = button;
 		this.next = next;
@@ -105,15 +105,8 @@ public class Alert implements IScreen {
 				scroll += 30;
 		}
 	}
-
-	public void OnEnter(IDisplay d) {
-	}
-
-	public boolean OnExit(IDisplay d) {
-		return false;
-	}
-
-	public void OnPause(IDisplay d) {
+	
+	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
 	}
 
 	public void OnResume(IDisplay d) {

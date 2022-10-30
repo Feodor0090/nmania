@@ -11,7 +11,7 @@ import nmania.PlayerBootstrapData;
 import nmania.PlayerLoader;
 import nmania.Settings;
 
-public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
+public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 
 	Font f = Font.getFont(0, 0, 8);
 	String title;
@@ -80,6 +80,9 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 	public void OnKey(IDisplay d, int k) {
 	}
 
+	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
+	}
+
 	public void OnEnter(IDisplay d) {
 		this.d = d;
 		th = new Thread(this);
@@ -90,9 +93,6 @@ public class PlayerLoaderScreen implements IScreen, ILogger, Runnable {
 		d.Throttle(false);
 		th.interrupt();
 		return false;
-	}
-
-	public void OnPause(IDisplay d) {
 	}
 
 	public void OnResume(IDisplay d) {

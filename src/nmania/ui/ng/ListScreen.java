@@ -7,7 +7,7 @@ import javax.microedition.lcdui.Graphics;
 
 import tube42.lib.imagelib.ColorUtils;
 
-public abstract class ListScreen implements IScreen {
+public abstract class ListScreen extends Screen {
 
 	private ListItem[] items;
 	protected boolean loadingState = false;
@@ -168,18 +168,9 @@ public abstract class ListScreen implements IScreen {
 			return;
 		}
 	}
-
-	public void OnEnter(IDisplay d) {
-	}
-
-	public boolean OnExit(IDisplay d) {
-		return false;
-	}
-
-	public void OnPause(IDisplay d) {
-	}
-
-	public void OnResume(IDisplay d) {
+	
+	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
+		
 	}
 
 	protected void OnItemChange() {

@@ -4,7 +4,7 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
-public class NumberBox implements IScreen {
+public class NumberBox extends Screen {
 	private int uuid;
 	private INumberBoxHandler handler;
 	private int value;
@@ -84,17 +84,6 @@ public class NumberBox implements IScreen {
 			value = -value;
 	}
 
-	public void OnEnter(IDisplay d) {
-
-	}
-
-	public boolean OnExit(IDisplay d) {
-		return false;
-	}
-
-	public void OnPause(IDisplay d) {
-	}
-
-	public void OnResume(IDisplay d) {
+	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
 	}
 }

@@ -9,7 +9,7 @@ import nmania.BeatmapSet;
 public interface IDisplay {
 	void Back();
 
-	void Push(IScreen s);
+	void Push(Screen s);
 
 	/**
 	 * Sets background image.

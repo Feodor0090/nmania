@@ -21,7 +21,7 @@ import tube42.lib.imagelib.ImageFxUtils.PixelModifier;
 
 public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
-	public NmaniaDisplay(IScreen first) {
+	public NmaniaDisplay(Screen first) {
 		super(false);
 		setFullScreenMode(true);
 		stack[0] = first;
@@ -37,7 +37,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	private Graphics g;
-	private IScreen[] stack = new IScreen[10];
+	private Screen[] stack = new Screen[10];
 	private int top = 0;
 
 	// drawing vars
@@ -60,6 +60,16 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private Thread th;
 	private AudioController music;
 	private String lastMusicDir;
+
+	private int pendingKey = 0;
+	/**
+	 * <li>0 - not pressed
+	 * <li>1 - pending down event
+	 * <li>2 - holded
+	 * <li>3 - pending release event
+	 */
+	private int pointerState = 0;
+	private int px, py;
 
 	public void run() {
 		while (cycle) {
@@ -184,6 +194,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					Thread.sleep(40);
 				else
 					Thread.sleep(1);
+
+				SynchronizeUiEvents();
 			} catch (InterruptedException e) {
 				GL.Log("(ui) Interruption received out of pause closure!");
 			}
@@ -236,7 +248,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	 * @param prev
 	 * @param next
 	 */
-	public void PlayForwardTransition(float progress, IScreen prev, IScreen next) {
+	public void PlayForwardTransition(float progress, Screen prev, Screen next) {
 		if (progress < 1f) {
 			if (bg == null) {
 				g.setColor(BG_COLOR);
@@ -319,7 +331,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		trFrw = -1;
 	}
 
-	public void PlayBackwardsTransition(float progress, IScreen top, IScreen target) {
+	public void PlayBackwardsTransition(float progress, Screen top, Screen target) {
 		if (progress < 1f) {
 			if (bg == null) {
 				g.setColor(BG_COLOR);
@@ -421,6 +433,30 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			return;
 		if (trBrw != -1)
 			return;
+		ScheduleKey(k);
+	}
+
+	private final void ScheduleKey(int k) {
+		if (pendingKey == 0)
+			pendingKey = k;
+	}
+
+	private final void SynchronizeUiEvents() {
+		if (pendingKey != 0) {
+			int k = pendingKey;
+			pendingKey = 0;
+			KeyPressedSynchronized(k);
+		}
+		if (pointerState != 0) {
+			stack[top].OnTouch(this, pointerState, px, py, w, h);
+			if (pointerState == 1)
+				pointerState = 2;
+			if (pointerState == 3)
+				pointerState = 0;
+		}
+	}
+
+	private final void KeyPressedSynchronized(int k) {
 		if (k == -6) {
 			leftButtonState = 1f;
 			if (leftButtonActive)
@@ -438,7 +474,28 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	protected void pointerPressed(int aX, int aY) {
 		if (aY > getHeight() - keysH) {
 			keyPressed(aX < (getWidth() >> 1) ? -6 : -7);
+		} else {
+			pointerState = 1;
+			px = aX;
+			py = aY;
 		}
+	}
+
+	protected void pointerDragged(int aX, int aY) {
+		if (pointerState != 0) {
+			px = aX;
+			py = aY;
+		}
+	}
+
+	protected void pointerReleased(int aX, int aY) {
+		if (pointerState == 1) {
+			pointerState = 0;
+			return;
+		}
+		pointerState = 3;
+		px = aX;
+		py = aY;
 	}
 
 	public final static int NMANIA_COLOR = SNUtils.toARGB("0xffbd55");
@@ -482,7 +539,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		trBrw = System.currentTimeMillis();
 	}
 
-	public void Push(IScreen s) {
+	public void Push(Screen s) {
 		GL.Log("(ui) Pushing " + s.getClass().getName() + " to screen stack, depth " + (top + 1));
 		stack[top].OnPause(this);
 		top++;

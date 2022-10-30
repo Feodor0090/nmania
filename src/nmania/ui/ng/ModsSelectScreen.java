@@ -6,7 +6,7 @@ import javax.microedition.lcdui.Graphics;
 import nmania.ModsState;
 import nmania.Settings;
 
-public class ModsSelectScreen implements IScreen {
+public class ModsSelectScreen extends Screen {
 
 	Font f = Font.getFont(0, 0, 8);
 	int fontH;
@@ -30,9 +30,6 @@ public class ModsSelectScreen implements IScreen {
 
 	public String GetOption() {
 		return null;
-	}
-
-	public void OnOptionActivate(IDisplay d) {
 	}
 
 	public void Paint(Graphics g, int w, int h) {
@@ -122,18 +119,8 @@ public class ModsSelectScreen implements IScreen {
 			Settings.Save();
 		}
 	}
-
-	public void OnEnter(IDisplay d) {
-	}
-
-	public boolean OnExit(IDisplay d) {
-		return false;
-	}
-
-	public void OnPause(IDisplay d) {
-	}
-
-	public void OnResume(IDisplay d) {
+	
+	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
 	}
 
 }
