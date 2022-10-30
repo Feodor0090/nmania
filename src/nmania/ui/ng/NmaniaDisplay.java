@@ -62,6 +62,14 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private String lastMusicDir;
 
 	private int pendingKey = 0;
+	/**
+	 * <li>0 - not pressed
+	 * <li>1 - pending down event
+	 * <li>2 - holded
+	 * <li>3 - pending release event
+	 */
+	private int pointerState = 0;
+	private int px, py;
 
 	public void run() {
 		while (cycle) {
@@ -459,7 +467,28 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	protected void pointerPressed(int aX, int aY) {
 		if (aY > getHeight() - keysH) {
 			keyPressed(aX < (getWidth() >> 1) ? -6 : -7);
+		} else {
+			pointerState = 1;
+			px = aX;
+			py = aY;
 		}
+	}
+
+	protected void pointerDragged(int aX, int aY) {
+		if (pointerState != 0) {
+			px = aX;
+			py = aY;
+		}
+	}
+
+	protected void pointerReleased(int aX, int aY) {
+		if (pointerState == 1) {
+			pointerState = 0;
+			return;
+		}
+		pointerState = 3;
+		px = aX;
+		py = aY;
 	}
 
 	public final static int NMANIA_COLOR = SNUtils.toARGB("0xffbd55");
