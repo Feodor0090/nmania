@@ -47,6 +47,14 @@ public final class BeatmapManager {
 		return fc.list();
 	}
 
+	/**
+	 * Takes chart directory name and creates its model.
+	 * 
+	 * @param dir Chart directory name.
+	 * @return Null if there were no beatmaps, the model otherwise.
+	 * @throws IOException                 Error during reading.
+	 * @throws InvalidBeatmapTypeException Error during beatmsp conversion.
+	 */
 	public BeatmapSet FromBMSDirectory(String dir) throws IOException, InvalidBeatmapTypeException {
 		FileConnection bmsFc = null;
 		try {

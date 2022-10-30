@@ -19,6 +19,12 @@ public class RawBeatmapConverter {
 			throw new InvalidBeatmapTypeException("This is not osu! nor nmania beatmap. Is the file damaged?");
 	}
 
+	/**
+	 * Checks is this a beatmap file.
+	 * 
+	 * @param fileName File name.
+	 * @return True if it is.
+	 */
 	public static boolean CanReadFile(String fileName) {
 		return fileName.endsWith(".osu") || fileName.endsWith(".nmbm");
 	}
