@@ -2,16 +2,19 @@ package nmania.ui.ng;
 
 import javax.microedition.lcdui.Graphics;
 
-public interface IScreen {
-	String GetTitle();
+public abstract class Screen {
+	public abstract String GetTitle();
 
-	boolean ShowLogo();
+	public boolean ShowLogo() {
+		return true;
+	}
 
-	String GetOption();
+	public abstract String GetOption();
 
-	void OnOptionActivate(IDisplay d);
+	public void OnOptionActivate(IDisplay d) {
+	}
 
-	void Paint(Graphics g, int w, int h);
+	public abstract void Paint(Graphics g, int w, int h);
 
 	/**
 	 * Called on keyboard event from display.
@@ -19,7 +22,7 @@ public interface IScreen {
 	 * @param d Display where operation was performed.
 	 * @param k Key code.
 	 */
-	void OnKey(IDisplay d, int k);
+	public abstract void OnKey(IDisplay d, int k);
 
 	/**
 	 * Called on touch event from display.
@@ -36,14 +39,15 @@ public interface IScreen {
 	 * @param w Display width
 	 * @param h Display height
 	 */
-	void OnTouch(IDisplay d, int s, int x, int y, int w, int h);
+	public abstract void OnTouch(IDisplay d, int s, int x, int y, int w, int h);
 
 	/**
 	 * Called on entering the screen.
 	 * 
 	 * @param d Display where operation was performed.
 	 */
-	void OnEnter(IDisplay d);
+	public void OnEnter(IDisplay d) {
+	}
 
 	/**
 	 * Called on exiting the screen.
@@ -51,14 +55,17 @@ public interface IScreen {
 	 * @param d Display where operation was performed.
 	 * @return Return true to block operation.
 	 */
-	boolean OnExit(IDisplay d);
+	public boolean OnExit(IDisplay d) {
+		return false;
+	}
 
 	/**
 	 * Called when a screen entered on top of this one.
 	 * 
 	 * @param d Display where operation was performed.
 	 */
-	void OnPause(IDisplay d);
+	public void OnPause(IDisplay d) {
+	}
 
 	/**
 	 * Called when screen on top of this one was exited and this screen is active
@@ -66,5 +73,6 @@ public interface IScreen {
 	 * 
 	 * @param d Display where operation was performed.
 	 */
-	void OnResume(IDisplay d);
+	public void OnResume(IDisplay d) {
+	}
 }
