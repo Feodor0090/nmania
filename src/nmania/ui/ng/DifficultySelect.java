@@ -122,6 +122,7 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 			set = bm.FromBMSDirectory(folder + "/");
 			if (set == null) {
 				d.Push(new Alert("Could not read beatmapset", "Please check it's structure."));
+				title = "No beatmaps here!";
 				loadingState = false;
 				return;
 			}
