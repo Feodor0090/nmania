@@ -23,7 +23,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
 	public NmaniaDisplay(IScreen first) {
 		super(false);
-		//setFullScreenMode(true);
+		setFullScreenMode(true);
 		stack[0] = first;
 		g = getGraphics();
 		g.setColor(0);
