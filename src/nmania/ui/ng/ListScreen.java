@@ -157,7 +157,7 @@ public abstract class ListScreen implements IScreen {
 		if (items.length == 0)
 			return;
 		ListItem selected = GetSelected();
-		if (k == -5 || k == 10 || k == '5' || k == 32 || Canvas.getGameAction(k) == Canvas.FIRE) {
+		if (k == -5 || k == 10 || k == '5' || k == 32 || ((Canvas) d).getGameAction(k) == Canvas.FIRE) {
 			selected.handler.OnSelect(selected, this, d);
 		}
 		if (k == -3 || k == '4') {
