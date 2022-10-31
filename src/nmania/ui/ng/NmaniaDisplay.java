@@ -427,8 +427,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	int lastHeaderX = 0;
 
 	protected void keyPressed(int k) {
-		if (pause)
+		if (pause) {
+			GL.Log("(ui) Keyboard input received while paused. Interrupting...");
 			ResumeRendering();
+		}
 		if (trFrw != -1)
 			return;
 		if (trBrw != -1)
