@@ -1,5 +1,6 @@
 package nmania.ui.ng;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Graphics;
 
 public abstract class Screen {
@@ -76,5 +77,25 @@ public abstract class Screen {
 	 * @param d Display where operation was performed.
 	 */
 	public void OnResume(IDisplay d) {
+	}
+
+	public static boolean IsOk(IDisplay d, int k) {
+		return k == -5 || k == 10 || k == '5' || k == 32 || d.GetDisplayable().getGameAction(k) == Canvas.FIRE;
+	}
+
+	public static boolean IsUp(IDisplay d, int k) {
+		return k == -1 || k == '2' || d.GetDisplayable().getGameAction(k) == Canvas.UP;
+	}
+
+	public static boolean IsDown(IDisplay d, int k) {
+		return k == -2 || k == '8' || d.GetDisplayable().getGameAction(k) == Canvas.DOWN;
+	}
+
+	public static boolean IsLeft(IDisplay d, int k) {
+		return k == -3 || k == '4' || d.GetDisplayable().getGameAction(k) == Canvas.LEFT;
+	}
+
+	public static boolean IsRight(IDisplay d, int k) {
+		return k == -4 || k == '6' || d.GetDisplayable().getGameAction(k) == Canvas.RIGHT;
 	}
 }
