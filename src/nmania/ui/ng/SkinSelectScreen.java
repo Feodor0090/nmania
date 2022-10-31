@@ -93,7 +93,7 @@ public class SkinSelectScreen extends Screen implements CommandListener {
 	}
 
 	public void OnKey(IDisplay d, int k) {
-		if (k == -3 || k == -4 || k == '4' || k == '6') {
+		if (IsLeft(d, k) || IsRight(d, k)) {
 			Nmania.skin.rich = !Nmania.skin.rich;
 		}
 	}
