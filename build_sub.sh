@@ -45,6 +45,12 @@ ${PREVERIFY} \
     -classpath ${CLDCAPI}${PATHSEP}${MIDPAPI}${PATHSEP}${CLASSPATH}${PATHSEP}./tmpclasses \
     -d ./classes \
     ./tmpclasses
+if [ $? -eq 0 ]
+then
+  echo "Preverify ok!"
+else
+  exit 1
+fi
 
 echo "Jaring preverified class files..."
 ${JAR} cmf ${MANIFEST} ${APP}.jar -C ./classes .
