@@ -20,7 +20,7 @@ import nmania.ui.ng.NmaniaDisplay;
 
 public final class Nmania extends MIDlet implements CommandListener {
 
-	public static Nmania inst;
+	private static Nmania inst;
 	public boolean running;
 	public static BeatmapManager bm;
 	public static Skin skin;

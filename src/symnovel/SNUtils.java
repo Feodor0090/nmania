@@ -10,13 +10,11 @@ import javax.microedition.lcdui.Font;
 import org.json.me.JSONArray;
 import org.json.me.JSONException;
 
-import nmania.Nmania;
-
 public final class SNUtils {
 
 	public static String readJARRes(String name, int cap) throws IOException {
 		char[] chars = new char[cap];
-		InputStream stream = Nmania.inst.getClass().getResourceAsStream(name);
+		InputStream stream = (new SNUtils()).getClass().getResourceAsStream(name);
 		if (stream == null)
 			throw new IOException();
 		InputStreamReader isr = new InputStreamReader(stream, "UTF-8");
@@ -219,7 +217,7 @@ public final class SNUtils {
 		 * return toARGB("0xFFF");
 		 */
 		// won't support
-		
+
 		throw new NumberFormatException();
 	}
 
