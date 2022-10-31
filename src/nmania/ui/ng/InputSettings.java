@@ -26,7 +26,6 @@ public class InputSettings extends ListScreen implements IListSelectHandler {
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
-		display.PauseRendering();
 		Nmania.Push(new KeyboardSetup(item.UUID, (Displayable) display));
 	}
 
