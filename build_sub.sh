@@ -40,6 +40,12 @@ ${JAVAC} \
     -d ./tmpclasses \
     -classpath ./tmpclasses${PATHSEP}${CLASSPATH} \
     `find ./src -name '*'.java`
+if [ $? -eq 0 ]
+then
+  echo "Compilation ok!"
+else
+  exit 1
+fi
 echo "Preverifying class files..."
 ${PREVERIFY} \
     -classpath ${CLDCAPI}${PATHSEP}${MIDPAPI}${PATHSEP}${CLASSPATH}${PATHSEP}./tmpclasses \
