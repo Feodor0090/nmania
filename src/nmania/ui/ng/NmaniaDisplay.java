@@ -603,7 +603,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		return music;
 	}
 
-	public Displayable GetDisplayable() {
+	public Canvas GetDisplayable() {
 		return this;
 	}
 
