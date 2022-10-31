@@ -499,6 +499,7 @@ public final class Player extends GameCanvas {
 		if (recorder != null)
 			recorder.Receive(time, column, state);
 	}
+
 	private final void TriggerPause() {
 		isPaused = true;
 		track.Pause();
@@ -514,8 +515,31 @@ public final class Player extends GameCanvas {
 			}
 			keyPressed(-5);
 		} else {
-			TriggerPause();
-			return;
+			if (x < leftOffset) {
+				TriggerPause();
+				return;
+			}
+			final int column = (x - leftOffset) / colWp1;
+			if (column >= columnsCount) {
+				TriggerPause();
+				return;
+			}
+			if (pointersNumbers[column] == -1) {
+				String pn = System.getProperty("com.nokia.pointer.number");
+				pointersNumbers[column] = pn == null ? 0 : (pn.charAt(0) - '0');
+				ToggleColumnInputState(column, true);
+			}
+		}
+	}
+
+	protected final void pointerReleased(final int x, final int y) {
+		String pn = System.getProperty("com.nokia.pointer.number");
+		int n = pn == null ? 0 : (pn.charAt(0) - '0');
+		for (int i = 0; i < columnsCount; i++) {
+			if (pointersNumbers[i] == n) {
+				pointersNumbers[i] = -1;
+				ToggleColumnInputState(i, false);
+			}
 		}
 	}
 
