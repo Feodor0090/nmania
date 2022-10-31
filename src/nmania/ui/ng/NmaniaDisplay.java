@@ -2,6 +2,7 @@ package nmania.ui.ng;
 
 import java.io.IOException;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
