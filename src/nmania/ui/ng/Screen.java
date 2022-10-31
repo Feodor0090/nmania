@@ -28,19 +28,21 @@ public abstract class Screen {
 	/**
 	 * Called on touch event from display.
 	 * 
-	 * @param d Display where operation was performed.
-	 * @param s Event type:
-	 *          <ul>
-	 *          <li>1 - down
-	 *          <li>2 - drag
-	 *          <li>3 - up
-	 *          </ul>
-	 * @param x X coord
-	 * @param y Y coord
-	 * @param w Display width
-	 * @param h Display height
+	 * @param d  Display where operation was performed.
+	 * @param s  Event type:
+	 *           <ul>
+	 *           <li>1 - down
+	 *           <li>2 - drag
+	 *           <li>3 - up
+	 *           </ul>
+	 * @param x  X coord
+	 * @param y  Y coord
+	 * @param dx X delta
+	 * @param dy Y delta
+	 * @param w  Display width
+	 * @param h  Display height
 	 */
-	public abstract void OnTouch(IDisplay d, int s, int x, int y, int w, int h);
+	public abstract void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h);
 
 	/**
 	 * Called on entering the screen.

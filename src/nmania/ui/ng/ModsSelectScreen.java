@@ -120,7 +120,7 @@ public class ModsSelectScreen extends Screen {
 		}
 	}
 
-	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
+	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
 	}
 
 }
