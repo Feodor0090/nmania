@@ -182,6 +182,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 						g.drawImage(logo, lx, ly, 0);
 					}
 				}
+				DrawTouchEffect();
 				flushGraphics();
 
 				if (throttle)
@@ -243,6 +244,19 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		g.fillArc(x, y, s, s, (int) (360 * p) - 90, 90);
 		g.setColor(BG_COLOR);
 		g.fillArc(x, y, s, s, (int) (360 * p) + 180, 90);
+	}
+
+	private final void DrawTouchEffect() {
+		long now = System.currentTimeMillis();
+		float spinState = (now % 1000L) / 1000f;
+		if (pointerState == 1 || pointerState == 2) {
+			if (now - lastPointerStateChange < 500) {
+
+			}
+			DrawDisc(px - 5, py - 5, 10, spinState);
+		} else if (now - lastPointerStateChange < 500) {
+
+		}
 	}
 
 	/**
