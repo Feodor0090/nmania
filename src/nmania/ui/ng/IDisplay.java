@@ -1,6 +1,6 @@
 package nmania.ui.ng;
 
-import javax.microedition.lcdui.Displayable;
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Image;
 
 import nmania.AudioController;
@@ -24,7 +24,7 @@ public interface IDisplay {
 
 	AudioController GetAudio();
 
-	Displayable GetDisplayable();
+	Canvas GetDisplayable();
 
 	void PauseRendering();
 
