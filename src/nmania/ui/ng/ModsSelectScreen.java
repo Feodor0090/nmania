@@ -83,13 +83,13 @@ public class ModsSelectScreen extends Screen {
 	}
 
 	public void OnKey(IDisplay d, int k) {
-		if (k == -1 || k == '2') {
+		if (IsUp(d, k)) {
 			selected--;
 			if (selected < 0)
 				selected = 2;
 			return;
 		}
-		if (k == -2 || k == '8') {
+		if (IsDown(d, k)) {
 			selected++;
 			if (selected >= 3)
 				selected = 0;
@@ -98,11 +98,11 @@ public class ModsSelectScreen extends Screen {
 
 		int dir = 0;
 		// left
-		if (k == -3 || k == '4') {
+		if (IsLeft(d, k)) {
 			dir = -1;
 		}
 		// right
-		if (k == -4 || k == '6') {
+		if (IsRight(d, k)) {
 			dir = 1;
 		}
 
@@ -114,12 +114,12 @@ public class ModsSelectScreen extends Screen {
 			mods.ToggleFA(dir);
 			break;
 		}
-		if (selected == 2 && (k == 32 || k == '5' || k == 10 || k == -5)) {
+		if (selected == 2 && IsOk(d, k)) {
 			Settings.defaultMods = mods.GetMask();
 			Settings.Save();
 		}
 	}
-	
+
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
 	}
 
