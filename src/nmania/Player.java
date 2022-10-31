@@ -435,9 +435,7 @@ public final class Player extends GameCanvas {
 			return;
 		}
 		if (k == keyMappings[columnsCount]) {
-			isPaused = true;
-			track.Pause();
-			pauseItem = 0;
+			TriggerPause();
 			return;
 		}
 		if (input != null)
@@ -501,6 +499,11 @@ public final class Player extends GameCanvas {
 		if (recorder != null)
 			recorder.Receive(time, column, state);
 	}
+	private final void TriggerPause() {
+		isPaused = true;
+		track.Pause();
+		pauseItem = 0;
+	}
 
 	protected final void pointerPressed(final int x, final int y) {
 		if (isPaused) {
@@ -511,9 +514,7 @@ public final class Player extends GameCanvas {
 			}
 			keyPressed(-5);
 		} else {
-			isPaused = true;
-			track.Pause();
-			pauseItem = 0;
+			TriggerPause();
 			return;
 		}
 	}
