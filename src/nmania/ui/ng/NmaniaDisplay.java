@@ -70,6 +70,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	 */
 	private int pointerState = 0;
 	private int px, py, lpx, lpy;
+	private long lastPointerStateChange = 0;
 
 	public void run() {
 		while (cycle) {
@@ -479,6 +480,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		if (aY > getHeight() - keysH) {
 			keyPressed(aX < (getWidth() >> 1) ? -6 : -7);
 		} else {
+			lastPointerStateChange = System.currentTimeMillis();
 			pointerState = 1;
 			px = lpx = aX;
 			py = lpy = aY;
@@ -493,6 +495,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	protected void pointerReleased(int aX, int aY) {
+		lastPointerStateChange = System.currentTimeMillis();
 		if (pointerState == 1) {
 			pointerState = 0;
 			return;
