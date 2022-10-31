@@ -80,7 +80,7 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 	public void OnKey(IDisplay d, int k) {
 	}
 
-	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
+	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
 	}
 
 	public void OnEnter(IDisplay d) {

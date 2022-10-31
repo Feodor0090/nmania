@@ -2,6 +2,7 @@ package nmania.ui.ng;
 
 import java.io.IOException;
 
+import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
@@ -69,7 +70,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	 * <li>3 - pending release event
 	 */
 	private int pointerState = 0;
-	private int px, py;
+	private int px, py, lpx, lpy;
+	private long lastPointerStateChange = 0;
 
 	public void run() {
 		while (cycle) {
@@ -427,8 +429,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	int lastHeaderX = 0;
 
 	protected void keyPressed(int k) {
-		if (pause)
+		if (pause) {
+			GL.Log("(ui) Keyboard input received while paused. Interrupting...");
 			ResumeRendering();
+		}
 		if (trFrw != -1)
 			return;
 		if (trBrw != -1)
@@ -448,7 +452,11 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			KeyPressedSynchronized(k);
 		}
 		if (pointerState != 0) {
-			stack[top].OnTouch(this, pointerState, px, py, w, h);
+			int dpx = px - lpx;
+			int dpy = py - lpy;
+			stack[top].OnTouch(this, pointerState, px, py, dpx, dpy, w, h);
+			px = lpx;
+			py = lpy;
 			if (pointerState == 1)
 				pointerState = 2;
 			if (pointerState == 3)
@@ -475,9 +483,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		if (aY > getHeight() - keysH) {
 			keyPressed(aX < (getWidth() >> 1) ? -6 : -7);
 		} else {
+			lastPointerStateChange = System.currentTimeMillis();
 			pointerState = 1;
-			px = aX;
-			py = aY;
+			px = lpx = aX;
+			py = lpy = aY;
 		}
 	}
 
@@ -489,6 +498,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	protected void pointerReleased(int aX, int aY) {
+		lastPointerStateChange = System.currentTimeMillis();
 		if (pointerState == 1) {
 			pointerState = 0;
 			return;
@@ -523,8 +533,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Back() {
-		if (stack[top].OnExit(this))
+		if (stack[top].OnExit(this)) {
+			GL.Log("(ui) " + stack[top].getClass().getName() + " blocked exit!");
 			return;
+		}
 		if (top == 0) {
 			cycle = false;
 			pause = false;
@@ -532,7 +544,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			return;
 		}
 		GL.Log("(ui) Returning on screen stack from " + stack[top].getClass().getName() + " to "
-				+ stack[top - 1].getClass().getName() + "(" + top + ">" + (top - 1) + ")"); // ?dbg
+				+ stack[top - 1].getClass().getName() + " (" + top + ">" + (top - 1) + ")"); // ?dbg
 		stack[top + 1] = null;
 		top--;
 		stack[top].OnResume(this);
@@ -540,7 +552,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Push(Screen s) {
-		GL.Log("(ui) Pushing " + s.getClass().getName() + " to screen stack, depth " + (top + 1));
+		GL.Log("(ui) Pushing " + s.getClass().getName() + " (" + top + ">" + (top + 1) + ")");
 		stack[top].OnPause(this);
 		top++;
 		stack[top] = s;
@@ -592,7 +604,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		return music;
 	}
 
-	public Displayable GetDisplayable() {
+	public Canvas GetDisplayable() {
 		return this;
 	}
 
