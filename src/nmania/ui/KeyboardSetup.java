@@ -22,6 +22,7 @@ public final class KeyboardSetup extends Canvas {
 	private int currentColumn = 0;
 	private final int[] keys;
 	private final Displayable prev;
+	private boolean touched = false;
 
 	protected void keyPressed(int k) {
 		if (currentColumn >= keys.length)
@@ -33,6 +34,20 @@ public final class KeyboardSetup extends Canvas {
 			Display.getDisplay(Nmania.inst).setCurrent(prev);
 		} else
 			repaint();
+	}
+	
+	protected void pointerPressed(int aX, int aY) {
+		if (touched) {
+			for (int i = 0; i < columns; i++) {
+				keys[i] = 0;
+			}
+			keys[columns] = -7;
+			Settings.keyLayout[columns - 1] = keys;
+			Nmania.Push(prev);
+		} else {
+			touched = true;
+			repaint();
+		}
 	}
 
 	protected final void paint(Graphics g) {
@@ -70,7 +85,15 @@ public final class KeyboardSetup extends Canvas {
 			keyCapt = keyCapt + " column";
 		}
 		g.setFont(small);
-		g.drawString("press a key for the " + keyCapt, w / 2, large.getHeight(), 17);
+		int lh = large.getHeight();
+		int sh = small.getHeight();
+		g.drawString("press a key for the " + keyCapt, w / 2, lh, 17);
+		if (touched) {
+			g.drawString("tap one more time", w / 2, lh + sh, 17);
+			g.drawString("to use touchscreen", w / 2, lh + sh + sh, 17);
+		} else {
+			g.drawString("tap to use touch", w / 2, lh + sh, 17);
+		}
 
 		// cols
 		int colW = w / columns;
