@@ -4,6 +4,7 @@ import java.util.Vector;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
+import javax.microedition.lcdui.Canvas;
 
 import tube42.lib.imagelib.ColorUtils;
 
@@ -139,14 +140,14 @@ public abstract class ListScreen extends Screen {
 	public void OnKey(IDisplay d, int k) {
 		if (items == null)
 			return;
-		if (k == -1 || k == '2') {
+		if (IsUp(d, k)) {
 			selected--;
 			if (selected < 0)
 				selected = items.length - 1;
 			OnItemChange();
 			return;
 		}
-		if (k == -2 || k == '8') {
+		if (IsDown(d, k)) {
 			selected++;
 			if (selected >= items.length)
 				selected = 0;
@@ -156,19 +157,19 @@ public abstract class ListScreen extends Screen {
 		if (items.length == 0)
 			return;
 		ListItem selected = GetSelected();
-		if (k == -5 || k == 10 || k == '5' || k == 32) {
+		if (IsOk(d, k)) {
 			selected.handler.OnSelect(selected, this, d);
 		}
-		if (k == -3 || k == '4') {
+		if (IsLeft(d, k)) {
 			selected.handler.OnSide(-1, selected, this, d);
 			return;
 		}
-		if (k == -4 || k == '6') {
+		if (IsRight(d, k)) {
 			selected.handler.OnSide(1, selected, this, d);
 			return;
 		}
 	}
-	
+
 	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
 		
 	}
