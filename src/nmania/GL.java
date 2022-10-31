@@ -30,8 +30,8 @@ public class GL { // ?dbg
 			else// ?dbg
 				fc.truncate(0);// ?dbg
 			stream = fc.openOutputStream();// ?dbg
-			Log("Starting log for nmania session...");// ?dbg
-			Log("Running " + Nmania.version + " on " + System.getProperty("microedition.platform"));// ?dbg
+			Log("(app) Starting log for nmania session...");// ?dbg
+			Log("(app) Running " + Nmania.version + " on " + System.getProperty("microedition.platform"));// ?dbg
 		} catch (Exception e) {// ?dbg
 		} // ?dbg
 	}// ?dbg
@@ -49,7 +49,7 @@ public class GL { // ?dbg
 	public static void LogStats() {// ?dbg
 		long total = Runtime.getRuntime().totalMemory() / 1024;// ?dbg
 		long free = Runtime.getRuntime().freeMemory() / 1024;// ?dbg
-		Log("(stats) Memory: T=" + total + " F=" + free + " U=" + (total - free) + "; Threads: " // ?dbg
+		Log("(app) Memory: T=" + total + " F=" + free + " U=" + (total - free) + "; Threads: " // ?dbg
 				+ Thread.activeCount());// ?dbg
 	}// ?dbg
 } // ?dbg
