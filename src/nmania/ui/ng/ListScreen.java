@@ -4,7 +4,6 @@ import java.util.Vector;
 
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
-import javax.microedition.lcdui.Canvas;
 
 import tube42.lib.imagelib.ColorUtils;
 
