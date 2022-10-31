@@ -525,8 +525,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Back() {
-		if (stack[top].OnExit(this))
+		if (stack[top].OnExit(this)) {
+			GL.Log("(ui) " + stack[top].getClass().getName() + " blocked exit!");
 			return;
+		}
 		if (top == 0) {
 			cycle = false;
 			pause = false;
