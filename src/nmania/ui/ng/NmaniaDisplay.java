@@ -246,30 +246,34 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		g.fillArc(x, y, s, s, (int) (360 * p) + 180, 90);
 	}
 
+	private static final int releaseAnimDur = 240;
+
 	private final void DrawTouchEffect() {
 		long now = System.currentTimeMillis();
 		float spinState = (now % 1000L) / 1000f;
 		if (pointerState == 1 || pointerState == 2) {
 			int s = 0;
-			if (now - lastPointerStateChange < 300) {
-				s = (int) ((now - lastPointerStateChange) / 50);
+			if (now - lastPointerStateChange < 175) {
+				s = (int) ((now - lastPointerStateChange) / 25);
 			} else {
-				s = 6;
+				s = 7;
 			}
 			DrawDisc(px - s, py - s, s << 1, spinState);
 			g.setColor(-1);
+			s--;
 			g.drawArc(px - s - 1, py - s - 1, (s << 1) + 1, (s << 1) + 1, 0, 360);
-
-		} else if (now - lastPointerStateChange < 300) {
-			int s = (int) ((now - lastPointerStateChange) / 50);
-			DrawDisc(px - 6, py - 6, 12, spinState);
+		} else if (now - lastPointerStateChange < releaseAnimDur) {
+			int s = (int) ((now - lastPointerStateChange) / 40);
+			DrawDisc(px - 7, py - 7, 14, spinState);
 			g.setColor(-1);
-			g.drawArc(px - 6 - 1, py - 6 - 1, 13, 13, 0, 360);
+			g.drawArc(px - 7, py - 7, 13, 13, 0, 360);
 			g.fillArc(px - s, py - s, s << 1, s << 1, 0, 360);
-		} else if (now - lastPointerStateChange < 600) {
-			g.setColor(-1);
-			g.fillArc(px - 6, py - 6, 12, 12, 0, 360);
-			int s = (int) ((now - lastPointerStateChange - 300) / 10);
+		} else if (now - lastPointerStateChange < 300 + releaseAnimDur) {
+			int p = 255 * (int) (now - lastPointerStateChange - releaseAnimDur) / 300;
+			g.setColor(ColorUtils.blend(BG_COLOR, -1, p));
+			int fa = 180 * (int) (now - lastPointerStateChange - releaseAnimDur) / 300;
+			g.fillArc(px - 7, py - 7, 14, 14, 90 + fa, 360 - (fa << 1));
+			int s = (int) ((now - lastPointerStateChange - releaseAnimDur) / 10);
 			g.drawArc(px - 6 - s, py - 6 - s, 12 + (s << 1), 12 + (s << 1), 0, 360);
 		}
 	}
