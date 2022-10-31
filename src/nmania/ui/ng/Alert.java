@@ -99,9 +99,9 @@ public class Alert extends Screen {
 
 	public void OnKey(IDisplay d, int k) {
 		if (allowScroll) {
-			if (k == -1 || k == '2')
+			if (IsUp(d, k))
 				scroll -= 30;
-			if (k == -2 || k == '8')
+			if (IsDown(d, k))
 				scroll += 30;
 		}
 	}
