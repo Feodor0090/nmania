@@ -43,6 +43,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 	}
 
 	protected void pauseApp() {
+		GL.Log("(app) Pausing the midlet");
 	}
 
 	/**
@@ -58,8 +59,10 @@ public final class Nmania extends MIDlet implements CommandListener {
 	}
 
 	protected void startApp() throws MIDletStateChangeException {
-		if (running)
+		if (running) {
+			GL.Log("(app) Unpausing the midlet!");
 			return;
+		}
 		Settings.Load();
 		GL.Create(true);// ?dbg
 		if (Settings.name == null) {
@@ -95,6 +98,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 	}
 
 	public static void exit() {
+		GL.Log("(app) Exit requested!");
 		inst.notifyDestroyed();
 	}
 
@@ -120,7 +124,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 			PushMainScreen();
 		}
 	}
-	
+
 	public static byte[] get(String url) throws IOException, InterruptedException {
 		if (url == null)
 			throw new IllegalArgumentException("URL is null");
