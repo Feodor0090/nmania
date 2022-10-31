@@ -177,14 +177,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 						int ly = -LogoOffset;
 
 						if (music != null) {
-							g.setColor(PINK_COLOR);
-							g.fillArc(lx, ly, s, s, (int) (360 * abp), 90);
-							g.setColor(NMANIA_COLOR);
-							g.fillArc(lx, ly, s, s, (int) (360 * abp) + 90, 90);
-							g.setColor(NEGATIVE_COLOR);
-							g.fillArc(lx, ly, s, s, (int) (360 * abp) - 90, 90);
-							g.setColor(BG_COLOR);
-							g.fillArc(lx, ly, s, s, (int) (360 * abp) + 180, 90);
+							DrawDisc(lx, ly, s, abp);
 						}
 						g.drawImage(logo, lx, ly, 0);
 					}
@@ -239,6 +232,17 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			x += 20;
 		}
 		print(g, "debug", w >> 1, h, 0xff0000, -1, Graphics.HCENTER | Graphics.BOTTOM);
+	}
+
+	private final void DrawDisc(int x, int y, int s, float p) {
+		g.setColor(PINK_COLOR);
+		g.fillArc(x, y, s, s, (int) (360 * p), 90);
+		g.setColor(NMANIA_COLOR);
+		g.fillArc(x, y, s, s, (int) (360 * p) + 90, 90);
+		g.setColor(NEGATIVE_COLOR);
+		g.fillArc(x, y, s, s, (int) (360 * p) - 90, 90);
+		g.setColor(BG_COLOR);
+		g.fillArc(x, y, s, s, (int) (360 * p) + 180, 90);
 	}
 
 	/**
