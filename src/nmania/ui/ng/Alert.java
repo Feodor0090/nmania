@@ -74,10 +74,10 @@ public class Alert extends Screen {
 			scroll = 0;
 		Font f = Font.getFont(0, 0, 8);
 		g.setFont(f);
-		int y=0;
+		int y = 0;
 		int x = 10;
 		int sp = f.charWidth(' ');
-		
+
 		boolean lineHasWords = false;
 		for (int i = 0; i < text.length; i++) {
 			String word = text[i];
@@ -89,7 +89,7 @@ public class Alert extends Screen {
 			}
 			if (nl)
 				continue;
-			NmaniaDisplay.print(g, word, x, y-scroll, -1, 0, 0);
+			NmaniaDisplay.print(g, word, x, y - scroll, -1, 0, 0);
 			lineHasWords = true;
 			x += ww + sp;
 		}
@@ -105,8 +105,8 @@ public class Alert extends Screen {
 				scroll += 30;
 		}
 	}
-	
-	public void OnTouch(IDisplay d, int s, int x, int y, int w, int h) {
+
+	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
 	}
 
 	public void OnResume(IDisplay d) {
