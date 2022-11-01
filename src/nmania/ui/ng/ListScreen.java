@@ -50,10 +50,10 @@ public abstract class ListScreen extends Screen {
 		if (loadingState) {
 			DrawLoadingBar(g, w, h);
 		} else {
-			PaintScreen(g, w, h);
+			DrawScreen(g, w, h);
 		}
 	}
-	protected void PaintScreen(Graphics g, int w, int h) {
+	protected void DrawScreen(Graphics g, int w, int h) {
 		g.setFont(font);
 		int center = h / 2;
 		int selectedY = selected * fontH + fontH / 2;
