@@ -240,21 +240,21 @@ public abstract class ListScreen extends Screen {
 		}
 		if (items.length == 0)
 			return;
-		ListItem selected = GetSelected();
 		if (IsOk(d, k)) {
-			selected.handler.OnSelect(selected, this, d);
+			GetSelected().handler.OnSelect(selected, this, d);
 		}
 		if (IsLeft(d, k)) {
-			ActivateCurrentItem();
+			ActivateCurrentItem(d);
 			return;
 		}
 		if (IsRight(d, k)) {
-			selected.handler.OnSide(1, selected, this, d);
+			GetSelected().handler.OnSide(1, selected, this, d);
 			return;
 		}
 	}
 
-	public void ActivateItem(ListItem selected) {
+	public void ActivateCurrentItem(IDisplay d) {
+		ListItem selected = GetSelected();
 		if (selected == null)
 			return;
 		selected.handler.OnSide(-1, selected, this, d);
@@ -274,7 +274,7 @@ public abstract class ListScreen extends Screen {
 				if(items == null || ti < 0 || ti >= items.length)
 					return;
 				if (ti == selected)
-					ActivateCurrentItem(GetSelected());
+					ActivateCurrentItem(d);
 				else
 					selected = ti;
 			}
