@@ -35,6 +35,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		header = Font.getFont(0, 0, 0);
+		headerH = header.getHeight();
+		screenY = headerH + 10;
 	}
 
 	private Graphics g;
@@ -42,8 +45,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private int top = 0;
 
 	// drawing vars
-	static Font header = Font.getFont(0, 0, 0);
-	int headerH = header.getHeight();
+	private final Font header;
+	private final int headerH;
+	private final int screenY;
 	static Font buttons = Font.getFont(0, 1, 8);
 	private float leftButtonContract = 1f;
 	private float leftButtonState = 0f;
@@ -166,8 +170,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					} else {
 						g.drawImage(bg, 0, 0, 0);
 					}
-					g.translate(0, headerH + 10);
-					stack[top].Paint(g, w, h - headerH - 10 - keysH);
+					g.translate(0, screenY);
+					stack[top].Paint(g, w, h - screenY - keysH);
 					g.translate(0, -g.getTranslateY());
 					DrawButtons();
 					DrawBuildWarning(); // ?dbg
@@ -491,7 +495,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		if (pointerState != 0) {
 			int dpx = px - lpx;
 			int dpy = py - lpy;
-			stack[top].OnTouch(this, pointerState, px, py, dpx, dpy, w, h);
+			stack[top].OnTouch(this, pointerState, px, py - screenY, dpx, dpy, w, h);
 			lpx = px;
 			lpy = py;
 			if (pointerState == 1)
@@ -517,7 +521,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	protected void pointerPressed(int aX, int aY) {
-		if (aY > getHeight() - keysH) {
+		if (aY < screenY) {
+
+		} else if (aY > getHeight() - keysH) {
 			keyPressed(aX < (getWidth() >> 1) ? -6 : -7);
 		} else {
 			lastPointerStateChange = System.currentTimeMillis();
