@@ -124,7 +124,9 @@ public abstract class ListScreen extends Screen {
 			}
 		} else {
 			// released
-			if (targetY > 0) {
+			if (totalH <= h) {
+				targetY = 0;
+			} else if (targetY > 0) {
 				targetY = 0;
 			} else if(targetY < -totalH + h) {
 				realY = -totalH + h;
