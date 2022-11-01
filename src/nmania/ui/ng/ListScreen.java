@@ -241,15 +241,11 @@ public abstract class ListScreen extends Screen {
 		if (items.length == 0)
 			return;
 		if (IsOk(d, k)) {
-			GetSelected().handler.OnSelect(selected, this, d);
-		}
-		if (IsLeft(d, k)) {
 			ActivateCurrentItem(d);
-			return;
-		}
-		if (IsRight(d, k)) {
+		} else if (IsLeft(d, k)) {
+			GetSelected().handler.OnSide(-1, selected, this, d);
+		} else if (IsRight(d, k)) {
 			GetSelected().handler.OnSide(1, selected, this, d);
-			return;
 		}
 	}
 
@@ -257,7 +253,7 @@ public abstract class ListScreen extends Screen {
 		ListItem selected = GetSelected();
 		if (selected == null)
 			return;
-		selected.handler.OnSide(-1, selected, this, d);
+		selected.handler.OnSelect(selected, this, d);
 	}
 
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
