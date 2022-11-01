@@ -39,6 +39,7 @@ public abstract class ListScreen extends Screen {
 	 * </ul>
 	 */
 	private int scrollMode = 0;
+	private int dragStartY;
 	protected Font font = Font.getFont(0, 0, 8);
 	private int fontH = font.getHeight();
 	private String selectedText = null;
@@ -244,7 +245,7 @@ public abstract class ListScreen extends Screen {
 			selected.handler.OnSelect(selected, this, d);
 		}
 		if (IsLeft(d, k)) {
-			selected.handler.OnSide(-1, selected, this, d);
+			ActivateCurrentItem();
 			return;
 		}
 		if (IsRight(d, k)) {
@@ -253,14 +254,30 @@ public abstract class ListScreen extends Screen {
 		}
 	}
 
+	public void ActivateItem(ListItem selected) {
+		if (selected == null)
+			return;
+		selected.handler.OnSide(-1, selected, this, d);
+	}
+
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
 		if (s == 1) {
+			dragStartY = y;
 			if (targetY != realY)
 				targetY = realY;
 		}
 		targetY += dy;
 		if (s == 3) {
 			scrollMode = 2;
+			if (Math.abs(dragStartY - y) < fontH) {
+				int ti = (-realY + y) / fontH;
+				if(items == null || ti < 0 || ti >= items.length)
+					return;
+				if (ti == selected)
+					ActivateCurrentItem(GetSelected());
+				else
+					selected = ti;
+			}
 		} else {
 			scrollMode = 1;
 		}
