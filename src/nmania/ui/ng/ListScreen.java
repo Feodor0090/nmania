@@ -243,9 +243,11 @@ public abstract class ListScreen extends Screen {
 		if (IsOk(d, k)) {
 			ActivateCurrentItem(d);
 		} else if (IsLeft(d, k)) {
-			GetSelected().handler.OnSide(-1, selected, this, d);
+			ListItem s = GetSelected();
+			s.handler.OnSide(-1, s, this, d);
 		} else if (IsRight(d, k)) {
-			GetSelected().handler.OnSide(1, selected, this, d);
+			ListItem s = GetSelected();
+			s.handler.OnSide(1, s, this, d);
 		}
 	}
 
