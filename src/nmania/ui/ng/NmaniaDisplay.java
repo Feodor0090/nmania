@@ -455,8 +455,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			int dpx = px - lpx;
 			int dpy = py - lpy;
 			stack[top].OnTouch(this, pointerState, px, py, dpx, dpy, w, h);
-			px = lpx;
-			py = lpy;
+			lpx = px;
+			lpy = py;
 			if (pointerState == 1)
 				pointerState = 2;
 			if (pointerState == 3)
