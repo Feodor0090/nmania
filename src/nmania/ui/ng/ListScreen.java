@@ -47,24 +47,15 @@ public abstract class ListScreen extends Screen {
 	}
 
 	public void Paint(Graphics g, int w, int h) {
+		if (loadingState) {
+			DrawLoadingBar(g, w, h);
+		} else {
+			PaintScreen(g, w, h);
+		}
+	}
+	protected void PaintScreen(Graphics g, int w, int h) {
 		g.setFont(font);
 		int center = h / 2;
-		if (loadingState) {
-			int cw = w / 2;
-			g.setColor(NmaniaDisplay.PINK_COLOR);
-			g.fillRect(cw - 102, center - 12, 204, 24);
-			g.setClip(cw - 100, center - 10, 200, 20);
-			int y1 = center - 10;
-			int y2 = center + 10;
-			g.setColor(NmaniaDisplay.NMANIA_COLOR);
-			int shift = (int) (System.currentTimeMillis() / 500);
-			for (int x = cw - 140 - (shift % 40); x < w; x += 40) {
-				g.fillTriangle(x, y2, x + 20, y2, x + 20, y1);
-				g.fillTriangle(x + 20, y1, x + 20, y2, x + 40, y1);
-			}
-			g.setClip(-1000, -1000, 9999, 9999);
-			return;
-		}
 		int selectedY = selected * fontH + fontH / 2;
 		if (selectedY <= center) {
 			targetY = 0;
@@ -134,6 +125,23 @@ public abstract class ListScreen extends Screen {
 			if (y > bb)
 				break;
 		}
+	}
+
+	private final void DrawLoadingBar(Graphics g, int w, int h) {
+		int center = h >> 1;
+		int cw = w >> 1;
+		g.setColor(NmaniaDisplay.PINK_COLOR);
+		g.fillRect(cw - 102, center - 12, 204, 24);
+		g.setClip(cw - 100, center - 10, 200, 20);
+		int y1 = center - 10;
+		int y2 = center + 10;
+		g.setColor(NmaniaDisplay.NMANIA_COLOR);
+		int shift = (int) (System.currentTimeMillis() / 500);
+		for (int x = cw - 140 - (shift % 40); x < w; x += 40) {
+			g.fillTriangle(x, y2, x + 20, y2, x + 20, y1);
+			g.fillTriangle(x + 20, y1, x + 20, y2, x + 40, y1);
+		}
+		g.setClip(-1000, -1000, 9999, 9999);
 	}
 
 	public void OnKey(IDisplay d, int k) {
