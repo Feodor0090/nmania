@@ -254,6 +254,10 @@ public abstract class ListScreen extends Screen {
 	}
 
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
+		if (s == 1) {
+			if (targetY != realY)
+				targetY = realY;
+		}
 		targetY += dy;
 		if (s == 3) {
 			scrollMode = 2;
