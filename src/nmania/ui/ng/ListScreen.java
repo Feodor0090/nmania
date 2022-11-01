@@ -117,9 +117,9 @@ public abstract class ListScreen extends Screen {
 			} else if (targetY > 0) {
 				// to bottom
 				realY = targetY >> 1;
-			} else if (targetY < -totalH + h) {
-				int diff = -targetY + totalH - h;
-				realY = -totalH + h - (diff >> 1);
+			} else if (-targetY > totalH - h) {
+				int diff = (-targetY) - (totalH - h);
+				realY = -(totalH - h + (diff >> 1));
 			} else {
 				realY = targetY;
 			}
@@ -130,7 +130,7 @@ public abstract class ListScreen extends Screen {
 			} else if (targetY > 0) {
 				targetY = 0;
 			} else if(targetY < -totalH + h) {
-				realY = -totalH + h;
+				targetY = -totalH + h;
 			}
 			if(targetY != realY) {
 				int diff = targetY - realY;
