@@ -219,6 +219,7 @@ public abstract class ListScreen extends Screen {
 				selected = items.length - 1;
 			else
 				selected--;
+			scrollMode = 0;
 			OnItemChange();
 			return;
 		}
@@ -227,6 +228,7 @@ public abstract class ListScreen extends Screen {
 				selected = 0;
 			else
 				selected++;
+			scrollMode = 0;
 			OnItemChange();
 			return;
 		}
@@ -247,7 +249,12 @@ public abstract class ListScreen extends Screen {
 	}
 
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
-		
+		targetY += dy;
+		if (s == 3) {
+			scrollMode = 2;
+		} else {
+			scrollMode = 1;
+		}
 	}
 
 	protected void OnItemChange() {
