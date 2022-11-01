@@ -134,7 +134,7 @@ public abstract class ListScreen extends Screen {
 			if(targetY != realY) {
 				int diff = targetY - realY;
 				int add = (diff < 0) ? -1 : 1;
-				diff /= 10;
+				diff /= 5;
 				diff += add;
 				realY += diff;
 			}
