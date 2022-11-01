@@ -112,7 +112,7 @@ public abstract class ListScreen extends Screen {
 		} else if (scrollMode == 1) {
 			// dragged
 			if (totalH <= h) {
-				realy = targetY / 2;
+				realY = targetY / 2;
 			} else if (targetY > 0) {
 				// to bottom
 				realY = targetY >> 1;
