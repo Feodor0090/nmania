@@ -31,6 +31,14 @@ public abstract class ListScreen extends Screen {
 	 * Always less than zero.
 	 */
 	private int realY;
+	/**
+	 * <ul>
+	 * <li> 0 = keyboard mode, selected item is approached.
+	 * <li> 1 = touch mode, finger is holded.
+	 * <li> 2 = touch mode, finger is released.
+	 * </ul>
+	 */
+	private int scrollMode = 0;
 	protected Font font = Font.getFont(0, 0, 8);
 	private int fontH = font.getHeight();
 	private String selectedText = null;
@@ -66,30 +74,47 @@ public abstract class ListScreen extends Screen {
 		if (loadingState) {
 			DrawLoadingBar(g, w, h);
 		} else {
+			UpdateScroll(w, h);
 			DrawScreen(g, w, h);
 		}
 	}
 
-	protected void DrawScreen(Graphics g, int w, int h) {
-		g.setFont(font);
+	protected void UpdateScroll(int w, int h) {
+		if (items == null) {
+			selected = 0;
+			realY = 0;
+			targetY = 0;
+			return;
+		}
+		if (selected < 0)
+			selected = 0;
+		if (selected >= items.length)
+			selected = items.length - 1;
+		
 		int center = h / 2;
 		int selectedY = selected * fontH + fontH / 2;
-		if (selectedY <= center) {
-			targetY = 0;
-		} else if (items.length * fontH - center <= selectedY) {
-			targetY = -(items.length * fontH - h);
-		} else {
-			targetY = -(selectedY - center);
+		if (scrollMode == 0) {
+			if (selectedY <= center) {
+				targetY = 0;
+			} else if (items.length * fontH - center <= selectedY) {
+				targetY = -(items.length * fontH - h);
+			} else {
+				targetY = -(selectedY - center);
+			}
+			if (realY != targetY) {
+				int diff = targetY - realY;
+				int add = (diff < 0) ? -1 : 1;
+				diff /= 10;
+				diff += add;
+				realY += diff;
+			}
 		}
-		if (realY != targetY) {
-			int diff = targetY - realY;
-			int add = (diff < 0) ? -1 : 1;
-			diff /= 10;
-			diff += add;
-			realY += diff;
-		}
+	}
+
+	protected void DrawScreen(Graphics g, int w, int h) {
 		if (items == null)
 			return;
+		g.setFont(font);
 		int y = realY;
 		int bb = h * 3 / 2;
 		for (int i = 0; i < items.length; i++) {
@@ -165,16 +190,18 @@ public abstract class ListScreen extends Screen {
 		if (items == null)
 			return;
 		if (IsUp(d, k)) {
-			selected--;
-			if (selected < 0)
+			if (selected == 0)
 				selected = items.length - 1;
+			else
+				selected--;
 			OnItemChange();
 			return;
 		}
 		if (IsDown(d, k)) {
-			selected++;
-			if (selected >= items.length)
+			if (selected == items.length - 1)
 				selected = 0;
+			else
+				selected++;
 			OnItemChange();
 			return;
 		}
