@@ -111,16 +111,19 @@ public abstract class ListScreen extends Screen {
 			}
 		} else if (scrollMode == 1) {
 			// dragged
-			if (targetY > 0) {
+			if (totalH <= h) {
+				realy = targetY / 2;
+			} else if (targetY > 0) {
 				// to bottom
 				realY = targetY >> 1;
-			} else if(targetY < -totalH + h) {
+			} else if (targetY < -totalH + h) {
 				int diff = -targetY + totalH - h;
 				realY = -totalH + h - (diff >> 1);
 			} else {
 				realY = targetY;
 			}
 		} else {
+			// released
 			if (targetY > 0) {
 				targetY = 0;
 			} else if(targetY < -totalH + h) {
