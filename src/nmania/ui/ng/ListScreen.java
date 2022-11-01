@@ -10,13 +10,29 @@ import tube42.lib.imagelib.ColorUtils;
 public abstract class ListScreen extends Screen {
 
 	private ListItem[] items;
+	/**
+	 * Is this list not ready?
+	 */
 	protected boolean loadingState = false;
+	/**
+	 * Index of currently focused item.
+	 */
 	private int selected;
+	/**
+	 * Shift of screen's content which must be approached.
+	 * In keyboard mode, calculated by Y of selected item.
+	 * Always less than zero.
+	 */
 	private int targetY;
+	/**
+	 * Shift of screen's content right now.
+	 * In keyboard mode, this approaches targetY.
+	 * In touch mode controlled by used.
+	 * Always less than zero.
+	 */
 	private int realY;
 	protected Font font = Font.getFont(0, 0, 8);
 	private int fontH = font.getHeight();
-	protected String horSelecrorTitle = null;
 	private String selectedText = null;
 	int textScroll = 0;
 
@@ -53,6 +69,7 @@ public abstract class ListScreen extends Screen {
 			DrawScreen(g, w, h);
 		}
 	}
+
 	protected void DrawScreen(Graphics g, int w, int h) {
 		g.setFont(font);
 		int center = h / 2;
