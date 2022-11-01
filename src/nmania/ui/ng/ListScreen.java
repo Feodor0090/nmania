@@ -93,15 +93,40 @@ public abstract class ListScreen extends Screen {
 		
 		int center = h / 2;
 		int selectedY = selected * fontH + fontH / 2;
+		int totalH = items.length * fontH;
 		if (scrollMode == 0) {
 			if (selectedY <= center) {
 				targetY = 0;
-			} else if (items.length * fontH - center <= selectedY) {
-				targetY = -(items.length * fontH - h);
+			} else if (totalH - center <= selectedY) {
+				targetY = -(totalH - h);
 			} else {
 				targetY = -(selectedY - center);
 			}
 			if (realY != targetY) {
+				int diff = targetY - realY;
+				int add = (diff < 0) ? -1 : 1;
+				diff /= 10;
+				diff += add;
+				realY += diff;
+			}
+		} else if (scrollMode == 1) {
+			// dragged
+			if (targetY > 0) {
+				// to bottom
+				realY = targetY >> 1;
+			} else if(targetY < -totalH + h) {
+				int diff = -targetY + totalH - h;
+				realY = -totalH + h - (diff >> 1);
+			} else {
+				realY = targetY;
+			}
+		} else {
+			if (targetY > 0) {
+				targetY = 0;
+			} else if(targetY < -totalH + h) {
+				realY = -totalH + h;
+			}
+			if(targetY != realY) {
 				int diff = targetY - realY;
 				int add = (diff < 0) ? -1 : 1;
 				diff /= 10;
