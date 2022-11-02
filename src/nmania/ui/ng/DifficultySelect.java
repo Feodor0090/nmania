@@ -248,6 +248,6 @@ public final class DifficultySelect extends ListScreen implements Runnable, ILis
 		}
 		if (touchCaughtByBottomPanel)
 			return;
-		super.OnTouch(d, d, x, y, dx, dy, w, h);
+		super.OnTouch(d, s, x, y, dx, dy, w, h);
 	}
 }
