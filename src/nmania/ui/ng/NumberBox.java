@@ -64,6 +64,8 @@ public class NumberBox extends Screen {
 		int fh = num.getHeight();
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 3; j++) {
+				if(i == 3 && j == 0 && !allowNegative)
+					continue;
 				g.setColor(NmaniaDisplay.PINK_COLOR);
 				g.fillRoundRect(j*w/3 + 1, y, w/3 - 2, fh, fh, fh);
 				g.setColor(-1);
@@ -127,7 +129,8 @@ public class NumberBox extends Screen {
 			y -= fh + 2;
 			if (y < fh + 2) {
 				if (x < w/3) {
-					OnKey(d, Canvas.KEY_STAR);
+					if (allowNegative)
+						OnKey(d, Canvas.KEY_STAR);
 				} else if (x < w*2/3) {
 					OnKey(d, '0');
 				} else {
