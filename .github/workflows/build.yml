@@ -51,4 +51,4 @@ jobs:
         with:
           file-url: 'https://www.7-zip.org/a/7zr.exe'
       - name: Unzip KEm
-        run: ./7zr.exe x -o kem kemnnmod.zip
+        run: ./7zr.exe x kemnnmod.zip
