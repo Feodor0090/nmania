@@ -31,8 +31,10 @@ public class VisualSettings extends ListScreen implements IListSelectHandler, IN
 		switch (item.UUID) {
 		case 0:
 			display.Push(new NumberBox("Dim %", 0, this, Settings.dimLevel, false));
+			break;
 		case 1:
 			display.Push(new NumberBox("Scroll speed (divider)", 1, this, Settings.speedDiv, false));
+			break;
 		case 2:
 			Settings.drawHUD = !Settings.drawHUD;
 			((SwitchItem) item).Toggle();
