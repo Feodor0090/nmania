@@ -64,8 +64,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: build
+      - name: Download test OSZ
+        uses: carlosperate/download-file-action@v2
+        with:
+          file-url: 'https://nnp.nnchan.ru/nm/dev/test.osz'
+          location: './kemnnmod/file/root'
       - name: Check structure
         run: dir
       - name: Run emulator
-        run: dir
+        run: dir # ./kemnnmod/KEmulator.exe 
 
