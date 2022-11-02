@@ -18,7 +18,7 @@ public class NumberBox extends Screen {
 		new char[] {'4','5','6'},
 		new char[] {'7','8','9'},
 		new char[] {'-','0','<'},
-	}
+	};
 
 	public NumberBox(String title, int UUID, INumberBoxHandler handler, int value, boolean allowNegative) {
 		this.title = title;
