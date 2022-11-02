@@ -53,24 +53,27 @@ jobs:
       - name: Download KEmulator
         uses: carlosperate/download-file-action@v2
         with:
-          file-url: 'http://nnp.nnchan.ru/dl/kemnnmod.zip'
+          file-url: 'https://nnp.nnchan.ru/dl/kemnnmod.zip'
       - name: Unzip KEm
         run: 7z x kemnnmod.zip
       - name: Download test data
         uses: actions/download-artifact@v3
         with:
           name: test-input
-      - name: Download build
-        uses: actions/download-artifact@v3
-        with:
-          name: build
       - name: Download test OSZ
         uses: carlosperate/download-file-action@v2
         with:
           file-url: 'https://nnp.nnchan.ru/nm/dev/test.osz'
           location: './kemnnmod/file/root'
-      - name: Check structure
-        run: dir
       - name: Run emulator
-        run: dir # ./kemnnmod/KEmulator.exe 
+        run: cd kemnnmod ; ./jre/bin/java.exe -jar KEmulator.jar -jar ../nmania_debug.jar -rec ../basic.rec
+      - name: Copy emulator log
+        run: copy kemnnmod/log.txt kemnnmod/file/root/music/nmania/emulator.log
+      - name: Copy settings
+        run: copy kemnnmod/file/root/_sets.json kemnnmod/file/root/music/nmania/sets.json
+      - name: Upload test result
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-output
+          path: ${{ github.workspace }}/kemnnmod/file/root/music/nmania/
 
