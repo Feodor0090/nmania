@@ -121,6 +121,22 @@ public class ModsSelectScreen extends Screen {
 	}
 
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
+		if (s != 1)
+			return;
+
+		int dir = x * 3 / h;
+		dir--;
+		if (y < fontH * 2) {
+			selected = 0;
+			mods.SetDA(dir);
+		} else if (y < fontH * 4) {
+			selected = 1;
+			mods.SetFA(dir);
+		} else if (y < fontH * 5) {
+			selected = 2;
+			Settings.defaultMods = mods.GetMask();
+			Settings.Save();
+		}
 	}
 
 }
