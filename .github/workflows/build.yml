@@ -18,6 +18,16 @@ jobs:
         with:
           name: build
           path: ${{ github.workspace }}/jar/
+  PackTestData:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Pack data
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-input
+          path: ${{ github.workspace }}/test/
   Upload:
     runs-on: ubuntu-latest
     needs: Build
@@ -32,7 +42,7 @@ jobs:
         run: curl -F "debug=@./nmania_debug.jar" -F "normal=@./nmania.jar" -F "key=${{ secrets.NNCHAN_KEY }}" -F "branch=`cat ./branch.txt`" -F "commit=`cat ./commit.txt`" http://nnp.nnchan.ru/nm/dev/ci.php
   Test:
     runs-on: windows-latest
-    needs: Build
+    needs: Build, PackTestData
     timeout-minutes: 20
     steps:
       - name: Download build
@@ -45,3 +55,16 @@ jobs:
           file-url: 'http://nnp.nnchan.ru/dl/kemnnmod.zip'
       - name: Unzip KEm
         run: 7z x kemnnmod.zip
+      - name: Download test data
+        uses: actions/download-artifact@v3
+        with:
+          name: test-input
+      - name: Download build
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+      - name: Check structure
+        run: dir
+      - name: Run emulator
+        run: dir
+
