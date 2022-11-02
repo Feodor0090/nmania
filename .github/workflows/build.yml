@@ -34,9 +34,6 @@ jobs:
     runs-on: windows-latest
     needs: Build
     timeout-minutes: 20
-    strategy:
-      matrix:
-        test: [simple]
     steps:
       - name: Download build
         uses: actions/download-artifact@v3
@@ -46,9 +43,5 @@ jobs:
         uses: carlosperate/download-file-action@v2
         with:
           file-url: 'http://nnp.nnchan.ru/dl/kemnnmod.zip'
-      - name: Download 7zip
-        uses: carlosperate/download-file-action@v2
-        with:
-          file-url: 'https://www.7-zip.org/a/7zr.exe'
       - name: Unzip KEm
-        run: ./7zr.exe x kemnnmod.zip
+        run: 7z x kemnnmod.zip
