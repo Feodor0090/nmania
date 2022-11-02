@@ -10,13 +10,38 @@ import tube42.lib.imagelib.ColorUtils;
 public abstract class ListScreen extends Screen {
 
 	private ListItem[] items;
+	/**
+	 * Is this list not ready?
+	 */
 	protected boolean loadingState = false;
+	/**
+	 * Index of currently focused item.
+	 */
 	private int selected;
+	/**
+	 * Shift of screen's content which must be approached.
+	 * In keyboard mode, calculated by Y of selected item.
+	 * Always less than zero.
+	 */
 	private int targetY;
+	/**
+	 * Shift of screen's content right now.
+	 * In keyboard mode, this approaches targetY.
+	 * In touch mode controlled by used.
+	 * Always less than zero.
+	 */
 	private int realY;
+	/**
+	 * <ul>
+	 * <li> 0 = keyboard mode, selected item is approached.
+	 * <li> 1 = touch mode, finger is holded.
+	 * <li> 2 = touch mode, finger is released.
+	 * </ul>
+	 */
+	private int scrollMode = 0;
+	private int dragStartY;
 	protected Font font = Font.getFont(0, 0, 8);
 	private int fontH = font.getHeight();
-	protected String horSelecrorTitle = null;
 	private String selectedText = null;
 	int textScroll = 0;
 
@@ -47,41 +72,80 @@ public abstract class ListScreen extends Screen {
 	}
 
 	public void Paint(Graphics g, int w, int h) {
-		g.setFont(font);
-		int center = h / 2;
 		if (loadingState) {
-			int cw = w / 2;
-			g.setColor(NmaniaDisplay.PINK_COLOR);
-			g.fillRect(cw - 102, center - 12, 204, 24);
-			g.setClip(cw - 100, center - 10, 200, 20);
-			int y1 = center - 10;
-			int y2 = center + 10;
-			g.setColor(NmaniaDisplay.NMANIA_COLOR);
-			int shift = (int) (System.currentTimeMillis() / 500);
-			for (int x = cw - 140 - (shift % 40); x < w; x += 40) {
-				g.fillTriangle(x, y2, x + 20, y2, x + 20, y1);
-				g.fillTriangle(x + 20, y1, x + 20, y2, x + 40, y1);
-			}
-			g.setClip(-1000, -1000, 9999, 9999);
+			DrawLoadingBar(g, w, h);
+		} else {
+			UpdateScroll(w, h);
+			DrawScreen(g, w, h);
+		}
+	}
+
+	protected void UpdateScroll(int w, int h) {
+		if (items == null) {
+			selected = 0;
+			realY = 0;
+			targetY = 0;
 			return;
 		}
+		if (selected < 0)
+			selected = 0;
+		if (selected >= items.length)
+			selected = items.length - 1;
+		
+		int center = h / 2;
 		int selectedY = selected * fontH + fontH / 2;
-		if (selectedY <= center) {
-			targetY = 0;
-		} else if (items.length * fontH - center <= selectedY) {
-			targetY = -(items.length * fontH - h);
+		int totalH = items.length * fontH;
+		if (scrollMode == 0) {
+			if (selectedY <= center) {
+				targetY = 0;
+			} else if (totalH - center <= selectedY) {
+				targetY = -(totalH - h);
+			} else {
+				targetY = -(selectedY - center);
+			}
+			if (realY != targetY) {
+				int diff = targetY - realY;
+				int add = (diff < 0) ? -1 : 1;
+				diff /= 10;
+				diff += add;
+				realY += diff;
+			}
+		} else if (scrollMode == 1) {
+			// dragged
+			if (totalH <= h) {
+				realY = targetY / 2;
+			} else if (targetY > 0) {
+				// to bottom
+				realY = targetY >> 1;
+			} else if (-targetY > totalH - h) {
+				int diff = (-targetY) - (totalH - h);
+				realY = -(totalH - h + (diff >> 1));
+			} else {
+				realY = targetY;
+			}
 		} else {
-			targetY = -(selectedY - center);
+			// released
+			if (totalH <= h) {
+				targetY = 0;
+			} else if (targetY > 0) {
+				targetY = 0;
+			} else if(targetY < -totalH + h) {
+				targetY = -totalH + h;
+			}
+			if(targetY != realY) {
+				int diff = targetY - realY;
+				int add = (diff < 0) ? -1 : 1;
+				diff /= 5;
+				diff += add;
+				realY += diff;
+			}
 		}
-		if (realY != targetY) {
-			int diff = targetY - realY;
-			int add = (diff < 0) ? -1 : 1;
-			diff /= 10;
-			diff += add;
-			realY += diff;
-		}
+	}
+
+	protected void DrawScreen(Graphics g, int w, int h) {
 		if (items == null)
 			return;
+		g.setFont(font);
 		int y = realY;
 		int bb = h * 3 / 2;
 		for (int i = 0; i < items.length; i++) {
@@ -136,41 +200,85 @@ public abstract class ListScreen extends Screen {
 		}
 	}
 
+	private final void DrawLoadingBar(Graphics g, int w, int h) {
+		int center = h >> 1;
+		int cw = w >> 1;
+		g.setColor(NmaniaDisplay.PINK_COLOR);
+		g.fillRect(cw - 102, center - 12, 204, 24);
+		g.setClip(cw - 100, center - 10, 200, 20);
+		int y1 = center - 10;
+		int y2 = center + 10;
+		g.setColor(NmaniaDisplay.NMANIA_COLOR);
+		int shift = (int) (System.currentTimeMillis() / 500);
+		for (int x = cw - 140 - (shift % 40); x < w; x += 40) {
+			g.fillTriangle(x, y2, x + 20, y2, x + 20, y1);
+			g.fillTriangle(x + 20, y1, x + 20, y2, x + 40, y1);
+		}
+		g.setClip(-1000, -1000, 9999, 9999);
+	}
+
 	public void OnKey(IDisplay d, int k) {
 		if (items == null)
 			return;
 		if (IsUp(d, k)) {
-			selected--;
-			if (selected < 0)
+			if (selected == 0)
 				selected = items.length - 1;
+			else
+				selected--;
+			scrollMode = 0;
 			OnItemChange();
 			return;
 		}
 		if (IsDown(d, k)) {
-			selected++;
-			if (selected >= items.length)
+			if (selected == items.length - 1)
 				selected = 0;
+			else
+				selected++;
+			scrollMode = 0;
 			OnItemChange();
 			return;
 		}
 		if (items.length == 0)
 			return;
-		ListItem selected = GetSelected();
 		if (IsOk(d, k)) {
-			selected.handler.OnSelect(selected, this, d);
-		}
-		if (IsLeft(d, k)) {
-			selected.handler.OnSide(-1, selected, this, d);
-			return;
-		}
-		if (IsRight(d, k)) {
-			selected.handler.OnSide(1, selected, this, d);
-			return;
+			ActivateCurrentItem(d);
+		} else if (IsLeft(d, k)) {
+			ListItem s = GetSelected();
+			s.handler.OnSide(-1, s, this, d);
+		} else if (IsRight(d, k)) {
+			ListItem s = GetSelected();
+			s.handler.OnSide(1, s, this, d);
 		}
 	}
 
+	public void ActivateCurrentItem(IDisplay d) {
+		ListItem selected = GetSelected();
+		if (selected == null)
+			return;
+		selected.handler.OnSelect(selected, this, d);
+	}
+
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
-		
+		if (s == 1) {
+			dragStartY = y;
+			if (targetY != realY)
+				targetY = realY;
+		}
+		targetY += dy;
+		if (s == 3) {
+			scrollMode = 2;
+			if (Math.abs(dragStartY - y) < fontH) {
+				int ti = (-realY + y) / fontH;
+				if(items == null || ti < 0 || ti >= items.length)
+					return;
+				if (ti == selected)
+					ActivateCurrentItem(d);
+				else
+					selected = ti;
+			}
+		} else {
+			scrollMode = 1;
+		}
 	}
 
 	protected void OnItemChange() {

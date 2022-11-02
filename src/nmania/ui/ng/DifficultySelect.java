@@ -16,23 +16,24 @@ import nmania.beatmaps.IRawBeatmap;
 import nmania.replays.AutoplayRunner;
 import tube42.lib.imagelib.ColorUtils;
 
-public class DifficultySelect extends ListScreen implements Runnable, IListSelectHandler {
+public final class DifficultySelect extends ListScreen implements Runnable, IListSelectHandler {
 
 	private String folder;
 	private String title = "READING YOR CHART...";
 	private BeatmapManager bm;
-	BeatmapSet set;
-	IDisplay d;
-	int keysH;
+	private BeatmapSet set;
+	private IDisplay d;
+	private int keysH;
 	public ModsState mods = new ModsState(Settings.defaultMods);
 	public int mode;
 	public String[] modes = new String[] { "normal", "autoplay", "replay" };
 	private Thread t;
+	private boolean touchCaughtByBottomPanel = false;
+	private final static int sp = 12;
 
 	public DifficultySelect(BeatmapManager bm, String folder) {
 		this.bm = bm;
 		this.folder = folder;
-
 	}
 
 	public String GetTitle() {
@@ -60,7 +61,6 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 		}
 		g.setFont(font);
 
-		final int sp = 12;
 		int x = 0;
 		for (int i = 0; i < 3; i++) {
 			int sw = font.stringWidth(modes[i]);
@@ -219,5 +219,35 @@ public class DifficultySelect extends ListScreen implements Runnable, IListSelec
 			mode = modes.length - 1;
 		if (mode >= modes.length)
 			mode = 0;
+	}
+
+	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
+		if (s == 3) {
+			if (touchCaughtByBottomPanel) {
+				touchCaughtByBottomPanel = false;
+				return;
+			}
+		}
+		if (s == 1) {
+			int bottomY = h - font.getHeight();
+			bottomY -= font.getHeight(); // ?full
+			if (y > bottomY) {
+				touchCaughtByBottomPanel = true;
+				int lw = sp + font.stringWidth(modes[0]) + (sp>>1);
+				if (x < lw) {
+					mode = 0;
+				} else {
+					lw += sp + font.stringWidth(modes[1]);
+					if (x < lw) {
+						mode = 1;
+					} else {
+						mode = 2;
+					}
+				}
+			}
+		}
+		if (touchCaughtByBottomPanel)
+			return;
+		super.OnTouch(d, s, x, y, dx, dy, w, h);
 	}
 }

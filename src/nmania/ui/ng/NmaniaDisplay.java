@@ -35,6 +35,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		header = Font.getFont(0, 0, 0);
+		headerH = header.getHeight();
+		screenY = headerH + 10;
 	}
 
 	private Graphics g;
@@ -42,8 +45,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private int top = 0;
 
 	// drawing vars
-	static Font header = Font.getFont(0, 0, 0);
-	int headerH = header.getHeight();
+	private final Font header;
+	private final int headerH;
+	private final int screenY;
 	static Font buttons = Font.getFont(0, 1, 8);
 	private float leftButtonContract = 1f;
 	private float leftButtonState = 0f;
@@ -166,8 +170,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					} else {
 						g.drawImage(bg, 0, 0, 0);
 					}
-					g.translate(0, headerH + 10);
-					stack[top].Paint(g, w, h - headerH - 10 - keysH);
+					g.translate(0, screenY);
+					stack[top].Paint(g, w, h - screenY - keysH);
 					g.translate(0, -g.getTranslateY());
 					DrawButtons();
 					DrawBuildWarning(); // ?dbg
@@ -263,18 +267,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.setColor(-1);
 			s--;
 			g.drawArc(px - s - 1, py - s - 1, (s << 1) + 1, (s << 1) + 1, 0, 360);
-		} else if (now - lastPointerStateChange < releaseAnimDur) {
-			int s = (int) ((now - lastPointerStateChange) / 40);
-			DrawDisc(px - 7, py - 7, 14, spinState);
-			g.setColor(-1);
-			g.drawArc(px - 7, py - 7, 13, 13, 0, 360);
-			g.fillArc(px - s, py - s, s << 1, s << 1, 0, 360);
-		} else if (now - lastPointerStateChange < 300 + releaseAnimDur) {
-			int p = 255 * (int) (now - lastPointerStateChange - releaseAnimDur) / 300;
+		} else if (now - lastPointerStateChange < 300) {
+			int p = 255 * (int) (now - lastPointerStateChange) / 300;
+			int fa = 180 * (int) (now - lastPointerStateChange) / 300;
+			int s = (int) ((now - lastPointerStateChange) / 10);
 			g.setColor(ColorUtils.blend(BG_COLOR, -1, p));
-			int fa = 180 * (int) (now - lastPointerStateChange - releaseAnimDur) / 300;
 			g.fillArc(px - 7, py - 7, 14, 14, 90 + fa, 360 - (fa << 1));
-			int s = (int) ((now - lastPointerStateChange - releaseAnimDur) / 10);
 			g.drawArc(px - 6 - s, py - 6 - s, 12 + (s << 1), 12 + (s << 1), 0, 360);
 		}
 	}
@@ -491,7 +489,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		if (pointerState != 0) {
 			int dpx = px - lpx;
 			int dpy = py - lpy;
-			stack[top].OnTouch(this, pointerState, px, py, dpx, dpy, w, h);
+			stack[top].OnTouch(this, pointerState, px, py - screenY, dpx, dpy, w, h - screenY - keysH);
 			lpx = px;
 			lpy = py;
 			if (pointerState == 1)
@@ -517,7 +515,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	protected void pointerPressed(int aX, int aY) {
-		if (aY > getHeight() - keysH) {
+		if (aY < screenY) {
+
+		} else if (aY > getHeight() - keysH) {
 			keyPressed(aX < (getWidth() >> 1) ? -6 : -7);
 		} else {
 			lastPointerStateChange = System.currentTimeMillis();
