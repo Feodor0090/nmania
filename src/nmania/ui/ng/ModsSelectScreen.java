@@ -124,7 +124,7 @@ public class ModsSelectScreen extends Screen {
 		if (s != 1)
 			return;
 
-		int dir = x * 3 / h;
+		int dir = x * 3 / w;
 		dir--;
 		if (y < fontH * 2) {
 			selected = 0;
