@@ -42,7 +42,7 @@ jobs:
         run: curl -F "debug=@./nmania_debug.jar" -F "normal=@./nmania.jar" -F "key=${{ secrets.NNCHAN_KEY }}" -F "branch=`cat ./branch.txt`" -F "commit=`cat ./commit.txt`" http://nnp.nnchan.ru/nm/dev/ci.php
   Test:
     runs-on: windows-latest
-    needs: Build, PackTestData
+    needs: [Build, PackTestData]
     timeout-minutes: 20
     steps:
       - name: Download build
