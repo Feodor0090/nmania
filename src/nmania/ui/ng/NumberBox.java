@@ -65,11 +65,11 @@ public class NumberBox extends Screen {
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 3; j++) {
 				g.setColor(NmaniaDisplay.PINK_COLOR);
-				g.fillRoundRect(j*w/3, y, w/3, fh, fh, fh);
+				g.fillRoundRect(j*w/3 + 1, y, w/3 - 2, fh, fh, fh);
 				g.setColor(-1);
 				g.drawChar(pad[i][j], j*w/3 + w/6, y, Graphics.TOP | Graphics.HCENTER);
 			}
-			y += fh;
+			y += fh + 2;
 		}
 	}
 
