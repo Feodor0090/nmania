@@ -46,7 +46,9 @@ jobs:
         uses: carlosperate/download-file-action@v2
         with:
           file-url: 'http://nnp.nnchan.ru/dl/kemnnmod.zip'
-      - name: Unzip KEm
-        uses: montudor/action-zip@v1
+      - name: Download 7zip
+        uses: carlosperate/download-file-action@v2
         with:
-          args: unzip -qq kemnnmod.zip -d kem
+          file-url: 'https://www.7-zip.org/a/7zr.exe'
+      - name: Unzip KEm
+        run: 7zr x -o kem kemnnmod.zip
