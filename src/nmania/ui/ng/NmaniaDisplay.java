@@ -267,18 +267,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.setColor(-1);
 			s--;
 			g.drawArc(px - s - 1, py - s - 1, (s << 1) + 1, (s << 1) + 1, 0, 360);
-		} else if (now - lastPointerStateChange < releaseAnimDur) {
-			int s = (int) ((now - lastPointerStateChange) / 40);
-			DrawDisc(px - 7, py - 7, 14, spinState);
-			g.setColor(-1);
-			g.drawArc(px - 7, py - 7, 13, 13, 0, 360);
-			g.fillArc(px - s, py - s, s << 1, s << 1, 0, 360);
-		} else if (now - lastPointerStateChange < 300 + releaseAnimDur) {
-			int p = 255 * (int) (now - lastPointerStateChange - releaseAnimDur) / 300;
+		} else if (now - lastPointerStateChange < 300) {
+			int p = 255 * (int) (now - lastPointerStateChange) / 300;
+			int fa = 180 * (int) (now - lastPointerStateChange) / 300;
+			int s = (int) ((now - lastPointerStateChange) / 10);
 			g.setColor(ColorUtils.blend(BG_COLOR, -1, p));
-			int fa = 180 * (int) (now - lastPointerStateChange - releaseAnimDur) / 300;
 			g.fillArc(px - 7, py - 7, 14, 14, 90 + fa, 360 - (fa << 1));
-			int s = (int) ((now - lastPointerStateChange - releaseAnimDur) / 10);
 			g.drawArc(px - 6 - s, py - 6 - s, 12 + (s << 1), 12 + (s << 1), 0, 360);
 		}
 	}
