@@ -57,7 +57,7 @@ public class NumberBox extends Screen {
 			g.drawString(sign ? "0" : "-0", w - fh - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
 		else
 			g.drawString(String.valueOf(value), w - fh - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
-		PaintPad(g, w, 10+fh+10)
+		PaintPad(g, w, 10+fh+10);
 	}
 
 	private final void PaintPad(Graphics g, int w, int y) {
