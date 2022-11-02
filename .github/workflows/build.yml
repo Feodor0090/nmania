@@ -27,7 +27,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-input
-          path: ${{ github.workspace }}/test/
+          path: ${{ github.workspace }}/tests/
   Upload:
     runs-on: ubuntu-latest
     needs: Build
