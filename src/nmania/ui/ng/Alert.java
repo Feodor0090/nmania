@@ -108,7 +108,7 @@ public class Alert extends Screen {
 
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
 		if (allowScroll)
-			scroll += dy;
+			scroll -= dy;
 	}
 
 	public void OnResume(IDisplay d) {
