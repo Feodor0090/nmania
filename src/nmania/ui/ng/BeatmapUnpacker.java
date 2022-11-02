@@ -66,6 +66,7 @@ public class BeatmapUnpacker extends Alert implements Runnable {
 
 			fc.delete();
 			wip = false;
+			title = "OSZ was unpacked."
 			SetText("Done. You can leave this view.");
 		} catch (Throwable e) {
 			wip = false;
