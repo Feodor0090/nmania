@@ -612,15 +612,19 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public void SetAudio(BeatmapSet set) {
 		if (music != null) {
 			if (set != null && set.folderName.equals(lastMusicDir)) {
+				GL.Log("(ui) Skipping already playing track...");
 				return;
 			}
 			music.Stop();
 			music = null;
 			System.gc();
 		}
-		if (set == null)
+		if (set == null) {
+			GL.Log("(ui) Music disabled.");
 			return;
+		}
 		try {
+			GL.Log("(ui) Loading new music...");
 			music = new AudioController(set);
 			music.Loop();
 			music.Play();
