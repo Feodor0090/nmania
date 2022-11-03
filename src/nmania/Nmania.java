@@ -85,7 +85,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 	}
 
 	public static void Push(Displayable d) {
-		GL.Log("(ui) Changing global displayable to " + d.getClass().getName());
+		GL.Log("(app) Changing global displayable to " + d.getClass().getName());
 		if (disp == null)
 			disp = Display.getDisplay(inst);
 
