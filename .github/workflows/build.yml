@@ -1,4 +1,4 @@
-name: Build Action
+name: CI
 on:
   push:
     paths-ignore:
@@ -6,7 +6,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
-    name: Compilation
+    name: Build
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -21,6 +21,7 @@ jobs:
           path: ${{ github.workspace }}/jar/
   packTestData:
     runs-on: ubuntu-20.04
+    name: Pack test enviroment
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -31,7 +32,7 @@ jobs:
           path: ${{ github.workspace }}/tests/
   upload:
     runs-on: ubuntu-latest
-    needs: Build
+    needs: build
     name: Update builds on server
     timeout-minutes: 3
     steps:
@@ -47,7 +48,7 @@ jobs:
     runs-on: windows-latest
     needs: [build, packTestData]
     timeout-minutes: 20
-    name: Test run
+    name: Test
     steps:
       - name: Download build
         uses: actions/download-artifact@v3
@@ -81,4 +82,20 @@ jobs:
         with:
           name: test-output
           path: ${{ github.workspace }}/kemnnmod/file/root/music/nmania/
-
+  check:
+    name: Check test results
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Install .NET 6.0.x
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+      - name: Download test data
+        uses: actions/download-artifact@v3
+        with:
+          name: test-input
+      - name: Check files
+        run: ls
+      - name: Run check
+        run: dotnet run --project TestResultsProcessor/TestResultsProcessor.csproj
