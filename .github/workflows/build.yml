@@ -60,6 +60,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: test-input
+      - name: Verify input listing
+        run: python3 rec_check.py
       - name: Download test OSZ
         uses: carlosperate/download-file-action@v2
         with:
