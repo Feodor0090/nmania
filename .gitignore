@@ -5,3 +5,5 @@
 *.bak
 .mtj
 build.properties
+tests/TestResultsProcessor/.idea/.idea.TestResultsProcessor/.idea
+tests/TestResultsProcessor/obj
