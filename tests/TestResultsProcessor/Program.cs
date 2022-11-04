@@ -2,9 +2,8 @@
 
 public static class Program
 {
-    private static int Main(string[] args)
+    private static int Main()
     {
-        Console.WriteLine("err");
-        return 1;
+        return new Analyzer().Run() ? 0 : 1;
     }
 }

@@ -17,14 +17,16 @@ public class Analyzer
                 return s;
             }).Where(s => !s.StartsWith('\t')).Where(s => !s.StartsWith("Custom.jar.getResourceStream"))
             .Where(s => !s.StartsWith("Launch MIDlet class"));
-        Lines = t.ToList();
+        Log = t.ToList();
+        Sets = File.ReadAllText("sets.json");
     }
 
-    public readonly List<string> Lines;
+    public readonly List<string> Log;
+    public readonly string Sets;
 
     public IEnumerable<string> GetCat(string cat)
     {
-        return Lines.Where(s => s.StartsWith($"({cat})")).Select(s => s.Substring(3 + cat.Length));
+        return Log.Where(s => s.StartsWith($"({cat})")).Select(s => s.Substring(3 + cat.Length));
     }
 
     public bool CatHas(string cat, string data)
@@ -65,7 +67,7 @@ public class Analyzer
     [Check]
     private bool NoErrors()
     {
-        var all = Lines
+        var all = Log
             // get all lines with sus text
             .Where(x =>
                 x.Contains("exception", StringComparison.InvariantCultureIgnoreCase) ||
@@ -117,7 +119,7 @@ public class Analyzer
     [Check]
     private bool CorrectScreensVisited()
     {
-        string[] chain = Lines.SelectMany(s => Wrap(x =>
+        string[] chain = Log.SelectMany(s => Wrap(x =>
         {
             if (x.StartsWith("(ui)"))
             {
@@ -144,7 +146,7 @@ public class Analyzer
 
             if (exp[i] != chain[i])
             {
-                WriteLine($"{exp[i]} was expected, but {chain[i]} was active (screen #{i+1}).");
+                WriteLine($"{exp[i]} was expected, but {chain[i]} was active (screen #{i + 1}).");
                 return false;
             }
         }
@@ -161,9 +163,33 @@ public class Analyzer
     [Check]
     private bool ThreadSuspendedBeforePlay()
     {
-        int fji = Lines.FindIndex(x => x.StartsWith("(judgment)"));
-        int i = Lines.IndexOf("(ui) Suspending rendering thread...", fji - 10, 10);
+        int fji = Log.FindIndex(x => x.StartsWith("(judgment)"));
+        int i = Log.IndexOf("(ui) Suspending rendering thread...", fji - 10, 10);
         return i != -1;
+    }
+
+    [Check]
+    private bool SettingsOk()
+    {
+        if (!Sets.Contains("\"mods\":2,"))
+        {
+            WriteLine("Mods were not saved!");
+            return false;
+        }
+
+        if (!Sets.Contains("\"drawcounters\":true,"))
+        {
+            WriteLine("FPS was not enabled!");
+            return false;
+        }
+
+        if (!Sets.Contains("\"dim\":75,"))
+        {
+            WriteLine("Dim is not 75!");
+            return false;
+        }
+
+        return true;
     }
 
 
