@@ -3,6 +3,7 @@ package nmania.ui.ng;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import nmania.GL;
 import nmania.ModsState;
 import nmania.Settings;
 
@@ -13,6 +14,7 @@ public class ModsSelectScreen extends Screen {
 	private ModsState mods;
 	private String[] da = new String[] { "Easy", "Normal", "Hard" };
 	private String[] fa = new String[] { "No fail", "Normal", "Sudden death" };
+	private String[] lines = new String[] { "Difficulty adjustment", "Failing adjustment", "Save as default" };
 	private int selected = 0;
 
 	public ModsSelectScreen(ModsState mods) {
@@ -34,14 +36,14 @@ public class ModsSelectScreen extends Screen {
 
 	public void Paint(Graphics g, int w, int h) {
 		g.setFont(f);
-		int y = drawTripleSelection(g, 0, w, selected == 0, mods.GetDA(), "Difficulty adjustment", da);
-		y = drawTripleSelection(g, y, w, selected == 1, mods.GetFA(), "Failing adjustment", fa);
+		int y = drawTripleSelection(g, 0, w, selected == 0, mods.GetDA(), lines[0], da);
+		y = drawTripleSelection(g, y, w, selected == 1, mods.GetFA(), lines[1], fa);
 		if (selected == 2) {
 			g.setColor(NmaniaDisplay.PINK_COLOR);
 			g.fillArc(fontH / 2, y, fontH, fontH, 0, 360);
 			g.fillRect(fontH, y, w - fontH, fontH);
 		}
-		NmaniaDisplay.print(g, "Save as default", fontH, y, -1, 0, 0);
+		NmaniaDisplay.print(g, lines[2], fontH, y, -1, 0, 0);
 	}
 
 	private int drawTripleSelection(Graphics g, int y, int w, boolean selected, int item, String title,
@@ -83,16 +85,24 @@ public class ModsSelectScreen extends Screen {
 	}
 
 	public void OnKey(IDisplay d, int k) {
+		if (selected == 2 && IsOk(d, k)) {
+			Settings.defaultMods = mods.GetMask();
+			Settings.Save();
+			GL.Log("(ui) Mods preset was saved.");
+			return;
+		}
 		if (IsUp(d, k)) {
 			selected--;
 			if (selected < 0)
 				selected = 2;
+			GL.Log("(ui) Selecting " + lines[selected] + " on mods screen");
 			return;
 		}
 		if (IsDown(d, k)) {
 			selected++;
-			if (selected >= 3)
+			if (selected > 2)
 				selected = 0;
+			GL.Log("(ui) Selecting " + lines[selected] + " on mods screen");
 			return;
 		}
 
@@ -106,6 +116,10 @@ public class ModsSelectScreen extends Screen {
 			dir = 1;
 		}
 
+		if (dir == 0) {
+			return;
+		}
+
 		switch (selected) {
 		case 0:
 			mods.ToggleDA(dir);
@@ -115,10 +129,6 @@ public class ModsSelectScreen extends Screen {
 			break;
 		}
 		GL.Log("(ui) Gameplay mods switched to " + mods.toString());
-		if (selected == 2 && IsOk(d, k)) {
-			Settings.defaultMods = mods.GetMask();
-			Settings.Save();
-		}
 	}
 
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
