@@ -114,6 +114,7 @@ public class ModsSelectScreen extends Screen {
 			mods.ToggleFA(dir);
 			break;
 		}
+		GL.Log("(ui) Gameplay mods switched to " + mods.toString());
 		if (selected == 2 && IsOk(d, k)) {
 			Settings.defaultMods = mods.GetMask();
 			Settings.Save();
