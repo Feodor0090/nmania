@@ -7,3 +7,4 @@
 build.properties
 tests/TestResultsProcessor/.idea/.idea.TestResultsProcessor/.idea
 tests/TestResultsProcessor/obj
+tests/TestResultsProcessor/bin/Debug/net6.0
