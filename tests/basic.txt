@@ -60,18 +60,16 @@ e
 wait
 s
 f
-wait
-s
-f
-wait
-s
-f
+/ system settings
 wait
 s
 f
 s
 f
-wait
+s
+f
+s
+f
 s
 s
 s
@@ -99,6 +97,7 @@ wait
 e
 wait
 e
+wait
 / at main menu, settings section ends
 w
 w
