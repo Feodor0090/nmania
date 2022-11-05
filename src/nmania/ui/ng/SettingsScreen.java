@@ -43,8 +43,8 @@ public class SettingsScreen extends ListScreen implements IListSelectHandler, Co
 			display.Push(new DiskSelectScreen());
 			break;
 		case 6:
-			display.PauseRendering();
 			disp = display;
+			GL.Log("(ui) Asking user's name from settings");
 			final TextBox box = new TextBox("What's your name?", Settings.name, 50, 0);
 			box.addCommand(new Command("Next", Command.OK, 0));
 			box.setCommandListener(this);

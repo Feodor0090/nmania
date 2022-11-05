@@ -45,6 +45,7 @@ s
 / toggle fps
 f
 e
+/ at settings
 wait
 s
 f
@@ -55,6 +56,7 @@ f
 s
 f
 e
+/ at settings
 wait
 s
 f
@@ -78,25 +80,27 @@ f
 wait
 e
 wait
+/ disk select
 s
 f
 wait
 f
 wait
-w
+q
 wait
 e
 wait
 q
 wait
 w
+/ export of settings
 f
-wait
 wait
 e
 wait
 e
 / at main menu, settings section ends
+w
 w
 f
 wait

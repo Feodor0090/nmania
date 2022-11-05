@@ -242,8 +242,10 @@ public final class Settings {
 			s.write(Serialize().getBytes("UTF-8"));
 			s.flush();
 			s.close();
+			GL.Log("(app) Settings exported!");
 			d.Push(new Alert("Settings exported", "They are in _sets.json file."));
 		} catch (Throwable t) {
+			GL.Log("(app) Failed to export settings: " + t.toString());
 			try {
 				if (fc != null)
 					fc.close();
@@ -276,8 +278,10 @@ public final class Settings {
 			baos.close();
 			r.closeRecordStore();
 			Load();
+			GL.Log("(app) Settings imported!");
 			d.Push(new Alert("Settings imported", "They were in _sets.json file."));
 		} catch (Throwable t) {
+			GL.Log("(app) Failed to import settings: " + t.toString());
 			try {
 				if (fc != null)
 					fc.close();

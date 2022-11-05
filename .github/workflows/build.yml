@@ -78,6 +78,8 @@ jobs:
           file-url: 'https://nnp.nnchan.ru/nm/dev/test.osz'
           location: './kemnnmod/file/root'
       - name: Run emulator
+        continue-on-error: true
+        timeout-minutes: 10
         run: cd kemnnmod ; ./jre/bin/java.exe -jar KEmulator.jar -jar ../nmania_debug.jar -rec ../basic.rec
       - name: Copy emulator log
         run: copy kemnnmod/log.txt kemnnmod/file/root/music/nmania/emulator.log
