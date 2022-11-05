@@ -30,7 +30,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Generate input listing
-        uses: cd tests ; dotnet run --project RecGenerator/RecGenerator.csproj basic
+        run: cd tests ; dotnet run --project RecGenerator/RecGenerator.csproj basic
       - name: Pack data
         uses: actions/upload-artifact@v2
         with:
