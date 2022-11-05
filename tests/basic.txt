@@ -100,7 +100,6 @@ e
 wait
 / at main menu, settings section ends
 w
-w
 f
 wait
 s

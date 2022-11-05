@@ -51,4 +51,12 @@ public class MainScreen extends ListScreen implements IListSelectHandler {
 		return true;
 	}
 
+	protected void OnItemChange() {
+		GL.Log("(ui) In main menu " + GetSelected().text + " is now selected."); // ?sid
+	}
+
+	public void OnResume(IDisplay d) {
+		OnItemChange();
+	}
+
 }
