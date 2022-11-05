@@ -104,6 +104,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: test-output
+      - name: Download program
+        uses: actions/download-artifact@v3
+        with:
+          name: test-input
       - name: Check files
         run: ls
       - name: Run check
