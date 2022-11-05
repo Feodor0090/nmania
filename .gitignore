@@ -8,3 +8,6 @@ build.properties
 tests/TestResultsProcessor/.idea/.idea.TestResultsProcessor/.idea
 tests/TestResultsProcessor/obj
 tests/TestResultsProcessor/bin/Debug/net6.0
+tests/RecGenerator/.idea/.idea.RecGenerator/.idea
+tests/RecGenerator/bin/Debug/net6.0
+tests/RecGenerator/obj
