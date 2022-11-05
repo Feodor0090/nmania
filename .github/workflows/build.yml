@@ -21,7 +21,6 @@ jobs:
           path: ${{ github.workspace }}/jar/
   packTestData:
     runs-on: ubuntu-20.04
-    needs: build
     name: Pack test enviroment
     steps:
       - name: Install .NET 6.0.x
