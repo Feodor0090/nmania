@@ -52,8 +52,8 @@ foreach (var l in File.ReadAllLines(args[0] + ".txt"))
     }
 
     o.Add($"{time}:0{k}");
-    o.Add($"{time + 2}:1{k}");
-    time += 4;
+    o.Add($"{time + 1}:1{k}");
+    time += 2;
 }
 
 File.WriteAllLines(args[0] + ".rec", o.ToArray());
