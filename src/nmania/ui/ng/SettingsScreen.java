@@ -5,6 +5,7 @@ import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.TextBox;
 
+import nmania.GL;
 import nmania.Nmania;
 import nmania.Settings;
 
