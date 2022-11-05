@@ -1,6 +1,7 @@
 package nmania.ui.ng;
 
 import nmania.Nmania;
+import nmania.GL;
 
 public class MainScreen extends ListScreen implements IListSelectHandler {
 
