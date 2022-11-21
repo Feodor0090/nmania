@@ -1,4 +1,4 @@
-name: Build Action
+name: CI
 on:
   push:
     paths-ignore:
