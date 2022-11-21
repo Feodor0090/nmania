@@ -32,7 +32,7 @@ import nmania.replays.ReplayPlayer;
 import nmania.replays.json.NmaniaReplay;
 import nmania.replays.osu.OsuReplay;
 
-public final class ResultsScreen extends Canvas implements ILogger {
+public final class ResultsScreen extends Canvas implements ILogger, Runnable {
 
 	/**
 	 * 
@@ -66,9 +66,10 @@ public final class ResultsScreen extends Canvas implements ILogger {
 		if (input == null && replay == null)
 			activeMenu = 1;
 		setFullScreenMode(true);
+		(new Thread(this, "Results repaint")).start(); // ?sid ?dbg we really need this only for tests
 	}
 
-	int introTimer = 100;
+	private boolean draw = true;
 	public IInputOverrider input;
 	public IReplayProvider replay;
 	public final IScore score;
@@ -204,6 +205,7 @@ public final class ResultsScreen extends Canvas implements ILogger {
 	}
 
 	private final void Exit() {
+		draw = false;
 		Dispose();
 		if (next == null)
 			Nmania.PushMainScreen();
@@ -212,6 +214,7 @@ public final class ResultsScreen extends Canvas implements ILogger {
 	}
 
 	private final void Dispose() {
+		draw = false;
 		if (applause != null)
 			applause.Dispose();
 		if (music != null)
@@ -385,5 +388,15 @@ public final class ResultsScreen extends Canvas implements ILogger {
 	public void log(String s) {
 		loadingLog = s;
 		repaint();
+	}
+
+	public void run() {
+		try {
+			while (draw) {
+				Thread.sleep(50);
+				repaint();
+			}
+		} catch (InterruptedException e) {
+		}
 	}
 }
