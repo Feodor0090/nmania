@@ -1,6 +1,7 @@
 package nmania.ui.ng;
 
 import nmania.Nmania;
+import nmania.GL;
 
 public class MainScreen extends ListScreen implements IListSelectHandler {
 
@@ -49,6 +50,14 @@ public class MainScreen extends ListScreen implements IListSelectHandler {
 
 	public boolean ShowLogo() {
 		return true;
+	}
+
+	protected void OnItemChange() {
+		GL.Log("(ui) In main menu " + GetSelected().text + " is now selected."); // ?sid
+	}
+
+	public void OnResume(IDisplay d) {
+		OnItemChange();
 	}
 
 }

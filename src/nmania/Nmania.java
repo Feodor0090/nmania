@@ -65,6 +65,8 @@ public final class Nmania extends MIDlet implements CommandListener {
 		}
 		Settings.Load();
 		GL.Create(true);// ?dbg
+		if (Settings.name == null) // ?sid
+			Settings.name = "test"; // ?sid
 		if (Settings.name == null) {
 			final TextBox box = new TextBox("What's your name?", "", 50, 0);
 			box.addCommand(new Command("Next", Command.OK, 0));
@@ -83,7 +85,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 	}
 
 	public static void Push(Displayable d) {
-		GL.Log("(ui) Changing global displayable to " + d.getClass().getName());
+		GL.Log("(app) Changing global displayable to " + d.getClass().getName());
 		if (disp == null)
 			disp = Display.getDisplay(inst);
 

@@ -14,8 +14,6 @@ import javax.microedition.media.Player;
  */
 public final class AudioController {
 
-	private int lastTime;
-
 	public AudioController(Beatmap map) throws IOException, MediaException {
 		this(map.ToGlobalPath(map.audio));
 	}
@@ -38,6 +36,15 @@ public final class AudioController {
 			throw new IOException("Could not load any files on this MRL");
 		player = p;
 		offset = Settings.gameplayOffset;
+		String jh = System.getProperty("java.home"); // ?sid
+		if (jh != null) { // ?sid
+			GL.Log("(audio) Running desktop java, JH=" + jh); // ?sid
+			// if condition below is hit, we are likely on GH runner.
+			// It has no sound device, so using system clock.
+			if (jh.indexOf("D:\\a\\nmania\\nmania") != -1) { // ?sid
+				fallback = true; // ?sid
+			} // ?sid
+		} // ?sid
 	}
 
 	private final Player TryInit(String mrl, String ext) throws MediaException {
@@ -69,24 +76,57 @@ public final class AudioController {
 	private final Player player;
 	private final int offset;
 	private boolean alive = true;
+	private int lastTime;
+
+	// fallback
+	private boolean fallback = false;
+	private long startTime = 0, pauseTime = -1;
 
 	public int Now() {
+		if (fallback)
+			return (int) (System.currentTimeMillis() - startTime);
 		long mt = player.getMediaTime();
 		if (mt < 0)
 			return lastTime;
 		return lastTime = offset + (int) (mt / 1000);
 	}
 
+	/**
+	 * Starts this player.
+	 * 
+	 * @return False if actual player failed and fallback was enabled.
+	 */
 	public boolean Play() {
+		if (fallback) {
+			if (pauseTime == -1) {
+				// running from 0
+				startTime = System.currentTimeMillis();
+				GL.Log("(audio) Fallback clock start from 0.");
+			} else {
+				startTime += (System.currentTimeMillis() - pauseTime);
+				pauseTime = -1;
+				GL.Log("(audio) Fallback clock start from pause time.");
+			}
+			return false;
+		}
 		try {
 			player.start();
 			return true;
 		} catch (Exception e) {
+			GL.Log("(audio) Could not start player: " + e.toString());
+			GL.Log("(audio) Falling back to system clock!");
+			fallback = true;
+			startTime = System.currentTimeMillis();
 			return false;
 		}
 	}
 
 	public boolean Pause() {
+		if (fallback) {
+			pauseTime = System.currentTimeMillis();
+			GL.Log("(audio) Fallback clock was paused at " + (pauseTime - startTime) + "!");
+			return true;
+		}
 		try {
 			player.stop();
 			return true;
@@ -101,10 +141,13 @@ public final class AudioController {
 	public void Stop() {
 		try {
 			player.stop();
-		} catch (MediaException e) {
+		} catch (Exception e) {
+			GL.Log("(audio) Could not close player: " + e.toString());
 		}
-		player.deallocate();
-		player.close();
+		if (player != null) {
+			player.deallocate();
+			player.close();
+		}
 		alive = false;
 	}
 
@@ -112,6 +155,12 @@ public final class AudioController {
 	 * Makes the track to play from the beginning.
 	 */
 	public void Reset() {
+		if (fallback) {
+			pauseTime = -1;
+			startTime = System.currentTimeMillis();
+			GL.Log("(audio) Fallback clock was reset.");
+			return;
+		}
 		try {
 			player.setMediaTime(0);
 		} catch (MediaException e) {

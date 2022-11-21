@@ -1,11 +1,12 @@
-name: Build Action
+name: CI
 on:
   push:
     paths-ignore:
       - '**.md'
 jobs:
-  Build-J2ME:
+  build:
     runs-on: ubuntu-20.04
+    name: Build
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -18,9 +19,28 @@ jobs:
         with:
           name: build
           path: ${{ github.workspace }}/jar/
-  Upload:
+  packTestData:
+    runs-on: ubuntu-20.04
+    name: Pack test enviroment
+    steps:
+      - name: Install .NET 6.0.x
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Generate input listing
+        run: cd tests ; dotnet run --project RecGenerator/RecGenerator.csproj basic
+      - name: Pack data
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-input
+          path: ${{ github.workspace }}/tests/
+  upload:
     runs-on: ubuntu-latest
-    needs: Build-J2ME
+    needs: build
+    name: Update builds on server
+    timeout-minutes: 3
     steps:
       - name: Download build
         uses: actions/download-artifact@v3
@@ -30,5 +50,64 @@ jobs:
         run: ls
       - name: Upload
         run: curl -F "debug=@./nmania_debug.jar" -F "normal=@./nmania.jar" -F "key=${{ secrets.NNCHAN_KEY }}" -F "branch=`cat ./branch.txt`" -F "commit=`cat ./commit.txt`" http://nnp.nnchan.ru/nm/dev/ci.php
-      
-    
+  test:
+    runs-on: windows-latest
+    needs: [build, packTestData]
+    timeout-minutes: 12
+    name: Test
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v3
+        with:
+          name: build
+      - name: Download KEmulator
+        uses: carlosperate/download-file-action@v2
+        with:
+          file-url: 'https://nnp.nnchan.ru/dl/kemnnmod.zip'
+      - name: Unzip KEm
+        run: 7z x kemnnmod.zip
+      - name: Download test data
+        uses: actions/download-artifact@v3
+        with:
+          name: test-input
+      - name: Verify input listing
+        run: python3 rec_check.py
+      - name: Download test OSZ
+        uses: carlosperate/download-file-action@v2
+        with:
+          file-url: 'https://nnp.nnchan.ru/nm/dev/test.osz'
+          location: './kemnnmod/file/root'
+      - name: Run emulator
+        continue-on-error: true
+        timeout-minutes: 10
+        run: cd kemnnmod ; ./jre/bin/java.exe -jar KEmulator.jar -jar ../nmania_debug.jar -rec ../basic.rec
+      - name: Copy emulator log
+        run: copy kemnnmod/log.txt kemnnmod/file/root/music/nmania/emulator.log
+      - name: Copy settings
+        run: copy kemnnmod/file/root/_sets.json kemnnmod/file/root/music/nmania/sets.json
+      - name: Upload test result
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-output
+          path: ${{ github.workspace }}/kemnnmod/file/root/music/nmania/
+  check:
+    name: Check test results
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Install .NET 6.0.x
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+      - name: Download test data
+        uses: actions/download-artifact@v3
+        with:
+          name: test-output
+      - name: Download program
+        uses: actions/download-artifact@v3
+        with:
+          name: test-input
+      - name: Check files
+        run: ls
+      - name: Run check
+        run: dotnet run --project TestResultsProcessor/TestResultsProcessor.csproj
