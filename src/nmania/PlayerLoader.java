@@ -72,8 +72,8 @@ public class PlayerLoader extends Thread {
 				// no keyboard layout
 				if (display != null) {
 					display.Back();
-					display.PauseRendering();
 				}
+				GL.Log("(player) No layout, pushing setup screen");
 				KeyboardSetup kbs = new KeyboardSetup(b.columnsCount, back);
 				Nmania.Push(kbs);
 				return;
@@ -85,13 +85,13 @@ public class PlayerLoader extends Thread {
 				Player p = new Player(b, data, Nmania.skin, log, back, input);
 				if (display != null) {
 					display.SetAudio(null);
-					if (Settings.keepMenu)
-						display.PauseRendering();
-					else
+					if (!Settings.keepMenu)
 						display.Destroy();
 					display = null;
 				}
+				GL.Log("(player) Gameplay displayable is being pushed...");
 				Nmania.Push(p);
+				GL.Log("(player) Gameplay displayable pushed!");
 				Thread t = new PlayerThread(p);
 				t.start();
 			} catch (InterruptedException e) {

@@ -10,12 +10,13 @@ public final class PlayerThread extends Thread {
 	final Player player;
 
 	public void run() {
+		GL.Log("(player) Thread entered!");
 		try {
 			if (Settings.maxPriority)
 				this.setPriority(MAX_PRIORITY);
 			player.Refill();
-			if (!player.track.Play())
-				throw new RuntimeException("Failed to start music!");
+			player.track.Play();
+			GL.Log("(player) Loop entered!");
 			player.Loop();
 		} catch (Exception e) {
 			GL.Log("(player) Player thread crashed!");

@@ -219,6 +219,7 @@ public final class DifficultySelect extends ListScreen implements Runnable, ILis
 			mode = modes.length - 1;
 		if (mode >= modes.length)
 			mode = 0;
+		GL.Log("(ui) Gameplay mode switched to "+modes[mode]);
 	}
 
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {

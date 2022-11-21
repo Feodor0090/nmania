@@ -437,8 +437,10 @@ public final class Player extends GameCanvas {
 			pauseItem = 0;
 			return;
 		}
-		if (input != null)
+		if (input != null) {
+			GL.Log("(input) Key " + k + " is pressed, but input overrider is attached. It will be ignored.");
 			return;
+		}
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
 				ToggleColumnInputState(i, true);
