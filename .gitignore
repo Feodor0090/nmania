@@ -5,3 +5,9 @@
 *.bak
 .mtj
 build.properties
+tests/RecGenerator/obj
+tests/RecGenerator/.idea/.idea.RecGenerator/.idea
+tests/RecGenerator/bin/Debug/net6.0
+tests/TestResultsProcessor/.idea/.idea.TestResultsProcessor/.idea
+tests/TestResultsProcessor/bin/Debug/net6.0
+tests/TestResultsProcessor/obj
