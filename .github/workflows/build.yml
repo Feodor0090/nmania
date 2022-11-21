@@ -19,6 +19,23 @@ jobs:
         with:
           name: build
           path: ${{ github.workspace }}/jar/
+  packTestData:
+    runs-on: ubuntu-20.04
+    name: Pack test enviroment
+    steps:
+      - name: Install .NET 6.0.x
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "6.0.x"
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Generate input listing
+        run: cd tests ; dotnet run --project RecGenerator/RecGenerator.csproj basic
+      - name: Pack data
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-input
+          path: ${{ github.workspace }}/tests/
   upload:
     runs-on: ubuntu-latest
     needs: build
