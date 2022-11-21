@@ -26,7 +26,6 @@ public class InputSettings extends ListScreen implements IListSelectHandler {
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
-		display.PauseRendering();
 		Nmania.Push(new KeyboardSetup(item.UUID, (Displayable) display));
 	}
 
@@ -39,9 +38,21 @@ public class InputSettings extends ListScreen implements IListSelectHandler {
 
 	public void OnEnter(IDisplay d) {
 		ListItem[] items = new ListItem[10];
-		for (int i = 0; i < items.length; i++) {
-			items[i] = new DataItem(i + 1, (i + 1) + "K keyboard layout", this,
-					Settings.keyLayout[i] == null ? "not set" : "");
+		for (int i = 0; i < 10; i++) {
+			String st;
+			if (Settings.keyLayout[i] == null) {
+				st = "not set";
+			} else {
+				boolean nonZero = false;
+				for (int j = 0; j <= i; j++) {
+					if (Settings.keyLayout[i][j] != 0) {
+						nonZero = true;
+						break;
+					}
+				}
+				st = nonZero ? "" : "empty";
+			}
+			items[i] = new DataItem(i + 1, (i + 1) + "K keyboard layout", this, st);
 		}
 		SetItems(items);
 	}
