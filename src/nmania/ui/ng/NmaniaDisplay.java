@@ -237,7 +237,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private final void DrawLogo(int lx, int ly) {
 		float p = beatProgress;
 		if (music == null) {
-			p = (System.currentTimeMillis() % 10000) / 10000;
+			p = (System.currentTimeMillis() % 10000) / 10000f;
 		}
 		DrawDisc(lx, ly, logo.getHeight(), p);
 		g.drawImage(logo, lx, ly, 0);
@@ -323,7 +323,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.fillTriangle(w / 2, h - fh, w, h - fh, w * 3 / 4, h - fh - 40);
 
 			DrawButtons();
-			g.drawImage(logo, w / 2, h / 2, Graphics.VCENTER | Graphics.HCENTER);
+			DrawLogo((w - logo.getWidth()) >> 1, (h - logo.getHeight()) >> 1);
 			return;
 		}
 		if (progress < 3f) {
@@ -390,6 +390,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.fillRect(0, 0, w / 2, fh);
 			g.fillRect(w / 2, h - fh, w / 2, fh);
 			DrawButtons();
+			DrawBuildWarning(); // ?dbg
 			return;
 		}
 		if (progress < 2f) {
@@ -409,6 +410,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.setColor(DARKER_COLOR);
 			g.fillRect(w - fw, 0, fw, h);
 			DrawButtons();
+			DrawBuildWarning(); // ?dbg
 			return;
 		}
 		if (bg == null) {
@@ -421,6 +423,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		target.Paint(g, w, h - headerH - 10 - keysH);
 		g.translate(0, -g.getTranslateY());
 		DrawButtons();
+		DrawBuildWarning(); // ?dbg
 		DrawHeader(target.GetTitle());
 		if (target.ShowLogo())
 			DrawLogo(w - logo.getWidth(), 0);
