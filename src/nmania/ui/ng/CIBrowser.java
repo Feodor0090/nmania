@@ -49,7 +49,7 @@ public class CIBrowser extends ListScreen implements IListSelectHandler, Command
 
 	public void commandAction(Command arg0, Displayable d) {
 		if (d instanceof TextBox) {
-			branch = ((TextBox) d).getString().trim();
+			branch = ((TextBox) d).getString().trim().toLowerCase().replace(' ', '-');
 			branchField.data = branch;
 			Nmania.Push(display.GetDisplayable());
 		}
