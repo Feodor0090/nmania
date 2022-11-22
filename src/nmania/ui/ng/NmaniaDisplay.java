@@ -433,11 +433,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		g.setColor(clri);
 		int lkh = (int) (keysH * clamp1(leftButtonContract * 2f));
 		int lkh2 = (int) (keysH2 * clamp1(leftButtonContract * 2f - 1f));
-		g.fillTriangle(0, h - lkh, 0, h, w / 2 - keysW, h);
-		g.fillTriangle(0, h - lkh, w / 2 - keysW2, h - lkh2, w / 2 - keysW, h);
-		print(g, lastValidLeftButton, 1, (int) (h - 1 + keysH2 * (1f - leftButtonContract)), clri, SoftkeysOutlineColor,
-				Graphics.BOTTOM | Graphics.LEFT);
-
+		if (leftButtonContract != 0) {
+			g.fillTriangle(0, h - lkh, 0, h, w / 2 - keysW, h);
+			g.fillTriangle(0, h - lkh, w / 2 - keysW2, h - lkh2, w / 2 - keysW, h);
+			print(g, lastValidLeftButton, 1, (int) (h - 1 + keysH2 * (1f - leftButtonContract)), clri, SoftkeysOutlineColor,
+					Graphics.BOTTOM | Graphics.LEFT);
+		}
 		clri = ColorUtils.blend(NEGATIVE_COLOR, PINK_COLOR, (int) (255 * rightButtonState));
 		g.setColor(clri);
 		g.fillTriangle(w, h - keysH, w, h, w / 2 + keysW, h);
