@@ -403,7 +403,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			target.Paint(g, w, h - headerH - 10 - keysH);
 			g.translate(-g.getTranslateX(), -g.getTranslateY());
 			DrawHeader(target.GetTitle());
-			if (top.ShowLogo())
+			if (target.ShowLogo())
 				DrawLogo(w - logo.getWidth(), 0);
 			int fw = (int) (w * (2f - progress));
 			g.setColor(DARKER_COLOR);
