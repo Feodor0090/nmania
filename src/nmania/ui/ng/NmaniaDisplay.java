@@ -237,7 +237,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private final void DrawLogo(int lx, int ly) {
 		float p = beatProgress;
 		if (music == null) {
-			p = (System.currentTimeMillis() % 10000) / 10000;
+			p = (System.currentTimeMillis() % 10000) / 10000f;
 		}
 		DrawDisc(lx, ly, logo.getHeight(), p);
 		g.drawImage(logo, lx, ly, 0);
