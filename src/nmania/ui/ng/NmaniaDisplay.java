@@ -234,7 +234,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		print(g, "debug", w >> 1, h, 0xff0000, -1, Graphics.HCENTER | Graphics.BOTTOM);
 	}
 
-	private final void DrawLogo(int x, int y) {
+	private final void DrawLogo(int lx, int ly) {
 		float p = beatProgress;
 		if (music == null) {
 			p = (System.currentTimeMillis() % 10000) / 10000;
@@ -332,7 +332,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.setColor(ColorUtils.blend(DARKER_COLOR, NEGATIVE_COLOR, (int) ((progress - 2f) * 255)));
 			g.fillRect(w / 2, 0, w / 2, h);
 			DrawButtons();
-			DrawLogo((w - logo.getWidth()) >> 1, (x - logo.getHeight()) >> 1);
+			DrawLogo((w - logo.getWidth()) >> 1, (h - logo.getHeight()) >> 1);
 			return;
 		}
 		if (progress < 4f) {
