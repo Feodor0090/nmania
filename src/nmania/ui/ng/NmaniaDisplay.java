@@ -323,7 +323,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.fillTriangle(w / 2, h - fh, w, h - fh, w * 3 / 4, h - fh - 40);
 
 			DrawButtons();
-			g.drawImage(logo, w / 2, h / 2, Graphics.VCENTER | Graphics.HCENTER);
+			DrawLogo((w - logo.getWidth()) >> 1, (h - logo.getHeight()) >> 1);
 			return;
 		}
 		if (progress < 3f) {
