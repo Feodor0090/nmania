@@ -17,10 +17,11 @@ public class AudioSettings extends ListScreen implements IListSelectHandler, INu
 	}
 
 	public String GetOption() {
-		return null;
+		return "HELP";
 	}
 
 	public void OnOptionActivate(IDisplay d) {
+		d.Push(new Alert("AUDIO SETTINGS", "Feedback samples - sounds like restart, fail, pass, etc. \n BMS's sounds - usage of effects provided by loaded beatmap, not default ones. \n Clock offset - set to positive to make notes appear earlier than music, set to negative to make notes appear before than music. Value is in milliseconds (1000 is 1 second)."));
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
