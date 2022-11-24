@@ -177,14 +177,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					DrawBuildWarning(); // ?dbg
 					DrawHeader(stack[top].GetTitle());
 					if (stack[top].ShowLogo()) {
-						int s = logo.getHeight();
 						int lx = w - logo.getWidth() + LogoOffset;
-						int ly = -LogoOffset;
-
-						if (music != null) {
-							DrawDisc(lx, ly, s, abp);
-						}
-						g.drawImage(logo, lx, ly, 0);
+						DrawLogo(lx, -LogoOffset);
 					}
 				}
 				DrawTouchEffect();
@@ -238,6 +232,15 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			x += 20;
 		}
 		print(g, "debug", w >> 1, h, 0xff0000, -1, Graphics.HCENTER | Graphics.BOTTOM);
+	}
+
+	private final void DrawLogo(int lx, int ly) {
+		float p = beatProgress;
+		if (music == null) {
+			p = (System.currentTimeMillis() % 10000) / 10000f;
+		}
+		DrawDisc(lx, ly, logo.getHeight(), p);
+		g.drawImage(logo, lx, ly, 0);
 	}
 
 	private final void DrawDisc(int x, int y, int s, float p) {
@@ -301,8 +304,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			int fw = (int) (w * progress);
 			g.fillRect(w - fw, 0, fw, h);
 			DrawButtons();
-			g.drawImage(logo, lerp(w - (prev.ShowLogo() ? logo.getWidth() : 0), w / 2 - logo.getWidth() / 2, progress),
-					lerp(0, h / 2 - logo.getHeight() / 2, progress), 0);
+			DrawLogo(lerp(w - (prev.ShowLogo() ? logo.getWidth() : 0), w / 2 - logo.getWidth() / 2, progress),
+					lerp(0, h / 2 - logo.getHeight() / 2, progress));
 			return;
 		}
 		if (progress < 2f) {
@@ -320,7 +323,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.fillTriangle(w / 2, h - fh, w, h - fh, w * 3 / 4, h - fh - 40);
 
 			DrawButtons();
-			g.drawImage(logo, w / 2, h / 2, Graphics.VCENTER | Graphics.HCENTER);
+			DrawLogo((w - logo.getWidth()) >> 1, (h - logo.getHeight()) >> 1);
 			return;
 		}
 		if (progress < 3f) {
@@ -329,7 +332,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.setColor(ColorUtils.blend(DARKER_COLOR, NEGATIVE_COLOR, (int) ((progress - 2f) * 255)));
 			g.fillRect(w / 2, 0, w / 2, h);
 			DrawButtons();
-			g.drawImage(logo, w / 2, h / 2, Graphics.VCENTER | Graphics.HCENTER);
+			DrawLogo((w - logo.getWidth()) >> 1, (h - logo.getHeight()) >> 1);
 			return;
 		}
 		if (progress < 4f) {
@@ -348,8 +351,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.fillRect(0, 0, fw, h);
 			g.fillRect(w - fw, 0, fw, h);
 			DrawButtons();
-			g.drawImage(logo, lerp(w - (next.ShowLogo() ? logo.getWidth() : 0), w / 2 - logo.getWidth() / 2,
-					1f - (progress - 3f)), lerp(0, h / 2 - logo.getHeight() / 2, 1f - (progress - 3f)), 0);
+			DrawLogo(lerp(w - (next.ShowLogo() ? logo.getWidth() : 0), w / 2 - logo.getWidth() / 2,
+					1f - (progress - 3f)), lerp(0, h / 2 - logo.getHeight() / 2, 1f - (progress - 3f)));
 			return;
 		}
 		if (bg == null) {
@@ -364,7 +367,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		DrawButtons();
 		DrawHeader(next.GetTitle());
 		if (next.ShowLogo())
-			g.drawImage(logo, w - logo.getWidth(), 0, 0);
+			DrawLogo(w - logo.getWidth(), 0);
 		trFrw = -1;
 	}
 
@@ -381,12 +384,13 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.translate(-g.getTranslateX(), -g.getTranslateY());
 			DrawHeader(top.GetTitle());
 			if (top.ShowLogo())
-				g.drawImage(logo, w - logo.getWidth(), 0, 0);
+				DrawLogo(w - logo.getWidth(), 0);
 			int fh = (int) (h * progress);
 			g.setColor(DARKER_COLOR);
 			g.fillRect(0, 0, w / 2, fh);
 			g.fillRect(w / 2, h - fh, w / 2, fh);
 			DrawButtons();
+			DrawBuildWarning(); // ?dbg
 			return;
 		}
 		if (progress < 2f) {
@@ -400,12 +404,13 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			target.Paint(g, w, h - headerH - 10 - keysH);
 			g.translate(-g.getTranslateX(), -g.getTranslateY());
 			DrawHeader(target.GetTitle());
-			if (top.ShowLogo())
-				g.drawImage(logo, w - logo.getWidth(), 0, 0);
+			if (target.ShowLogo())
+				DrawLogo(w - logo.getWidth(), 0);
 			int fw = (int) (w * (2f - progress));
 			g.setColor(DARKER_COLOR);
 			g.fillRect(w - fw, 0, fw, h);
 			DrawButtons();
+			DrawBuildWarning(); // ?dbg
 			return;
 		}
 		if (bg == null) {
@@ -418,9 +423,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		target.Paint(g, w, h - headerH - 10 - keysH);
 		g.translate(0, -g.getTranslateY());
 		DrawButtons();
+		DrawBuildWarning(); // ?dbg
 		DrawHeader(target.GetTitle());
 		if (target.ShowLogo())
-			g.drawImage(logo, w - logo.getWidth(), 0, 0);
+			DrawLogo(w - logo.getWidth(), 0);
 		trBrw = -1;
 	}
 
@@ -430,11 +436,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		g.setColor(clri);
 		int lkh = (int) (keysH * clamp1(leftButtonContract * 2f));
 		int lkh2 = (int) (keysH2 * clamp1(leftButtonContract * 2f - 1f));
-		g.fillTriangle(0, h - lkh, 0, h, w / 2 - keysW, h);
-		g.fillTriangle(0, h - lkh, w / 2 - keysW2, h - lkh2, w / 2 - keysW, h);
-		print(g, lastValidLeftButton, 1, (int) (h - 1 + keysH2 * (1f - leftButtonContract)), clri, SoftkeysOutlineColor,
-				Graphics.BOTTOM | Graphics.LEFT);
-
+		if (leftButtonContract != 0) {
+			g.fillTriangle(0, h - lkh, 0, h, w / 2 - keysW, h);
+			g.fillTriangle(0, h - lkh, w / 2 - keysW2, h - lkh2, w / 2 - keysW, h);
+			print(g, lastValidLeftButton, 1, (int) (h - 1 + keysH2 * (1f - leftButtonContract)), clri, SoftkeysOutlineColor,
+					Graphics.BOTTOM | Graphics.LEFT);
+		}
 		clri = ColorUtils.blend(NEGATIVE_COLOR, PINK_COLOR, (int) (255 * rightButtonState));
 		g.setColor(clri);
 		g.fillTriangle(w, h - keysH, w, h, w / 2 + keysW, h);
@@ -612,15 +619,19 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	public void SetAudio(BeatmapSet set) {
 		if (music != null) {
 			if (set != null && set.folderName.equals(lastMusicDir)) {
+				GL.Log("(ui) Skipping already playing track...");
 				return;
 			}
 			music.Stop();
 			music = null;
 			System.gc();
 		}
-		if (set == null)
+		if (set == null) {
+			GL.Log("(ui) Music disabled.");
 			return;
+		}
 		try {
+			GL.Log("(ui) Loading new music...");
 			music = new AudioController(set);
 			music.Loop();
 			music.Play();

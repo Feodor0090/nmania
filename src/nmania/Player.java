@@ -87,6 +87,9 @@ public final class Player extends GameCanvas {
 		tempKeys = new boolean[columnsCount];
 		holdKeys = new boolean[columnsCount];
 		lastHoldKeys = new boolean[columnsCount];
+		pointersNumbers = new int[columnsCount];
+		for (int i = 0; i < columnsCount; i++)
+			pointersNumbers[i] = -1;
 		int[] kbl = Settings.keyLayout[columnsCount - 1];
 		if (kbl == null) {
 			// this is a fallback to allow autoplay without set layout
@@ -290,6 +293,7 @@ public final class Player extends GameCanvas {
 	 * Stores currently holded keys.
 	 */
 	private final boolean[] tempKeys;
+	private final int[] pointersNumbers;
 	private final int[] holdHoldingTimes;
 	private final boolean[] holdHeadScored;
 	private final int[] keyMappings;
@@ -348,7 +352,7 @@ public final class Player extends GameCanvas {
 	 */
 	private int framesPassed = 0;
 	// profiler temps
-	private int _lastFrames, _lastTime, _lastMem, _lastFps;
+	private int _lastFrames, _lastTime, _lastFps;
 
 	public boolean isPaused = false;
 	public boolean running = true;
@@ -370,7 +374,6 @@ public final class Player extends GameCanvas {
 			SNUtils.toARGB("0x494"), SNUtils.toARGB("0x0B0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x90F") };
 
 	private final int scrollDiv = Settings.speedDiv;
-	// public String log = "";
 
 	/**
 	 * Clears allocated samples.
@@ -443,13 +446,13 @@ public final class Player extends GameCanvas {
 			return;
 		}
 		if (k == keyMappings[columnsCount]) {
-			isPaused = true;
-			track.Pause();
-			pauseItem = 0;
+			TriggerPause();
 			return;
 		}
-		if (input != null)
+		if (input != null) {
+			GL.Log("(input) Key " + k + " is pressed, but input overrider is attached. It will be ignored.");
 			return;
+		}
 		for (int i = 0; i < columnsCount; i++) {
 			if (keyMappings[i] == k) {
 				ToggleColumnInputState(i, true);
@@ -510,6 +513,12 @@ public final class Player extends GameCanvas {
 			recorder.Receive(time, column, state);
 	}
 
+	private final void TriggerPause() {
+		isPaused = true;
+		track.Pause();
+		pauseItem = 0;
+	}
+
 	protected final void pointerPressed(final int x, final int y) {
 		if (isPaused) {
 			if (failed) {
@@ -519,10 +528,31 @@ public final class Player extends GameCanvas {
 			}
 			keyPressed(-5);
 		} else {
-			isPaused = true;
-			track.Pause();
-			pauseItem = 0;
-			return;
+			if (x < leftOffset) {
+				TriggerPause();
+				return;
+			}
+			final int column = (x - leftOffset) / colWp1;
+			if (column >= columnsCount) {
+				TriggerPause();
+				return;
+			}
+			if (pointersNumbers[column] == -1) {
+				String pn = System.getProperty("com.nokia.pointer.number");
+				pointersNumbers[column] = pn == null ? 0 : (pn.charAt(0) - '0');
+				ToggleColumnInputState(column, true);
+			}
+		}
+	}
+
+	protected final void pointerReleased(final int x, final int y) {
+		String pn = System.getProperty("com.nokia.pointer.number");
+		int n = pn == null ? 0 : (pn.charAt(0) - '0');
+		for (int i = 0; i < columnsCount; i++) {
+			if (pointersNumbers[i] == n) {
+				pointersNumbers[i] = -1;
+				ToggleColumnInputState(i, false);
+			}
 		}
 	}
 

@@ -1,0 +1,164 @@
+s
+s
+s
+f
+wait
+s
+s
+s
+w
+w
+w
+e
+/ to menu
+wait
+w
+/ to browser
+f
+wait
+e
+wait
+w
+/ to skin
+f
+wait
+e
+wait
+q
+wait
+s
+f
+wait
+f
+wait
+35
+35
+49
+35
+55
+53
+q
+wait
+s
+s
+s
+/ toggle fps
+f
+e
+/ at settings
+wait
+s
+f
+wait
+s
+s
+f
+s
+f
+e
+/ at settings
+wait
+s
+f
+/ system settings
+wait
+s
+f
+s
+f
+s
+f
+s
+f
+s
+s
+s
+s
+f
+wait
+e
+wait
+/ disk select
+s
+f
+wait
+f
+wait
+q
+wait
+e
+wait
+q
+wait
+w
+/ export of settings
+f
+wait
+e
+wait
+e
+wait
+/ at main menu, settings section ends
+w
+f
+wait
+s
+f
+wait
+/ osz unpack
+q
+wait
+wait
+wait
+e
+wait
+f
+wait
+s
+f
+wait
+wait
+/ at chart
+q
+wait
+a
+s
+s
+/ mods save
+f
+e
+wait
+e
+wait
+e
+wait
+q
+wait
+w
+f
+wait
+e
+wait
+e
+wait
+f
+wait
+s
+f
+wait
+wait
+/ at chart
+d
+s
+s
+s
+f
+wait 3000
+a
+f
+wait
+e
+wait
+e
+wait
+e
