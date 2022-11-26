@@ -85,7 +85,6 @@ public final class Player extends GameCanvas {
 		columns = new int[columnsCount][];
 		currentNote = new int[columnsCount];
 		tempKeys = new boolean[columnsCount];
-		holdKeys = new boolean[columnsCount];
 		lastHoldKeys = new boolean[columnsCount];
 		pointersNumbers = new int[columnsCount];
 		for (int i = 0; i < columnsCount; i++)
@@ -282,13 +281,9 @@ public final class Player extends GameCanvas {
 	private final int[][] columns;
 	private final int[] currentNote;
 	/**
-	 * Copy of {@link #holdKeys}, lags 1 frame behind.
+	 * Copy of {@link #tempKeys}, lags 1 frame behind.
 	 */
 	private final boolean[] lastHoldKeys;
-	/**
-	 * Copy of {@link #tempKeys} to lock input state while working on input frame.
-	 */
-	private final boolean[] holdKeys;
 	/**
 	 * Stores currently holded keys.
 	 */
@@ -478,7 +473,7 @@ public final class Player extends GameCanvas {
 		for (int i = 0; i < currentNote.length; i++) {
 			currentNote[i] = 0;
 			holdHeadScored[i] = false;
-			holdKeys[i] = false;
+			tempKeys[i] = false;
 			lastHoldKeys[i] = false;
 		}
 		if (input != null)
@@ -570,7 +565,6 @@ public final class Player extends GameCanvas {
 				// replay handling
 				time = input.UpdatePlayer(this, time);
 			}
-			System.arraycopy(tempKeys, 0, holdKeys, 0, columnsCount);
 
 			if (isPaused) {
 				PauseUpdateLoop();
@@ -635,16 +629,18 @@ public final class Player extends GameCanvas {
 			// checking all columns for incoming hits
 			for (int column = 0; column < columnsCount; column++) {
 				// loop for each column
+				boolean colKey = tempKeys[column];
 
 				// drawing keys (if changed)
-				if (holdKeys[column] && !lastHoldKeys[column])
+				if (colKey && !lastHoldKeys[column])
 					DrawKey(column, true);
-				else if (!holdKeys[column] && lastHoldKeys[column])
+				else if (!colKey && lastHoldKeys[column])
 					DrawKey(column, false);
 
 				// checks for columns with no more notes
 				if (currentNote[column] >= columns[column].length) {
 					emptyColumns++; // this column is empty
+					lastHoldKeys[column] = colKey;
 					continue; // nothing to do here anymore
 				}
 
@@ -660,11 +656,12 @@ public final class Player extends GameCanvas {
 
 				// is it too early to handle?
 				if (diff < -hitWindows[0]) {
+					lastHoldKeys[column] = colKey;
 					continue; // note can't be hit yet
 				}
 
 				// if we have input
-				if (holdKeys[column]) {
+				if (colKey) {
 					// it is a single note
 					if (dur == 0) {
 						// we are waiting press, not enter with hold.
@@ -683,6 +680,7 @@ public final class Player extends GameCanvas {
 									break; // loop on HW
 								}
 							}
+							lastHoldKeys[column] = colKey;
 							continue;
 						}
 					} else {
@@ -706,6 +704,7 @@ public final class Player extends GameCanvas {
 										break; // loop on HW
 									}
 								}
+								lastHoldKeys[column] = colKey;
 								continue;
 							}
 							holdHoldingTimes[column] = 0; // ready to count holding ms
@@ -742,6 +741,7 @@ public final class Player extends GameCanvas {
 										break;
 									}
 								}
+								lastHoldKeys[column] = colKey;
 								continue;
 							} // else it's still body of hold
 						} // else do nothing
@@ -755,13 +755,14 @@ public final class Player extends GameCanvas {
 								+ diff + "ms diff, skipping"); // ?dbg
 						CountHit(0);
 						currentNote[column] += 2;
+						lastHoldKeys[column] = colKey;
 						continue;
-					}
-					if (!holdHeadScored[column]) {
+					} if (!holdHeadScored[column]) {
 						GL.Log("(detect) Head on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
 								+ diff + "ms diff, skipping"); // ?dbg
 						CountHit(0); // counting hit only for head
 						holdHeadScored[column] = true;
+						lastHoldKeys[column] = colKey;
 						continue;
 					} // else hold is holded
 				}
@@ -774,13 +775,12 @@ public final class Player extends GameCanvas {
 						holdHeadScored[column] = false;
 					}
 				}
+				lastHoldKeys[column] = colKey;
 			}
 
-			System.arraycopy(holdKeys, 0, lastHoldKeys, 0, columnsCount);
-
 			if (emptyColumns == columnsCount) {
-				PassSequence();
 				GL.Log("(player) Beatmap passed!");
+				PassSequence();
 			} else if (!breakActive) {
 				Redraw();
 			}
