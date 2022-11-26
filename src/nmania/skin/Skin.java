@@ -33,4 +33,6 @@ public abstract class Skin {
 	 * </ul>
 	 */
 	public abstract Object GetNotesLook(int columns);
+	
+	public abstract void SaveData();
 }
