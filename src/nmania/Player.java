@@ -84,6 +84,7 @@ public final class Player extends GameCanvas {
 		columnsCount = map.columnsCount;
 		columns = new int[columnsCount][];
 		currentNote = new int[columnsCount];
+		tempKeys = new boolean[columnsCount];
 		holdKeys = new boolean[columnsCount];
 		lastHoldKeys = new boolean[columnsCount];
 		pointersNumbers = new int[columnsCount];
@@ -280,8 +281,18 @@ public final class Player extends GameCanvas {
 	private final int columnsCount;
 	private final int[][] columns;
 	private final int[] currentNote;
+	/**
+	 * Copy of {@link #holdKeys}, lags 1 frame behind.
+	 */
 	private final boolean[] lastHoldKeys;
+	/**
+	 * Copy of {@link #tempKeys} to lock input state while working on input frame.
+	 */
 	private final boolean[] holdKeys;
+	/**
+	 * Stores currently holded keys.
+	 */
+	private final boolean[] tempKeys;
 	private final int[] pointersNumbers;
 	private final int[] holdHoldingTimes;
 	private final boolean[] holdHeadScored;
@@ -496,7 +507,7 @@ public final class Player extends GameCanvas {
 	}
 
 	public final void ToggleColumnInputState(int column, boolean state) {
-		holdKeys[column] = state;
+		tempKeys[column] = state;
 		GL.Log("(input) " + state + " on column " + column + " at time " + time + ", global frame " + framesPassed);
 		if (recorder != null)
 			recorder.Receive(time, column, state);
@@ -559,6 +570,7 @@ public final class Player extends GameCanvas {
 				// replay handling
 				time = input.UpdatePlayer(this, time);
 			}
+			System.arraycopy(tempKeys, 0, holdKeys, 0, columnsCount);
 
 			if (isPaused) {
 				PauseUpdateLoop();
