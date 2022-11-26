@@ -779,8 +779,8 @@ public final class Player extends GameCanvas {
 			System.arraycopy(holdKeys, 0, lastHoldKeys, 0, columnsCount);
 
 			if (emptyColumns == columnsCount) {
-				PassSequence();
 				GL.Log("(player) Beatmap passed!");
+				PassSequence();
 			} else if (!breakActive) {
 				Redraw();
 			}
