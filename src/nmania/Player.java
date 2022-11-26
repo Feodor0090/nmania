@@ -473,7 +473,7 @@ public final class Player extends GameCanvas {
 		for (int i = 0; i < currentNote.length; i++) {
 			currentNote[i] = 0;
 			holdHeadScored[i] = false;
-			holdKeys[i] = false;
+			tempKeys[i] = false;
 			lastHoldKeys[i] = false;
 		}
 		if (input != null)
