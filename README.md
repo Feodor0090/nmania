@@ -1,4 +1,4 @@
-![nmania logo](/res/ui/nmania-logo-1x.png)
+![nmania logo](/logo.png)
 # nmania
 Open source Vertical Scrolling Rhythm Game for J2ME. Compatible with osu!mania beatmaps and intented to be it's clone. More gameplay modes and support of other games' beatmaps may come in future.
 
