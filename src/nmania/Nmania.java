@@ -44,6 +44,11 @@ public final class Nmania extends MIDlet implements CommandListener {
 
 	protected void pauseApp() {
 		GL.Log("(app) Pausing the midlet");
+		if (disp == null)
+			disp = Display.getDisplay(inst);
+		Displayable curr = disp.getCurrent();
+		if (curr instanceof IDisplay)
+			((IDisplay) curr).PauseRendering();
 	}
 
 	/**
@@ -61,8 +66,14 @@ public final class Nmania extends MIDlet implements CommandListener {
 	protected void startApp() throws MIDletStateChangeException {
 		if (running) {
 			GL.Log("(app) Unpausing the midlet!");
+			if (disp == null)
+				disp = Display.getDisplay(inst);
+			Displayable curr = disp.getCurrent();
+			if (curr instanceof IDisplay)
+				((IDisplay) curr).ResumeRendering();
 			return;
 		}
+		running = true;
 		Settings.Load();
 		GL.Create(true);// ?dbg
 		if (Settings.name == null) // ?sid
@@ -88,7 +99,6 @@ public final class Nmania extends MIDlet implements CommandListener {
 		GL.Log("(app) Changing global displayable to " + d.getClass().getName());
 		if (disp == null)
 			disp = Display.getDisplay(inst);
-
 		Displayable curr = disp.getCurrent();
 		if (curr == d)
 			return;
