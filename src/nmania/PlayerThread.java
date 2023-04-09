@@ -15,6 +15,7 @@ public final class PlayerThread extends Thread {
 			if (Settings.maxPriority)
 				this.setPriority(MAX_PRIORITY);
 			player.Refill();
+			int a = 0;
 			player.track.Play();
 			GL.Log("(player) Loop entered!");
 			player.Loop();
