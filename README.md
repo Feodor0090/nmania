@@ -16,7 +16,7 @@ Open source Vertical Scrolling Rhythm Game for J2ME. Compatible with osu!mania b
 - Enough perfomance. In case of Symbian, ~450mhz CPU is okay (f.e., OMAP 2430/31), but it depends on JVM implementation and CPU capatibilities.
 ### Recommended devices
 9.3 or ^3 Symbian device with keyboard is recommended (E5, E6, E7, E72).
-### Emulators
+### Emulators eee
 - `J2ME Loader` has major problems with native UI, but playable. Use OTG or BT keyboard. 640x360 is recommended. Your working folder is likely `/storage/emulated/0/Data/Sounds/nmania/`.
 - `PhoneME` is partially playable, has major problems with input/gameplay/music synchronization and files.
 - `KEmulator` is not compatible due to broken multimedia API.
