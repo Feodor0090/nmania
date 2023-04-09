@@ -944,6 +944,7 @@ public final class Player extends GameCanvas {
 			else
 				Nmania.Push(menu);
 		} else {
+			pauseItem = 0;
 			isPaused = true;
 			while (isPaused) {
 				int sw3 = scrW / 3;
