@@ -508,7 +508,7 @@ public final class Player extends GameCanvas {
 			recorder.Receive(time, column, state);
 	}
 
-	private final void TriggerPause() {
+	public final void TriggerPause() {
 		isPaused = true;
 		track.Pause();
 		pauseItem = 0;

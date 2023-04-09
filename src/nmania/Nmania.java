@@ -49,6 +49,8 @@ public final class Nmania extends MIDlet implements CommandListener {
 		Displayable curr = disp.getCurrent();
 		if (curr instanceof IDisplay)
 			((IDisplay) curr).PauseRendering();
+		if (curr instanceof Player)
+			((Player) curr).TriggerPause();
 	}
 
 	/**
