@@ -1001,12 +1001,17 @@ public final class Player extends GameCanvas {
 		if (health > 1000)
 			health = 1000;
 		if (health < 0) {
-			if (j == 0) {
+			if (failCondition == -1) {
 				// NoFail can't fail, NF is -1
-				if (failCondition < 0) {
-					failed = true;
-				}
+				health = 1;
+			} else if (j == 0) {
+				// miss, health is negative - it's a fail
+				failed = true;
+			} else if (failCondition > 0) {
+				// running to -1 with SD/PF fails even if it wasn't miss.
+				failed = true;
 			} else {
+				// meh/ok, NoMod. One more chance.
 				health = 0;
 			}
 		}
