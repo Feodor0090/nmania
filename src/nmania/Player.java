@@ -74,7 +74,13 @@ public final class Player extends GameCanvas {
 		log.log("Setting scoring up");
 		hitWindows = new int[] { (int) (188 - 3 * od), (int) (151 - 3 * od), (int) (127 - 3 * od), (int) (97 - 3 * od),
 				(int) (64 - 3 * od), perfectHW };
-		healthValues = new int[] { daMod > 0 ? -1001 : -100, -10, 0, 20, 40, 50 };
+		if (faMod == 2) {
+			// perfect mod
+			healthValues = new int[] { -1001, -1001, -1001, -1001, -50, 100 };
+		} else {
+			// sudden death & anything else
+			healthValues = new int[] { faMod == 1 ? -1001 : -100, -10, 0, 20, 40, 50 };
+		}
 		score = new ScoreController(input);
 		failCondition = faMod;
 
@@ -295,7 +301,7 @@ public final class Player extends GameCanvas {
 	private final int[] hitWindows;
 	private final int[] healthValues;
 	/**
-	 * @see PlayerBootstrapData#failMod
+	 * @see ModsState#GetFA
 	 */
 	private final int failCondition;
 	private final int[] breaks;
@@ -990,8 +996,8 @@ public final class Player extends GameCanvas {
 			health = 1000;
 		if (health < 0) {
 			if (j == 0) {
-				// MoFail can't fail
-				if (failCondition >= 0) {
+				// NoFail can't fail, NF is -1
+				if (failCondition < 0) {
 					failed = true;
 				}
 			} else {
