@@ -76,7 +76,7 @@ public class ModsState {
 	 */
 	public void SetFA(int state) {
 		value = value & (~(1 | 32 | 16384));
-		if (state < 0)
+		if (state == -1)
 			value = value | 1;
 		if (state == 1)
 			value = value | 32;
