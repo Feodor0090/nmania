@@ -86,6 +86,13 @@ public final class ScoreController implements IScore {
 		currentCombo = 0;
 		realTicks = 0;
 		resettableTicks = 0;
+
+		// acc
+		currentAcc[0] = '1';
+		currentAcc[1] = '0';
+		currentAcc[2] = '0';
+		currentAcc[4] = '0';
+		currentAcc[5] = '0';
 	}
 
 	public int GetPerfects() {
