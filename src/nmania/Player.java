@@ -577,6 +577,8 @@ public final class Player extends GameCanvas {
 		// initial paint
 		Refill();
 		flushGraphics();
+		// begin track
+		track.Play();
 		// loop
 		while (running) {
 			// TODO optimize all this shit
