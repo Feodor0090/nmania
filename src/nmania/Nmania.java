@@ -73,6 +73,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 				((IDisplay) curr).ResumeRendering();
 			return;
 		}
+
 		running = true;
 		Settings.Load();
 		GL.Create(true);// ?dbg
