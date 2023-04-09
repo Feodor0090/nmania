@@ -349,9 +349,21 @@ public final class Player extends GameCanvas {
 	// profiler temps
 	private int _lastFrames, _lastTime, _lastFps;
 
+	/**
+	 * Keep this flag true to keep gameplay in pause (or failed pause) loop and block input.
+	 */
 	public boolean isPaused = false;
+	/**
+	 * Make this flag false to end update loop.
+	 */
 	public boolean running = true;
+	/**
+	 * Make this flag true to make gameplay logic enter failed state on next frame.
+	 */
 	public boolean failed = false;
+	/**
+	 * Make this flag true before bumping failed state to make player exit as soon as possible.
+	 */
 	private boolean exitNow = false;
 	private int pauseItem = 0;
 
@@ -572,7 +584,8 @@ public final class Player extends GameCanvas {
 			}
 			if (failed) {
 				FailSequence(exitNow);
-				return;
+				if (!running)
+					return;
 			}
 
 			boolean breakActive = false;
@@ -931,7 +944,6 @@ public final class Player extends GameCanvas {
 			else
 				Nmania.Push(menu);
 		} else {
-			track.Pause();
 			isPaused = true;
 			while (isPaused) {
 				int sw3 = scrW / 3;
