@@ -25,7 +25,7 @@ Open source Vertical Scrolling Rhythm Game for J2ME. Compatible with osu!mania b
 ## Join our chat in TG!
 https://t.me/nnmidletschat
 
-## How to play
+## How to play ввв
 Go to [osu!direct](https://osu.ppy.sh/beatmapsets/) or [it's mirror](https://beatconnect.io/) and download maps that you want to play (or copy them from stable's `Songs` folder). Extract your maps to `C:/Data/Sounds/nmania/` (if there is no such path, create folders manually) like stable does - one nested folder for each mapset.
 
 **There is no guarantee that your beatmap will work as it is!** You may need to reencode the music to MP3, rename weird files, etc. **osu!, osu!taiko and osu!catch beatmaps are not supported!** You need osu!mania-first beatmaps (for "mode" `3`).
