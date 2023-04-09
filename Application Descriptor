@@ -2,6 +2,7 @@ MIDlet-Vendor: Feodor0090
 MIDlet-Version: 2.2.0
 MIDlet-Info-URL: https://github.com/Feodor0090/nmania
 Nokia-UI-Enhancement: EnableMultiPointTouchEvents
+Nokia-MIDlet-Background-Event: pause
 MicroEdition-Configuration: CLDC-1.1
 MIDlet-1: nmania,/ui/nmania-logo-0.25x.png,nmania.Nmania
 MIDlet-Name: nmania
