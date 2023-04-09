@@ -600,7 +600,7 @@ public final class Player extends GameCanvas {
 			if (breaks[currentBreak] - time < 0) {
 				// break is in progress
 				if (breaks[currentBreak] + breaks[currentBreak + 1] - time < 0) {
-					// or not?
+					// break has just ended, skipping it and repainting bg JIC
 					Refill();
 					currentBreak += 2;
 				} else {
@@ -608,7 +608,7 @@ public final class Player extends GameCanvas {
 					int timepassed = time - breaks[currentBreak];
 					int timeleft = breaks[currentBreak] + breaks[currentBreak + 1] - time;
 					if (timepassed < 500) {
-						// fading out playfield (break started)
+						// fading playfield out (break started)
 						int fade = scrH * timepassed / 500;
 						if (rich == null)
 							RedrawHUDVector();
@@ -619,7 +619,7 @@ public final class Player extends GameCanvas {
 						g.setClip(0, 0, scrW, scrH);
 						flushGraphics();
 					} else if (timeleft < 500) {
-						// fading in
+						// fading playfield in (break will end soon)
 						int fade = scrH * (500 - timeleft) / 500;
 						g.setClip(0, 0, scrW, fade);
 						FillBg();
@@ -627,14 +627,14 @@ public final class Player extends GameCanvas {
 						for (int i = 0; i < columnsCount; i++) {
 							DrawKey(i, false);
 						}
-						Redraw();
+						Redraw(true);
 						if (rich == null)
 							RedrawHUDVector();
 						else
 							RedrawHUDRich();
 						g.setClip(0, 0, scrW, scrH);
 					} else {
-						// idle
+						// idle (break is in progress)
 						g.setClip(0, 0, scrW, scrH);
 						FillBg();
 						// drawing countdown
@@ -803,7 +803,7 @@ public final class Player extends GameCanvas {
 				GL.Log("(player) Beatmap passed!");
 				PassSequence();
 			} else if (!breakActive) {
-				Redraw();
+				Redraw(false);
 			}
 
 			if (Settings.forceThreadSwitch)
@@ -903,7 +903,7 @@ public final class Player extends GameCanvas {
 			}
 		}
 		Refill();
-		Redraw();
+		Redraw(true);
 	}
 
 	/**
@@ -969,7 +969,7 @@ public final class Player extends GameCanvas {
 				}
 			}
 			Refill();
-			Redraw();
+			Redraw(true);
 		}
 	}
 
@@ -1004,7 +1004,7 @@ public final class Player extends GameCanvas {
 	}
 
 	/**
-	 * Fully redraws the game.
+	 * Fully redraws the basics of the game. Does not perform flush!
 	 */
 	public final void Refill() {
 		FillBg();
@@ -1026,13 +1026,12 @@ public final class Player extends GameCanvas {
 				g.setColor(0, 200, 0);
 			g.drawString(t, x, 41, 0);
 		}
-		flushGraphics();
 	}
 
 	/**
 	 * Method to redraw hot areas. Called by update loop.
 	 */
-	public final void Redraw() {
+	public final void Redraw(boolean flushAll) {
 		if (rich == null) {
 			g.setClip(0, 0, scrW, kbY);
 			RedrawNotesVector();
@@ -1044,7 +1043,7 @@ public final class Player extends GameCanvas {
 			g.setClip(0, 0, scrW, scrH);
 			RedrawHUDRich();
 		}
-		if (Settings.fullScreenFlush) {
+		if (Settings.fullScreenFlush || flushAll) {
 			flushGraphics();
 		} else {
 			// cols
