@@ -574,6 +574,10 @@ public final class Player extends GameCanvas {
 	 * Method that is called by update thread. Contains gameplay logic.
 	 */
 	public final void Loop() {
+		// initial paint
+		Refill();
+		flushGraphics();
+		// loop
 		while (running) {
 			// TODO optimize all this shit
 			framesPassed++;
