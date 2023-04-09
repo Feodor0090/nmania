@@ -587,12 +587,13 @@ public final class Player extends GameCanvas {
 
 			if (isPaused) {
 				PauseUpdateLoop();
+				GL.Log("(player) Player returned from pause loop.");
 				time = track.Now();
 			}
 			if (failed) {
 				FailSequence(exitNow);
-				if (!running)
-					break;
+				GL.Log("(player) Player returned from fail loop.");
+				continue;
 			}
 
 			boolean breakActive = false;
