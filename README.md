@@ -4,7 +4,7 @@ Open source Vertical Scrolling Rhythm Game for J2ME. Compatible with osu!mania b
 
 ![](/info/sh2.png)
 
-## System requirements
+## System requirements 111
 ### Minimal
 - JVM/KVM on your device with CLDC 1.1
 - MIDP 2.0 support
