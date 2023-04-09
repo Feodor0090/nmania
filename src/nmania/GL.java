@@ -47,6 +47,7 @@ public class GL { // ?dbg
 	}// ?dbg
 
 	public static void LogStats() {// ?dbg
+		long b = 0;
 		long total = Runtime.getRuntime().totalMemory() / 1024;// ?dbg
 		long free = Runtime.getRuntime().freeMemory() / 1024;// ?dbg
 		Log("(app) Memory: T=" + total + " F=" + free + " U=" + (total - free) + "; Threads: " // ?dbg
