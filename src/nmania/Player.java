@@ -441,14 +441,7 @@ public final class Player extends GameCanvas {
 					ResetPlayer();
 					return;
 				}
-				running = false;
-				isPaused = false;
-				track.Stop();
-				Dispose();
-				if (menu == null)
-					Nmania.PushMainScreen();
-				else
-					Nmania.Push(menu);
+				ExitPlayerFromFailedState();
 			}
 			return;
 		}
@@ -466,6 +459,20 @@ public final class Player extends GameCanvas {
 				return;
 			}
 		}
+	}
+	
+	/**
+	 * Makes player stop itself and return to menu. Must be used only from failed state.
+	 */
+	private final void ExitPlayerFromFailedState() {
+		running = false;
+		isPaused = false;
+		track.Stop();
+		Dispose();
+		if (menu == null)
+			Nmania.PushMainScreen();
+		else
+			Nmania.Push(menu);
 	}
 
 	/**
@@ -493,8 +500,8 @@ public final class Player extends GameCanvas {
 		if (recorder != null)
 			recorder.Reset();
 		System.gc();
-		isPaused = false;
 		failed = false;
+		isPaused = false;
 		track.Play();
 		GL.Log("");
 		GL.Log("(player) Player was reset. Now: " + track.Now() + "ms");
@@ -585,7 +592,7 @@ public final class Player extends GameCanvas {
 			if (failed) {
 				FailSequence(exitNow);
 				if (!running)
-					return;
+					break;
 			}
 
 			boolean breakActive = false;
@@ -801,7 +808,7 @@ public final class Player extends GameCanvas {
 			if (Settings.forceThreadSwitch)
 				Thread.yield();
 		}
-
+		GL.Log("(player) Player loop is no longer running.");
 	}
 
 	private final void DrawBreakCountdown(int msLeft) {
@@ -936,13 +943,7 @@ public final class Player extends GameCanvas {
 			}
 		}
 		if (exitAfter) {
-			running = false;
-			track.Stop();
-			Dispose();
-			if (menu == null)
-				Nmania.PushMainScreen();
-			else
-				Nmania.Push(menu);
+			ExitPlayerFromFailedState();
 		} else {
 			pauseItem = 0;
 			isPaused = true;
