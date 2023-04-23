@@ -576,6 +576,7 @@ public final class Player extends GameCanvas {
 			if (pointersNumbers[i] == n) {
 				pointersNumbers[i] = -1;
 				ToggleColumnInputState(i, false);
+				break;
 			}
 		}
 	}
