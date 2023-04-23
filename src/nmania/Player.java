@@ -557,6 +557,8 @@ public final class Player extends GameCanvas {
 				TriggerPause();
 				return;
 			}
+			if (input != null)
+				return;
 			if (pointersNumbers[column] == -1) {
 				String pn = System.getProperty("com.nokia.pointer.number");
 				pointersNumbers[column] = pn == null ? 0 : (pn.charAt(0) - '0');
@@ -566,6 +568,8 @@ public final class Player extends GameCanvas {
 	}
 
 	protected final void pointerReleased(final int x, final int y) {
+		if (input != null)
+			return;
 		String pn = System.getProperty("com.nokia.pointer.number");
 		int n = pn == null ? 0 : (pn.charAt(0) - '0');
 		for (int i = 0; i < columnsCount; i++) {
