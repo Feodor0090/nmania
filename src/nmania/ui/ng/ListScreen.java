@@ -89,12 +89,14 @@ public abstract class ListScreen extends Screen {
 			selected = 0;
 		if (selected >= items.length)
 			selected = items.length - 1;
-		
+
 		int center = h / 2;
 		int selectedY = selected * fontH + fontH / 2;
 		int totalH = items.length * fontH;
 		if (scrollMode == 0) {
-			if (selectedY <= center) {
+			if (totalH <= h) {
+				targetY = 0;
+			} else if (selectedY <= center) {
 				targetY = 0;
 			} else if (totalH - center <= selectedY) {
 				targetY = -(totalH - h);
