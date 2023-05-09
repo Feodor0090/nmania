@@ -640,8 +640,13 @@ public final class Player extends GameCanvas {
 				GL.Log("(player) Player returned from pause loop.");
 				time = track.Now();
 			}
+			// "quit" button in pause
+			if (exitNow) {
+				QuitFromPauseSequence();
+				continue;
+			}
 			if (failed) {
-				FailSequence(exitNow);
+				FailSequence();
 				GL.Log("(player) Player returned from fail loop.");
 				continue;
 			}
@@ -958,18 +963,24 @@ public final class Player extends GameCanvas {
 	}
 
 	/**
-	 * Method that handles failing/exiting.
-	 * 
-	 * @param exitAfter If false, player will be paused and show retry-quit menu
-	 *                  instead of destroying.
+	 * Method which handles quitting from paused state animation. Will destoroy player and bring menu.
 	 */
-	private final void FailSequence(final boolean exitAfter) {
+	private final void QuitFromPauseSequence() {
+		//TODO animation
+		ExitPlayerFromFailedState();
+	}
+
+	/**
+	 * Method that handles failing animation. Player will be paused and show retry-quit menu.
+	 */
+	private final void FailSequence() {
 		track.Pause();
 		if (sectionFail != null) {
 			sectionFail.Play();
 		}
 		final String j = "FAILED";
 		final int length = 50;
+		//TODO animation
 		for (int i = 0; i <= length; i++) {
 			int h1 = scrH * i / length / 2;
 			int w1 = scrW * i / length / 2;
@@ -994,9 +1005,7 @@ public final class Player extends GameCanvas {
 			} catch (Exception e) {
 			}
 		}
-		if (exitAfter) {
-			ExitPlayerFromFailedState();
-		} else {
+
 			pauseItem = 0;
 			isPaused = true;
 			while (isPaused) {
@@ -1021,7 +1030,7 @@ public final class Player extends GameCanvas {
 			}
 			Refill();
 			Redraw(true);
-		}
+
 	}
 
 	/**
