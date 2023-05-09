@@ -174,10 +174,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					}
 					g.translate(0, screenY);
 					stack[top].Paint(g, w, h - screenY - keysH);
-					g.translate(0, -g.getTranslateY());
+					int xoffs = stack[top].DecorationsXOffset();
+					g.translate(xoffs, -g.getTranslateY());
 					DrawButtons();
 					DrawBuildWarning(); // ?dbg
 					DrawHeader(stack[top].GetTitle());
+					g.translate(-xoffs, 0);
 					if (stack[top].ShowLogo()) {
 						int lx = w - logo.getWidth() + LogoOffset;
 						DrawLogo(lx, -LogoOffset);

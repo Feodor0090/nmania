@@ -79,6 +79,10 @@ public abstract class Screen {
 	public void OnResume(IDisplay d) {
 	}
 
+	public int DecorationsXOffset() {
+		return 0;
+	}
+
 	public static boolean IsOk(IDisplay d, int k) {
 		return k == -5 || k == 10 || k == '5' || k == 32 || d.GetDisplayable().getGameAction(k) == Canvas.FIRE;
 	}
