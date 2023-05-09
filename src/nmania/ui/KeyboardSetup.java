@@ -31,10 +31,11 @@ public final class KeyboardSetup extends Canvas {
 		if (currentColumn > columns) {
 			Settings.keyLayout[columns - 1] = keys;
 			Nmania.Push(prev);
+			Settings.Save();
 		} else
 			repaint();
 	}
-	
+
 	protected void pointerPressed(int aX, int aY) {
 		if (touched) {
 			for (int i = 0; i < columns; i++) {
@@ -43,6 +44,7 @@ public final class KeyboardSetup extends Canvas {
 			keys[columns] = -7;
 			Settings.keyLayout[columns - 1] = keys;
 			Nmania.Push(prev);
+			Settings.Save();
 		} else {
 			touched = true;
 			repaint();
