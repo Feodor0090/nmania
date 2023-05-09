@@ -19,23 +19,20 @@ public abstract class ListScreen extends Screen {
 	 */
 	private int selected;
 	/**
-	 * Shift of screen's content which must be approached.
-	 * In keyboard mode, calculated by Y of selected item.
-	 * Always less than zero.
+	 * Shift of screen's content which must be approached. In keyboard mode,
+	 * calculated by Y of selected item. Always less than zero.
 	 */
 	private int targetY;
 	/**
-	 * Shift of screen's content right now.
-	 * In keyboard mode, this approaches targetY.
-	 * In touch mode controlled by used.
-	 * Always less than zero.
+	 * Shift of screen's content right now. In keyboard mode, this approaches
+	 * targetY. In touch mode controlled by used. Always less than zero.
 	 */
 	private int realY;
 	/**
 	 * <ul>
-	 * <li> 0 = keyboard mode, selected item is approached.
-	 * <li> 1 = touch mode, finger is holded.
-	 * <li> 2 = touch mode, finger is released.
+	 * <li>0 = keyboard mode, selected item is approached.
+	 * <li>1 = touch mode, finger is holded.
+	 * <li>2 = touch mode, finger is released.
 	 * </ul>
 	 */
 	private int scrollMode = 0;
@@ -129,10 +126,10 @@ public abstract class ListScreen extends Screen {
 				targetY = 0;
 			} else if (targetY > 0) {
 				targetY = 0;
-			} else if(targetY < -totalH + h) {
+			} else if (targetY < -totalH + h) {
 				targetY = -totalH + h;
 			}
-			if(targetY != realY) {
+			if (targetY != realY) {
 				int diff = targetY - realY;
 				int add = (diff < 0) ? -1 : 1;
 				diff /= 5;
@@ -269,7 +266,7 @@ public abstract class ListScreen extends Screen {
 			scrollMode = 2;
 			if (Math.abs(dragStartY - y) < fontH) {
 				int ti = (-realY + y) / fontH;
-				if(items == null || ti < 0 || ti >= items.length)
+				if (items == null || ti < 0 || ti >= items.length)
 					return;
 				if (ti == selected)
 					ActivateCurrentItem(d);
