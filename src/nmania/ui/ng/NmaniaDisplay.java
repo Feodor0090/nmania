@@ -53,10 +53,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private String lastValidLeftButton = "";
 	private boolean leftButtonActive = false;
 	private float rightButtonState = 0f;
+	private float lastHeaderX = 0;
 	public static Image logo;
 	private int w;
 	private int h;
 	private long time = System.currentTimeMillis();
+	private long delta;
 	private long trFrw = -1, trBrw = -1;
 	private boolean cycle = true;
 	private boolean pause = false;
@@ -100,7 +102,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 						return;
 					}
 				}
-				long delta = System.currentTimeMillis() - time;
+				delta = System.currentTimeMillis() - time;
 				time += delta;
 				boolean kiai = false;
 				float bp = 0f;
@@ -436,8 +438,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		if (leftButtonContract != 0) {
 			g.fillTriangle(0, h - lkh, 0, h, w / 2 - keysW, h);
 			g.fillTriangle(0, h - lkh, w / 2 - keysW2, h - lkh2, w / 2 - keysW, h);
-			print(g, lastValidLeftButton, 1, (int) (h - 1 + keysH2 * (1f - leftButtonContract)), clri, SoftkeysOutlineColor,
-					Graphics.BOTTOM | Graphics.LEFT);
+			print(g, lastValidLeftButton, 1, (int) (h - 1 + keysH2 * (1f - leftButtonContract)), clri,
+					SoftkeysOutlineColor, Graphics.BOTTOM | Graphics.LEFT);
 		}
 		clri = ColorUtils.blend(NEGATIVE_COLOR, PINK_COLOR, (int) (255 * rightButtonState));
 		g.setColor(clri);
@@ -456,16 +458,14 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		int sw = header.stringWidth(title);
 		if (sw > w) {
 			if (sw - lastHeaderX > 0)
-				lastHeaderX += 3;
+				lastHeaderX += (((int) delta) * w) * 0.0003f;
 			else
 				lastHeaderX = -w;
 		} else {
 			lastHeaderX = 0;
 		}
-		print(g, title, 1 - lastHeaderX, 1, HeaderTextColor, BG_COLOR, 0);
+		print(g, title, 1 - (int) lastHeaderX, 1, HeaderTextColor, BG_COLOR, 0);
 	}
-
-	int lastHeaderX = 0;
 
 	protected void keyPressed(int k) {
 		if (pause) {
