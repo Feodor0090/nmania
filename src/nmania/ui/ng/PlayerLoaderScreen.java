@@ -13,6 +13,7 @@ import nmania.Settings;
 
 public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 
+	public static final int TRANSITION_DUR = 400;
 	private final Font f = Font.getFont(0, 0, 8);
 	private final int tc = Graphics.TOP | Graphics.HCENTER;
 
@@ -70,7 +71,7 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 			trofs = w;
 		} else if (stime != -1) {
 			int n = (int) (System.currentTimeMillis() - stime);
-			trofs = w * n / 600;
+			trofs = w * n / TRANSITION_DUR;
 		}
 		g.drawImage(NmaniaDisplay.logo, w / 2 - trofs, y, tc);
 		y += NmaniaDisplay.logo.getHeight();
@@ -154,7 +155,7 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 	public int DecorationsXOffset() {
 		if (stime > 0) {
 			int n = (int) (System.currentTimeMillis() - stime);
-			return d.GetDisplayable().getWidth() * n / 600;
+			return d.GetDisplayable().getWidth() * n / TRANSITION_DUR;
 		}
 		return 0;
 	}
