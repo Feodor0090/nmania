@@ -3,13 +3,36 @@ package nmania;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Read-writable score object, which tracks player's progress while he is
+ * playing.
+ *
+ * @author Feodor0090
+ *
+ */
 public final class ScoreController implements IScore {
 	public Date playTimestamp;
 	public String playerName;
 	public final int[] hits = new int[6];
+	/**
+	 * Total ticks counted through gameplay.
+	 */
 	public int realTicks;
+	/**
+	 * Ticks since last combo break.
+	 */
 	public int resettableTicks;
+	/**
+	 * Achieved ticks count in a row during longest combo chain.
+	 */
+	public int maxTicks;
+	/**
+	 * Score which could be achived by player to this moment, if he played ideally.
+	 */
 	public int maxHitScore;
+	/**
+	 * Achieved score.
+	 */
 	public int currentHitScore;
 	public int maxCombo;
 	public int currentCombo;
@@ -35,8 +58,10 @@ public final class ScoreController implements IScore {
 	public final void CountHit(int type) {
 		hits[type]++;
 		if (type == 0) {
-			if (currentCombo > maxCombo)
+			if (currentCombo > maxCombo) {
 				maxCombo = currentCombo;
+				maxTicks = resettableTicks;
+			}
 			currentCombo = 0;
 			resettableTicks = 0;
 		} else
@@ -128,7 +153,10 @@ public final class ScoreController implements IScore {
 	}
 
 	public int GetCombo() {
-		return maxCombo > currentCombo ? maxCombo : currentCombo;
+		if (maxCombo > currentCombo) {
+			return maxCombo + maxTicks;
+		}
+		return currentCombo + resettableTicks;
 	}
 
 	public boolean IsFC() {
