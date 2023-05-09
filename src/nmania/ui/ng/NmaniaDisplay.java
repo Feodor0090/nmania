@@ -3,7 +3,6 @@ package nmania.ui.ng;
 import java.io.IOException;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -48,7 +47,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private final Font header;
 	private final int headerH;
 	private final int screenY;
-	static Font buttons = Font.getFont(0, 1, 8);
+	static final Font buttons = Font.getFont(0, 1, 8);
 	private float leftButtonContract = 1f;
 	private float leftButtonState = 0f;
 	private String lastValidLeftButton = "";
@@ -253,8 +252,6 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		g.setColor(BG_COLOR);
 		g.fillArc(x, y, s, s, (int) (360 * p) + 180, 90);
 	}
-
-	private static final int releaseAnimDur = 240;
 
 	private final void DrawTouchEffect() {
 		long now = System.currentTimeMillis();
