@@ -100,10 +100,11 @@ public class PlayerLoader extends Thread {
 				GL.Log("(player) Gameplay displayable is being pushed...");
 				Nmania.Push(p);
 				GL.Log("(player) Gameplay displayable pushed!");
-				if (log instanceof PlayerLoaderScreen)
-					((PlayerLoaderScreen) log).EndTransition();
 				Thread t = new PlayerThread(p);
 				t.start();
+				Thread.sleep(250);
+				if (log instanceof PlayerLoaderScreen)
+					((PlayerLoaderScreen) log).EndTransition();
 			} catch (InterruptedException e) {
 				Nmania.Push(back);
 				return;
