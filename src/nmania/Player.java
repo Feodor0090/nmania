@@ -557,21 +557,30 @@ public final class Player extends GameCanvas {
 				TriggerPause();
 				return;
 			}
+			if (input != null)
+				return;
 			if (pointersNumbers[column] == -1) {
 				String pn = System.getProperty("com.nokia.pointer.number");
-				pointersNumbers[column] = pn == null ? 0 : (pn.charAt(0) - '0');
+				int n = pn == null ? 0 : (pn.charAt(0) - '0');
+				GL.Log("(input) touch " + n + " pressed at x=" + x);
+				pointersNumbers[column] = n;
 				ToggleColumnInputState(column, true);
 			}
 		}
 	}
 
 	protected final void pointerReleased(final int x, final int y) {
+		if (input != null)
+			return;
 		String pn = System.getProperty("com.nokia.pointer.number");
 		int n = pn == null ? 0 : (pn.charAt(0) - '0');
+		GL.Log("(input) touch " + n + " released at x=" + x);
 		for (int i = 0; i < columnsCount; i++) {
 			if (pointersNumbers[i] == n) {
+				GL.Log("(input) column " + i + " released due to touch release");
 				pointersNumbers[i] = -1;
 				ToggleColumnInputState(i, false);
+				break;
 			}
 		}
 	}
