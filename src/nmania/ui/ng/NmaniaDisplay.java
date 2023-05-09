@@ -87,6 +87,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 						Thread.sleep(Integer.MAX_VALUE * 10L);
 					} catch (InterruptedException e) {
 						GL.Log("(ui) Interruption received, wakeing the thread up...");
+						g = getGraphics();
 						pause = false;
 					}
 					if (!cycle) {
