@@ -258,7 +258,8 @@ public final class Player extends GameCanvas {
 		fillColsW = 1 + (colWp1 * columnsCount) + 6;
 		fillAccX = scrW - fillAccW;
 		fillScoreX = scrW - fillScoreW;
-		healthX = s.leftOffset + 1 + (colWp1 * columnsCount);
+		UpdateHealthX();
+		targetLeftOffset = s.leftOffset;
 		leftOffset = s.leftOffset;
 		holdsColors = s.GetHoldColors(columnsCount);
 		holdsWithGr = new boolean[columnsCount];
@@ -275,11 +276,17 @@ public final class Player extends GameCanvas {
 		log.log("Locking graphics");
 		g = getGraphics();
 		g.setFont(fontL);
+		FillBg();
+		flushGraphics();
 
 		if (input != null)
 			input.Reset();
 		log.log("Ready.");
 		System.gc();
+	}
+
+	private final void UpdateHealthX() {
+		healthX = leftOffset + 1 + (colWp1 * columnsCount);
 	}
 
 	// private final boolean playerCanPlay;
@@ -331,8 +338,9 @@ public final class Player extends GameCanvas {
 	private final int fillColsW, fillCountersH, fillScoreW, fillAccW, fillScoreX, fillAccX;
 	private final int judgmentCenter;
 	private final int localHoldX;
-	private final int healthX;
-	private final int leftOffset;
+	private int healthX;
+	private final int targetLeftOffset;
+	private int leftOffset;
 	private final int noteH;
 	private final int holdW;
 	private final int zeroW;
@@ -356,7 +364,8 @@ public final class Player extends GameCanvas {
 	private int _lastFrames, _lastTime, _lastFps;
 
 	/**
-	 * Keep this flag true to keep gameplay in pause (or failed pause) loop and block input.
+	 * Keep this flag true to keep gameplay in pause (or failed pause) loop and
+	 * block input.
 	 */
 	public boolean isPaused = false;
 	/**
@@ -368,7 +377,8 @@ public final class Player extends GameCanvas {
 	 */
 	public boolean failed = false;
 	/**
-	 * Make this flag true before bumping failed state to make player exit as soon as possible.
+	 * Make this flag true before bumping failed state to make player exit as soon
+	 * as possible.
 	 */
 	private boolean exitNow = false;
 	private int pauseItem = 0;
@@ -466,9 +476,10 @@ public final class Player extends GameCanvas {
 			}
 		}
 	}
-	
+
 	/**
-	 * Makes player stop itself and return to menu. Must be used only from failed state.
+	 * Makes player stop itself and return to menu. Must be used only from failed
+	 * state.
 	 */
 	private final void ExitPlayerFromFailedState() {
 		running = false;
@@ -589,9 +600,27 @@ public final class Player extends GameCanvas {
 	 * Method that is called by update thread. Contains gameplay logic.
 	 */
 	public final void Loop() {
-		// initial paint
-		Refill();
-		flushGraphics();
+		// intro animation
+		{
+			int s = -fillColsW - 20;
+			leftOffset = s;
+			int trl = targetLeftOffset - leftOffset;
+			for (int i = 0; i < 50; i++) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					return;
+				}
+				leftOffset = s + (trl * i / 50);
+				UpdateHealthX();
+				Refill();
+				Redraw(true);
+			}
+			leftOffset = targetLeftOffset;
+			UpdateHealthX();
+			Refill();
+			Redraw(true);
+		}
 		// begin track
 		track.Play();
 		// loop
@@ -799,7 +828,8 @@ public final class Player extends GameCanvas {
 						currentNote[column] += 2;
 						lastHoldKeys[column] = colKey;
 						continue;
-					} if (!holdHeadScored[column]) {
+					}
+					if (!holdHeadScored[column]) {
 						GL.Log("(detect) Head on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
 								+ diff + "ms diff, skipping"); // ?dbg
 						CountHit(0); // counting hit only for head
