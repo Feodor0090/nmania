@@ -739,6 +739,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		}
 	}
 
+	protected void sizeChanged(int w, int h) {
+		g = getGraphics();
+	}
+
 	public void Destroy() {
 		cycle = false;
 		ResumeRendering();
