@@ -40,7 +40,8 @@ public abstract class ListScreen extends Screen {
 	protected Font font = Font.getFont(0, 0, 8);
 	private int fontH = font.getHeight();
 	private String selectedText = null;
-	int textScroll = 0;
+	private float textScroll = 0;
+	private long time = System.currentTimeMillis();
 
 	public final void SetItems(ListItem[] list) {
 		items = list;
@@ -142,6 +143,8 @@ public abstract class ListScreen extends Screen {
 	protected void DrawScreen(Graphics g, int w, int h) {
 		if (items == null)
 			return;
+		long delta = System.currentTimeMillis() - time;
+		time += delta;
 		g.setFont(font);
 		int y = realY;
 		int bb = h * 3 / 2;
@@ -173,7 +176,7 @@ public abstract class ListScreen extends Screen {
 							int atw = w - fontH;
 							if (tw > atw) {
 								if (tw - textScroll > 0)
-									textScroll += 3;
+									textScroll += (((int) delta) * w) * 0.0003f;
 								else
 									textScroll = -w;
 							} else {
@@ -181,7 +184,7 @@ public abstract class ListScreen extends Screen {
 							}
 						}
 						g.setClip(fontH >> 1, y, w - fontH, fontH);
-						NmaniaDisplay.print(g, selectedText, x - textScroll, y, -1, 0, 0);
+						NmaniaDisplay.print(g, selectedText, x - (int) textScroll, y, -1, 0, 0);
 						g.setClip(-1000, -1000, 9999, 9999);
 					} else
 						NmaniaDisplay.print(g, item.text, x, y, -1, 0, 0);
