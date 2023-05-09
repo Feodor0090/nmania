@@ -13,18 +13,22 @@ import nmania.Settings;
 
 public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 
-	Font f = Font.getFont(0, 0, 8);
-	String title;
-	String diff;
-	String state = "Waiting for loader...";
-	String hash = "";
-	String replay;
-	boolean failed;
-	int tc = Graphics.TOP | Graphics.HCENTER;
-	private IInputOverrider input;
-	private PlayerBootstrapData data;
-	IDisplay d;
-	Thread th;
+	private final Font f = Font.getFont(0, 0, 8);
+	private final int tc = Graphics.TOP | Graphics.HCENTER;
+
+	private final String title;
+	private final String diff;
+	private String state = "Waiting for loader...";
+	private String hash = "";
+	private final String replay;
+
+	private final IInputOverrider input;
+	private final PlayerBootstrapData data;
+
+	private boolean failed;
+	private long stime = -1;
+	private IDisplay d;
+	private Thread th;
 
 	public PlayerLoaderScreen(IInputOverrider input, PlayerBootstrapData data) {
 		this.input = input;
@@ -35,9 +39,9 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 			if (Settings.recordReplay)
 				replay = "Replay will be recorded!";
 			else
-				replay = "Replay recording disabled";
+				replay = "Recording disabled.";
 		} else {
-			replay = "Playing replay";
+			replay = "Running replay";
 		}
 	}
 
@@ -58,23 +62,29 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 
 	public void Paint(Graphics g, int w, int h) {
 		g.setFont(f);
-		int lh = NmaniaDisplay.logo.getHeight();
 		int fh = f.getHeight();
-		int ch = lh + fh * (failed ? 3 : 4);
+		int ch = NmaniaDisplay.logo.getHeight() + fh * (failed ? 3 : 4);
 		int y = h / 2 - ch / 2;
-		g.drawImage(NmaniaDisplay.logo, w / 2, y, tc);
-		y += lh;
-		NmaniaDisplay.print(g, title, w / 2, y, -1, 0, tc);
+		int trofs = 0;
+		if (stime == 0) {
+			trofs = w;
+		} else if (stime != -1) {
+			int n = (int) (System.currentTimeMillis() - stime);
+			trofs = w * n / 600;
+		}
+		g.drawImage(NmaniaDisplay.logo, w / 2 - trofs, y, tc);
+		y += NmaniaDisplay.logo.getHeight();
+		NmaniaDisplay.print(g, title, w / 2 + trofs, y, -1, 0, tc);
 		y += fh;
-		NmaniaDisplay.print(g, diff, w / 2, y, -1, 0, tc);
+		NmaniaDisplay.print(g, diff, w / 2 - trofs, y, -1, 0, tc);
 		y += fh;
 		if (failed) {
 			NmaniaDisplay.print(g, "Game failed to load!", w / 2, y, 0xff0000, -1, tc);
 			return;
 		}
-		NmaniaDisplay.print(g, hash, w / 2, y, -1, 0, tc);
+		NmaniaDisplay.print(g, hash, w / 2 + trofs, y, -1, 0, tc);
 		y += fh;
-		NmaniaDisplay.print(g, replay, w / 2, y, -1, 0, tc);
+		NmaniaDisplay.print(g, replay, w / 2 - trofs, y, -1, 0, tc);
 	}
 
 	public void OnKey(IDisplay d, int k) {
@@ -130,6 +140,23 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 	public void log(String s) {
 		state = s;
 		GL.Log("(player) " + s);// ?dbg
+	}
+
+	public void StartTransition() {
+		d.Throttle(false);
+		stime = System.currentTimeMillis();
+	}
+
+	public void EndTransition() {
+		stime = 0;
+	}
+
+	public int DecorationsXOffset() {
+		if (stime > 0) {
+			int n = (int) (System.currentTimeMillis() - stime);
+			return d.GetDisplayable().getWidth() * n / 600;
+		}
+		return 0;
 	}
 
 }
