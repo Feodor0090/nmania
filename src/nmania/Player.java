@@ -963,10 +963,34 @@ public final class Player extends GameCanvas {
 	}
 
 	/**
-	 * Method which handles quitting from paused state animation. Will destoroy player and bring menu.
+	 * Method which handles quitting from paused state animation. Will destoroy
+	 * player and bring menu.
 	 */
 	private final void QuitFromPauseSequence() {
-		//TODO animation
+		long s = System.currentTimeMillis();
+		while (true) {
+			int p = (int) (System.currentTimeMillis() - s);
+			int h2 = scrH >> 1;
+			if (p < 500) {
+				final int trw = 50;
+				int x = (scrW + trw) * p / 500;
+				g.setColor(NmaniaDisplay.DARKER_COLOR);
+
+				g.fillTriangle(x - trw, 0, x - trw, h2, x, h2 >> 1);
+				g.fillRect(0, 0, x - trw, h2);
+				g.fillTriangle(scrW - x + trw, h2, scrW - x + trw, scrH, scrW - x, h2 + (h2 >> 1));
+				g.fillRect(scrW - x + trw, h2, x - trw, h2);
+			} else if (p < 800) {
+				int h = (scrH - (scrH * (p - 500) / 300)) >> 1;
+				FillBg();
+				g.setColor(NmaniaDisplay.DARKER_COLOR);
+				g.fillRect(0, 0, scrW, h);
+				g.fillRect(0, scrH - h, scrW, h);
+			} else {
+				break;
+			}
+			flushGraphics();
+		}
 		ExitPlayerFromFailedState();
 	}
 
