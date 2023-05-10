@@ -31,6 +31,7 @@ import nmania.replays.ReplayChunk;
 import nmania.replays.ReplayPlayer;
 import nmania.replays.json.NmaniaReplay;
 import nmania.replays.osu.OsuReplay;
+import nmania.ui.ng.NmaniaDisplay;
 
 public final class ResultsScreen extends Canvas implements ILogger, Runnable {
 
@@ -167,17 +168,25 @@ public final class ResultsScreen extends Canvas implements ILogger, Runnable {
 			right = "Discard";
 		}
 		if (info != null)
-			print(g, info, w / 2, h - 5 - 10 - th0, -1, Graphics.HCENTER | Graphics.BOTTOM);
-		g.setGrayScale(itemSelected ? 63 : 0);
-		g.fillRect(10, h - 5 - 10 - th0, w / 2 - 20, th0 + 10);
-		g.setColor((itemSelected ? 255 : 0), 0, 0);
-		g.drawRect(9, h - 5 - 10 - th0 - 1, w / 2 - 19, th0 + 11);
-		print(g, left, w / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
-		g.setGrayScale(!itemSelected ? 63 : 0);
-		g.fillRect(w / 2 + 10, h - 5 - 10 - th0, w / 2 - 20, th0 + 10);
-		g.setColor((!itemSelected ? 255 : 0), 0, 0);
-		g.drawRect(w / 2 + 9, h - 5 - 10 - th0 - 1, w / 2 - 19, th0 + 11);
-		print(g, right, w * 3 / 4, h - 10, -1, Graphics.HCENTER | Graphics.BOTTOM);
+			print(g, info, w / 2, h - 5 - 10 - th0 * 2, -1, Graphics.HCENTER | Graphics.BOTTOM);
+
+		DrawButton(g, left, itemSelected, 10, h - th0 * 2 - 5, (w - 30) >> 1, th0 * 2);
+		DrawButton(g, right, !itemSelected, (w >> 1) + 5, h - th0 * 2 - 5, (w - 30) >> 1, th0 * 2);
+	}
+
+	private static final void DrawButton(Graphics g, String t, boolean selected, int x, int y, int w, int h) {
+		g.setColor(selected ? NmaniaDisplay.PINK_COLOR : 0x444444);
+		g.fillRoundRect(x, y, w, h, h, h);
+
+		int ty = y + (h >> 1) - (g.getFont().getHeight() >> 1);
+		int tw = x + w / 2;
+		g.setColor(NmaniaDisplay.NEGATIVE_COLOR);
+		g.drawString(t, tw + 1, ty - 1, 17);
+		g.drawString(t, tw - 1, ty - 1, 17);
+		g.drawString(t, tw + 1, ty + 1, 17);
+		g.drawString(t, tw - 1, ty + 1, 17);
+		g.setColor(-1);
+		g.drawString(t, tw, ty, 17);
 	}
 
 	public static final String formatDate(Date d, String timeSplitter) {
