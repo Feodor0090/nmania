@@ -114,6 +114,7 @@ public final class Player extends GameCanvas {
 		// filling columns
 		for (int i = 0; i < _cols.length; i++)
 			_cols[i] = new Vector();
+		Thread.sleep(1);
 		for (int i = 0; i < map.notes.length; i++) {
 			int c = map.notes[i].column - 1;
 			_cols[c].addElement(new Integer(map.notes[i].time));
@@ -356,6 +357,7 @@ public final class Player extends GameCanvas {
 	private int lastJudgement;
 	private int health = 1000;
 	private int rollingHealth = 1000;
+	private static final int HEALTH_WIDTH = 6;
 	/**
 	 * Totally processed frames.
 	 */
@@ -382,6 +384,7 @@ public final class Player extends GameCanvas {
 	 */
 	private boolean exitNow = false;
 	private int pauseItem = 0;
+	private int attempts = 1;
 
 	private final Sample combobreak;
 	private final Sample sectionPass;
@@ -517,6 +520,7 @@ public final class Player extends GameCanvas {
 		if (recorder != null)
 			recorder.Reset();
 		System.gc();
+		attempts++;
 		failed = false;
 		isPaused = false;
 		track.Play();
@@ -553,7 +557,9 @@ public final class Player extends GameCanvas {
 	protected final void pointerPressed(final int x, final int y) {
 		if (isPaused) {
 			if (failed) {
-				pauseItem = (y << 1) / scrH;
+				if (y < scrH / 3)
+					return;
+				pauseItem = (y * 3 / scrH) - 1;
 			} else {
 				pauseItem = y * 3 / scrH;
 			}
@@ -995,66 +1001,89 @@ public final class Player extends GameCanvas {
 	}
 
 	/**
-	 * Method that handles failing animation. Player will be paused and show retry-quit menu.
+	 * Method that handles failing animation. Player will be paused and show
+	 * retry-quit menu.
 	 */
 	private final void FailSequence() {
 		track.Pause();
 		if (sectionFail != null) {
 			sectionFail.Play();
 		}
-		final String j = "FAILED";
-		final int length = 50;
-		//TODO animation
-		for (int i = 0; i <= length; i++) {
-			int h1 = scrH * i / length / 2;
-			int w1 = scrW * i / length / 2;
-			// rects
-			g.setColor(0);
-			g.fillRect(0, 0, w1, scrH); // left
-			g.fillRect(scrW - w1, 0, w1, scrH); // right
-			g.fillRect(0, 0, scrW, h1); // top
-			g.fillRect(0, scrH - h1, scrW, h1); // bottom
-			// text
-			g.setColor(-1);
-			g.drawString(j, scrW / 2 + 1, 49, 17);
-			g.drawString(j, scrW / 2 - 1, 49, 17);
-			g.drawString(j, scrW / 2 + 1, 51, 17);
-			g.drawString(j, scrW / 2 - 1, 51, 17);
-			g.setColor(210, 0, 0);
-			g.drawString(j, scrW / 2, 50, 17);
-			// flush & wait
+		final String t1 = "YOU FAILED AT " + (time * 100 / track.Total()) + "%";
+		final String t2 = "WITH " + score.currentHitScore + " SCORE POINTS";
+		final String t3 = "TOTAL ATTEMPTS: " + attempts;
+
+		long s = System.currentTimeMillis();
+		while (true) {
+			int p = (int) (System.currentTimeMillis() - s);
+			if (p < 350) {
+				int anchor = healthX + (HEALTH_WIDTH >> 1);
+				int mw = Math.max(anchor, scrW - anchor);
+				int f = mw * p / 350;
+
+				g.setColor(255, 0, 0);
+				g.fillRect(anchor - f, 0, f + f, scrH);
+			} else if (p < 700) {
+				g.setColor(255, 0, 0);
+				g.fillRect(0, 0, scrW, scrH);
+				g.setColor(0);
+				g.fillRect(0, 0, scrW, scrH * (p - 350) / 350);
+			} else {
+				g.setColor(0);
+				g.fillRect(0, 0, scrW, scrH);
+				flushGraphics();
+				break;
+			}
+			flushGraphics();
+		}
+		// text
+		int y = g.getFont().getHeight() >> 1;
+		g.setColor(-1);
+		g.drawString(t1, scrW / 2, y, 17);
+		y += g.getFont().getHeight();
+		g.setColor(-1);
+		g.drawString(t2, scrW / 2, y, 17);
+		y += g.getFont().getHeight();
+		g.setColor(-1);
+		g.drawString(t3, scrW / 2, y, 17);
+
+		// flush
+		flushGraphics();
+
+		pauseItem = 0;
+		isPaused = true;
+		while (isPaused) {
+			int sh3 = scrH / 3;
+			int bh = sh3 * 2 / 3;
+
+			DrawPauseButton("RETRY", pauseItem == 0, sh3 + (bh >> 2), bh);
+			DrawPauseButton("QUIT", pauseItem == 1, sh3 + sh3 + (bh >> 2), bh);
+
 			flushGraphics();
 			try {
-				Thread.sleep(10);
-			} catch (Exception e) {
+				Thread.sleep(30);
+			} catch (InterruptedException e) {
+				isPaused = false;
+				running = false;
 			}
 		}
+		Refill();
+		Redraw(true);
 
-			pauseItem = 0;
-			isPaused = true;
-			while (isPaused) {
-				int sw3 = scrW / 3;
-				int sh5 = scrH / 5;
-				for (int i = 0; i < 2; i++) {
-					int ry = sh5 * (i * 2 + 1);
-					g.setGrayScale(i == pauseItem ? 63 : 0);
-					g.fillRect(sw3, ry, sw3 - 1, sh5 - 1);
-					g.setColor((i == pauseItem ? 255 : 0), 0, 0);
-					g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
-					g.setColor(-1);
-					g.drawString(i == 0 ? "Retry" : "Quit", scrW >> 1, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
-				}
-				flushGraphics();
-				try {
-					Thread.sleep(30);
-				} catch (InterruptedException e) {
-					isPaused = false;
-					running = false;
-				}
-			}
-			Refill();
-			Redraw(true);
+	}
 
+	private final void DrawPauseButton(String t, boolean selected, int y, int h) {
+		g.setColor(selected ? NmaniaDisplay.PINK_COLOR : 0x777777);
+		g.fillRoundRect(scrW >> 2, y, scrW >> 1, h, h, h);
+
+		int ty = y + (h >> 1) - (g.getFont().getHeight() >> 1);
+		g.setColor(NmaniaDisplay.NEGATIVE_COLOR);
+		g.drawString(t, scrW / 2 + 1, ty - 1, 17);
+		g.drawString(t, scrW / 2 - 1, ty - 1, 17);
+		g.drawString(t, scrW / 2 + 1, ty + 1, 17);
+		g.drawString(t, scrW / 2 - 1, ty + 1, 17);
+		g.setColor(-1);
+		g.drawString(t, scrW / 2, ty, 17);
 	}
 
 	/**
@@ -1095,7 +1124,7 @@ public final class Player extends GameCanvas {
 	/**
 	 * Fully redraws the basics of the game. Does not perform flush!
 	 */
-	public final void Refill() {
+	private final void Refill() {
 		FillBg();
 		DrawBorders();
 		for (int i = 0; i < columnsCount; i++) {
@@ -1120,7 +1149,7 @@ public final class Player extends GameCanvas {
 	/**
 	 * Method to redraw hot areas. Called by update loop.
 	 */
-	public final void Redraw(boolean flushAll) {
+	private final void Redraw(boolean flushAll) {
 		if (rich == null) {
 			g.setClip(0, 0, scrW, kbY);
 			RedrawNotesVector();
@@ -1334,11 +1363,11 @@ public final class Player extends GameCanvas {
 			}
 			final int red = Math.min(255, rollingHealth >> 1);
 			g.setColor(red < 0 ? 0 : (255 - red), 0, 0);
-			g.fillRect(healthX, 0, 6, scrH);
+			g.fillRect(healthX, 0, HEALTH_WIDTH, scrH);
 			if (rollingHealth > 0) {
 				int hh = scrH * rollingHealth / 1000;
 				g.setColor(-1);
-				g.fillRect(healthX, scrH - hh, 6, hh);
+				g.fillRect(healthX, scrH - hh, HEALTH_WIDTH, hh);
 			}
 		}
 		// fps
