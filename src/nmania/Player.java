@@ -911,28 +911,33 @@ public final class Player extends GameCanvas {
 
 	private final void PassSequence() {
 		running = false;
-		final String j = "BEATMAP PASSED";
-		final int w2 = scrW / 2;
-		final int h2 = scrH / 2;
-		final int ty = h2 - g.getFont().getHeight() / 2;
-		int len = 30;
-		final int maxS = (int) Math.sqrt(w2 * w2 + h2 * h2);
-		for (int i = 0; i < len; i++) {
-			g.setColor(-1);
-			int arcS = maxS * i / len;
-			g.fillArc(w2 - arcS, h2 - arcS, arcS * 2, arcS * 2, 0, 360);
-			g.setColor(0);
-			g.drawString(j, w2 + 1, ty - 1, 17);
-			g.drawString(j, w2 - 1, ty - 1, 17);
-			g.drawString(j, w2 + 1, ty + 1, 17);
-			g.drawString(j, w2 - 1, ty + 1, 17);
-			g.setColor(20, 255, 20);
-			g.drawString(j, w2, ty, 17);
-			flushGraphics();
-			try {
-				Thread.sleep(13);
-			} catch (Exception e) {
+		long s = System.currentTimeMillis();
+		while (true) {
+			int p = (int) (System.currentTimeMillis() - s);
+			int r = scrW + scrH;
+			if (p < 500) {
+				int a = 90 * p / 500;
+				int x = scrW / 2 - r;
+				int y = scrH / 2 - r;
+				g.setColor(NmaniaDisplay.PINK_COLOR);
+				g.fillArc(x, y, r + r, r + r, 90 - a, a + a);
+				g.setColor(NmaniaDisplay.NMANIA_COLOR);
+				g.fillArc(x, y, r + r, r + r, 180 + 90 - a, a + a);
+			} else if (p < 1000) {
+				FillBg();
+				int w2 = scrW >> 1;
+				int h2 = scrH >> 1;
+				int x = w2 * (p - 500) / 500;
+				g.setColor(NmaniaDisplay.PINK_COLOR);
+				g.fillRect(0, 0, w2 - x, scrH >> 1);
+				g.fillRect(w2 + x, 0, w2, h2);
+				g.setColor(NmaniaDisplay.NMANIA_COLOR);
+				g.fillRect(0, h2, w2 - x, scrH >> 1);
+				g.fillRect(w2 + x, h2, w2, h2);
+			} else {
+				break;
 			}
+			flushGraphics();
 		}
 		Dispose();
 		Nmania.Push(new ResultsScreen(data, score, input, recorder, track, applause, bg, menu));
