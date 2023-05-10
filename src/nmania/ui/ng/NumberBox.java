@@ -73,17 +73,18 @@ public class NumberBox extends Screen {
 	public void OnKey(IDisplay d, int k) {
 		value = Math.abs(value);
 		if (k == Canvas.KEY_STAR || k == '-') {
-			if (!allowNegative) {
+			if (allowNegative)
+				sign = !sign;
+			else
 				sign = true;
-				ApplySign();
-				return;
-			}
-			sign = !sign;
 			ApplySign();
 			return;
 		}
 		if (k == Canvas.KEY_POUND || k == 8) {
-			value /= 10;
+			if (value == 0)
+				sign = true;
+			else
+				value /= 10;
 			ApplySign();
 			return;
 		}
