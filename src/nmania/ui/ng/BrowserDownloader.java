@@ -1,11 +1,9 @@
 package nmania.ui.ng;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.microedition.io.*;
-import javax.microedition.io.HttpConnection;
 import javax.microedition.io.file.FileConnection;
 
 import nmania.GL;
@@ -15,6 +13,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 	private String fileName;
 	private String url;
 	Thread t;
+	private boolean stop;
 
 	public BrowserDownloader(String title, String url, String fileName) {
 		super("Connecting...", "Downloading beatmap " + title + ". Closing this screen will cancel the action.");
@@ -35,6 +34,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 	public boolean OnExit(IDisplay d) {
 		if (t != null)
 			t.interrupt();
+		stop = true;
 		return super.OnExit(d);
 	}
 
@@ -47,7 +47,7 @@ public class BrowserDownloader extends Alert implements Runnable {
 		InputStream in = null;
 		try {
 			fc = (FileConnection) Connector.open(fileName, Connector.READ_WRITE);
-
+			Thread.sleep(1);
 			if (fc.exists()) {
 				fc.close();
 				title = "File already exists. Aborted.";
@@ -59,7 +59,8 @@ public class BrowserDownloader extends Alert implements Runnable {
 			int r;
 			try {
 				r = hc.getResponseCode();
-			} catch (IOException e) {
+				Thread.sleep(1);
+			} catch (Exception e) { // both interrupt and IO fail
 				try {
 					fc.delete();
 					fc.close();
@@ -82,7 +83,9 @@ public class BrowserDownloader extends Alert implements Runnable {
 				hc.close();
 				hc = (HttpConnection) Connector.open(redir);
 				hc.setRequestMethod("GET");
+				Thread.sleep(1);
 				r = hc.getResponseCode();
+				Thread.sleep(1);
 			}
 			if (r >= 400) {
 				GL.Log("(browser) HTTP error " + r);
@@ -130,7 +133,19 @@ public class BrowserDownloader extends Alert implements Runnable {
 					pc = " (" + (total * 100 / len) + "%)";
 				}
 				title = "Downloaded " + (total / 1024) / 10 / 100f + "MB" + pc + ", wait...";
-				Thread.sleep(1);
+				Thread.yield();
+				if (stop) {
+					out.close();
+					out = null;
+					fc.delete();
+					fc.close();
+					fc = null;
+					in.close();
+					in = null;
+					hc.close();
+					hc = null;
+					return;
+				}
 			}
 			title = "Done! Close this menu.";
 			SetText("Your beatmap was successfully downloaded.");
