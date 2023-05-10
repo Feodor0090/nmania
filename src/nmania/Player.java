@@ -460,7 +460,7 @@ public final class Player extends GameCanvas {
 					ResetPlayer();
 					return;
 				}
-				ExitPlayerFromFailedState();
+				exitNow = true;
 			}
 			return;
 		}
@@ -1059,6 +1059,11 @@ public final class Player extends GameCanvas {
 			} catch (InterruptedException e) {
 				isPaused = false;
 				running = false;
+			}
+
+			if (exitNow) {
+				QuitFromPauseSequence();
+				return;
 			}
 		}
 		Refill();
