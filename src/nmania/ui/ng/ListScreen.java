@@ -19,23 +19,20 @@ public abstract class ListScreen extends Screen {
 	 */
 	private int selected;
 	/**
-	 * Shift of screen's content which must be approached.
-	 * In keyboard mode, calculated by Y of selected item.
-	 * Always less than zero.
+	 * Shift of screen's content which must be approached. In keyboard mode,
+	 * calculated by Y of selected item. Always less than zero.
 	 */
 	private int targetY;
 	/**
-	 * Shift of screen's content right now.
-	 * In keyboard mode, this approaches targetY.
-	 * In touch mode controlled by used.
-	 * Always less than zero.
+	 * Shift of screen's content right now. In keyboard mode, this approaches
+	 * targetY. In touch mode controlled by used. Always less than zero.
 	 */
 	private int realY;
 	/**
 	 * <ul>
-	 * <li> 0 = keyboard mode, selected item is approached.
-	 * <li> 1 = touch mode, finger is holded.
-	 * <li> 2 = touch mode, finger is released.
+	 * <li>0 = keyboard mode, selected item is approached.
+	 * <li>1 = touch mode, finger is holded.
+	 * <li>2 = touch mode, finger is released.
 	 * </ul>
 	 */
 	private int scrollMode = 0;
@@ -43,7 +40,8 @@ public abstract class ListScreen extends Screen {
 	protected Font font = Font.getFont(0, 0, 8);
 	private int fontH = font.getHeight();
 	private String selectedText = null;
-	int textScroll = 0;
+	private float textScroll = 0;
+	private long time = System.currentTimeMillis();
 
 	public final void SetItems(ListItem[] list) {
 		items = list;
@@ -91,12 +89,14 @@ public abstract class ListScreen extends Screen {
 			selected = 0;
 		if (selected >= items.length)
 			selected = items.length - 1;
-		
+
 		int center = h / 2;
 		int selectedY = selected * fontH + fontH / 2;
 		int totalH = items.length * fontH;
 		if (scrollMode == 0) {
-			if (selectedY <= center) {
+			if (totalH <= h) {
+				targetY = 0;
+			} else if (selectedY <= center) {
 				targetY = 0;
 			} else if (totalH - center <= selectedY) {
 				targetY = -(totalH - h);
@@ -129,10 +129,10 @@ public abstract class ListScreen extends Screen {
 				targetY = 0;
 			} else if (targetY > 0) {
 				targetY = 0;
-			} else if(targetY < -totalH + h) {
+			} else if (targetY < -totalH + h) {
 				targetY = -totalH + h;
 			}
-			if(targetY != realY) {
+			if (targetY != realY) {
 				int diff = targetY - realY;
 				int add = (diff < 0) ? -1 : 1;
 				diff /= 5;
@@ -145,6 +145,8 @@ public abstract class ListScreen extends Screen {
 	protected void DrawScreen(Graphics g, int w, int h) {
 		if (items == null)
 			return;
+		long delta = System.currentTimeMillis() - time;
+		time += delta;
 		g.setFont(font);
 		int y = realY;
 		int bb = h * 3 / 2;
@@ -176,7 +178,7 @@ public abstract class ListScreen extends Screen {
 							int atw = w - fontH;
 							if (tw > atw) {
 								if (tw - textScroll > 0)
-									textScroll += 3;
+									textScroll += (((int) delta) * w) * 0.0003f;
 								else
 									textScroll = -w;
 							} else {
@@ -184,7 +186,7 @@ public abstract class ListScreen extends Screen {
 							}
 						}
 						g.setClip(fontH >> 1, y, w - fontH, fontH);
-						NmaniaDisplay.print(g, selectedText, x - textScroll, y, -1, 0, 0);
+						NmaniaDisplay.print(g, selectedText, x - (int) textScroll, y, -1, 0, 0);
 						g.setClip(-1000, -1000, 9999, 9999);
 					} else
 						NmaniaDisplay.print(g, item.text, x, y, -1, 0, 0);
@@ -269,7 +271,7 @@ public abstract class ListScreen extends Screen {
 			scrollMode = 2;
 			if (Math.abs(dragStartY - y) < fontH) {
 				int ti = (-realY + y) / fontH;
-				if(items == null || ti < 0 || ti >= items.length)
+				if (items == null || ti < 0 || ti >= items.length)
 					return;
 				if (ti == selected)
 					ActivateCurrentItem(d);

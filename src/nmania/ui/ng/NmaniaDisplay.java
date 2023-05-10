@@ -3,7 +3,6 @@ package nmania.ui.ng;
 import java.io.IOException;
 
 import javax.microedition.lcdui.Canvas;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 import javax.microedition.lcdui.Image;
@@ -48,16 +47,18 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private final Font header;
 	private final int headerH;
 	private final int screenY;
-	static Font buttons = Font.getFont(0, 1, 8);
+	static final Font buttons = Font.getFont(0, 1, 8);
 	private float leftButtonContract = 1f;
 	private float leftButtonState = 0f;
 	private String lastValidLeftButton = "";
 	private boolean leftButtonActive = false;
 	private float rightButtonState = 0f;
+	private float lastHeaderX = 0;
 	public static Image logo;
 	private int w;
 	private int h;
 	private long time = System.currentTimeMillis();
+	private long delta;
 	private long trFrw = -1, trBrw = -1;
 	private boolean cycle = true;
 	private boolean pause = false;
@@ -86,6 +87,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 						Thread.sleep(Integer.MAX_VALUE * 10L);
 					} catch (InterruptedException e) {
 						GL.Log("(ui) Interruption received, wakeing the thread up...");
+						g = getGraphics();
 						pause = false;
 					}
 					if (!cycle) {
@@ -101,7 +103,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 						return;
 					}
 				}
-				long delta = System.currentTimeMillis() - time;
+				delta = System.currentTimeMillis() - time;
 				time += delta;
 				boolean kiai = false;
 				float bp = 0f;
@@ -172,10 +174,12 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					}
 					g.translate(0, screenY);
 					stack[top].Paint(g, w, h - screenY - keysH);
-					g.translate(0, -g.getTranslateY());
+					int xoffs = stack[top].DecorationsXOffset();
+					g.translate(xoffs, -g.getTranslateY());
 					DrawButtons();
 					DrawBuildWarning(); // ?dbg
 					DrawHeader(stack[top].GetTitle());
+					g.translate(-xoffs, 0);
 					if (stack[top].ShowLogo()) {
 						int lx = w - logo.getWidth() + LogoOffset;
 						DrawLogo(lx, -LogoOffset);
@@ -253,8 +257,6 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		g.setColor(BG_COLOR);
 		g.fillArc(x, y, s, s, (int) (360 * p) + 180, 90);
 	}
-
-	private static final int releaseAnimDur = 240;
 
 	private final void DrawTouchEffect() {
 		long now = System.currentTimeMillis();
@@ -439,8 +441,8 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		if (leftButtonContract != 0) {
 			g.fillTriangle(0, h - lkh, 0, h, w / 2 - keysW, h);
 			g.fillTriangle(0, h - lkh, w / 2 - keysW2, h - lkh2, w / 2 - keysW, h);
-			print(g, lastValidLeftButton, 1, (int) (h - 1 + keysH2 * (1f - leftButtonContract)), clri, SoftkeysOutlineColor,
-					Graphics.BOTTOM | Graphics.LEFT);
+			print(g, lastValidLeftButton, 1, (int) (h - 1 + keysH2 * (1f - leftButtonContract)), clri,
+					SoftkeysOutlineColor, Graphics.BOTTOM | Graphics.LEFT);
 		}
 		clri = ColorUtils.blend(NEGATIVE_COLOR, PINK_COLOR, (int) (255 * rightButtonState));
 		g.setColor(clri);
@@ -459,16 +461,14 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		int sw = header.stringWidth(title);
 		if (sw > w) {
 			if (sw - lastHeaderX > 0)
-				lastHeaderX += 3;
+				lastHeaderX += (((int) delta) * w) * 0.0003f;
 			else
 				lastHeaderX = -w;
 		} else {
 			lastHeaderX = 0;
 		}
-		print(g, title, 1 - lastHeaderX, 1, HeaderTextColor, BG_COLOR, 0);
+		print(g, title, 1 - (int) lastHeaderX, 1, HeaderTextColor, BG_COLOR, 0);
 	}
-
-	int lastHeaderX = 0;
 
 	protected void keyPressed(int k) {
 		if (pause) {
@@ -739,6 +739,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			t.printStackTrace();
 			return null;
 		}
+	}
+
+	protected void sizeChanged(int w, int h) {
+		g = getGraphics();
 	}
 
 	public void Destroy() {

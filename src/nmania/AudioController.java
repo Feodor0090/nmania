@@ -91,6 +91,10 @@ public final class AudioController {
 		return lastTime = offset + (int) (mt / 1000);
 	}
 
+	public int Total() {
+		return (int) (player.getDuration() / 1000);
+	}
+
 	/**
 	 * Starts this player.
 	 * 

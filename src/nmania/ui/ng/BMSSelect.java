@@ -90,7 +90,7 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 			display.Push(new DifficultySelect(Nmania.bm, item.text));
 		else if (item.UUID == -1) {
 			display.Push(new Alert("Packed beatmapset",
-					item.text + " is an OSZ (zipped beatmapset). Do you want to unpack it?", "Unpack",
+					item.text + " is an OSZ (zipped beatmapset). Do you want to unpack it?", "UNPACK",
 					new BeatmapUnpacker(item.text), 2));
 		}
 	}

@@ -6,6 +6,7 @@ import nmania.beatmaps.InvalidBeatmapTypeException;
 import nmania.ui.KeyboardSetup;
 import nmania.ui.ng.Alert;
 import nmania.ui.ng.IDisplay;
+import nmania.ui.ng.PlayerLoaderScreen;
 
 /**
  * Utility for starting player. Construct it and start the thread to begin
@@ -89,11 +90,21 @@ public class PlayerLoader extends Thread {
 						display.Destroy();
 					display = null;
 				}
+
+				if (log instanceof PlayerLoaderScreen) {
+					((PlayerLoaderScreen) log).StartTransition();
+					Thread.sleep(PlayerLoaderScreen.TRANSITION_DUR);
+				} else {
+					Thread.sleep(1);
+				}
 				GL.Log("(player) Gameplay displayable is being pushed...");
 				Nmania.Push(p);
 				GL.Log("(player) Gameplay displayable pushed!");
 				Thread t = new PlayerThread(p);
 				t.start();
+				Thread.sleep(250);
+				if (log instanceof PlayerLoaderScreen)
+					((PlayerLoaderScreen) log).EndTransition();
 			} catch (InterruptedException e) {
 				Nmania.Push(back);
 				return;

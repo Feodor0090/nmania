@@ -114,6 +114,7 @@ public final class Player extends GameCanvas {
 		// filling columns
 		for (int i = 0; i < _cols.length; i++)
 			_cols[i] = new Vector();
+		Thread.sleep(1);
 		for (int i = 0; i < map.notes.length; i++) {
 			int c = map.notes[i].column - 1;
 			_cols[c].addElement(new Integer(map.notes[i].time));
@@ -258,7 +259,8 @@ public final class Player extends GameCanvas {
 		fillColsW = 1 + (colWp1 * columnsCount) + 6;
 		fillAccX = scrW - fillAccW;
 		fillScoreX = scrW - fillScoreW;
-		healthX = s.leftOffset + 1 + (colWp1 * columnsCount);
+		UpdateHealthX();
+		targetLeftOffset = s.leftOffset;
 		leftOffset = s.leftOffset;
 		holdsColors = s.GetHoldColors(columnsCount);
 		holdsWithGr = new boolean[columnsCount];
@@ -275,11 +277,17 @@ public final class Player extends GameCanvas {
 		log.log("Locking graphics");
 		g = getGraphics();
 		g.setFont(fontL);
+		FillBg();
+		flushGraphics();
 
 		if (input != null)
 			input.Reset();
 		log.log("Ready.");
 		System.gc();
+	}
+
+	private final void UpdateHealthX() {
+		healthX = leftOffset + 1 + (colWp1 * columnsCount);
 	}
 
 	// private final boolean playerCanPlay;
@@ -331,8 +339,9 @@ public final class Player extends GameCanvas {
 	private final int fillColsW, fillCountersH, fillScoreW, fillAccW, fillScoreX, fillAccX;
 	private final int judgmentCenter;
 	private final int localHoldX;
-	private final int healthX;
-	private final int leftOffset;
+	private int healthX;
+	private final int targetLeftOffset;
+	private int leftOffset;
 	private final int noteH;
 	private final int holdW;
 	private final int zeroW;
@@ -348,6 +357,7 @@ public final class Player extends GameCanvas {
 	private int lastJudgement;
 	private int health = 1000;
 	private int rollingHealth = 1000;
+	private static final int HEALTH_WIDTH = 6;
 	/**
 	 * Totally processed frames.
 	 */
@@ -356,7 +366,8 @@ public final class Player extends GameCanvas {
 	private int _lastFrames, _lastTime, _lastFps;
 
 	/**
-	 * Keep this flag true to keep gameplay in pause (or failed pause) loop and block input.
+	 * Keep this flag true to keep gameplay in pause (or failed pause) loop and
+	 * block input.
 	 */
 	public boolean isPaused = false;
 	/**
@@ -368,10 +379,12 @@ public final class Player extends GameCanvas {
 	 */
 	public boolean failed = false;
 	/**
-	 * Make this flag true before bumping failed state to make player exit as soon as possible.
+	 * Make this flag true before bumping failed state to make player exit as soon
+	 * as possible.
 	 */
 	private boolean exitNow = false;
 	private int pauseItem = 0;
+	private int attempts = 1;
 
 	private final Sample combobreak;
 	private final Sample sectionPass;
@@ -447,7 +460,7 @@ public final class Player extends GameCanvas {
 					ResetPlayer();
 					return;
 				}
-				ExitPlayerFromFailedState();
+				exitNow = true;
 			}
 			return;
 		}
@@ -466,9 +479,10 @@ public final class Player extends GameCanvas {
 			}
 		}
 	}
-	
+
 	/**
-	 * Makes player stop itself and return to menu. Must be used only from failed state.
+	 * Makes player stop itself and return to menu. Must be used only from failed
+	 * state.
 	 */
 	private final void ExitPlayerFromFailedState() {
 		running = false;
@@ -506,6 +520,7 @@ public final class Player extends GameCanvas {
 		if (recorder != null)
 			recorder.Reset();
 		System.gc();
+		attempts++;
 		failed = false;
 		isPaused = false;
 		track.Play();
@@ -542,7 +557,9 @@ public final class Player extends GameCanvas {
 	protected final void pointerPressed(final int x, final int y) {
 		if (isPaused) {
 			if (failed) {
-				pauseItem = (y << 1) / scrH;
+				if (y < scrH / 3)
+					return;
+				pauseItem = (y * 3 / scrH) - 1;
 			} else {
 				pauseItem = y * 3 / scrH;
 			}
@@ -589,9 +606,27 @@ public final class Player extends GameCanvas {
 	 * Method that is called by update thread. Contains gameplay logic.
 	 */
 	public final void Loop() {
-		// initial paint
-		Refill();
-		flushGraphics();
+		// intro animation
+		{
+			int s = -fillColsW - 20;
+			leftOffset = s;
+			int trl = targetLeftOffset - leftOffset;
+			for (int i = 0; i < 50; i++) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					return;
+				}
+				leftOffset = s + (trl * i / 50);
+				UpdateHealthX();
+				Refill();
+				Redraw(true);
+			}
+			leftOffset = targetLeftOffset;
+			UpdateHealthX();
+			Refill();
+			Redraw(true);
+		}
 		// begin track
 		track.Play();
 		// loop
@@ -611,8 +646,13 @@ public final class Player extends GameCanvas {
 				GL.Log("(player) Player returned from pause loop.");
 				time = track.Now();
 			}
+			// "quit" button in pause
+			if (exitNow) {
+				QuitFromPauseSequence();
+				continue;
+			}
 			if (failed) {
-				FailSequence(exitNow);
+				FailSequence();
 				GL.Log("(player) Player returned from fail loop.");
 				continue;
 			}
@@ -799,7 +839,8 @@ public final class Player extends GameCanvas {
 						currentNote[column] += 2;
 						lastHoldKeys[column] = colKey;
 						continue;
-					} if (!holdHeadScored[column]) {
+					}
+					if (!holdHeadScored[column]) {
 						GL.Log("(detect) Head on c=" + column + " n=" + currentNote[column] + " t=" + time + " has "
 								+ diff + "ms diff, skipping"); // ?dbg
 						CountHit(0); // counting hit only for head
@@ -870,51 +911,50 @@ public final class Player extends GameCanvas {
 
 	private final void PassSequence() {
 		running = false;
-		final String j = "BEATMAP PASSED";
-		final int w2 = scrW / 2;
-		final int h2 = scrH / 2;
-		final int ty = h2 - g.getFont().getHeight() / 2;
-		int len = 30;
-		final int maxS = (int) Math.sqrt(w2 * w2 + h2 * h2);
-		for (int i = 0; i < len; i++) {
-			g.setColor(-1);
-			int arcS = maxS * i / len;
-			g.fillArc(w2 - arcS, h2 - arcS, arcS * 2, arcS * 2, 0, 360);
-			g.setColor(0);
-			g.drawString(j, w2 + 1, ty - 1, 17);
-			g.drawString(j, w2 - 1, ty - 1, 17);
-			g.drawString(j, w2 + 1, ty + 1, 17);
-			g.drawString(j, w2 - 1, ty + 1, 17);
-			g.setColor(20, 255, 20);
-			g.drawString(j, w2, ty, 17);
-			flushGraphics();
-			try {
-				Thread.sleep(13);
-			} catch (Exception e) {
+		long s = System.currentTimeMillis();
+		while (true) {
+			int p = (int) (System.currentTimeMillis() - s);
+			int r = scrW + scrH;
+			if (p < 500) {
+				int a = 90 * p / 500;
+				int x = scrW / 2 - r;
+				int y = scrH / 2 - r;
+				g.setColor(NmaniaDisplay.PINK_COLOR);
+				g.fillArc(x, y, r + r, r + r, 90 - a, a + a);
+				g.setColor(NmaniaDisplay.NMANIA_COLOR);
+				g.fillArc(x, y, r + r, r + r, 180 + 90 - a, a + a);
+			} else if (p < 1000) {
+				FillBg();
+				int w2 = scrW >> 1;
+				int h2 = scrH >> 1;
+				int x = w2 * (p - 500) / 500;
+				g.setColor(NmaniaDisplay.PINK_COLOR);
+				g.fillRect(0, 0, w2 - x, scrH >> 1);
+				g.fillRect(w2 + x, 0, w2, h2);
+				g.setColor(NmaniaDisplay.NMANIA_COLOR);
+				g.fillRect(0, h2, w2 - x, scrH >> 1);
+				g.fillRect(w2 + x, h2, w2, h2);
+			} else {
+				break;
 			}
+			flushGraphics();
 		}
 		Dispose();
 		Nmania.Push(new ResultsScreen(data, score, input, recorder, track, applause, bg, menu));
 	}
-
-	public final static String[] pt = new String[] { "Continue", "Retry", "Quit" };
 
 	/**
 	 * Loop method, that handles pause menu redrawing.
 	 */
 	private final void PauseUpdateLoop() {
 		while (isPaused) {
-			int sw3 = scrW / 3;
-			int sh5 = scrH / 5;
-			for (int i = 0; i < 3; i++) {
-				int ry = (scrH * 2 / 5 * (i + 1) / 4) + (sh5 * i);
-				g.setGrayScale(i == pauseItem ? 63 : 0);
-				g.fillRect(sw3, ry, sw3 - 1, sh5 - 1);
-				g.setColor((i == pauseItem ? 255 : 0), 0, 0);
-				g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
-				g.setColor(-1);
-				g.drawString(pt[i], scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
-			}
+			int sh3 = scrH / 3;
+			int bh = sh3 * 2 / 3;
+
+			DrawPauseButton("CONTINUE", pauseItem == 0, (bh >> 2), bh);
+			DrawPauseButton("RETRY", pauseItem == 1, sh3 + (bh >> 2), bh);
+			DrawPauseButton("QUIT", pauseItem == 2, sh3 + sh3 + (bh >> 2), bh);
+
 			flushGraphics();
 			try {
 				Thread.sleep(40);
@@ -928,70 +968,126 @@ public final class Player extends GameCanvas {
 	}
 
 	/**
-	 * Method that handles failing/exiting.
-	 * 
-	 * @param exitAfter If false, player will be paused and show retry-quit menu
-	 *                  instead of destroying.
+	 * Method which handles quitting from paused state animation. Will destoroy
+	 * player and bring menu.
 	 */
-	private final void FailSequence(final boolean exitAfter) {
+	private final void QuitFromPauseSequence() {
+		long s = System.currentTimeMillis();
+		while (true) {
+			int p = (int) (System.currentTimeMillis() - s);
+			int h2 = scrH >> 1;
+			if (p < 500) {
+				final int trw = 50;
+				int x = (scrW + trw) * p / 500;
+				g.setColor(NmaniaDisplay.DARKER_COLOR);
+
+				g.fillTriangle(x - trw, 0, x - trw, h2, x, h2 >> 1);
+				g.fillRect(0, 0, x - trw, h2);
+				g.fillTriangle(scrW - x + trw, h2, scrW - x + trw, scrH, scrW - x, h2 + (h2 >> 1));
+				g.fillRect(scrW - x + trw, h2, x - trw, h2);
+			} else if (p < 800) {
+				int h = (scrH - (scrH * (p - 500) / 300)) >> 1;
+				FillBg();
+				g.setColor(NmaniaDisplay.DARKER_COLOR);
+				g.fillRect(0, 0, scrW, h);
+				g.fillRect(0, scrH - h, scrW, h);
+			} else {
+				break;
+			}
+			flushGraphics();
+		}
+		ExitPlayerFromFailedState();
+	}
+
+	/**
+	 * Method that handles failing animation. Player will be paused and show
+	 * retry-quit menu.
+	 */
+	private final void FailSequence() {
 		track.Pause();
 		if (sectionFail != null) {
 			sectionFail.Play();
 		}
-		final String j = "FAILED";
-		final int length = 50;
-		for (int i = 0; i <= length; i++) {
-			int h1 = scrH * i / length / 2;
-			int w1 = scrW * i / length / 2;
-			// rects
-			g.setColor(0);
-			g.fillRect(0, 0, w1, scrH); // left
-			g.fillRect(scrW - w1, 0, w1, scrH); // right
-			g.fillRect(0, 0, scrW, h1); // top
-			g.fillRect(0, scrH - h1, scrW, h1); // bottom
-			// text
-			g.setColor(-1);
-			g.drawString(j, scrW / 2 + 1, 49, 17);
-			g.drawString(j, scrW / 2 - 1, 49, 17);
-			g.drawString(j, scrW / 2 + 1, 51, 17);
-			g.drawString(j, scrW / 2 - 1, 51, 17);
-			g.setColor(210, 0, 0);
-			g.drawString(j, scrW / 2, 50, 17);
-			// flush & wait
+		final String t1 = "YOU FAILED AT " + (time * 100 / track.Total()) + "%";
+		final String t2 = "WITH " + score.currentHitScore + " SCORE POINTS";
+		final String t3 = "TOTAL ATTEMPTS: " + attempts;
+
+		long s = System.currentTimeMillis();
+		while (true) {
+			int p = (int) (System.currentTimeMillis() - s);
+			if (p < 350) {
+				int anchor = healthX + (HEALTH_WIDTH >> 1);
+				int mw = Math.max(anchor, scrW - anchor);
+				int f = mw * p / 350;
+
+				g.setColor(255, 0, 0);
+				g.fillRect(anchor - f, 0, f + f, scrH);
+			} else if (p < 700) {
+				g.setColor(255, 0, 0);
+				g.fillRect(0, 0, scrW, scrH);
+				g.setColor(0);
+				g.fillRect(0, 0, scrW, scrH * (p - 350) / 350);
+			} else {
+				g.setColor(0);
+				g.fillRect(0, 0, scrW, scrH);
+				flushGraphics();
+				break;
+			}
+			flushGraphics();
+		}
+		// text
+		int y = g.getFont().getHeight() >> 1;
+		g.setColor(-1);
+		g.drawString(t1, scrW / 2, y, 17);
+		y += g.getFont().getHeight();
+		g.setColor(-1);
+		g.drawString(t2, scrW / 2, y, 17);
+		y += g.getFont().getHeight();
+		g.setColor(-1);
+		g.drawString(t3, scrW / 2, y, 17);
+
+		// flush
+		flushGraphics();
+
+		pauseItem = 0;
+		isPaused = true;
+		while (isPaused) {
+			int sh3 = scrH / 3;
+			int bh = sh3 * 2 / 3;
+
+			DrawPauseButton("RETRY", pauseItem == 0, sh3 + (bh >> 2), bh);
+			DrawPauseButton("QUIT", pauseItem == 1, sh3 + sh3 + (bh >> 2), bh);
+
 			flushGraphics();
 			try {
-				Thread.sleep(10);
-			} catch (Exception e) {
+				Thread.sleep(30);
+			} catch (InterruptedException e) {
+				isPaused = false;
+				running = false;
+			}
+
+			if (exitNow) {
+				QuitFromPauseSequence();
+				return;
 			}
 		}
-		if (exitAfter) {
-			ExitPlayerFromFailedState();
-		} else {
-			pauseItem = 0;
-			isPaused = true;
-			while (isPaused) {
-				int sw3 = scrW / 3;
-				int sh5 = scrH / 5;
-				for (int i = 0; i < 2; i++) {
-					int ry = sh5 * (i * 2 + 1);
-					g.setGrayScale(i == pauseItem ? 63 : 0);
-					g.fillRect(sw3, ry, sw3 - 1, sh5 - 1);
-					g.setColor((i == pauseItem ? 255 : 0), 0, 0);
-					g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
-					g.setColor(-1);
-					g.drawString(i == 0 ? "Retry" : "Quit", scrW >> 1, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
-				}
-				flushGraphics();
-				try {
-					Thread.sleep(30);
-				} catch (InterruptedException e) {
-					isPaused = false;
-					running = false;
-				}
-			}
-			Refill();
-			Redraw(true);
-		}
+		Refill();
+		Redraw(true);
+
+	}
+
+	private final void DrawPauseButton(String t, boolean selected, int y, int h) {
+		g.setColor(selected ? NmaniaDisplay.PINK_COLOR : 0x444444);
+		g.fillRoundRect(scrW >> 2, y, scrW >> 1, h, h, h);
+
+		int ty = y + (h >> 1) - (g.getFont().getHeight() >> 1);
+		g.setColor(NmaniaDisplay.NEGATIVE_COLOR);
+		g.drawString(t, scrW / 2 + 1, ty - 1, 17);
+		g.drawString(t, scrW / 2 - 1, ty - 1, 17);
+		g.drawString(t, scrW / 2 + 1, ty + 1, 17);
+		g.drawString(t, scrW / 2 - 1, ty + 1, 17);
+		g.setColor(-1);
+		g.drawString(t, scrW / 2, ty, 17);
 	}
 
 	/**
@@ -1032,7 +1128,7 @@ public final class Player extends GameCanvas {
 	/**
 	 * Fully redraws the basics of the game. Does not perform flush!
 	 */
-	public final void Refill() {
+	private final void Refill() {
 		FillBg();
 		DrawBorders();
 		for (int i = 0; i < columnsCount; i++) {
@@ -1057,7 +1153,7 @@ public final class Player extends GameCanvas {
 	/**
 	 * Method to redraw hot areas. Called by update loop.
 	 */
-	public final void Redraw(boolean flushAll) {
+	private final void Redraw(boolean flushAll) {
 		if (rich == null) {
 			g.setClip(0, 0, scrW, kbY);
 			RedrawNotesVector();
@@ -1271,11 +1367,11 @@ public final class Player extends GameCanvas {
 			}
 			final int red = Math.min(255, rollingHealth >> 1);
 			g.setColor(red < 0 ? 0 : (255 - red), 0, 0);
-			g.fillRect(healthX, 0, 6, scrH);
+			g.fillRect(healthX, 0, HEALTH_WIDTH, scrH);
 			if (rollingHealth > 0) {
 				int hh = scrH * rollingHealth / 1000;
 				g.setColor(-1);
-				g.fillRect(healthX, scrH - hh, 6, hh);
+				g.fillRect(healthX, scrH - hh, HEALTH_WIDTH, hh);
 			}
 		}
 		// fps
