@@ -938,24 +938,18 @@ public final class Player extends GameCanvas {
 		Nmania.Push(new ResultsScreen(data, score, input, recorder, track, applause, bg, menu));
 	}
 
-	public final static String[] pt = new String[] { "Continue", "Retry", "Quit" };
-
 	/**
 	 * Loop method, that handles pause menu redrawing.
 	 */
 	private final void PauseUpdateLoop() {
 		while (isPaused) {
-			int sw3 = scrW / 3;
-			int sh5 = scrH / 5;
-			for (int i = 0; i < 3; i++) {
-				int ry = (scrH * 2 / 5 * (i + 1) / 4) + (sh5 * i);
-				g.setGrayScale(i == pauseItem ? 63 : 0);
-				g.fillRect(sw3, ry, sw3 - 1, sh5 - 1);
-				g.setColor((i == pauseItem ? 255 : 0), 0, 0);
-				g.drawRect(sw3, ry, sw3 - 1, sh5 - 1);
-				g.setColor(-1);
-				g.drawString(pt[i], scrW / 2, ry + sh5 / 2 - fillCountersH / 2, 17); // hcenter+top
-			}
+			int sh3 = scrH / 3;
+			int bh = sh3 * 2 / 3;
+
+			DrawPauseButton("CONTINUE", pauseItem == 0, (bh >> 2), bh);
+			DrawPauseButton("RETRY", pauseItem == 1, sh3 + (bh >> 2), bh);
+			DrawPauseButton("QUIT", pauseItem == 2, sh3 + sh3 + (bh >> 2), bh);
+
 			flushGraphics();
 			try {
 				Thread.sleep(40);
@@ -1073,7 +1067,7 @@ public final class Player extends GameCanvas {
 	}
 
 	private final void DrawPauseButton(String t, boolean selected, int y, int h) {
-		g.setColor(selected ? NmaniaDisplay.PINK_COLOR : 0x777777);
+		g.setColor(selected ? NmaniaDisplay.PINK_COLOR : 0x444444);
 		g.fillRoundRect(scrW >> 2, y, scrW >> 1, h, h, h);
 
 		int ty = y + (h >> 1) - (g.getFont().getHeight() >> 1);
