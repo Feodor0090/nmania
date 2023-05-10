@@ -11,7 +11,6 @@ public class NumberBox extends Screen {
 	private boolean allowNegative;
 	private String title;
 	private Font num = Font.getFont(0, 0, 8);
-	private Font buttons = Font.getFont(0, 0, 0);
 	private boolean sign;
 	private final char[][] pad = new char[][] { new char[] { '1', '2', '3' }, new char[] { '4', '5', '6' },
 			new char[] { '7', '8', '9' }, new char[] { '-', '0', '<' }, };
