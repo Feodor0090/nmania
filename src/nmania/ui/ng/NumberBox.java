@@ -33,11 +33,14 @@ public class NumberBox extends Screen {
 	}
 
 	public String GetOption() {
+		if (value == Integer.MAX_VALUE)
+			return null;
 		return "CONFIRM";
 	}
 
 	public void OnOptionActivate(IDisplay d) {
-		handler.OnNumberEntered(uuid, value, d);
+		if (value != Integer.MAX_VALUE)
+			handler.OnNumberEntered(uuid, value, d);
 	}
 
 	public void Paint(Graphics g, int w, int h) {
@@ -48,7 +51,9 @@ public class NumberBox extends Screen {
 		g.setColor(NmaniaDisplay.PINK_COLOR);
 		g.drawRoundRect(fh, 10, w - fh - fh, fh, fh, fh);
 		g.setColor(-1);
-		if (value == 0)
+		if (value == Integer.MAX_VALUE)
+			g.drawString(sign ? "_" : "-_", w - fh - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
+		else if (value == 0)
 			g.drawString(sign ? "0" : "-0", w - fh - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
 		else
 			g.drawString(String.valueOf(value), w - fh - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
@@ -71,6 +76,10 @@ public class NumberBox extends Screen {
 	}
 
 	public void OnKey(IDisplay d, int k) {
+		if (value == Integer.MAX_VALUE) {
+			if (k != Canvas.KEY_STAR)
+				value = 0;
+		}
 		value = Math.abs(value);
 		if (k == Canvas.KEY_STAR || k == '-') {
 			if (allowNegative)
@@ -81,9 +90,10 @@ public class NumberBox extends Screen {
 			return;
 		}
 		if (k == Canvas.KEY_POUND || k == 8) {
-			if (value == 0)
+			if (value == 0) {
 				sign = true;
-			else
+				value = Integer.MAX_VALUE;
+			} else
 				value /= 10;
 			ApplySign();
 			return;
@@ -97,6 +107,9 @@ public class NumberBox extends Screen {
 	}
 
 	private void ApplySign() {
+		if (value == Integer.MAX_VALUE)
+			return;
+
 		value = Math.abs(value);
 		if (!sign)
 			value = -value;
