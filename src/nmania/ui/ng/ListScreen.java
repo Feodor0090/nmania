@@ -27,7 +27,7 @@ public abstract class ListScreen extends Screen {
 	 * Shift of screen's content right now. In keyboard mode, this approaches
 	 * targetY. In touch mode controlled by used. Always less than zero.
 	 */
-	private int realY;
+	protected int realY;
 	/**
 	 * <ul>
 	 * <li>0 = keyboard mode, selected item is approached.
@@ -37,8 +37,8 @@ public abstract class ListScreen extends Screen {
 	 */
 	private int scrollMode = 0;
 	private int dragStartY;
-	protected Font font = Font.getFont(0, 0, 8);
-	private int fontH = font.getHeight();
+	protected final Font font = Font.getFont(0, 0, 8);
+	protected final int fontH = font.getHeight();
 	private String selectedText = null;
 	private float textScroll = 0;
 	private long time = System.currentTimeMillis();
