@@ -2,6 +2,8 @@ package nmania.ui.ng;
 
 import javax.microedition.lcdui.Graphics;
 
+import tube42.lib.imagelib.ColorUtils;
+
 public class ColorBox extends ListScreen implements IListSelectHandler, INumberBoxHandler {
 
 	private String title;
@@ -42,7 +44,8 @@ public class ColorBox extends ListScreen implements IListSelectHandler, INumberB
 		g.setColor(value);
 		int y = realY + 10 + 3 * fontH;
 		g.fillRect(10, y, w - 20, 40);
-		g.setColor(-1);
+		int b = (int) (Math.abs(1f - NmaniaDisplay.beatProgress * 2f) * 255);
+		g.setColor(ColorUtils.blend(-1, NmaniaDisplay.PINK_COLOR, b));
 		g.drawRect(10, y, w - 21, 39);
 	}
 

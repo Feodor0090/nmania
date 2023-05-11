@@ -4,6 +4,8 @@ import javax.microedition.lcdui.Canvas;
 import javax.microedition.lcdui.Font;
 import javax.microedition.lcdui.Graphics;
 
+import tube42.lib.imagelib.ColorUtils;
+
 public class NumberBox extends Screen {
 	private int uuid;
 	private INumberBoxHandler handler;
@@ -66,7 +68,8 @@ public class NumberBox extends Screen {
 			for (int j = 0; j < 3; j++) {
 				if (i == 3 && j == 0 && !allowNegative)
 					continue;
-				g.setColor(NmaniaDisplay.PINK_COLOR);
+				int b = (int) (Math.abs(1f - NmaniaDisplay.beatProgress * 2f) * 32);
+				g.setColor(ColorUtils.blend(-1, NmaniaDisplay.PINK_COLOR, b));
 				g.fillRoundRect(j * w / 3 + 1, y, w / 3 - 2, fh, fh, fh);
 				g.setColor(-1);
 				g.drawChar(pad[i][j], j * w / 3 + w / 6, y, Graphics.TOP | Graphics.HCENTER);
