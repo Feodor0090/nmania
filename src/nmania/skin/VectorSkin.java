@@ -1,5 +1,6 @@
 package nmania.skin;
 
+import java.util.Vector;
 import javax.microedition.lcdui.Image;
 
 import org.json.me.JSONObject;
@@ -117,6 +118,36 @@ public class VectorSkin extends Skin {
 			holdBodies = new int[] { 0x007700, 0x770000, 0x000077 };
 
 		return this;
+	}
+
+	public JSONObject Write() {
+		JSONObject j = new JSONObject();
+
+		// numbers
+		j.put("left_offset", leftOffset);
+		j.put("column_width", columnWidth);
+		j.put("note_height", noteHeight);
+		j.put("hold_width", holdWidth);
+		j.put("keyboard_height", keyboardHeight);
+		j.put("hud_color", hudColor);
+
+		// palletes
+		j.put("background", ToVector(background));
+		j.put("keyboard", ToVector(keyboard));
+		j.put("keyboard_hold", ToVector(keyboardHold));
+		j.put("notes", ToVector(notes));
+		j.put("holds", ToVector(holds));
+		j.put("hold_bodies", ToVector(holdBodies));
+
+		return j;
+	}
+
+	private static Vector ToVector(int[] arr) {
+		Vector v = new Vector(arr.length);
+		for (int i = 0; i < arr.length; i++) {
+			v.addElement(new Integer(arr[i]));
+		}
+		return v;
 	}
 
 }
