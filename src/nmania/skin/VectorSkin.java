@@ -79,7 +79,7 @@ public class VectorSkin extends Skin {
 		return Pack(background, columns);
 	}
 
-	public VectorSkin Read(JSONObject j) {
+	public Skin Read(JSONObject j) {
 		if (j == null)
 			j = new JSONObject();
 		// numbers
@@ -148,6 +148,10 @@ public class VectorSkin extends Skin {
 			v.addElement(new Integer(arr[i]));
 		}
 		return v;
+	}
+
+	public String RMSName() {
+		return "nmania_skin_vector";
 	}
 
 }

@@ -2,6 +2,8 @@ package nmania.skin;
 
 import javax.microedition.lcdui.Image;
 
+import org.json.me.JSONObject;
+
 import tube42.lib.imagelib.ColorUtils;
 
 public abstract class Skin {
@@ -113,6 +115,12 @@ public abstract class Skin {
 	 * @return Array with colors for each column.
 	 */
 	public abstract int[] GetColumnsBackground(int columns);
+
+	public abstract Skin Read(JSONObject j);
+
+	public abstract JSONObject Write();
+
+	public abstract String RMSName();
 
 	protected final static int[] Interpolate(int c1, int c2, int l) {
 		if (c1 == c2)
