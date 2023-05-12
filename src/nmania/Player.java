@@ -1473,6 +1473,7 @@ public final class Player extends GameCanvas {
 					final int x2 = colW + x - 1;
 					for (int i = 0; i < kbH; i++) {
 						int y = kbY + i + 1;
+						g.setColor(colors[i]);
 						g.drawLine(x, y, x2, y);
 					}
 				}
@@ -1490,6 +1491,7 @@ public final class Player extends GameCanvas {
 					final int x2 = colW + x - 1;
 					for (int i = 0; i < kbH; i++) {
 						int y = kbY + i + 1;
+						g.setColor(colors[i]);
 						g.drawLine(x, y, x2, y);
 					}
 				}
