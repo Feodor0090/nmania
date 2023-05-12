@@ -109,6 +109,8 @@ public final class Settings {
 
 	public static int defaultMods = 0;
 
+	public static boolean rasterSkin;
+
 	public static String GetLastDir() {
 		int i = workingFolder.lastIndexOf('/', workingFolder.length() - 2);
 		if (i == -1)
@@ -159,6 +161,7 @@ public final class Settings {
 		j.accumulate("analyze", new Boolean(analyzeMaps));
 		j.accumulate("mods", new Integer(defaultMods));
 		j.accumulate("osr", new Boolean(encodeOsr));
+		j.accumulate("raster", new Boolean(rasterSkin));
 
 		return j.toString();
 	}
@@ -225,6 +228,7 @@ public final class Settings {
 			analyzeMaps = j.optBoolean("analyze"); // ?full
 			defaultMods = j.optInt("mods");
 			encodeOsr = j.optBoolean("osr", true);
+			rasterSkin = j.optBoolean("raster", false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
