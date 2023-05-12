@@ -14,7 +14,11 @@ import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.TextBox;
 import javax.microedition.midlet.MIDlet;
 import javax.microedition.midlet.MIDletStateChangeException;
+import javax.microedition.rms.RecordStore;
 
+import org.json.me.JSONObject;
+
+import nmania.skin.VectorSkin;
 import nmania.ui.ng.IDisplay;
 import nmania.ui.ng.NmaniaDisplay;
 
@@ -23,7 +27,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 	private static Nmania inst;
 	public boolean running;
 	public static BeatmapManager bm;
-	public static Skin skin;
+	private static nmania.skin.Skin skin;
 	public static String version;
 	private static Display disp;
 
@@ -126,6 +130,45 @@ public final class Nmania extends MIDlet implements CommandListener {
 
 	public static String GetDevice() {
 		return System.getProperty("microedition.platform");
+	}
+
+	public static nmania.skin.Skin LoadSkin(boolean force) {
+		if (skin != null) {
+			if (!force)
+				return skin;
+		}
+		if (Settings.rasterSkin) {
+			return new VectorSkin().Read(null);
+			// TODO
+		} else {
+			try {
+				skin = new VectorSkin();
+				RecordStore r = RecordStore.openRecordStore(skin.RMSName(), true);
+				JSONObject j = null;
+				if (r.getNumRecords() > 0) {
+					j = new JSONObject(new String(r.getRecord(1)));
+				}
+				r.closeRecordStore();
+				return skin.Read(j);
+			} catch (Exception e) {
+				e.printStackTrace();
+				return new VectorSkin().Read(null);
+			}
+		}
+	}
+
+	public static void SaveSkin() {
+		try {
+			RecordStore r = RecordStore.openRecordStore(skin.RMSName(), true);
+			byte[] d = skin.Write().toString().getBytes();
+			if (r.getNumRecords() == 0) {
+				r.addRecord(new byte[1], 0, 1);
+			}
+			r.setRecord(1, d, 0, d.length);
+			r.closeRecordStore();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void commandAction(Command arg0, Displayable d) {

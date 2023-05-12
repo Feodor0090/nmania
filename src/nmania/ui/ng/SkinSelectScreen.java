@@ -1,7 +1,5 @@
 package nmania.ui.ng;
 
-import javax.microedition.lcdui.Alert;
-import javax.microedition.lcdui.AlertType;
 import javax.microedition.lcdui.Command;
 import javax.microedition.lcdui.CommandListener;
 import javax.microedition.lcdui.Displayable;
@@ -10,7 +8,7 @@ import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
 
 import nmania.Nmania;
-import nmania.Skin;
+import nmania.Settings;
 import nmania.ui.VectorSkinSetup;
 import tube42.lib.imagelib.ColorUtils;
 
@@ -21,18 +19,7 @@ public class SkinSelectScreen extends Screen implements CommandListener {
 
 	public SkinSelectScreen(IDisplay d) {
 		this.d = d;
-		if (Nmania.skin == null)
-			Nmania.skin = new Skin();
-		if (Nmania.skin.rich) {
-			try {
-				Nmania.skin.LoadRich(false);
-			} catch (IllegalStateException e) {
-				Alert a = new Alert("Rich skin is invalid", e.getMessage(), null, AlertType.ERROR);
-				a.setTimeout(Alert.FOREVER);
-				d.PauseRendering();
-				Nmania.Push(a);
-			}
-		}
+		Nmania.LoadSkin(false);
 	}
 
 	public String GetTitle() {
@@ -49,16 +36,21 @@ public class SkinSelectScreen extends Screen implements CommandListener {
 
 	public void OnOptionActivate(IDisplay d) {
 		d.PauseRendering();
-		if (Nmania.skin.rich) {
+		if (Settings.rasterSkin) {
 			DisplayRichInfo();
 		} else {
 			Nmania.Push(new VectorSkinSetup(d.GetDisplayable()));
 		}
 	}
 
+	public boolean OnExit(IDisplay d) {
+		Settings.Save();
+		return false;
+	}
+
 	public void Paint(Graphics g, int w, int h) {
 		g.setColor(NmaniaDisplay.PINK_COLOR);
-		if (Nmania.skin.rich) {
+		if (Settings.rasterSkin) {
 			g.fillRoundRect(w / 2 + 10, 0, w / 2 - 20, h, 40, 40);
 		} else {
 			g.fillRoundRect(10, 0, w / 2 - 20, h, 40, 40);
@@ -94,7 +86,7 @@ public class SkinSelectScreen extends Screen implements CommandListener {
 
 	public void OnKey(IDisplay d, int k) {
 		if (IsLeft(d, k) || IsRight(d, k)) {
-			Nmania.skin.rich = !Nmania.skin.rich;
+			Settings.rasterSkin = !Settings.rasterSkin;
 		}
 	}
 

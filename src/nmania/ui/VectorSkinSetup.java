@@ -1,6 +1,5 @@
 package nmania.ui;
 
-import javax.microedition.lcdui.Alert;
 import javax.microedition.lcdui.Choice;
 import javax.microedition.lcdui.ChoiceGroup;
 import javax.microedition.lcdui.Command;
@@ -13,7 +12,7 @@ import javax.microedition.lcdui.ItemCommandListener;
 import javax.microedition.lcdui.StringItem;
 
 import nmania.Nmania;
-import nmania.Skin;
+import nmania.skin.VectorSkin;
 
 public class VectorSkinSetup extends Form implements CommandListener, ItemCommandListener {
 
@@ -33,9 +32,6 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 		holdColors.setItemCommandListener(this);
 		holdColors.setDefaultCommand(edit);
 		append(holdColors);
-		noteFillOptions.setSelectedIndex(0, skin.verticalGradientOnNotes);
-		noteFillOptions.setSelectedIndex(1, skin.holdsHaveOwnColors);
-		append(noteFillOptions);
 		keyColors.setItemCommandListener(this);
 		keyColors.setDefaultCommand(edit);
 		append(keyColors);
@@ -47,7 +43,7 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 	private final Command back = new Command("Back", Command.BACK, 2);
 	private final Command edit = new Command("Edit", Command.ITEM, 1);
 	final Displayable prev;
-	final Skin skin = Nmania.skin;
+	final VectorSkin skin = (VectorSkin) Nmania.LoadSkin(false);
 
 	Gauge colW = new Gauge("Column width", true, 150, skin.columnWidth);
 	Gauge keysH = new Gauge("Keyboard height", true, 200, skin.keyboardHeight);
@@ -67,20 +63,19 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 		skin.leftOffset = leftO.getValue();
 		skin.holdWidth = holdW.getValue();
 		skin.noteHeight = noteH.getValue();
-		skin.verticalGradientOnNotes = noteFillOptions.isSelected(0);
-		skin.holdsHaveOwnColors = noteFillOptions.isSelected(1);
 	}
 
 	public void commandAction(Command c, Displayable arg1) {
 		if (c == back) {
 			Apply();
-			skin.Save();
+			Nmania.SaveSkin();
 			Nmania.Push(prev);
 			return;
 		}
 	}
 
 	public void commandAction(Command c, Item i) {
+		/*
 		if (c == edit) {
 			if (i == noteColors) {
 				Nmania.Push(new ColorPalleteEditor(skin.noteColors, this));
@@ -94,5 +89,6 @@ public class VectorSkinSetup extends Form implements CommandListener, ItemComman
 				Nmania.Push(new Alert(i.toString()));
 			}
 		}
+		*/
 	}
 }
