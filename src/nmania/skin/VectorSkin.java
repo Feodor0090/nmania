@@ -96,15 +96,13 @@ public class VectorSkin extends Skin {
 
 		keyboard = SNUtils.json2intArray(j.optJSONArray("keyboard"));
 		if (keyboard == null || keyboard.length < 6)
-			keyboard = new int[] { NmaniaDisplay.NMANIA_COLOR,NmaniaDisplay.DARKER_COLOR,
-					NmaniaDisplay.NMANIA_COLOR,NmaniaDisplay.DARKER_COLOR,
-					NmaniaDisplay.NMANIA_COLOR,NmaniaDisplay.DARKER_COLOR};
+			keyboard = new int[] { NmaniaDisplay.NMANIA_COLOR, NmaniaDisplay.DARKER_COLOR, NmaniaDisplay.NMANIA_COLOR,
+					NmaniaDisplay.DARKER_COLOR, NmaniaDisplay.NMANIA_COLOR, NmaniaDisplay.DARKER_COLOR };
 
 		keyboardHold = SNUtils.json2intArray(j.optJSONArray("keyboard_hold"));
 		if (keyboardHold == null || keyboardHold.length < 6)
-			keyboardHold = new int[] { 0x00ff00,NmaniaDisplay.DARKER_COLOR,
-					0xff0000,NmaniaDisplay.DARKER_COLOR,
-					0x0000ff,NmaniaDisplay.DARKER_COLOR};
+			keyboardHold = new int[] { 0x00ff00, NmaniaDisplay.DARKER_COLOR, 0xff0000, NmaniaDisplay.DARKER_COLOR,
+					0x0000ff, NmaniaDisplay.DARKER_COLOR };
 
 		notes = SNUtils.json2intArray(j.optJSONArray("notes"));
 		if (notes == null || notes.length < 6)
