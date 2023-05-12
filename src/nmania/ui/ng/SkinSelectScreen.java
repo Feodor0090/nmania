@@ -9,7 +9,6 @@ import javax.microedition.lcdui.Graphics;
 
 import nmania.Nmania;
 import nmania.Settings;
-import nmania.ui.VectorSkinSetup;
 import tube42.lib.imagelib.ColorUtils;
 
 public class SkinSelectScreen extends Screen implements CommandListener {
@@ -19,7 +18,7 @@ public class SkinSelectScreen extends Screen implements CommandListener {
 
 	public SkinSelectScreen(IDisplay d) {
 		this.d = d;
-		Nmania.LoadSkin(false);
+		Nmania.LoadSkin(true);
 	}
 
 	public String GetTitle() {
@@ -35,11 +34,11 @@ public class SkinSelectScreen extends Screen implements CommandListener {
 	}
 
 	public void OnOptionActivate(IDisplay d) {
-		d.PauseRendering();
 		if (Settings.rasterSkin) {
+			d.PauseRendering();
 			DisplayRichInfo();
 		} else {
-			Nmania.Push(new VectorSkinSetup(d.GetDisplayable()));
+			d.Push(new VectorSkinSettings());
 		}
 	}
 
@@ -87,6 +86,7 @@ public class SkinSelectScreen extends Screen implements CommandListener {
 	public void OnKey(IDisplay d, int k) {
 		if (IsLeft(d, k) || IsRight(d, k)) {
 			Settings.rasterSkin = !Settings.rasterSkin;
+			Nmania.LoadSkin(true);
 		}
 	}
 
