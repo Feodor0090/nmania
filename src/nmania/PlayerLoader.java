@@ -3,7 +3,7 @@ package nmania;
 import javax.microedition.lcdui.Displayable;
 
 import nmania.beatmaps.InvalidBeatmapTypeException;
-import nmania.skin.StubSkin;
+import nmania.skin.VectorSkin;
 import nmania.ui.KeyboardSetup;
 import nmania.ui.ng.Alert;
 import nmania.ui.ng.IDisplay;
@@ -84,7 +84,7 @@ public class PlayerLoader extends Thread {
 				back = null;
 			}
 			try {
-				Player p = new Player(b, data, new StubSkin(), log, back, input);
+				Player p = new Player(b, data, new VectorSkin().Read(null), log, back, input);
 				if (display != null) {
 					display.SetAudio(null);
 					if (!Settings.keepMenu)
