@@ -138,23 +138,23 @@ public final class Nmania extends MIDlet implements CommandListener {
 				return skin;
 		}
 		if (Settings.rasterSkin) {
-			return new VectorSkin().Read(null);
-			// TODO
+			skin = new RasterSkin();
 		} else {
-			try {
-				skin = new VectorSkin();
-				RecordStore r = RecordStore.openRecordStore(skin.RMSName(), true);
-				JSONObject j = null;
-				if (r.getNumRecords() > 0) {
-					j = new JSONObject(new String(r.getRecord(1)));
-				}
-				r.closeRecordStore();
-				return skin.Read(j);
-			} catch (Exception e) {
-				e.printStackTrace();
-				return new VectorSkin().Read(null);
-			}
+			skin = new VectorSkin();
 		}
+		try {
+			RecordStore r = RecordStore.openRecordStore(skin.RMSName(), true);
+			JSONObject j = null;
+			if (r.getNumRecords() > 0) {
+				j = new JSONObject(new String(r.getRecord(1)));
+			}
+			r.closeRecordStore();
+			skin.Read(j);
+		} catch (Exception e) {
+			e.printStackTrace();
+			skin = new VectorSkin().Read(null);
+		}
+		return skin;
 	}
 
 	public static void SaveSkin() {
