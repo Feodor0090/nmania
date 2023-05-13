@@ -220,14 +220,14 @@ public final class Settings {
 			useBmsSamples = j.optBoolean("usebmssamples", true);
 			profiler = j.optBoolean("profiler", false);
 			name = j.optString("name", null);
-			recordReplay = j.optBoolean("record");
+			recordReplay = j.optBoolean("record", true);
 			musicInMenu = j.optBoolean("musicinmenu", true); // ?full
 			throttleGameplay = j.optBoolean("throttle");
 			maxPriority = j.optBoolean("maxpr");
 			forceThreadSwitch = j.optBoolean("threadswitch");
 			analyzeMaps = j.optBoolean("analyze"); // ?full
 			defaultMods = j.optInt("mods");
-			encodeOsr = j.optBoolean("osr", true);
+			encodeOsr = j.optBoolean("osr", false);
 			rasterSkin = j.optBoolean("raster", false);
 		} catch (Exception e) {
 			e.printStackTrace();
