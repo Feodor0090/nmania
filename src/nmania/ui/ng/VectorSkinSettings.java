@@ -1,15 +1,10 @@
 package nmania.ui.ng;
 
-import nmania.BeatmapSet;
-import nmania.ModsState;
 import nmania.Nmania;
-import nmania.PlayerBootstrapData;
-import nmania.beatmaps.InvalidBeatmapTypeException;
-import nmania.replays.AutoplayRunner;
 import nmania.skin.Skin;
 import nmania.skin.VectorSkin;
 
-public class VectorSkinSettings extends ListScreen implements IListSelectHandler, INumberBoxHandler {
+public class VectorSkinSettings extends SkinSettings implements IListSelectHandler, INumberBoxHandler {
 
 	private final VectorSkin skin;
 	private final DataItem left, colW, noteH, holdW, kbH;
@@ -20,7 +15,7 @@ public class VectorSkinSettings extends ListScreen implements IListSelectHandler
 			"Odd column (bottom)", "Center column (top)", "Center column (bottom)" };
 
 	public VectorSkinSettings() {
-		Skin s = Nmania.LoadSkin(false);
+		Skin s = Nmania.LoadSkin(true);
 		if (s instanceof VectorSkin)
 			skin = (VectorSkin) s;
 		else
@@ -40,41 +35,6 @@ public class VectorSkinSettings extends ListScreen implements IListSelectHandler
 		holdBC = new ListItem(12, "Hold bodies color", this);
 
 		SetItems(new ListItem[] { left, colW, noteH, holdW, kbH, hudC, bgC, kbC, kbHC, noteC, holdC, holdBC });
-	}
-
-	public String GetTitle() {
-		return "SKIN SETUP";
-	}
-
-	public boolean ShowLogo() {
-		return false;
-	}
-
-	public String GetOption() {
-		return "PREVIEW";
-	}
-
-	public void OnOptionActivate(IDisplay d) {
-		try {
-			BeatmapSet testBms = new BeatmapSet("/beatmaps/", "wwwwww/", new String[] { "bm.osu", "audio.mp3" });
-			testBms.Fill(testBms.ReadBeatmap("bm [skin test].osu"));
-			PlayerBootstrapData pbd = new PlayerBootstrapData();
-			pbd.mapFileName = "bm [skin test].osu";
-			pbd.mods = new ModsState();
-			pbd.recordReplay = false;
-			pbd.keepBackScreen = true;
-			pbd.set = testBms;
-			pbd.input = new AutoplayRunner();
-			PlayerLoaderScreen pls = new PlayerLoaderScreen(pbd);
-			d.Push(pls);
-		} catch (InvalidBeatmapTypeException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public boolean OnExit(IDisplay d) {
-		Nmania.SaveSkin();
-		return false;
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
