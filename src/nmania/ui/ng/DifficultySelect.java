@@ -1,5 +1,6 @@
 package nmania.ui.ng;
 
+import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Graphics;
@@ -130,11 +131,10 @@ public final class DifficultySelect extends ListScreen implements Runnable, ILis
 			title = set.artist + " - " + set.title;
 
 			Vector items = new Vector();
-			for (int i = 0; i < set.files.length; i++) {
-				String f = set.files[i];
-				if (f.endsWith(".osu") || f.endsWith(".nmbm")) {
-					items.addElement(new DifficultyItem(f, this));
-				}
+			Enumeration diffs = set.ListAllDifficulties().elements();
+			while (diffs.hasMoreElements()) {
+				String f = (String) diffs.nextElement();
+				items.addElement(new DifficultyItem(f, this));
 			}
 			SetItems(items);
 			Thread.sleep(50); // ?full
