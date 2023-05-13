@@ -1,6 +1,5 @@
 package nmania.skin;
 
-import java.util.Vector;
 import javax.microedition.lcdui.Image;
 
 import org.json.me.JSONObject;
@@ -140,14 +139,6 @@ public class VectorSkin extends Skin {
 		j.put("hold_bodies", ToVector(holdBodies));
 
 		return j;
-	}
-
-	private static Vector ToVector(int[] arr) {
-		Vector v = new Vector(arr.length);
-		for (int i = 0; i < arr.length; i++) {
-			v.addElement(new Integer(arr[i]));
-		}
-		return v;
 	}
 
 	public String RMSName() {

@@ -1,5 +1,7 @@
 package nmania.skin;
 
+import java.util.Vector;
+
 import javax.microedition.lcdui.Image;
 
 import org.json.me.JSONObject;
@@ -189,5 +191,38 @@ public abstract class Skin {
 			}
 		}
 		return a;
+	}
+
+	protected final static Image[] Pack(Image[] pallete3, int count) {
+		Image[] a = new Image[count];
+		if (count == 1) {
+			a[0] = pallete3[2];
+		} else if (count == 2) {
+			a[0] = pallete3[0];
+			a[1] = pallete3[1];
+		} else if (count == 3) {
+			a[0] = pallete3[0];
+			a[1] = pallete3[2];
+			a[2] = pallete3[1];
+		} else {
+			if (count % 2 == 1) {
+				// center note
+				a[count / 2] = pallete3[2];
+			}
+			for (int i = 0; i < count / 2; i++) {
+				Image t = pallete3[i % 2];
+				a[i] = t;
+				a[count - i - 1] = t;
+			}
+		}
+		return a;
+	}
+
+	public static Vector ToVector(int[] arr) {
+		Vector v = new Vector(arr.length);
+		for (int i = 0; i < arr.length; i++) {
+			v.addElement(new Integer(arr[i]));
+		}
+		return v;
 	}
 }
