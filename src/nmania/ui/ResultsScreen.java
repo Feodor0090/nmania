@@ -248,11 +248,13 @@ public final class ResultsScreen extends Canvas implements ILogger, Runnable {
 				} else {
 					// we are watching foreign replay
 					Dispose();
-					(new PlayerLoader(data, input, this, next)).start();
+					data.input = input;
+					(new PlayerLoader(data, this, next)).start();
 				}
 			} else if (activeMenu == 1) {
 				Dispose();
-				(new PlayerLoader(data, null, this, next)).start();
+				data.input = null;
+				(new PlayerLoader(data, this, next)).start();
 			} else if (activeMenu == 2) {
 				if (SaveReplay())
 					Exit();
@@ -266,7 +268,8 @@ public final class ResultsScreen extends Canvas implements ILogger, Runnable {
 						Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
 					} else {
 						Dispose();
-						(new PlayerLoader(data, new ReplayPlayer(chunk, score), this, next)).start();
+						data.input = new ReplayPlayer(chunk, score);
+						(new PlayerLoader(data, this, next)).start();
 					}
 				}
 			}
@@ -290,7 +293,8 @@ public final class ResultsScreen extends Canvas implements ILogger, Runnable {
 					Nmania.Push(new Alert("nmania", "Could not read replay.", null, AlertType.ERROR));
 				} else {
 					Dispose();
-					(new PlayerLoader(data, new ReplayPlayer(chunk, score), this, next)).start();
+					data.input = new ReplayPlayer(chunk, score);
+					(new PlayerLoader(data, this, next)).start();
 				}
 			}
 		}
