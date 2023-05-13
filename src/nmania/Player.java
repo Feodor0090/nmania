@@ -1521,6 +1521,11 @@ public final class Player extends GameCanvas {
 			for (int i = currentNote[column]; i < c.length; i += 2) {
 				// the note Y
 				final int noteY = notesY - (c[i] / scrollDiv);
+
+				// all visible are drawn
+				if (noteY < 0)
+					break;
+
 				// hold duration (zero if "hit" note)
 				final int dur = c[i + 1];
 
