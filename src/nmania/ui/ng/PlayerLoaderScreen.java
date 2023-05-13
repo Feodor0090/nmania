@@ -5,11 +5,9 @@ import javax.microedition.lcdui.Graphics;
 
 import nmania.BeatmapSet;
 import nmania.GL;
-import nmania.IInputOverrider;
 import nmania.ILogger;
 import nmania.PlayerBootstrapData;
 import nmania.PlayerLoader;
-import nmania.Settings;
 
 public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 
@@ -20,10 +18,9 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 	private final String title;
 	private final String diff;
 	private String state = "Waiting for loader...";
-	private String hash = "";
+	private String hash;
 	private final String replay;
 
-	private final IInputOverrider input;
 	private final PlayerBootstrapData data;
 
 	private boolean failed;
@@ -31,13 +28,12 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 	private IDisplay d;
 	private Thread th;
 
-	public PlayerLoaderScreen(IInputOverrider input, PlayerBootstrapData data) {
-		this.input = input;
+	public PlayerLoaderScreen(PlayerBootstrapData data) {
 		this.data = data;
 		title = data.set.artist + " - " + data.set.title;
 		diff = BeatmapSet.GetDifficultyNameFast(data.mapFileName);
-		if (input == null) {
-			if (Settings.recordReplay)
+		if (data.input == null) {
+			if (data.recordReplay)
 				replay = "Replay will be recorded!";
 			else
 				replay = "Recording disabled.";
@@ -83,7 +79,8 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 			NmaniaDisplay.print(g, "Game failed to load!", w / 2, y, 0xff0000, -1, tc);
 			return;
 		}
-		NmaniaDisplay.print(g, hash, w / 2 + trofs, y, -1, 0, tc);
+		if (hash != null)
+			NmaniaDisplay.print(g, hash, w / 2 + trofs, y, -1, 0, tc);
 		y += fh;
 		NmaniaDisplay.print(g, replay, w / 2 - trofs, y, -1, 0, tc);
 	}
@@ -102,7 +99,9 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 
 	public boolean OnExit(IDisplay d) {
 		d.Throttle(false);
-		th.interrupt();
+		Thread t = th;
+		if (t != null)
+			t.interrupt();
 		return false;
 	}
 
@@ -127,7 +126,7 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 		} catch (InterruptedException e) {
 			return;
 		}
-		th = new PlayerLoader(data, input, this, d);
+		th = new PlayerLoader(data, this, d);
 		th.start();
 	}
 
@@ -150,6 +149,7 @@ public class PlayerLoaderScreen extends Screen implements ILogger, Runnable {
 
 	public void EndTransition() {
 		stime = 0;
+		th = null;
 	}
 
 	public int DecorationsXOffset() {

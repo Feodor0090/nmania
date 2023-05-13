@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -27,12 +28,15 @@ public final class BeatmapManager {
 	/**
 	 * Loads the manager for specific URL.
 	 * 
-	 * @param wd Absolute path to folder with file:///.
+	 * @param wd Absolute path to folder with file:/// and trailing slash.
 	 */
 	public BeatmapManager(String wd) {
 		directory = wd;
 	}
 
+	/**
+	 * Absolute path to folder with charts with file:/// and trailing slash.
+	 */
 	public final String directory;
 	private FileConnection fc;
 
@@ -59,9 +63,7 @@ public final class BeatmapManager {
 		FileConnection bmsFc = null;
 		try {
 			bmsFc = (FileConnection) Connector.open(directory + dir, Connector.READ);
-			BeatmapSet bms = new BeatmapSet();
-			bms.wdPath = directory;
-			bms.folderName = dir;
+			BeatmapSet bms = new BeatmapSet(directory, dir, bakeEnum(bmsFc.list()));
 			String fm = null;
 			String all = ""; // ?dbg
 			{
@@ -87,13 +89,7 @@ public final class BeatmapManager {
 				return null;
 			}
 			IRawBeatmap bm = RawBeatmapConverter.FromText(fm);
-			bms.image = bm.GetImage();
-			bms.title = bm.GetTitle();
-			bms.artist = bm.GetArtist();
-			bms.mapper = bm.GetMapper();
-			bms.audio = bm.GetAudio();
-			bms.timings = bm.GetTimingData();
-			bms.files = bakeEnum(bmsFc.list());
+			bms.Fill(bm);
 			bmsFc.close();
 			return bms;
 		} finally {
@@ -145,6 +141,30 @@ public final class BeatmapManager {
 			} catch (IOException e) {
 			}
 		}
+	}
+
+	public static final String getStringFromJAR(String path) {
+		try {
+			StringBuffer sb = new StringBuffer();
+			char[] chars = new char[1024];
+			InputStream stream = Nmania.class.getResourceAsStream(path);
+			if (stream == null)
+				return null;
+			InputStreamReader isr;
+			isr = new InputStreamReader(stream, "UTF-8");
+			while (true) {
+				int c = isr.read(chars);
+				if (c == -1)
+					break;
+				sb.append(chars, 0, c);
+			}
+			isr.close();
+			return sb.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 	public static Image getImgFromFS(String path) {

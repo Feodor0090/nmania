@@ -17,26 +17,24 @@ import nmania.ui.ng.PlayerLoaderScreen;
  */
 public class PlayerLoader extends Thread {
 
-	public PlayerLoader(PlayerBootstrapData data, IInputOverrider input, ILogger log, IDisplay disp) {
+	public PlayerLoader(PlayerBootstrapData data, ILogger log, IDisplay disp) {
 		super("Player loader");
-		this.input = input;
 		this.log = log;
 		this.data = data;
-		display = disp;
 		this.back = disp.GetDisplayable();
+		display = disp;
 	}
 
-	public PlayerLoader(PlayerBootstrapData data, IInputOverrider input, ILogger log, Displayable back) {
+	public PlayerLoader(PlayerBootstrapData data, ILogger log, Displayable back) {
 		super("Player loader");
-		this.input = input;
 		this.log = log;
 		this.data = data;
 		this.back = back;
+		display = null;
 	}
 
-	private final IInputOverrider input;
 	private ILogger log;
-	final PlayerBootstrapData data;
+	private final PlayerBootstrapData data;
 	private Displayable back;
 	private IDisplay display;
 
@@ -69,7 +67,7 @@ public class PlayerLoader extends Thread {
 			} catch (InterruptedException e) {
 				return;
 			}
-			if (input == null && Settings.keyLayout[b.columnsCount - 1] == null) {
+			if (data.input == null && Settings.keyLayout[b.columnsCount - 1] == null) {
 				// no keyboard layout
 				if (display != null) {
 					display.Back();
@@ -79,14 +77,14 @@ public class PlayerLoader extends Thread {
 				Nmania.Push(kbs);
 				return;
 			}
-			if (!Settings.keepMenu) {
+			if (!data.keepBackScreen) {
 				back = null;
 			}
 			try {
-				Player p = new Player(b, data, Nmania.skin, log, back, input);
+				Player p = new Player(b, data, Nmania.LoadSkin(false), log, back, data.input);
 				if (display != null) {
 					display.SetAudio(null);
-					if (!Settings.keepMenu)
+					if (!data.keepBackScreen)
 						display.Destroy();
 					display = null;
 				}

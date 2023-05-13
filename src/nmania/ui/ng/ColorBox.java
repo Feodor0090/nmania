@@ -93,6 +93,7 @@ public class ColorBox extends ListScreen implements IListSelectHandler, INumberB
 		}
 		value = (clampC(r) << 16) | (clampC(g) << 8) | (clampC(b));
 		UpdateItems();
+		d.Back();
 	}
 
 	private static int clampC(int c) {

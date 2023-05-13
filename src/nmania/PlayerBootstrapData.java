@@ -1,7 +1,10 @@
 package nmania;
 
+import javax.microedition.lcdui.Displayable;
+
 import nmania.beatmaps.IRawBeatmap;
 import nmania.beatmaps.InvalidBeatmapTypeException;
+import nmania.ui.ng.IDisplay;
 
 /**
  * This object contains all the data player need to be able to play something.
@@ -21,7 +24,15 @@ public final class PlayerBootstrapData {
 
 	public ModsState mods = new ModsState();
 
+	public IInputOverrider input;
+
 	public boolean recordReplay;
+
+	/**
+	 * If false, previous {@link IDisplay} or {@link Displayable} will not be kept
+	 * when swithing displayables.
+	 */
+	public boolean keepBackScreen;
 
 	public final IRawBeatmap ReadBeatmap() throws InvalidBeatmapTypeException {
 		return set.ReadBeatmap(mapFileName);

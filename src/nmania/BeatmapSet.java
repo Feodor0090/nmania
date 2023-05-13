@@ -25,17 +25,38 @@ import nmania.ui.ResultsScreen;
  * @author Feodor0090
  *
  */
-public final class BeatmapSet {
+public class BeatmapSet {
 	public int id;
 	public String title;
 	public String artist;
 	public String mapper;
 	public String image;
 	public String audio;
-	public String wdPath;
-	public String folderName;
-	public String[] files;
+	/**
+	 * Absolute path to folder with charts with file:/// and trailing slash.
+	 */
+	public final String wdPath;
+	/**
+	 * Name of folder with difficulties <b>with trailing slash</b>.
+	 */
+	public final String folderName;
+	protected String[] files;
 	public float[][] timings;
+
+	public BeatmapSet(String wdPath, String folderName, String[] files) {
+		this.wdPath = wdPath;
+		this.folderName = folderName;
+		this.files = files;
+	}
+
+	public void Fill(IRawBeatmap bm) {
+		image = bm.GetImage();
+		title = bm.GetTitle();
+		artist = bm.GetArtist();
+		mapper = bm.GetMapper();
+		audio = bm.GetAudio();
+		timings = bm.GetTimingData();
+	}
 
 	public boolean hasFile(String eqName) {
 		for (int i = 0; i < files.length; i++) {
@@ -118,15 +139,26 @@ public final class BeatmapSet {
 		return name + " (" + sub + ")." + ext;
 	}
 
-	public String[] ListAllReplays() {
+	public Vector ListAllReplays() {
 		Vector v = new Vector(files.length / 2, 8);
 		for (int i = 0; i < files.length; i++) {
-			if (files[i].endsWith(".osr") || files[i].endsWith(".nmr"))
+			if (files[i].endsWith(".osr") || files[i].endsWith(".nmr")) {
 				v.addElement(files[i]);
+			}
 		}
-		String[] arr = new String[v.size()];
-		v.copyInto(arr);
-		return arr;
+		return v;
+	}
+
+	public Vector ListAllDifficulties() {
+		Vector items = new Vector();
+		for (int i = 0; i < files.length; i++) {
+			String f = files[i];
+			if (f.endsWith(".osu") || f.endsWith(".nmbm")) {
+				items.addElement(f);
+			}
+		}
+
+		return items;
 	}
 
 	public String toString() {
@@ -163,10 +195,6 @@ public final class BeatmapSet {
 		return replay;
 	}
 
-	public static String GetDifficultyNameFast(String fileName) {
-		return fileName.substring(fileName.indexOf('[') + 1, fileName.lastIndexOf(']'));
-	}
-
 	/**
 	 * Reads beatmap in this folder.
 	 * 
@@ -174,9 +202,27 @@ public final class BeatmapSet {
 	 * @return Raw beatmap.
 	 * @throws InvalidBeatmapTypeException If could not read.
 	 */
-	public final IRawBeatmap ReadBeatmap(String fileName) throws InvalidBeatmapTypeException {
-		String raw = BeatmapManager.getStringFromFS(ToGlobalPath(fileName));
+	public IRawBeatmap ReadBeatmap(String fileName) throws InvalidBeatmapTypeException {
+		String glpath = ToGlobalPath(fileName);
+		String raw;
+		if (glpath.startsWith("file:///"))
+			raw = BeatmapManager.getStringFromFS(glpath);
+		else if (glpath.startsWith("/"))
+			raw = BeatmapManager.getStringFromJAR(glpath);
+		else
+			raw = null;
 		IRawBeatmap rb = RawBeatmapConverter.FromText(raw);
 		return rb;
+	}
+
+	public static String GetDifficultyNameFast(String fileName) {
+		try {
+			return fileName.substring(fileName.indexOf('[') + 1, fileName.lastIndexOf(']'));
+		} catch (IndexOutOfBoundsException e) {
+			int pI = fileName.lastIndexOf('.');
+			if (pI == -1)
+				return fileName;
+			return fileName.substring(0, pI);
+		}
 	}
 }

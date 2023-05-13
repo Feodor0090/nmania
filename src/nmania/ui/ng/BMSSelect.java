@@ -6,7 +6,6 @@ import java.util.Vector;
 
 import nmania.Nmania;
 import nmania.Settings;
-import nmania.Skin;
 
 public class BMSSelect extends ListScreen implements Runnable, IListSelectHandler {
 
@@ -53,18 +52,7 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 						"CHANGE NOW", new DiskSelectScreen(), 2));
 				return;
 			}
-			if (Nmania.skin == null) {
-				Nmania.skin = new Skin();
-			}
-			if (Nmania.skin.rich) {
-				try {
-					Nmania.skin.LoadRich(false);
-				} catch (IllegalStateException e) {
-					Thread.sleep(1001);
-					disp.Push(new Alert("Failed to load rich skin",
-							"A vector one will be used. Visit skinning menu to learn what went wrong."));
-				}
-			}
+
 			Vector v = new Vector();
 
 			while (en.hasMoreElements()) {

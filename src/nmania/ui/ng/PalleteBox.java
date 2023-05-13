@@ -19,6 +19,7 @@ public class PalleteBox extends ListScreen {
 				text = "Color " + (i + 1);
 			items[i] = new PalleteItem(text, pallete[i]);
 		}
+		SetItems(items);
 	}
 
 	public String GetTitle() {
@@ -64,6 +65,7 @@ public class PalleteBox extends ListScreen {
 
 		public void OnNumberEntered(int UUID, int newNumber, IDisplay d) {
 			value = newNumber;
+			d.Back();
 		}
 
 	}

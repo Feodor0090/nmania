@@ -1,5 +1,6 @@
 package nmania.ui.ng;
 
+import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.microedition.lcdui.Graphics;
@@ -8,7 +9,6 @@ import javax.microedition.lcdui.Image;
 import nmania.BeatmapManager;
 import nmania.BeatmapSet;
 import nmania.GL;
-import nmania.IInputOverrider;
 import nmania.ModsState;
 import nmania.PlayerBootstrapData;
 import nmania.Settings;
@@ -130,11 +130,10 @@ public final class DifficultySelect extends ListScreen implements Runnable, ILis
 			title = set.artist + " - " + set.title;
 
 			Vector items = new Vector();
-			for (int i = 0; i < set.files.length; i++) {
-				String f = set.files[i];
-				if (f.endsWith(".osu") || f.endsWith(".nmbm")) {
-					items.addElement(new DifficultyItem(f, this));
-				}
+			Enumeration diffs = set.ListAllDifficulties().elements();
+			while (diffs.hasMoreElements()) {
+				String f = (String) diffs.nextElement();
+				items.addElement(new DifficultyItem(f, this));
 			}
 			SetItems(items);
 			Thread.sleep(50); // ?full
@@ -202,6 +201,7 @@ public final class DifficultySelect extends ListScreen implements Runnable, ILis
 		}
 		PlayerBootstrapData opts = new PlayerBootstrapData();
 		opts.recordReplay = Settings.recordReplay;
+		opts.keepBackScreen = Settings.keepMenu;
 		opts.set = set;
 		opts.mods = mods;
 		opts.mapFileName = ((DifficultyItem) item).fileName;
@@ -209,8 +209,8 @@ public final class DifficultySelect extends ListScreen implements Runnable, ILis
 			display.Push(new ReplaySelect(opts));
 			return;
 		}
-		IInputOverrider input = mode == 1 ? new AutoplayRunner() : null;
-		display.Push(new PlayerLoaderScreen(input, opts));
+		opts.input = mode == 1 ? new AutoplayRunner() : null;
+		display.Push(new PlayerLoaderScreen(opts));
 	}
 
 	public void OnSide(int direction, ListItem item, ListScreen screen, IDisplay display) {

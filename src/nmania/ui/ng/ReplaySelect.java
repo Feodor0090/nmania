@@ -1,6 +1,8 @@
 package nmania.ui.ng;
 
 import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import nmania.IInputOverrider;
 import nmania.Nmania;
@@ -63,10 +65,11 @@ public class ReplaySelect extends ListScreen implements IListSelectHandler, Runn
 	}
 
 	public void run() {
-		String[] list = data.set.ListAllReplays();
-		ListItem[] items = new ListItem[list.length];
-		for (int i = 0; i < list.length; i++) {
-			items[i] = new ListItem(list[i], this);
+		Enumeration list = data.set.ListAllReplays().elements();
+		Vector items = new Vector();
+		while (list.hasMoreElements()) {
+			String object = (String) list.nextElement();
+			items.addElement(new ListItem(object, this));
 		}
 		SetItems(items);
 		loadingState = false;
