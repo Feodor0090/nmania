@@ -83,6 +83,7 @@ public class RasterSkinSettings extends SkinSettings implements IListSelectHandl
 			if (newNumber < 0)
 				newNumber = 0;
 			skin.leftOffset = newNumber;
+			left.data = String.valueOf(newNumber) + "px";
 			break;
 		case 4:
 			if (newNumber < 1)
@@ -90,6 +91,7 @@ public class RasterSkinSettings extends SkinSettings implements IListSelectHandl
 			if (newNumber > skin.GetColumnWidth())
 				newNumber = skin.GetColumnWidth();
 			skin.holdWidth = newNumber;
+			holdW.data = String.valueOf(newNumber) + "px";
 			break;
 		}
 

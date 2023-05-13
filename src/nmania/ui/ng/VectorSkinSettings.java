@@ -87,16 +87,19 @@ public class VectorSkinSettings extends SkinSettings implements IListSelectHandl
 			if (newNumber < 0)
 				newNumber = 0;
 			skin.leftOffset = newNumber;
+			left.data = String.valueOf(newNumber) + "px";
 			break;
 		case 2:
 			if (newNumber < 1)
 				newNumber = 1;
 			skin.columnWidth = newNumber;
+			colW.data = String.valueOf(newNumber) + "px";
 			break;
 		case 3:
 			if (newNumber < 1)
 				newNumber = 1;
 			skin.noteHeight = newNumber;
+			noteH.data = String.valueOf(newNumber) + "px";
 			break;
 		case 4:
 			if (newNumber < 1)
@@ -104,11 +107,13 @@ public class VectorSkinSettings extends SkinSettings implements IListSelectHandl
 			if (newNumber > skin.columnWidth)
 				newNumber = skin.columnWidth;
 			skin.holdWidth = newNumber;
+			holdW.data = String.valueOf(newNumber) + "px";
 			break;
 		case 5:
 			if (newNumber < 1)
 				newNumber = 1;
 			skin.keyboardHeight = newNumber;
+			kbH.data = String.valueOf(newNumber) + "px";
 			break;
 		case 6:
 			skin.hudColor = newNumber;
