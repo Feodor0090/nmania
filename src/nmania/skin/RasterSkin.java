@@ -120,6 +120,13 @@ public class RasterSkin extends Skin {
 			hud[10] = BeatmapManager.getImgFromFS(base + "hud%" + png);
 		} catch (Exception e) {
 		}
+		if (j == null) {
+			leftOffset = 30;
+			holdWidth = 20;
+			background = new int[] { 0x002200, 0x220000, 0x000022 };
+			holdBodies = new int[] { 0x007700, 0x770000, 0x000077 };
+			return this;
+		}
 		// json
 		leftOffset = j.optInt("left_offset", 30);
 		holdWidth = j.optInt("hold_width", 20);

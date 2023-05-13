@@ -1,23 +1,15 @@
 package nmania.ui.ng;
 
-import javax.microedition.lcdui.Command;
-import javax.microedition.lcdui.CommandListener;
-import javax.microedition.lcdui.Displayable;
 import javax.microedition.lcdui.Font;
-import javax.microedition.lcdui.Form;
 import javax.microedition.lcdui.Graphics;
 
 import nmania.Nmania;
 import nmania.Settings;
 import tube42.lib.imagelib.ColorUtils;
 
-public class SkinSelectScreen extends Screen implements CommandListener {
-
-	private final Command back = new Command("Back", Command.BACK, 2);
-	private IDisplay d;
+public class SkinSelectScreen extends Screen {
 
 	public SkinSelectScreen(IDisplay d) {
-		this.d = d;
 		Nmania.LoadSkin(true);
 	}
 
@@ -35,8 +27,7 @@ public class SkinSelectScreen extends Screen implements CommandListener {
 
 	public void OnOptionActivate(IDisplay d) {
 		if (Settings.rasterSkin) {
-			d.PauseRendering();
-			DisplayRichInfo();
+			d.Push(new RasterSkinSettings());
 		} else {
 			d.Push(new VectorSkinSettings());
 		}
@@ -59,7 +50,7 @@ public class SkinSelectScreen extends Screen implements CommandListener {
 		drawRichSkinIcon(g, w * 3 / 4, 55);
 		g.setFont(Font.getFont(0, 0, 8));
 		NmaniaDisplay.print(g, "Vector", w / 4, h - 5, -1, 0, Graphics.BOTTOM | Graphics.HCENTER);
-		NmaniaDisplay.print(g, "Rich", w * 3 / 4, h - 5, -1, 0, Graphics.BOTTOM | Graphics.HCENTER);
+		NmaniaDisplay.print(g, "Raster", w * 3 / 4, h - 5, -1, 0, Graphics.BOTTOM | Graphics.HCENTER);
 	}
 
 	static void drawVectorSkinIcon(Graphics g, int x, int y) {
@@ -92,29 +83,6 @@ public class SkinSelectScreen extends Screen implements CommandListener {
 
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
 
-	}
-
-	private final void DisplayRichInfo() {
-		Form f = new Form("Rich skin setup");
-		f.setCommandListener(this);
-		f.addCommand(back);
-		f.append("Rich skin setup is being done via file manager.\n");
-		f.append("In your working folder, create a subfolder \"_skin\".\n");
-		f.append("File naming structure: \"(type)(index).png\". Only png is supported.\n");
-		f.append(
-				"There should be 3 (1,2,3) \"key\", 3 \"hkey\", 3 \"note\", 6 (0-5) \"judgment\" and 12 (0-11) \"digit\" images.\n");
-		f.append("The 1st images will be used in non-odd columns, the 2nds in odd and the 3rds in central.\n");
-		f.append(
-				"0-9 digit images will be used for 0-9 digits. The 10th image should contain comma, the 11th \"%\" symbol.\n");
-		f.append("0th-5th judgment images should contain splashes for 0, 50, 100, 200, 300, 305.\n");
-		f.append(
-				"All digits must have the same height. All keys and hkeys the same size. All notes the same size. Keys, hkeys and notes the same width.");
-		Nmania.Push(f);
-	}
-
-	public void commandAction(Command c, Displayable arg1) {
-		if (c == back)
-			Nmania.Push(d.GetDisplayable());
 	}
 
 }
