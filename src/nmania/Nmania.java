@@ -18,6 +18,8 @@ import javax.microedition.rms.RecordStore;
 
 import org.json.me.JSONObject;
 
+import nmania.skin.RasterSkin;
+import nmania.skin.Skin;
 import nmania.skin.VectorSkin;
 import nmania.ui.ng.IDisplay;
 import nmania.ui.ng.NmaniaDisplay;
@@ -27,7 +29,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 	private static Nmania inst;
 	public boolean running;
 	public static BeatmapManager bm;
-	private static nmania.skin.Skin skin;
+	private static Skin skin;
 	public static String version;
 	private static Display disp;
 
@@ -132,7 +134,7 @@ public final class Nmania extends MIDlet implements CommandListener {
 		return System.getProperty("microedition.platform");
 	}
 
-	public static nmania.skin.Skin LoadSkin(boolean force) {
+	public static Skin LoadSkin(boolean force) {
 		if (skin != null) {
 			if (!force)
 				return skin;
