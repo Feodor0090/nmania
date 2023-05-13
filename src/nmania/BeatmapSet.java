@@ -216,6 +216,13 @@ public class BeatmapSet {
 	}
 
 	public static String GetDifficultyNameFast(String fileName) {
-		return fileName.substring(fileName.indexOf('[') + 1, fileName.lastIndexOf(']'));
+		try {
+			return fileName.substring(fileName.indexOf('[') + 1, fileName.lastIndexOf(']'));
+		} catch (IndexOutOfBoundsException e) {
+			int pI = fileName.lastIndexOf('.');
+			if (pI == -1)
+				return fileName;
+			return fileName.substring(0, pI);
+		}
 	}
 }
