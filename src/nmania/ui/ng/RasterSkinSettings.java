@@ -27,6 +27,7 @@ public class RasterSkinSettings extends SkinSettings implements IListSelectHandl
 		holdW = new DataItem(2, "Holds width", this, skin.holdWidth + "px");
 		SetItems(new ListItem[] { new ListItem(0, "General info", this), left, holdW,
 				new ListItem(3, "Hold bodies color", this), new ListItem(9, "Column borders color", this),
+				new ListItem(10, "Columns fill color", this),
 				new CheckItem(4, "Keyboard sprites", this, skin.VerifyKb() == null),
 				new CheckItem(5, "Note sprites", this, skin.VerifyNotes() == null),
 				new CheckItem(6, "HUD sprites", this, skin.VerifyHud() == null),
@@ -79,6 +80,9 @@ public class RasterSkinSettings extends SkinSettings implements IListSelectHandl
 			break;
 		case 9:
 			display.Push(new ColorBox(item.text, 13, this, skin.bordersColor));
+			break;
+		case 10:
+			display.Push(new PalleteBox(item.text, skin.background, pal3));
 			break;
 		}
 	}
