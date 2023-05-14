@@ -7,7 +7,8 @@ import tube42.lib.imagelib.ColorUtils;
 public class ScrollSpeedBox extends NumberBox {
 
 	public ScrollSpeedBox(int UUID, INumberBoxHandler handler, int value, boolean allowNegative) {
-		super("Scroll speed", UUID, handler, value, allowNegative);
+		super("Scroll speed (higher = faster)", UUID, handler, value, allowNegative);
+		showPlusMinus = true;
 	}
 
 	public void Paint(Graphics g, int w, int h) {
@@ -32,10 +33,16 @@ public class ScrollSpeedBox extends NumberBox {
 	}
 
 	private int posToY(int currTime, int noteTime, int h) {
+		if (value == Integer.MAX_VALUE)
+			return 0;
 		if (value == 0)
 			return 0;
 		final int notesY = h - 11 + ((currTime * value) >> 5);
 		return notesY - ((noteTime * value) >> 5);
+	}
+
+	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
+		super.OnTouch(d, s, x, y, dx, dy, w - 50, h);
 	}
 
 }

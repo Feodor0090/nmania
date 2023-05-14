@@ -10,12 +10,13 @@ public class NumberBox extends Screen {
 	private int uuid;
 	private INumberBoxHandler handler;
 	protected int value;
-	private boolean allowNegative;
+	private final boolean allowNegative;
+	public boolean showPlusMinus;
 	private String title;
 	private Font num = Font.getFont(0, 0, 8);
 	private boolean sign;
-	private final char[][] pad = new char[][] { new char[] { '1', '2', '3' }, new char[] { '4', '5', '6' },
-			new char[] { '7', '8', '9' }, new char[] { '-', '0', '<' }, };
+	private final String[][] pad = new String[][] { new String[] { "1", "2", "3" }, new String[] { "4", "5", "6" },
+			new String[] { "7", "8", "9" }, new String[] { "-", "0", "<" }, new String[] { null, "-1", "+1" } };
 
 	public NumberBox(String title, int UUID, INumberBoxHandler handler, int value, boolean allowNegative) {
 		this.title = title;
@@ -24,6 +25,8 @@ public class NumberBox extends Screen {
 		this.value = value;
 		sign = value >= 0;
 		this.allowNegative = allowNegative;
+		if (!allowNegative)
+			pad[3][0] = null;
 	}
 
 	public String GetTitle() {
@@ -64,15 +67,16 @@ public class NumberBox extends Screen {
 
 	private final void PaintPad(Graphics g, int w, int y) {
 		int fh = num.getHeight();
-		for (int i = 0; i < 4; i++) {
+		int rows = showPlusMinus ? 5 : 4;
+		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < 3; j++) {
-				if (i == 3 && j == 0 && !allowNegative)
+				if (pad[i][j] == null)
 					continue;
 				int b = (int) (Math.abs(1f - NmaniaDisplay.beatProgress * 2f) * 32);
 				g.setColor(ColorUtils.blend(-1, NmaniaDisplay.PINK_COLOR, b));
 				g.fillRoundRect(j * w / 3 + 1, y, w / 3 - 2, fh, fh, fh);
 				g.setColor(-1);
-				g.drawChar(pad[i][j], j * w / 3 + w / 6, y, Graphics.TOP | Graphics.HCENTER);
+				g.drawString(pad[i][j], j * w / 3 + w / 6, y, Graphics.TOP | Graphics.HCENTER);
 			}
 			y += fh + 2;
 		}
@@ -125,17 +129,20 @@ public class NumberBox extends Screen {
 			if (y < 0)
 				return;
 			if (y < fh + 2) {
-				OnKey(d, '1' + (x * 3 / w));
+				if (x < w)
+					OnKey(d, '1' + (x * 3 / w));
 				return;
 			}
 			y -= fh + 2;
 			if (y < fh + 2) {
-				OnKey(d, '4' + (x * 3 / w));
+				if (x < w)
+					OnKey(d, '4' + (x * 3 / w));
 				return;
 			}
 			y -= fh + 2;
 			if (y < fh + 2) {
-				OnKey(d, '7' + (x * 3 / w));
+				if (x < w)
+					OnKey(d, '7' + (x * 3 / w));
 				return;
 			}
 			y -= fh + 2;
@@ -145,8 +152,24 @@ public class NumberBox extends Screen {
 						OnKey(d, Canvas.KEY_STAR);
 				} else if (x < w * 2 / 3) {
 					OnKey(d, '0');
-				} else {
+				} else if (x < w) {
 					OnKey(d, Canvas.KEY_POUND);
+				}
+				return;
+			}
+			y -= fh + 2;
+			if (y < fh + 2) {
+				if (showPlusMinus && value != Integer.MAX_VALUE) {
+					if (x < w / 3) {
+						// empty
+					} else if (x < w * 2 / 3) {
+						if (allowNegative)
+							value--;
+						else if (value > 0)
+							value--;
+					} else if (x < w) {
+						value++;
+					}
 				}
 				return;
 			}
