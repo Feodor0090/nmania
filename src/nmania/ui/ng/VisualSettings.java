@@ -7,7 +7,7 @@ public class VisualSettings extends ListScreen implements IListSelectHandler, IN
 	public VisualSettings() {
 		SetItems(new ListItem[] { //
 				new DataItem(0, "Dim level", this, Settings.dimLevel + "%"), // ?full
-				new DataItem(1, "Scroll speed", this, "1px/" + Settings.speedDiv + "ms"),
+				new DataItem(1, "Scroll speed", this, "x" + Settings.speedDiv),
 				new SwitchItem(2, "Show HUD", this, Settings.drawHUD),
 				new SwitchItem(3, "Show fps", this, Settings.profiler), });
 	}
@@ -33,7 +33,7 @@ public class VisualSettings extends ListScreen implements IListSelectHandler, IN
 			display.Push(new NumberBox("Dim %", 0, this, Settings.dimLevel, false));
 			break;
 		case 1:
-			display.Push(new NumberBox("Scroll speed (divider)", 1, this, Settings.speedDiv, false));
+			display.Push(new ScrollSpeedBox(1, this, Settings.speedDiv, false));
 			break;
 		case 2:
 			Settings.drawHUD = !Settings.drawHUD;
@@ -60,7 +60,7 @@ public class VisualSettings extends ListScreen implements IListSelectHandler, IN
 			Settings.speedDiv += direction;
 			if (Settings.speedDiv < 1)
 				Settings.speedDiv = 1;
-			((DataItem) item).data = "1px/" + Settings.speedDiv + "ms";
+			((DataItem) item).data = "x" + Settings.speedDiv;
 			break;
 		}
 	}
@@ -81,7 +81,7 @@ public class VisualSettings extends ListScreen implements IListSelectHandler, IN
 				newNumber = 50;
 			Settings.speedDiv = newNumber;
 			d.Back();
-			((DataItem) GetSelected()).data = "1px/" + Settings.speedDiv + "ms";
+			((DataItem) GetSelected()).data = "x" + Settings.speedDiv;
 		}
 	}
 }
