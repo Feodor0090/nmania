@@ -65,8 +65,7 @@ public final class AudioController {
 			p.prefetch();
 			return p;
 		} catch (MediaException e) {
-			if (e.toString().indexOf("not") != -1 && e.toString().indexOf("allowed") != -1)
-				throw e;
+			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
 			return null;
