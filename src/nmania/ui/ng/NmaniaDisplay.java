@@ -37,6 +37,18 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		header = Font.getFont(0, 0, 0);
 		headerH = header.getHeight();
 		screenY = headerH + 10;
+		ignoreMulti = IsKem();
+		for (int i = 0; i < 20; i++)
+			multiPointers[i] = -1;
+	}
+
+	private boolean IsKem() {
+		try {
+			Class.forName("emulator.Emulator");
+			return true;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	private Graphics g;
@@ -77,6 +89,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private int pointerState = 0;
 	private int px, py, lpx, lpy;
 	private long lastPointerStateChange = 0;
+
+	private final int[] multiPointers = new int[20];
+
+	private final boolean ignoreMulti;
 
 	public void run() {
 		while (cycle) {
@@ -279,6 +295,19 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			g.setColor(ColorUtils.blend(BG_COLOR, -1, p));
 			g.fillArc(px - 7, py - 7, 14, 14, 90 + fa, 360 - (fa << 1));
 			g.drawArc(px - 6 - s, py - 6 - s, 12 + (s << 1), 12 + (s << 1), 0, 360);
+		}
+
+		g.setColor(PINK_COLOR);
+		for (int i = 0; i < 10; i++) {
+			if (multiPointers[i * 2] >= 0) {
+				int x = multiPointers[i * 2];
+				int y = multiPointers[i * 2 + 1];
+				g.drawArc(x - 30, y - 30, 60, 60, 0, 360);
+				g.drawArc(x - 35, y - 35, 70, 70, 0, 360);
+				g.drawArc(x - 40, y - 40, 80, 80, 0, 360);
+				g.drawArc(x - 45, y - 45, 90, 90, 0, 360);
+				g.drawArc(x - 50, y - 50, 100, 100, 0, 360);
+			}
 		}
 	}
 
@@ -527,6 +556,15 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		} else if (aY > getHeight() - keysH) {
 			keyPressed(aX < (getWidth() >> 1) ? -6 : -7);
 		} else {
+			if (!ignoreMulti) {
+				String pn = System.getProperty("com.nokia.pointer.number");
+				int n = pn == null ? 0 : (pn.charAt(0) - '0');
+				if (n != 0) {
+					multiPointers[n * 2] = aX;
+					multiPointers[n * 2 + 1] = aY;
+					return;
+				}
+			}
 			lastPointerStateChange = System.currentTimeMillis();
 			pointerState = 1;
 			px = lpx = aX;
@@ -535,6 +573,15 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	protected void pointerDragged(int aX, int aY) {
+		if (!ignoreMulti) {
+			String pn = System.getProperty("com.nokia.pointer.number");
+			int n = pn == null ? 0 : (pn.charAt(0) - '0');
+			if (n != 0) {
+				multiPointers[n * 2] = aX;
+				multiPointers[n * 2 + 1] = aY;
+				return;
+			}
+		}
 		if (pointerState != 0) {
 			px = aX;
 			py = aY;
@@ -542,6 +589,14 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	protected void pointerReleased(int aX, int aY) {
+		if (!ignoreMulti) {
+			String pn = System.getProperty("com.nokia.pointer.number");
+			int n = pn == null ? 0 : (pn.charAt(0) - '0');
+			if (n != 0) {
+				multiPointers[n * 2] = -1;
+				return;
+			}
+		}
 		lastPointerStateChange = System.currentTimeMillis();
 		if (pointerState == 1) {
 			pointerState = 0;

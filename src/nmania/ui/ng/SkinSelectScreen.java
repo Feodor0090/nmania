@@ -82,8 +82,10 @@ public class SkinSelectScreen extends Screen {
 	}
 
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
-		Settings.rasterSkin = x > w / 2;
-		Nmania.LoadSkin(true);
+		if (s == 1) {
+			Settings.rasterSkin = x > w / 2;
+			Nmania.LoadSkin(true);
+		}
 	}
 
 }
