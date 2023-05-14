@@ -9,7 +9,7 @@ import tube42.lib.imagelib.ColorUtils;
 public class NumberBox extends Screen {
 	private int uuid;
 	private INumberBoxHandler handler;
-	private int value;
+	protected int value;
 	private boolean allowNegative;
 	private String title;
 	private Font num = Font.getFont(0, 0, 8);

@@ -33,7 +33,7 @@ public class VisualSettings extends ListScreen implements IListSelectHandler, IN
 			display.Push(new NumberBox("Dim %", 0, this, Settings.dimLevel, false));
 			break;
 		case 1:
-			display.Push(new NumberBox("Scroll speed (divider)", 1, this, Settings.speedDiv, false));
+			display.Push(new ScrollSpeedBox(1, this, Settings.speedDiv, false));
 			break;
 		case 2:
 			Settings.drawHUD = !Settings.drawHUD;
