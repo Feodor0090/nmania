@@ -23,6 +23,7 @@ public class RasterSkin extends Skin {
 	public int[] holdBodies = new int[3];
 	public Image[] hud;
 	public Image[] judgs;
+	public int bordersColor;
 
 	public int GetLeftOffset() {
 		return leftOffset;
@@ -99,6 +100,10 @@ public class RasterSkin extends Skin {
 		return Pack(background, columns);
 	}
 
+	public int GetBordersColor() {
+		return bordersColor;
+	}
+
 	public Skin Read(JSONObject j) {
 		final String base = "file:///" + Settings.workingFolder + "_skin/";
 		final String png = ".png";
@@ -132,11 +137,13 @@ public class RasterSkin extends Skin {
 			holdWidth = 20;
 			background = new int[] { 0x002200, 0x220000, 0x000022 };
 			holdBodies = new int[] { 0x007700, 0x770000, 0x000077 };
+			bordersColor = -1;
 			return this;
 		}
 		// json
 		leftOffset = j.optInt("left_offset", 30);
 		holdWidth = j.optInt("hold_width", 20);
+		bordersColor = j.optInt("borders_color", -1);
 
 		background = SNUtils.json2intArray(j.optJSONArray("background"));
 		if (background == null || background.length < 3)
@@ -156,6 +163,7 @@ public class RasterSkin extends Skin {
 		j.put("hold_width", holdWidth);
 		j.put("background", ToVector(background));
 		j.put("hold_bodies", ToVector(holdBodies));
+		j.put("borders_color", bordersColor);
 
 		return j;
 	}

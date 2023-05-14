@@ -45,6 +45,7 @@ public class VectorSkin extends Skin {
 	public int[] holds = new int[6];
 	public int[] holdBodies = new int[3];
 	public int hudColor;
+	public int bordersColor;
 
 	public Object GetKeyboardLook(int columns) {
 		return Pack(keyboard, columns, GetKeyboardHeight());
@@ -78,6 +79,10 @@ public class VectorSkin extends Skin {
 		return Pack(background, columns);
 	}
 
+	public int GetBordersColor() {
+		return bordersColor;
+	}
+
 	public Skin Read(JSONObject j) {
 		if (j == null)
 			j = new JSONObject();
@@ -88,6 +93,7 @@ public class VectorSkin extends Skin {
 		holdWidth = j.optInt("hold_width", 20);
 		keyboardHeight = j.optInt("keyboard_height", keyboardHeight);
 		hudColor = j.optInt("hud_color", -1);
+		bordersColor = j.optInt("borders_color", -1);
 
 		// palletes
 		background = SNUtils.json2intArray(j.optJSONArray("background"));
@@ -129,6 +135,7 @@ public class VectorSkin extends Skin {
 		j.put("hold_width", holdWidth);
 		j.put("keyboard_height", keyboardHeight);
 		j.put("hud_color", hudColor);
+		j.put("borders_color", bordersColor);
 
 		// palletes
 		j.put("background", ToVector(background));

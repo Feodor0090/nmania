@@ -118,6 +118,8 @@ public abstract class Skin {
 	 */
 	public abstract int[] GetColumnsBackground(int columns);
 
+	public abstract int GetBordersColor();
+
 	public abstract Skin Read(JSONObject j);
 
 	public abstract JSONObject Write();
