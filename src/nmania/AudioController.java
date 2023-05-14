@@ -12,17 +12,17 @@ import javax.microedition.media.Player;
  * @author Feodor0090
  *
  */
-public final class AudioController {
+public class AudioController {
 
-	public AudioController(Beatmap map) throws IOException, MediaException {
-		this(map.ToGlobalPath(map.audio));
+	public AudioController(Beatmap map, boolean allowFallback) throws IOException, MediaException {
+		this(map.ToGlobalPath(map.audio), allowFallback);
 	}
 
-	public AudioController(BeatmapSet set) throws IOException, MediaException {
-		this(set.ToGlobalPath(set.audio));
+	public AudioController(BeatmapSet set, boolean allowFallback) throws IOException, MediaException {
+		this(set.ToGlobalPath(set.audio), allowFallback);
 	}
 
-	public AudioController(String file) throws MediaException, IOException {
+	public AudioController(String file, boolean allowFallback) throws MediaException, IOException {
 		Player p = TryInit(file, null);
 		if (p == null)
 			p = TryInit(file, "mp3");
@@ -32,7 +32,7 @@ public final class AudioController {
 			p = TryInit(file, "amr");
 		if (p == null)
 			p = TryInit(file, "wav");
-		if (p == null)
+		if (p == null && !allowFallback)
 			throw new IOException("Could not load any files on this MRL");
 		player = p;
 		offset = Settings.gameplayOffset;
@@ -65,8 +65,7 @@ public final class AudioController {
 			p.prefetch();
 			return p;
 		} catch (MediaException e) {
-			if (e.toString().indexOf("not") != -1 && e.toString().indexOf("allowed") != -1)
-				throw e;
+			e.printStackTrace();
 			return null;
 		} catch (IOException e) {
 			return null;
