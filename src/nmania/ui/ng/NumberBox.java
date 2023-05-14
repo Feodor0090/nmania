@@ -16,7 +16,7 @@ public class NumberBox extends Screen {
 	private Font num = Font.getFont(0, 0, 8);
 	private boolean sign;
 	private final String[][] pad = new String[][] { new String[] { "1", "2", "3" }, new String[] { "4", "5", "6" },
-			new String[] { "7", "8", "9" }, new String[] { "-", "0", "<" }, new String[] { null, "-1", "+1" } };
+			new String[] { "7", "8", "9" }, new String[] { "-", "0", "<" } };
 
 	public NumberBox(String title, int UUID, INumberBoxHandler handler, int value, boolean allowNegative) {
 		this.title = title;
@@ -49,26 +49,37 @@ public class NumberBox extends Screen {
 	}
 
 	public void Paint(Graphics g, int w, int h) {
-		g.setColor(NmaniaDisplay.NEGATIVE_COLOR);
 		g.setFont(num);
 		int fh = num.getHeight();
-		g.fillRoundRect(fh, 10, w - fh - fh, fh, fh, fh);
+		int offs = fh;
+		if (showPlusMinus) {
+			offs += 40;
+			int b = (int) (Math.abs(1f - NmaniaDisplay.beatProgress * 2f) * 32);
+			g.setColor(ColorUtils.blend(-1, NmaniaDisplay.PINK_COLOR, b));
+			g.fillRoundRect(fh, 10, 35, fh, fh, fh);
+			g.fillRoundRect(w - fh - 35, 10, 35, fh, fh, fh);
+			g.setColor(-1);
+			g.drawString("-1", fh + 17, 10, Graphics.TOP | Graphics.HCENTER);
+			g.drawString("+1", w - fh - 17, 10, Graphics.TOP | Graphics.HCENTER);
+		}
+
+		g.setColor(NmaniaDisplay.NEGATIVE_COLOR);
+		g.fillRoundRect(offs, 10, w - offs - offs, fh, fh, fh);
 		g.setColor(NmaniaDisplay.PINK_COLOR);
-		g.drawRoundRect(fh, 10, w - fh - fh, fh, fh, fh);
+		g.drawRoundRect(offs, 10, w - offs - offs, fh, fh, fh);
 		g.setColor(-1);
 		if (value == Integer.MAX_VALUE)
-			g.drawString(sign ? "_" : "-_", w - fh - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
+			g.drawString(sign ? "_" : "-_", w - offs - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
 		else if (value == 0)
-			g.drawString(sign ? "0" : "-0", w - fh - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
+			g.drawString(sign ? "0" : "-0", w - offs - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
 		else
-			g.drawString(String.valueOf(value), w - fh - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
+			g.drawString(String.valueOf(value), w - offs - (fh >> 1), 10, Graphics.TOP | Graphics.RIGHT);
 		PaintPad(g, w, fh + 20);
 	}
 
 	private final void PaintPad(Graphics g, int w, int y) {
 		int fh = num.getHeight();
-		int rows = showPlusMinus ? 5 : 4;
-		for (int i = 0; i < rows; i++) {
+		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < 3; j++) {
 				if (pad[i][j] == null)
 					continue;
@@ -125,9 +136,23 @@ public class NumberBox extends Screen {
 	public void OnTouch(IDisplay d, int s, int x, int y, int dx, int dy, int w, int h) {
 		if (s == 1) {
 			int fh = num.getHeight();
-			y -= fh + 20;
+			y -= 10;
 			if (y < 0)
 				return;
+			if (y < fh) {
+				if (showPlusMinus && value != Integer.MAX_VALUE) {
+					if (x < fh + 40) {
+						if (allowNegative)
+							value--;
+						else if (value > 0)
+							value--;
+					} else if (x > w - fh - 40) {
+						value++;
+					}
+				}
+				return;
+			}
+			y -= fh + 10;
 			if (y < fh + 2) {
 				if (x < w)
 					OnKey(d, '1' + (x * 3 / w));
@@ -154,22 +179,6 @@ public class NumberBox extends Screen {
 					OnKey(d, '0');
 				} else if (x < w) {
 					OnKey(d, Canvas.KEY_POUND);
-				}
-				return;
-			}
-			y -= fh + 2;
-			if (y < fh + 2) {
-				if (showPlusMinus && value != Integer.MAX_VALUE) {
-					if (x < w / 3) {
-						// empty
-					} else if (x < w * 2 / 3) {
-						if (allowNegative)
-							value--;
-						else if (value > 0)
-							value--;
-					} else if (x < w) {
-						value++;
-					}
 				}
 				return;
 			}
