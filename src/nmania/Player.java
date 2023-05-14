@@ -56,7 +56,7 @@ public final class Player extends GameCanvas {
 
 		// step 2: loading music
 		log.log("Loading music");
-		track = new AudioController(map);
+		track = new AudioController(map, true);
 		Thread.sleep(1);
 
 		// step 3: setup difficulty

@@ -687,7 +687,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		}
 		try {
 			GL.Log("(ui) Loading new music...");
-			music = new AudioController(set);
+			music = new AudioController(set, false);
 			music.Loop();
 			music.Play();
 			music.SetTimingData(set.timings);
