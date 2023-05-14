@@ -1503,7 +1503,7 @@ public final class Player extends GameCanvas {
 
 	private final void RedrawNotes() {
 		// current Y offset due to scroll
-		final int notesY = kbY + time / scrollDiv;
+		final int notesY = kbY + ((time * scrollDiv) >> 5);
 
 		// column X
 		int x = leftOffset + 1;
@@ -1520,7 +1520,7 @@ public final class Player extends GameCanvas {
 			// iterating through notes
 			for (int i = currentNote[column]; i < c.length; i += 2) {
 				// the note Y
-				final int noteY = notesY - (c[i] / scrollDiv);
+				final int noteY = notesY - ((c[i] * scrollDiv) >> 5);
 
 				// all visible are drawn
 				if (noteY < 0)
@@ -1549,7 +1549,7 @@ public final class Player extends GameCanvas {
 					}
 
 					// drawing hold body UNDER head
-					final int holdLen = dur / scrollDiv;
+					final int holdLen = ((dur * scrollDiv) >> 5);
 					g.setColor(holdsBodyColors[column]);
 					g.fillRect(x + localHoldX, noteY - holdLen, holdW, holdLen);
 				}

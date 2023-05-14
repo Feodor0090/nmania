@@ -43,7 +43,7 @@ public final class Settings {
 	/**
 	 * Divider for scrolling speed.
 	 */
-	public static int speedDiv = 3;
+	public static int speedDiv = 10;
 
 	/**
 	 * Are exit/fail/pass/restart samples enabled?
@@ -199,7 +199,7 @@ public final class Settings {
 				j = new JSONObject(new String(d));
 			}
 			dimLevel = j.optInt("dim", 50); // ?full
-			speedDiv = j.optInt("speed", 3);
+			speedDiv = j.optInt("speed", 10);
 			JSONArray keys = j.optJSONArray("keys");
 			if (keys != null) {
 				for (int i = 0; (i < keys.length() && i < keyLayout.length); i++) {

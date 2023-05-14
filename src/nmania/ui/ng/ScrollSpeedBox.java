@@ -34,8 +34,8 @@ public class ScrollSpeedBox extends NumberBox {
 	private int posToY(int currTime, int noteTime, int h) {
 		if (value == 0)
 			return 0;
-		final int notesY = h - 11 + currTime / value;
-		return notesY - (noteTime / value);
+		final int notesY = h - 11 + ((currTime * value) >> 5);
+		return notesY - ((noteTime * value) >> 5);
 	}
 
 }
