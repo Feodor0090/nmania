@@ -1219,6 +1219,8 @@ public final class Player extends GameCanvas {
 		g.setClip(0, 0, scrW, kbY);
 		RedrawNotes();
 		g.setClip(0, 0, scrW, scrH);
+		if (Settings.redrawBorders)
+			DrawBorders();
 		RedrawAllHUD();
 
 		if (Settings.fullScreenFlush || flushAll) {

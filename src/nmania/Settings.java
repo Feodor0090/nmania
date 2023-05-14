@@ -111,6 +111,8 @@ public final class Settings {
 
 	public static boolean rasterSkin;
 
+	public static boolean redrawBorders;
+
 	public static String GetLastDir() {
 		int i = workingFolder.lastIndexOf('/', workingFolder.length() - 2);
 		if (i == -1)
@@ -162,6 +164,7 @@ public final class Settings {
 		j.accumulate("mods", new Integer(defaultMods));
 		j.accumulate("osr", new Boolean(encodeOsr));
 		j.accumulate("raster", new Boolean(rasterSkin));
+		j.put("borders", redrawBorders);
 
 		return j.toString();
 	}
@@ -229,6 +232,7 @@ public final class Settings {
 			defaultMods = j.optInt("mods");
 			encodeOsr = j.optBoolean("osr", false);
 			rasterSkin = j.optBoolean("raster", false);
+			redrawBorders = j.optBoolean("borders");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
