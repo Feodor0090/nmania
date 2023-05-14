@@ -30,7 +30,8 @@ public class RasterSkinSettings extends SkinSettings implements IListSelectHandl
 				new CheckItem(4, "Keyboard sprites", this, skin.VerifyKb() == null),
 				new CheckItem(5, "Note sprites", this, skin.VerifyNotes() == null),
 				new CheckItem(6, "HUD sprites", this, skin.VerifyHud() == null),
-				new CheckItem(7, "Sizes consistency", this, skin.VerifyWidth() == null), });
+				new CheckItem(7, "Sizes consistency", this, skin.VerifyWidth() == null),
+				new CheckItem(8, "Judgment sprites", this, skin.VerifyJudgs() == null), });
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
@@ -41,8 +42,9 @@ public class RasterSkinSettings extends SkinSettings implements IListSelectHandl
 					+ "Create \"_skin\" folder in your folder with songs (\"file:///" + Settings.workingFolder
 					+ "_skin/\") and place your images there. "
 					+ "Create 3 images (\"1\", \"2\", \"3\" for non-odd, odd and center columns) "
-					+ "for keyboard (\"kbX.png\" and \"kbhX.png\" where X is number) and notes (\"noteX.png\" and \"holdX.png\") "
-					+ "and 12 images for numbers (\"hudX.png\" where X is 0-9, \",\" and \"%\"). "
+					+ "for keyboard (\"kbX.png\" and \"kbhX.png\" where X is number) and notes (\"noteX.png\" and \"holdX.png\"), "
+					+ "12 images for numbers (\"hudX.png\" where X is 0-9, \",\" and \"%\") and 6 images for judgments "
+					+ "(\"judgX.png\" where X is 0-5 for miss, meh, ok, good, great, perfect). "
 					+ "All images in one category must have equal sizes. Notes and keyboard must have equal width. "
 					+ "Refer to checks below to learn what to fix."));
 			break;
@@ -70,6 +72,10 @@ public class RasterSkinSettings extends SkinSettings implements IListSelectHandl
 		case 7:
 			check = skin.VerifyWidth();
 			display.Push(new Alert(item.text, check == null ? "Sprite sizes are okay!" : check));
+			break;
+		case 8:
+			check = skin.VerifyJudgs();
+			display.Push(new Alert(item.text, check == null ? "Judgs sprites are okay!" : check));
 			break;
 		}
 	}

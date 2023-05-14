@@ -22,6 +22,7 @@ public class RasterSkin extends Skin {
 	public Image[] holds;
 	public int[] holdBodies = new int[3];
 	public Image[] hud;
+	public Image[] judgs;
 
 	public int GetLeftOffset() {
 		return leftOffset;
@@ -89,6 +90,8 @@ public class RasterSkin extends Skin {
 	}
 
 	public Image[] GetJudgments() {
+		if (VerifyJudgs() == null)
+			return judgs;
 		return null;
 	}
 
@@ -104,6 +107,7 @@ public class RasterSkin extends Skin {
 		notes = new Image[3];
 		holds = new Image[3];
 		hud = new Image[12];
+		judgs = new Image[6];
 		// files
 		try {
 			for (int i = 0; i < 3; i++) {
@@ -118,6 +122,9 @@ public class RasterSkin extends Skin {
 			}
 			hud[10] = BeatmapManager.getImgFromFS(base + "hud," + png);
 			hud[10] = BeatmapManager.getImgFromFS(base + "hud%" + png);
+			for (int i = 0; i < 6; i++) {
+				judgs[i] = BeatmapManager.getImgFromFS(base + "judg" + i + png);
+			}
 		} catch (Exception e) {
 		}
 		if (j == null) {
@@ -229,6 +236,14 @@ public class RasterSkin extends Skin {
 				return "HUD sprites must have identical height";
 		}
 
+		return null;
+	}
+
+	public String VerifyJudgs() {
+		for (int i = 0; i < 6; i++) {
+			if (judgs[i] == null)
+				return "File \"judg" + i + ".png\" is missing";
+		}
 		return null;
 	}
 
