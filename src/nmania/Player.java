@@ -314,6 +314,10 @@ public final class Player extends GameCanvas {
 			{
 				columnsBg = s.GetColumnsBackground(columnsCount);
 			}
+			// border
+			{
+				bordersColor = s.GetBordersColor();
+			}
 		}
 		if (bg == null) {
 			Image tmp = Image.createImage(fillScoreW, fillCountersH);
@@ -397,6 +401,7 @@ public final class Player extends GameCanvas {
 	private final int[] holdsBodyColors;
 	private final Image[] keysSprites, holdKeysSprites;
 	private final int[][] keysColors, holdKeysColors;
+	private final int bordersColor;
 	private final char[] accText;
 	private static final char[] hudCache = new char[16];
 	private final int kbH, kbY, colW, colWp1;
@@ -1214,6 +1219,8 @@ public final class Player extends GameCanvas {
 		g.setClip(0, 0, scrW, kbY);
 		RedrawNotes();
 		g.setClip(0, 0, scrW, scrH);
+		if (Settings.redrawBorders)
+			DrawBorders();
 		RedrawAllHUD();
 
 		if (Settings.fullScreenFlush || flushAll) {
@@ -1446,7 +1453,7 @@ public final class Player extends GameCanvas {
 	 * Draws borders around columns.
 	 */
 	private final void DrawBorders() {
-		g.setColor(-1);
+		g.setColor(bordersColor);
 		int x = leftOffset;
 		for (int i = 0; i <= columnsCount; i++) {
 			g.drawLine(x, 0, x, scrH);

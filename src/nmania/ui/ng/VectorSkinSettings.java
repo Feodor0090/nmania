@@ -8,7 +8,7 @@ public class VectorSkinSettings extends SkinSettings implements IListSelectHandl
 
 	private final VectorSkin skin;
 	private final DataItem left, colW, noteH, holdW, kbH;
-	private final ListItem hudC, bgC, kbC, kbHC, noteC, holdC, holdBC;
+	private final ListItem hudC, bgC, kbC, kbHC, noteC, holdC, holdBC, bordC;
 
 	private final String[] pal3 = new String[] { "Non-odd column", "Odd column", "Center column" };
 	private final String[] pal6 = new String[] { "Non-odd column (top)", "Non-odd column (bottom)", "Odd column (top)",
@@ -33,8 +33,9 @@ public class VectorSkinSettings extends SkinSettings implements IListSelectHandl
 		noteC = new ListItem(10, "Notes color", this);
 		holdC = new ListItem(11, "Hold heads color", this);
 		holdBC = new ListItem(12, "Hold bodies color", this);
+		bordC = new ListItem(13, "Column borders color", this);
 
-		SetItems(new ListItem[] { left, colW, noteH, holdW, kbH, hudC, bgC, kbC, kbHC, noteC, holdC, holdBC });
+		SetItems(new ListItem[] { left, colW, noteH, holdW, kbH, hudC, bgC, kbC, kbHC, noteC, holdC, holdBC, bordC });
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
@@ -74,6 +75,9 @@ public class VectorSkinSettings extends SkinSettings implements IListSelectHandl
 			break;
 		case 12:
 			display.Push(new PalleteBox(item.text, skin.holdBodies, pal3));
+			break;
+		case 13:
+			display.Push(new ColorBox(item.text, 13, this, skin.bordersColor));
 			break;
 		}
 	}
@@ -117,6 +121,9 @@ public class VectorSkinSettings extends SkinSettings implements IListSelectHandl
 			break;
 		case 6:
 			skin.hudColor = newNumber;
+			break;
+		case 13:
+			skin.bordersColor = newNumber;
 			break;
 		}
 

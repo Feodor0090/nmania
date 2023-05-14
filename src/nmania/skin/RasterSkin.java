@@ -22,6 +22,8 @@ public class RasterSkin extends Skin {
 	public Image[] holds;
 	public int[] holdBodies = new int[3];
 	public Image[] hud;
+	public Image[] judgs;
+	public int bordersColor;
 
 	public int GetLeftOffset() {
 		return leftOffset;
@@ -89,11 +91,17 @@ public class RasterSkin extends Skin {
 	}
 
 	public Image[] GetJudgments() {
+		if (VerifyJudgs() == null)
+			return judgs;
 		return null;
 	}
 
 	public int[] GetColumnsBackground(int columns) {
 		return Pack(background, columns);
+	}
+
+	public int GetBordersColor() {
+		return bordersColor;
 	}
 
 	public Skin Read(JSONObject j) {
@@ -104,6 +112,7 @@ public class RasterSkin extends Skin {
 		notes = new Image[3];
 		holds = new Image[3];
 		hud = new Image[12];
+		judgs = new Image[6];
 		// files
 		try {
 			for (int i = 0; i < 3; i++) {
@@ -118,6 +127,9 @@ public class RasterSkin extends Skin {
 			}
 			hud[10] = BeatmapManager.getImgFromFS(base + "hud," + png);
 			hud[10] = BeatmapManager.getImgFromFS(base + "hud%" + png);
+			for (int i = 0; i < 6; i++) {
+				judgs[i] = BeatmapManager.getImgFromFS(base + "judg" + i + png);
+			}
 		} catch (Exception e) {
 		}
 		if (j == null) {
@@ -125,11 +137,13 @@ public class RasterSkin extends Skin {
 			holdWidth = 20;
 			background = new int[] { 0x002200, 0x220000, 0x000022 };
 			holdBodies = new int[] { 0x007700, 0x770000, 0x000077 };
+			bordersColor = -1;
 			return this;
 		}
 		// json
 		leftOffset = j.optInt("left_offset", 30);
 		holdWidth = j.optInt("hold_width", 20);
+		bordersColor = j.optInt("borders_color", -1);
 
 		background = SNUtils.json2intArray(j.optJSONArray("background"));
 		if (background == null || background.length < 3)
@@ -149,6 +163,7 @@ public class RasterSkin extends Skin {
 		j.put("hold_width", holdWidth);
 		j.put("background", ToVector(background));
 		j.put("hold_bodies", ToVector(holdBodies));
+		j.put("borders_color", bordersColor);
 
 		return j;
 	}
@@ -229,6 +244,14 @@ public class RasterSkin extends Skin {
 				return "HUD sprites must have identical height";
 		}
 
+		return null;
+	}
+
+	public String VerifyJudgs() {
+		for (int i = 0; i < 6; i++) {
+			if (judgs[i] == null)
+				return "File \"judg" + i + ".png\" is missing";
+		}
 		return null;
 	}
 

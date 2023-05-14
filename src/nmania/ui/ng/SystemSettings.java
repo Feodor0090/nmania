@@ -13,7 +13,7 @@ public class SystemSettings extends ListScreen implements IListSelectHandler {
 				new SwitchItem(6, "High priority", this, Settings.maxPriority),
 				new SwitchItem(7, "Switch threads", this, Settings.forceThreadSwitch),
 				new SwitchItem(8, "Analyze beatmaps", this, Settings.analyzeMaps), // ?full
-		});
+				new SwitchItem(9, "Redraw column borders", this, Settings.redrawBorders), });
 	}
 
 	public String GetTitle() {
@@ -54,7 +54,8 @@ public class SystemSettings extends ListScreen implements IListSelectHandler {
 		case 8:
 			Settings.analyzeMaps = !Settings.analyzeMaps;
 			break;
-		default:
+		case 9:
+			Settings.redrawBorders = !Settings.redrawBorders;
 			break;
 		}
 
