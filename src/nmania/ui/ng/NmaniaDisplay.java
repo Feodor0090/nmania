@@ -712,6 +712,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void PauseRendering() {
+		if (stack == null) {
+			GL.Log("(ui) Attempt to pause destoroyed display.");
+			return;
+		}
 		GL.Log("(ui) Rendering pause requested");
 		if (pause) {
 			GL.Log("(ui) Rendering is already paused!");
@@ -723,6 +727,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void ResumeRendering() {
+		if (stack == null) {
+			GL.Log("(ui) Attempt to resume destoroyed display.");
+			return;
+		}
 		GL.Log("(ui) Rendering resume requested");
 		if (!pause) {
 			GL.Log("(ui) Rendering is already running!");
@@ -735,6 +743,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	}
 
 	public void Throttle(boolean e) {
+		if (stack == null) {
+			GL.Log("(ui) Attempt to throttle destoroyed display.");
+			return;
+		}
 		GL.Log("(ui) Throttling state is set to " + e);
 		throttle = e;
 		if (e)
