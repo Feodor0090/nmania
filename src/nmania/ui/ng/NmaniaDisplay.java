@@ -125,7 +125,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				float bp = 0f;
 				float abp = 0f;
 				LogoOffset = 0;
-				if (music != null) {
+				if (music == null) {
+					beatProgress = 0f;
+				} else {
 					try {
 						kiai = music.IsKiai();
 						abp = music.Get4BeatDelta();
