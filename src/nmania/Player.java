@@ -701,6 +701,15 @@ public final class Player extends GameCanvas {
 		while (running) {
 			// TODO optimize all this shit
 			framesPassed++;
+
+			// process pause BEFORE time refresh to avoid desync due to shitty MMAPI
+			// implementations
+			if (isPaused) {
+				PauseUpdateLoop();
+				GL.Log("(player) Player returned from pause loop.");
+				time = track.Now();
+			}
+
 			// sync
 			int prevtime = time;
 			time = track.Now();
@@ -709,11 +718,6 @@ public final class Player extends GameCanvas {
 				time = input.UpdatePlayer(this, time);
 			}
 
-			if (isPaused) {
-				PauseUpdateLoop();
-				GL.Log("(player) Player returned from pause loop.");
-				time = track.Now();
-			}
 			// "quit" button in pause
 			if (exitNow) {
 				QuitFromPauseSequence();
