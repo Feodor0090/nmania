@@ -2,9 +2,11 @@ package nmania;
 
 import java.io.IOException;
 
+import javax.microedition.media.Control;
 import javax.microedition.media.Manager;
 import javax.microedition.media.MediaException;
 import javax.microedition.media.Player;
+import javax.microedition.media.control.VolumeControl;
 
 /**
  * Class that's responsible for music playback.
@@ -66,6 +68,11 @@ public class AudioController {
 					: Manager.createPlayer(getClass().getResourceAsStream(mrl), "audio/mpeg");
 			p.realize();
 			p.prefetch();
+			Control[] ctrls = p.getControls();
+			for (int i = 0; i < ctrls.length; i++) {
+				if (ctrls[i] instanceof VolumeControl)
+					((VolumeControl) ctrls[i]).setLevel(Settings.volume);
+			}
 			return p;
 		} catch (RuntimeException e) {
 		} catch (MediaException e) {
