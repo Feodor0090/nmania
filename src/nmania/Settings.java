@@ -113,6 +113,8 @@ public final class Settings {
 
 	public static boolean redrawBorders;
 
+	public static int volume;
+
 	public static String GetLastDir() {
 		int i = workingFolder.lastIndexOf('/', workingFolder.length() - 2);
 		if (i == -1)
@@ -165,6 +167,7 @@ public final class Settings {
 		j.accumulate("osr", new Boolean(encodeOsr));
 		j.accumulate("raster", new Boolean(rasterSkin));
 		j.put("borders", redrawBorders);
+		j.put("volume", volume);
 
 		return j.toString();
 	}
@@ -233,6 +236,7 @@ public final class Settings {
 			encodeOsr = j.optBoolean("osr", false);
 			rasterSkin = j.optBoolean("raster", false);
 			redrawBorders = j.optBoolean("borders");
+			volume = j.optInt("volume", 100);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
