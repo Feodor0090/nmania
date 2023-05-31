@@ -14,15 +14,15 @@ import javax.microedition.media.Player;
  */
 public class AudioController {
 
-	public AudioController(Beatmap map, boolean allowFallback) throws IOException, MediaException {
+	public AudioController(Beatmap map, boolean allowFallback) throws IOException {
 		this(map.ToGlobalPath(map.audio), allowFallback);
 	}
 
-	public AudioController(BeatmapSet set, boolean allowFallback) throws IOException, MediaException {
+	public AudioController(BeatmapSet set, boolean allowFallback) throws IOException {
 		this(set.ToGlobalPath(set.audio), allowFallback);
 	}
 
-	public AudioController(String file, boolean allowFallback) throws MediaException, IOException {
+	public AudioController(String file, boolean allowFallback) throws IOException {
 		Player p = TryInit(file, null);
 		if (p == null)
 			p = TryInit(file, "mp3");
@@ -36,18 +36,21 @@ public class AudioController {
 			throw new IOException("Could not load any files on this MRL");
 		player = p;
 		offset = Settings.gameplayOffset;
-		String jh = System.getProperty("java.home"); // ?sid
-		if (jh != null) { // ?sid
-			GL.Log("(audio) Running desktop java, JH=" + jh); // ?sid
-			// if condition below is hit, we are likely on GH runner.
-			// It has no sound device, so using system clock.
-			if (jh.indexOf("D:\\a\\nmania\\nmania") != -1) { // ?sid
-				fallback = true; // ?sid
+		try {
+			String jh = System.getProperty("java.home"); // ?sid
+			if (jh != null) { // ?sid
+				GL.Log("(audio) Running desktop java, JH=" + jh); // ?sid
+				// if condition below is hit, we are likely on GH runner.
+				// It has no sound device, so using system clock.
+				if (jh.indexOf("D:\\a\\nmania\\nmania") != -1) { // ?sid
+					fallback = true; // ?sid
+				} // ?sid
 			} // ?sid
-		} // ?sid
+		} catch (RuntimeException e) {
+		}
 	}
 
-	private final Player TryInit(String mrl, String ext) throws MediaException {
+	private final Player TryInit(String mrl, String ext) {
 		if (ext != null) {
 			if (mrl.endsWith(ext)) {
 				// already looked for, skipping...
@@ -64,12 +67,11 @@ public class AudioController {
 			p.realize();
 			p.prefetch();
 			return p;
+		} catch (RuntimeException e) {
 		} catch (MediaException e) {
-			e.printStackTrace();
-			return null;
 		} catch (IOException e) {
-			return null;
 		}
+		return null;
 	}
 
 	private final Player player;
