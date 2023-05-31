@@ -56,7 +56,11 @@ public final class Player extends GameCanvas {
 
 		// step 2: loading music
 		log.log("Loading music");
-		track = new AudioController(map, true);
+		try {
+			track = new AudioController(map, true);
+		} catch (Throwable e) {
+			throw new RuntimeException("Failed to init player: " + e.toString());
+		}
 		Thread.sleep(1);
 
 		// step 3: setup difficulty
