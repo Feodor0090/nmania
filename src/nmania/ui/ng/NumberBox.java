@@ -98,30 +98,34 @@ public class NumberBox extends Screen {
 			if (k != Canvas.KEY_STAR)
 				value = 0;
 		}
+		if (k == -3) {
+			value--;
+			if (!allowNegative && value < 0)
+				value = 0;
+			return;
+		}
+		if (k == -4) {
+			value++;
+			return;
+		}
 		value = Math.abs(value);
 		if (k == Canvas.KEY_STAR || k == '-') {
 			if (allowNegative)
 				sign = !sign;
 			else
 				sign = true;
-			ApplySign();
-			return;
-		}
-		if (k == Canvas.KEY_POUND || k == 8) {
+		} else if (k == Canvas.KEY_POUND || k == 8) {
 			if (value == 0) {
 				sign = true;
 				value = Integer.MAX_VALUE;
 			} else
 				value /= 10;
-			ApplySign();
-			return;
-		}
-		if (k >= '0' && k <= '9') {
+		} else if (k >= '0' && k <= '9') {
 			int a = k - '0';
 			value = value * 10 + a;
-			ApplySign();
-			return;
 		}
+		ApplySign();
+		return;
 	}
 
 	private void ApplySign() {
