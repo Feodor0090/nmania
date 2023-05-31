@@ -64,6 +64,7 @@ public final class Player extends GameCanvas {
 		Thread.sleep(1);
 
 		// step 3: setup difficulty
+		log.log("Setting scoring up");
 		// TODO TODO what the fuck i meant a year ago?
 		float od = map.difficulty;
 		int perfectHW = 16;
@@ -76,7 +77,6 @@ public final class Player extends GameCanvas {
 			od = od * 1.4f;
 			perfectHW = 11;
 		}
-		log.log("Setting scoring up");
 		hitWindows = new int[] { (int) (188 - 3 * od), (int) (151 - 3 * od), (int) (127 - 3 * od), (int) (97 - 3 * od),
 				(int) (64 - 3 * od), perfectHW };
 		if (faMod == 2) {
