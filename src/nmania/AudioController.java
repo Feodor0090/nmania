@@ -14,15 +14,15 @@ import javax.microedition.media.Player;
  */
 public class AudioController {
 
-	public AudioController(Beatmap map, boolean allowFallback) throws IOException, MediaException {
+	public AudioController(Beatmap map, boolean allowFallback) throws IOException {
 		this(map.ToGlobalPath(map.audio), allowFallback);
 	}
 
-	public AudioController(BeatmapSet set, boolean allowFallback) throws IOException, MediaException {
+	public AudioController(BeatmapSet set, boolean allowFallback) throws IOException {
 		this(set.ToGlobalPath(set.audio), allowFallback);
 	}
 
-	public AudioController(String file, boolean allowFallback) throws MediaException, IOException {
+	public AudioController(String file, boolean allowFallback) throws IOException {
 		Player p = TryInit(file, null);
 		if (p == null)
 			p = TryInit(file, "mp3");
@@ -47,7 +47,7 @@ public class AudioController {
 		} // ?sid
 	}
 
-	private final Player TryInit(String mrl, String ext) throws MediaException {
+	private final Player TryInit(String mrl, String ext) {
 		if (ext != null) {
 			if (mrl.endsWith(ext)) {
 				// already looked for, skipping...
@@ -64,12 +64,11 @@ public class AudioController {
 			p.realize();
 			p.prefetch();
 			return p;
+		} catch (RuntimeException e) {
 		} catch (MediaException e) {
-			e.printStackTrace();
-			return null;
 		} catch (IOException e) {
-			return null;
 		}
+		return null;
 	}
 
 	private final Player player;
