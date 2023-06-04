@@ -51,6 +51,14 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 								+ " can't be accessed. Visit settings section and choose an existing folder.",
 						"CHANGE NOW", new DiskSelectScreen(), 2));
 				return;
+			} catch (SecurityException e) {
+				Thread.sleep(1001);
+				loadingState = false;
+				disp.Push(new Alert("Failed to load charts",
+						"Access to current working folder " + Settings.workingFolder
+								+ " is forbidden. Check application OS-side settings or choose another folder.",
+						"CHANGE", new DiskSelectScreen(), 2));
+				return;
 			}
 
 			Vector v = new Vector();
@@ -70,6 +78,8 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 			loadingState = false;
 		} catch (Exception e) {
 			e.printStackTrace();
+			loadingState = false;
+			SetItems(new ListItem[] { new ListItem(-2, e.getClass().getName(), this) });
 		}
 	}
 
