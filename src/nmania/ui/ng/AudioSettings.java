@@ -9,7 +9,8 @@ public class AudioSettings extends ListScreen implements IListSelectHandler, INu
 				new SwitchItem(1, "Enable hitsounds", this, Settings.hitSamples), // ?full
 				new SwitchItem(2, "Enable feedback samples", this, Settings.gameplaySamples), // ?full
 				new SwitchItem(3, "Use BMS's sounds", this, Settings.useBmsSamples), // ?full
-				new DataItem(4, "Clock offset", this, Settings.gameplayOffset + "ms"), });
+				new DataItem(4, "Clock offset", this, Settings.gameplayOffset + "ms"),
+				new DataItem(5, "Audio volume", this, Settings.volume + "%"), });
 	}
 
 	public String GetTitle() {
@@ -21,7 +22,8 @@ public class AudioSettings extends ListScreen implements IListSelectHandler, INu
 	}
 
 	public void OnOptionActivate(IDisplay d) {
-		d.Push(new Alert("AUDIO SETTINGS", "Feedback samples - sounds like restart, fail, pass, etc. \n BMS's sounds - usage of effects provided by loaded beatmap, not default ones. \n Clock offset - set to positive to make notes appear earlier than music, set to negative to make notes appear before than music. Value is in milliseconds (1000 is 1 second)."));
+		d.Push(new Alert("AUDIO SETTINGS",
+				"Feedback samples - sounds like restart, fail, pass, etc. \n BMS's sounds - usage of effects provided by loaded beatmap, not default ones. \n Clock offset - set to positive to make notes appear earlier than music, set to negative to make notes appear before than music. Value is in milliseconds (1000 is 1 second)."));
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
@@ -48,6 +50,11 @@ public class AudioSettings extends ListScreen implements IListSelectHandler, INu
 		case 4:
 			display.Push(new NumberBox("Clock offset", 0, this, Settings.gameplayOffset, true));
 			break;
+		case 5:
+			NumberBox nb = new NumberBox("Audio volume (%)", 1, this, Settings.volume, false);
+			nb.showPlusMinus = true;
+			display.Push(nb);
+			break;
 		}
 	}
 
@@ -70,12 +77,21 @@ public class AudioSettings extends ListScreen implements IListSelectHandler, INu
 	}
 
 	public void OnNumberEntered(int UUID, int newNumber, IDisplay d) {
-		if (newNumber < -1000)
-			newNumber = -1000;
-		if (newNumber > 1000)
-			newNumber = 1000;
-		Settings.gameplayOffset = newNumber;
+		if (UUID == 0) {
+			if (newNumber < -1000)
+				newNumber = -1000;
+			if (newNumber > 1000)
+				newNumber = 1000;
+			Settings.gameplayOffset = newNumber;
+			((DataItem) GetSelected()).data = Settings.gameplayOffset + "ms";
+		} else if (UUID == 1) {
+			if (newNumber < 1)
+				newNumber = 1;
+			if (newNumber > 100)
+				newNumber = 100;
+			Settings.volume = newNumber;
+			((DataItem) GetSelected()).data = Settings.volume + "%";
+		}
 		d.Back();
-		((DataItem) GetSelected()).data = Settings.gameplayOffset + "ms";
 	}
 }
