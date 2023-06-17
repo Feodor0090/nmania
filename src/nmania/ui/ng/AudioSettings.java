@@ -23,7 +23,7 @@ public class AudioSettings extends ListScreen implements IListSelectHandler, INu
 
 	public void OnOptionActivate(IDisplay d) {
 		d.Push(new Alert("AUDIO SETTINGS",
-				"Feedback samples - sounds like restart, fail, pass, etc. \n BMS's sounds - usage of effects provided by loaded beatmap, not default ones. \n Clock offset - set to positive to make notes appear earlier than music, set to negative to make notes appear before than music. Value is in milliseconds (1000 is 1 second)."));
+				"Feedback samples - sounds like restart, fail, pass, etc. \n BMS's sounds - usage of effects provided by loaded beatmap, not default ones."));
 	}
 
 	public void OnSelect(ListItem item, ListScreen screen, IDisplay display) {
@@ -48,7 +48,7 @@ public class AudioSettings extends ListScreen implements IListSelectHandler, INu
 			((SwitchItem) item).Toggle();
 			break;
 		case 4:
-			display.Push(new NumberBox("Clock offset", 0, this, Settings.gameplayOffset, true));
+			display.Push(new OffsetBox(0, this, Settings.gameplayOffset, true));
 			break;
 		case 5:
 			NumberBox nb = new NumberBox("Audio volume (%)", 1, this, Settings.volume, false);

@@ -51,16 +51,16 @@ public class NumberBox extends Screen {
 	public void Paint(Graphics g, int w, int h) {
 		g.setFont(num);
 		int fh = num.getHeight();
-		int offs = fh;
+		int offs = 10;
 		if (showPlusMinus) {
-			offs += 40;
+			offs += 35;
 			int b = (int) (Math.abs(1f - NmaniaDisplay.beatProgress * 2f) * 32);
 			g.setColor(ColorUtils.blend(-1, NmaniaDisplay.PINK_COLOR, b));
-			g.fillRoundRect(fh, 10, 35, fh, fh, fh);
-			g.fillRoundRect(w - fh - 35, 10, 35, fh, fh, fh);
+			g.fillRoundRect(1, 10, 34, fh, fh, fh);
+			g.fillRoundRect(w - 35, 10, 34, fh, fh, fh);
 			g.setColor(-1);
-			g.drawString("-1", fh + 17, 10, Graphics.TOP | Graphics.HCENTER);
-			g.drawString("+1", w - fh - 17, 10, Graphics.TOP | Graphics.HCENTER);
+			g.drawString("-1", 18, 10, Graphics.TOP | Graphics.HCENTER);
+			g.drawString("+1", w - 18, 10, Graphics.TOP | Graphics.HCENTER);
 		}
 
 		g.setColor(NmaniaDisplay.NEGATIVE_COLOR);
