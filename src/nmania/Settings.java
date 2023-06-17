@@ -216,7 +216,7 @@ public final class Settings {
 			}
 			gameplaySamples = j.optBoolean("samples", true); // ?full
 			hitSamples = j.optBoolean("hitsounds", false); // ?full
-			keepMenu = j.optBoolean("keepmenu", false); // ?full
+			keepMenu = j.optBoolean("keepmenu", true); // ?full
 			drawHUD = j.optBoolean("drawcounters", true);
 			final String device = Nmania.GetDevice();
 			fullScreenFlush = j.optBoolean("fullscreenflush",
