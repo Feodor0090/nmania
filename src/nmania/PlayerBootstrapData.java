@@ -29,6 +29,11 @@ public final class PlayerBootstrapData {
 	public boolean recordReplay;
 
 	/**
+	 * If true, columns won't be fit into screen.
+	 */
+	public boolean forbidAftoFit;
+
+	/**
 	 * If false, previous {@link IDisplay} or {@link Displayable} will not be kept
 	 * when swithing displayables.
 	 */
