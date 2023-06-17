@@ -30,6 +30,7 @@ public abstract class SkinSettings extends ListScreen {
 			pbd.mods = new ModsState();
 			pbd.recordReplay = false;
 			pbd.keepBackScreen = true;
+			pbd.forbidAftoFit = true; // to show true widths
 			pbd.set = testBms;
 			pbd.input = new AutoplayRunner();
 			PlayerLoaderScreen pls = new PlayerLoaderScreen(pbd);
