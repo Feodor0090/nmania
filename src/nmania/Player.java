@@ -183,22 +183,6 @@ public final class Player extends GameCanvas {
 			restart = null;
 			applause = null;
 		}
-		if (Settings.hitSamples) { // ?full
-			String[] sets = new String[] { "normal", "soft", "drum" }; // ?full
-			String[] types = new String[] { "normal", "whistle", "finish", "clap" }; // ?full
-			hitSounds = new MultiSample[3][]; // ?full
-			for (int i = 0; i < sets.length; i++) { // ?full
-				hitSounds[i] = new MultiSample[types.length]; // ?full
-				for (int j = 0; j < types.length; j++) { // ?full
-					hitSounds[i][j] = new MultiSample(true, "/sfx/" + sets[i] + "-hit" + types[j] + ".wav", "audio/wav", // ?full
-							4); // ?full
-					Thread.sleep(1); // ?full
-				} // ?full
-			} // ?full
-		} else { // ?full
-			hitSounds = null; // ?full
-		} // ?full
-		defaultHSSet = map.defaultSampleSet; // ?full
 
 		// step 7: cache data for HUD drawing
 		log.log("Caching service data");
@@ -489,9 +473,7 @@ public final class Player extends GameCanvas {
 	private final Sample sectionFail;
 	private final Sample fail = null;
 	private final Sample restart;
-	private final MultiSample[][] hitSounds; // ?full
 	private final String applause;
-	private final int defaultHSSet; // ?full
 
 	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
 	public final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
@@ -503,13 +485,6 @@ public final class Player extends GameCanvas {
 	 * Clears allocated samples.
 	 */
 	public final void Dispose() {
-		if (hitSounds != null) { // ?full
-			for (int i = 0; i < hitSounds.length; i++) { // ?full
-				for (int j = 0; j < hitSounds[i].length; j++) { // ?full
-					hitSounds[i][j].Dispose(); // ?full
-				} // ?full
-			} // ?full
-		} // ?full
 		if (restart != null)
 			restart.Dispose();
 		if (combobreak != null)
@@ -859,10 +834,6 @@ public final class Player extends GameCanvas {
 											+ column + " is hit"); // ?dbg
 									CountHit(j);
 									currentNote[column] += 2;
-									if (hitSounds != null) { // ?full
-										if (j != 0) // ?full
-											hitSounds[defaultHSSet][0].Play(); // ?full
-									} // ?full
 									break; // loop on HW
 								}
 							}
@@ -882,10 +853,6 @@ public final class Player extends GameCanvas {
 										GL.Log("(detect) Head note at " + columns[column][currentNote[column]] + " c="
 												+ column + " is hit"); // ?dbg
 										CountHit(j);
-										if (hitSounds != null) { // ?full
-											if (j != 0) // ?full
-												hitSounds[defaultHSSet][0].Play(); // ?full
-										} // ?full
 										holdHeadScored[column] = true;
 										break; // loop on HW
 									}
@@ -920,10 +887,6 @@ public final class Player extends GameCanvas {
 										CountHit(j);
 										currentNote[column] += 2;
 										holdHeadScored[column] = false;
-										if (hitSounds != null) { // ?full
-											if (j != 0) // ?full
-												hitSounds[defaultHSSet][2].Play(); // ?full
-										} // ?full
 										break;
 									}
 								}
