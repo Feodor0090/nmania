@@ -787,15 +787,17 @@ public final class Player extends GameCanvas {
 					} else if (timeleft < 500) {
 						// fading playfield in (break will end soon)
 						int fade = scrH * (500 - timeleft) / 500;
-						g.setClip(0, 0, scrW, fade);
 						FillBg();
+						g.setClip(0, 0, scrW, fade); // clip for stage
+						RedrawAllHUD();
 						DrawBorders();
 						for (int i = 0; i < columnsCount; i++) {
 							DrawKey(i, false);
 						}
-						Redraw(true);
-						RedrawAllHUD();
-						g.setClip(0, 0, scrW, scrH);
+						g.setClip(0, 0, scrW, Math.min(kbY, fade)); // clip for notes
+						RedrawNotes();
+						g.setClip(0, 0, scrW, scrH); // clip reset
+						flushGraphics();
 					} else {
 						// idle (break is in progress)
 						g.setClip(0, 0, scrW, scrH);
@@ -1274,7 +1276,9 @@ public final class Player extends GameCanvas {
 	}
 
 	/**
-	 * Method to redraw hot areas. Called by update loop.
+	 * Method to redraw hot areas. Called by update loop. Performs flush.
+	 *
+	 * @param flushAll True to force fullscreen.
 	 */
 	private final void Redraw(boolean flushAll) {
 		g.setClip(0, 0, scrW, kbY);
