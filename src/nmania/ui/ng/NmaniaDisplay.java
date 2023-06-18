@@ -261,11 +261,19 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		if (music == null) {
 			p = (System.currentTimeMillis() % 10000) / 10000f;
 		}
-		DrawDisc(lx, ly, logo.getHeight(), p);
+		FillDisc(lx, ly, logo.getHeight(), p);
 		g.drawImage(logo, lx, ly, 0);
 	}
 
-	private final void DrawDisc(int x, int y, int s, float p) {
+	/**
+	 * Fills nmania-branded 4-colored disc.
+	 *
+	 * @param x X of top-left.
+	 * @param y Y of top-left.
+	 * @param s Diameter.
+	 * @param p Value from 0.0 to 1.0 setting angle.
+	 */
+	private final void FillDisc(int x, int y, int s, float p) {
 		g.setColor(PINK_COLOR);
 		g.fillArc(x, y, s, s, (int) (360 * p), 90);
 		g.setColor(NMANIA_COLOR);
@@ -276,27 +284,39 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		g.fillArc(x, y, s, s, (int) (360 * p) + 180, 90);
 	}
 
+	/**
+	 * Draws nmania-branded 4-colored circle border.
+	 *
+	 * @param x X of top-left.
+	 * @param y Y of top-left.
+	 * @param s Diameter.
+	 * @param p Value from 0.0 to 1.0 setting angle.
+	 */
+	private final void DrawDisc(int x, int y, int s, float p) {
+		g.setColor(PINK_COLOR);
+		g.drawArc(x, y, s, s, (int) (360 * p), 90);
+		g.setColor(NMANIA_COLOR);
+		g.drawArc(x, y, s, s, (int) (360 * p) + 90, 90);
+		g.setColor(NEGATIVE_COLOR);
+		g.drawArc(x, y, s, s, (int) (360 * p) - 90, 90);
+		g.setColor(BG_COLOR);
+		g.drawArc(x, y, s, s, (int) (360 * p) + 180, 90);
+	}
+
 	private final void DrawTouchEffect() {
 		long now = System.currentTimeMillis();
 		float spinState = (now % 1000L) / 1000f;
 		if (pointerState == 1 || pointerState == 2) {
-			int s = 0;
-			if (now - lastPointerStateChange < 175) {
-				s = (int) ((now - lastPointerStateChange) / 25);
-			} else {
-				s = 7;
-			}
-			DrawDisc(px - s, py - s, s << 1, spinState);
-			g.setColor(-1);
-			s--;
-			g.drawArc(px - s - 1, py - s - 1, (s << 1) + 1, (s << 1) + 1, 0, 360);
-		} else if (now - lastPointerStateChange < 300) {
-			int p = 255 * (int) (now - lastPointerStateChange) / 300;
-			int fa = 180 * (int) (now - lastPointerStateChange) / 300;
-			int s = (int) ((now - lastPointerStateChange) / 10);
-			g.setColor(ColorUtils.blend(BG_COLOR, -1, p));
-			g.fillArc(px - 7, py - 7, 14, 14, 90 + fa, 360 - (fa << 1));
-			g.drawArc(px - 6 - s, py - 6 - s, 12 + (s << 1), 12 + (s << 1), 0, 360);
+			int pr = 8;
+			FillDisc(px - pr, py - pr, pr << 1, spinState);
+			if (pointerState == 2)
+				DrawDisc(px - 40, py - 40, 80, spinState);
+		} else if (now - lastPointerStateChange < 100) {
+			int dl = (int) (now - lastPointerStateChange);
+			int pr = 8 - (dl * 8 / 100);
+			FillDisc(px - pr, py - pr, pr << 1, spinState);
+			pr = 40 - (dl * 40 / 100);
+			DrawDisc(px - pr, py - pr, pr << 1, spinState);
 		}
 
 		g.setColor(PINK_COLOR);
@@ -308,7 +328,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				g.drawArc(x - 35, y - 35, 70, 70, 0, 360);
 				g.drawArc(x - 40, y - 40, 80, 80, 0, 360);
 				g.drawArc(x - 45, y - 45, 90, 90, 0, 360);
-				g.drawArc(x - 50, y - 50, 100, 100, 0, 360);
+				DrawDisc(x - 50, y - 50, 100, spinState);
 			}
 		}
 	}
