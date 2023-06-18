@@ -465,6 +465,10 @@ public final class Player extends GameCanvas {
 	 */
 	public boolean isPaused = false;
 	/**
+	 * Set this flag to true to allow interacting with pause menu.
+	 */
+	public boolean hudAcceptsInput = true;
+	/**
 	 * Make this flag false to end update loop.
 	 */
 	public boolean running = true;
@@ -520,6 +524,8 @@ public final class Player extends GameCanvas {
 
 	protected final void keyPressed(final int k) {
 		if (isPaused && !failed) {
+			if (!hudAcceptsInput)
+				return;
 			if (k == -1 || k == '2') {
 				pauseItem--;
 				if (pauseItem < 0)
@@ -545,6 +551,8 @@ public final class Player extends GameCanvas {
 			return;
 		}
 		if (isPaused && failed) {
+			if (!hudAcceptsInput)
+				return;
 			if (k == -1 || k == '2' || k == -2 || k == '8') {
 				pauseItem = pauseItem == 0 ? 1 : 0;
 				return;
@@ -650,6 +658,8 @@ public final class Player extends GameCanvas {
 
 	protected final void pointerPressed(final int x, final int y) {
 		if (isPaused) {
+			if (!hudAcceptsInput)
+				return;
 			if (failed) {
 				if (y < scrH / 3)
 					return;
@@ -1039,6 +1049,27 @@ public final class Player extends GameCanvas {
 	 * Loop method, that handles pause menu redrawing.
 	 */
 	private final void PauseUpdateLoop() {
+		hudAcceptsInput = false; // block overlay while it's not visible
+		long s = System.currentTimeMillis();
+		while (true) {
+			int p = (int) (System.currentTimeMillis() - s);
+			if (p < 1000) {
+				final int a = 360 - (p * 360 / 1000);
+				final int x = scrW / 2 - 30;
+				final int y = scrH / 2 - 30;
+				final int d = 60;
+				g.setColor(-1);
+				g.fillArc(x, y, d, d, 0, 360);
+				g.setColor(0);
+				g.fillArc(x, y, d, d, 90, a);
+				g.setColor(-1);
+				g.drawArc(x - 1, y - 1, d, d, 0, 360);
+				flushGraphics();
+			} else {
+				hudAcceptsInput = true;
+				break;
+			}
+		}
 		while (isPaused) {
 			int sh3 = scrH / 3;
 			int bh = sh3 * 2 / 3;
