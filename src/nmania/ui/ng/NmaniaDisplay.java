@@ -319,13 +319,11 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			DrawDisc(px - pr, py - pr, pr << 1, spinState);
 		}
 
-		g.setColor(PINK_COLOR);
 		for (int i = 0; i < 10; i++) {
 			if (multiPointers[i * 2] >= 0) {
 				int x = multiPointers[i * 2];
 				int y = multiPointers[i * 2 + 1];
-				g.drawArc(x - 30, y - 30, 60, 60, 0, 360);
-				g.drawArc(x - 35, y - 35, 70, 70, 0, 360);
+				g.setColor(PINK_COLOR);
 				g.drawArc(x - 40, y - 40, 80, 80, 0, 360);
 				g.drawArc(x - 45, y - 45, 90, 90, 0, 360);
 				DrawDisc(x - 50, y - 50, 100, spinState);
