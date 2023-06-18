@@ -50,10 +50,6 @@ public final class Settings {
 	 */
 	public static boolean gameplaySamples = false;
 	/**
-	 * Are hit samples enabled?
-	 */
-	public static boolean hitSamples = false;
-	/**
 	 * If hit samples are enabled, do we want to load them from beatmap?
 	 */
 	public static boolean useBmsSamples = false;
@@ -148,7 +144,6 @@ public final class Settings {
 		}
 		j.accumulate("keys", keys);
 		j.accumulate("samples", new Boolean(gameplaySamples));
-		j.accumulate("hitsounds", new Boolean(hitSamples));
 		j.accumulate("keepmenu", new Boolean(keepMenu));
 		j.accumulate("drawcounters", new Boolean(drawHUD));
 		j.accumulate("fullscreenflush", new Boolean(fullScreenFlush));
@@ -215,7 +210,6 @@ public final class Settings {
 				}
 			}
 			gameplaySamples = j.optBoolean("samples", true); // ?full
-			hitSamples = j.optBoolean("hitsounds", false); // ?full
 			keepMenu = j.optBoolean("keepmenu", true); // ?full
 			drawHUD = j.optBoolean("drawcounters", true);
 			final String device = Nmania.GetDevice();
