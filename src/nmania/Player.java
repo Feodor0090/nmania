@@ -250,13 +250,35 @@ public final class Player extends GameCanvas {
 			}
 			// base stage metrics
 			{
+				// left offset autofit
+				int skinlo = s.GetLeftOffset();
+				int hudTakes = Settings.drawHUD ? Math.max(fillAccW, fillScoreW) : fontL.stringWidth("AUTO");
+				if (skinlo < 0)
+					skinlo = 0;
+				if (scrW - hudTakes - skinlo < 40)
+					skinlo = 0;
+				targetLeftOffset = skinlo;
+				leftOffset = targetLeftOffset;
+
+				int skinhw = s.GetHoldWidth();
+				int skincw = s.GetColumnWidth();
+				if (!data.forbidAftoFit) {
+					int colsTake = columnsCount * skincw;
+					int avail = scrW - hudTakes - skinlo - HEALTH_WIDTH;
+					if (avail < colsTake) {
+						skincw = (avail / columnsCount) - 2;
+					}
+				}
+				if (skincw < 0)
+					skincw = 1;
+				if (skinhw > skincw)
+					skinhw = skincw;
+
 				kbH = s.GetKeyboardHeight();
-				colW = s.GetColumnWidth();
+				colW = skincw;
 				colWp1 = colW + 1;
 				noteH = s.GetNoteHeight();
-				holdW = s.GetHoldWidth();
-				targetLeftOffset = s.GetLeftOffset();
-				leftOffset = targetLeftOffset;
+				holdW = skinhw;
 			}
 			// calculated stage metrics
 			{
