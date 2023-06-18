@@ -328,7 +328,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				g.drawArc(x - 35, y - 35, 70, 70, 0, 360);
 				g.drawArc(x - 40, y - 40, 80, 80, 0, 360);
 				g.drawArc(x - 45, y - 45, 90, 90, 0, 360);
-				g.drawArc(x - 50, y - 50, 100, 100, 0, 360);
+				DrawDisc(x - 50, y - 50, 100, spinState);
 			}
 		}
 	}
