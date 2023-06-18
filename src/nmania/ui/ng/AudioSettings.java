@@ -6,7 +6,6 @@ public class AudioSettings extends ListScreen implements IListSelectHandler, INu
 	public AudioSettings() {
 		SetItems(new ListItem[] { //
 				new SwitchItem(0, "Play music in menu", this, Settings.musicInMenu), // ?full
-				new SwitchItem(1, "Enable hitsounds", this, Settings.hitSamples), // ?full
 				new SwitchItem(2, "Enable feedback samples", this, Settings.gameplaySamples), // ?full
 				new SwitchItem(3, "Use BMS's sounds", this, Settings.useBmsSamples), // ?full
 				new DataItem(4, "Clock offset", this, Settings.gameplayOffset + "ms"),
@@ -36,8 +35,7 @@ public class AudioSettings extends ListScreen implements IListSelectHandler, INu
 			}
 			break;
 		case 1:
-			Settings.hitSamples = !Settings.hitSamples;
-			((SwitchItem) item).Toggle();
+			// hitsounds (deleted)
 			break;
 		case 2:
 			Settings.gameplaySamples = !Settings.gameplaySamples;
