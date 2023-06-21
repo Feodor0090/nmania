@@ -13,7 +13,10 @@ public final class Sample {
 			player = Manager.createPlayer(file);
 		} else {
 			if (type == null) {
-				type = "audio/" + file.substring(file.lastIndexOf('.') + 1, file.length());
+				String ext = file.substring(file.lastIndexOf('.') + 1, file.length()).toLowerCase();
+				if ("mp3".equals(ext))
+					ext = "mpeg";
+				type = "audio/" + ext;
 			}
 			player = Manager.createPlayer(getClass().getResourceAsStream(file), type);
 		}
