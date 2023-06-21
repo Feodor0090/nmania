@@ -173,9 +173,9 @@ public final class Player extends GameCanvas {
 			if (Settings.useBmsSamples && (sn = map.set.findFile("applause")) != null) {
 				applause = map.ToGlobalPath(sn);
 			} else {
-				applause = "/sfx/applause.wav";
+				applause = "/sfx/applause.mp3";
 			}
-			restart = new Sample("/sfx/restart.wav", "audio/wav");
+			restart = new Sample("/sfx/restart.mp3", "audio/mpeg");
 		} else {
 			combobreak = null;
 			sectionPass = null;
