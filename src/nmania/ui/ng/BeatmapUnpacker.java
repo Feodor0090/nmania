@@ -20,7 +20,9 @@ public class BeatmapUnpacker extends Alert implements Runnable {
 	}
 
 	public boolean OnExit(IDisplay d) {
-		return wip;
+		if (wip) return true;
+		((BMSSelect) d.GetFromStack(BMSSelect.class)).Reload();
+		return false;
 	}
 
 	public void OnEnter(IDisplay d) {

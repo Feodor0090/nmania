@@ -33,4 +33,6 @@ public interface IDisplay {
 	void Destroy();
 
 	void Throttle(boolean enable);
+
+	Screen GetFromStack(Class cls);
 }

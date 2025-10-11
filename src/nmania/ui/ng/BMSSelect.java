@@ -32,8 +32,12 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 	}
 
 	public void OnEnter(IDisplay d) {
-		loadingState = true;
 		disp = d;
+		Reload();
+	}
+
+	public void Reload() {
+		loadingState = true;
 		(new Thread(this)).start();
 	}
 
@@ -89,7 +93,7 @@ public class BMSSelect extends ListScreen implements Runnable, IListSelectHandle
 		else if (item.UUID == -1) {
 			display.Push(new Alert("Packed beatmapset",
 					item.text + " is an OSZ (zipped beatmapset). Do you want to unpack it?", "UNPACK",
-					new BeatmapUnpacker(item.text), 2));
+					new BeatmapUnpacker(item.text), 1));
 		}
 	}
 

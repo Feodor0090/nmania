@@ -814,6 +814,16 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		}
 	}
 
+	public Screen GetFromStack(Class cls) {
+		for (int i = stack.length - 1; i >= 0; i--) {
+			if (stack[i] == null)
+				continue;
+			if (stack[i].getClass() == cls)
+				return stack[i];
+		}
+		return null;
+	}
+
 	protected void sizeChanged(int w, int h) {
 		g = getGraphics();
 	}
