@@ -740,45 +740,47 @@ public final class Player extends GameCanvas {
 			}
 
 			boolean breakActive = false;
-			if (breaks[currentBreak] - time < 0) {
-				// break is in progress
-				if (breaks[currentBreak] + breaks[currentBreak + 1] - time < 0) {
-					// break has just ended, skipping it and repainting bg JIC
-					Refill();
-					currentBreak += 2;
-				} else {
-					breakActive = true;
-					int timepassed = time - breaks[currentBreak];
-					int timeleft = breaks[currentBreak] + breaks[currentBreak + 1] - time;
-					if (timepassed < 500) {
-						// fading playfield out (break started)
-						int fade = scrH * timepassed / 500;
-						RedrawAllHUD();
-						g.setClip(0, 0, scrW, fade);
-						FillBg();
-						g.setClip(0, 0, scrW, scrH);
-						flushGraphics();
-					} else if (timeleft < 500) {
-						// fading playfield in (break will end soon)
-						int fade = scrH * (500 - timeleft) / 500;
-						FillBg();
-						g.setClip(0, 0, scrW, fade); // clip for stage
-						RedrawAllHUD();
-						DrawBorders();
-						for (int i = 0; i < columnsCount; i++) {
-							DrawKey(i, false);
-						}
-						g.setClip(0, 0, scrW, Math.min(kbY, fade)); // clip for notes
-						RedrawNotes();
-						g.setClip(0, 0, scrW, scrH); // clip reset
-						flushGraphics();
+			if (time > 0) {
+				if (breaks[currentBreak] - time < 0) {
+					// break is in progress
+					if (breaks[currentBreak] + breaks[currentBreak + 1] - time < 0) {
+						// break has just ended, skipping it and repainting bg JIC
+						Refill();
+						currentBreak += 2;
 					} else {
-						// idle (break is in progress)
-						g.setClip(0, 0, scrW, scrH);
-						FillBg();
-						// drawing countdown
-						DrawBreakCountdown(timeleft);
-						flushGraphics();
+						breakActive = true;
+						int timepassed = time - breaks[currentBreak];
+						int timeleft = breaks[currentBreak] + breaks[currentBreak + 1] - time;
+						if (timepassed < 500) {
+							// fading playfield out (break started)
+							int fade = scrH * timepassed / 500;
+							RedrawAllHUD();
+							g.setClip(0, 0, scrW, fade);
+							FillBg();
+							g.setClip(0, 0, scrW, scrH);
+							flushGraphics();
+						} else if (timeleft < 500) {
+							// fading playfield in (break will end soon)
+							int fade = scrH * (500 - timeleft) / 500;
+							FillBg();
+							g.setClip(0, 0, scrW, fade); // clip for stage
+							RedrawAllHUD();
+							DrawBorders();
+							for (int i = 0; i < columnsCount; i++) {
+								DrawKey(i, false);
+							}
+							g.setClip(0, 0, scrW, Math.min(kbY, fade)); // clip for notes
+							RedrawNotes();
+							g.setClip(0, 0, scrW, scrH); // clip reset
+							flushGraphics();
+						} else {
+							// idle (break is in progress)
+							g.setClip(0, 0, scrW, scrH);
+							FillBg();
+							// drawing countdown
+							DrawBreakCountdown(timeleft);
+							flushGraphics();
+						}
 					}
 				}
 			}
