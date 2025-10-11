@@ -36,7 +36,7 @@ public final class Player extends GameCanvas {
 
 		Image _bg = null;
 		try { // ?full
-				// it won't be used anyway if 100%
+			// it won't be used anyway if 100%
 			if (Settings.dimLevel < 100) // ?full
 				_bg = BeatmapManager.getImgFromFS(map.ToGlobalPath(map.image)); // ?full
 		} catch (OutOfMemoryError e) { // ?full
@@ -77,14 +77,14 @@ public final class Player extends GameCanvas {
 			od = od * 1.4f;
 			perfectHW = 11;
 		}
-		hitWindows = new int[] { (int) (188 - 3 * od), (int) (151 - 3 * od), (int) (127 - 3 * od), (int) (97 - 3 * od),
-				(int) (64 - 3 * od), perfectHW };
+		hitWindows = new int[]{(int) (188 - 3 * od), (int) (151 - 3 * od), (int) (127 - 3 * od), (int) (97 - 3 * od),
+				(int) (64 - 3 * od), perfectHW};
 		if (faMod == 2) {
 			// perfect mod
-			healthValues = new int[] { -1001, -1001, -1001, -1001, -50, 100 };
+			healthValues = new int[]{-1001, -1001, -1001, -1001, -50, 100};
 		} else {
 			// sudden death & anything else
-			healthValues = new int[] { faMod == 1 ? -1001 : -100, -10, 0, 20, 40, 50 };
+			healthValues = new int[]{faMod == 1 ? -1001 : -100, -10, 0, 20, 40, 50};
 		}
 		score = new ScoreController(input);
 		failCondition = faMod;
@@ -475,9 +475,8 @@ public final class Player extends GameCanvas {
 	private final Sample restart;
 	private final String applause;
 
-	public final static String[] judgements = new String[] { "MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT" };
-	public final static int[] judgementColors = new int[] { SNUtils.toARGB("0xF00"), SNUtils.toARGB("0xFA0"),
-			SNUtils.toARGB("0x494"), SNUtils.toARGB("0x0B0"), SNUtils.toARGB("0x44F"), SNUtils.toARGB("0x90F") };
+	public final static String[] judgements = new String[]{"MISS", "MEH", "OK", "GOOD", "GREAT", "PERFECT"};
+	public final static int[] judgementColors = new int[]{0xFFFF0000, 0xFFFFAA00, 0xFF449944, 0xFF00BB00, 0xFF4444FF, 0xFF9900FF};
 
 	private final int scrollDiv = Settings.speedDiv;
 
@@ -1181,7 +1180,7 @@ public final class Player extends GameCanvas {
 	/**
 	 * Manages incoming hit: notifies score manager, adjusts health, plays miss sfx
 	 * if needed, sets visuals.
-	 * 
+	 *
 	 * @param j Type of hit to count
 	 */
 	private final void CountHit(final int j) {
@@ -1492,7 +1491,7 @@ public final class Player extends GameCanvas {
 
 	/**
 	 * Draws synthesizer's key.
-	 * 
+	 *
 	 * @param k    Key index.
 	 * @param hold Is it held down?
 	 */
@@ -1617,7 +1616,7 @@ public final class Player extends GameCanvas {
 
 	/**
 	 * Gets inlined map data.
-	 * 
+	 *
 	 * @return Timings for each column. DO NOT TOUCH THIS DATA!
 	 */
 	public final int[][] GetMap() {
