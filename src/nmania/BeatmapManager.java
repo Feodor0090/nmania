@@ -183,6 +183,8 @@ public final class BeatmapManager {
 			} catch (Exception e) {
 			}
 			return img;
+		} catch (SecurityException e){
+			throw new SecurityException();
 		} catch (RuntimeException e) {
 			return null;
 		} catch (IOException e) {
