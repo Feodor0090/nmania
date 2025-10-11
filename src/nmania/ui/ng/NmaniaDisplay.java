@@ -184,12 +184,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				} else if (trBrw != -1) {
 					PlayBackwardsTransition((time - trBrw) / 250f, stack[top + 1], stack[top]);
 				} else {
-					if (bg == null) {
-						g.setColor(BG_COLOR);
-						g.fillRect(0, 0, w, h);
-					} else {
-						g.drawImage(bg, 0, 0, 0);
-					}
+					g.setColor(BG_COLOR);
+					g.fillRect(0, 0, w, h);
+					if (bg != null)
+						g.drawImage(bg, (w - bg.getWidth()) >> 1, (h - bg.getHeight()) >> 1, 0);
 					g.translate(0, screenY);
 					stack[top].Paint(g, w, h - screenY - keysH);
 					int xoffs = stack[top].DecorationsXOffset();
@@ -334,19 +332,17 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	/**
 	 * 0-1 screen shifting to left 1-2 triangles pass 2-3 fade 3-4 opening to
 	 * top-bottom
-	 * 
+	 *
 	 * @param progress
 	 * @param prev
 	 * @param next
 	 */
 	public void PlayForwardTransition(float progress, Screen prev, Screen next) {
 		if (progress < 1f) {
-			if (bg == null) {
-				g.setColor(BG_COLOR);
-				g.fillRect(0, 0, w, h);
-			} else {
-				g.drawImage(bg, 0, 0, 0);
-			}
+			g.setColor(BG_COLOR);
+			g.fillRect(0, 0, w, h);
+			if (bg != null)
+				g.drawImage(bg, (w - bg.getWidth()) >> 1, (h - bg.getHeight()) >> 1, 0);
 			g.translate((int) (-w * progress), headerH + 10);
 			prev.Paint(g, w, h - headerH - 10 - keysH);
 			g.translate(-g.getTranslateX(), -g.getTranslateY());
@@ -387,12 +383,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			return;
 		}
 		if (progress < 4f) {
-			if (bg == null) {
-				g.setColor(BG_COLOR);
-				g.fillRect(0, 0, w, h);
-			} else {
-				g.drawImage(bg, 0, 0, 0);
-			}
+			g.setColor(BG_COLOR);
+			g.fillRect(0, 0, w, h);
+			if (bg != null)
+				g.drawImage(bg, (w - bg.getWidth()) >> 1, (h - bg.getHeight()) >> 1, 0);
 			g.translate(0, headerH + 10);
 			next.Paint(g, w, h - headerH - 10 - keysH);
 			g.translate(0, -g.getTranslateY());
@@ -406,12 +400,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 					1f - (progress - 3f)), lerp(0, h / 2 - logo.getHeight() / 2, 1f - (progress - 3f)));
 			return;
 		}
-		if (bg == null) {
-			g.setColor(BG_COLOR);
-			g.fillRect(0, 0, w, h);
-		} else {
-			g.drawImage(bg, 0, 0, 0);
-		}
+		g.setColor(BG_COLOR);
+		g.fillRect(0, 0, w, h);
+		if (bg != null)
+			g.drawImage(bg, (w - bg.getWidth()) >> 1, (h - bg.getHeight()) >> 1, 0);
 		g.translate(0, headerH + 10);
 		next.Paint(g, w, h - headerH - 10 - keysH);
 		g.translate(0, -g.getTranslateY());
@@ -424,12 +416,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
 	public void PlayBackwardsTransition(float progress, Screen top, Screen target) {
 		if (progress < 1f) {
-			if (bg == null) {
-				g.setColor(BG_COLOR);
-				g.fillRect(0, 0, w, h);
-			} else {
-				g.drawImage(bg, 0, 0, 0);
-			}
+			g.setColor(BG_COLOR);
+			g.fillRect(0, 0, w, h);
+			if (bg != null)
+				g.drawImage(bg, (w - bg.getWidth()) >> 1, (h - bg.getHeight()) >> 1, 0);
 			g.translate(0, headerH + 10);
 			top.Paint(g, w, h - headerH - 10 - keysH);
 			g.translate(-g.getTranslateX(), -g.getTranslateY());
@@ -445,12 +435,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			return;
 		}
 		if (progress < 2f) {
-			if (bg == null) {
-				g.setColor(BG_COLOR);
-				g.fillRect(0, 0, w, h);
-			} else {
-				g.drawImage(bg, 0, 0, 0);
-			}
+			g.setColor(BG_COLOR);
+			g.fillRect(0, 0, w, h);
+			if (bg != null)
+				g.drawImage(bg, (w - bg.getWidth()) >> 1, (h - bg.getHeight()) >> 1, 0);
 			g.translate((int) (-w * (2f - progress)), headerH + 10);
 			target.Paint(g, w, h - headerH - 10 - keysH);
 			g.translate(-g.getTranslateX(), -g.getTranslateY());
@@ -464,12 +452,10 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 			DrawBuildWarning(); // ?dbg
 			return;
 		}
-		if (bg == null) {
-			g.setColor(BG_COLOR);
-			g.fillRect(0, 0, w, h);
-		} else {
-			g.drawImage(bg, 0, 0, 0);
-		}
+		g.setColor(BG_COLOR);
+		g.fillRect(0, 0, w, h);
+		if (bg != null)
+			g.drawImage(bg, (w - bg.getWidth()) >> 1, (h - bg.getHeight()) >> 1, 0);
 		g.translate(0, headerH + 10);
 		target.Paint(g, w, h - headerH - 10 - keysH);
 		g.translate(0, -g.getTranslateY());
@@ -777,7 +763,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 
 	/**
 	 * Creates background from arbitary image.
-	 * 
+	 *
 	 * @param raw Image to work on.
 	 * @return Image to use, null if solid color must be used instead.
 	 */
