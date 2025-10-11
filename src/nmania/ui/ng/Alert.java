@@ -23,7 +23,7 @@ public class Alert extends Screen {
 
 	/**
 	 * Initializes alert.
-	 * 
+	 *
 	 * @param title      Title of the screen.
 	 * @param text       Text to show.
 	 * @param button     Text for left button.
@@ -58,6 +58,10 @@ public class Alert extends Screen {
 		if (next != null) {
 			d.Push(next);
 		}
+	}
+
+	public int GetBacksCount() {
+		return backsCount;
 	}
 
 	int scroll = 0;
@@ -110,10 +114,4 @@ public class Alert extends Screen {
 		if (allowScroll)
 			scroll -= dy;
 	}
-
-	public void OnResume(IDisplay d) {
-		for (int i = 0; i < backsCount; i++)
-			d.Back();
-	}
-
 }

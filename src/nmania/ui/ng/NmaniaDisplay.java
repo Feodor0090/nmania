@@ -72,6 +72,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 	private long time = System.currentTimeMillis();
 	private long delta;
 	private long trFrw = -1, trBrw = -1;
+	private int backSourceOffset = 1;
 	private boolean cycle = true;
 	private boolean pause = false;
 	private Image bg;
@@ -182,7 +183,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 				if (trFrw != -1) {
 					PlayForwardTransition((time - trFrw) / 250f, stack[top - 1], stack[top]);
 				} else if (trBrw != -1) {
-					PlayBackwardsTransition((time - trBrw) / 250f, stack[top + 1], stack[top]);
+					PlayBackwardsTransition((time - trBrw) / 250f, stack[top + backSourceOffset], stack[top]);
 				} else {
 					g.setColor(BG_COLOR);
 					g.fillRect(0, 0, w, h);
@@ -464,6 +465,9 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		DrawHeader(target.GetTitle());
 		if (target.ShowLogo())
 			DrawLogo(w - logo.getWidth(), 0);
+		for (int i = this.top + 1; i < stack.length; i++) {
+			stack[i] = null;
+		}
 		trBrw = -1;
 	}
 
@@ -637,23 +641,34 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		return th;
 	}
 
-	public void Back() {
-		if (stack[top].OnExit(this)) {
-			GL.Log("(ui) " + stack[top].getClass().getName() + " blocked exit!");
-			return;
+	public void Back(int count) {
+		if (count <= 0)
+			throw new IllegalArgumentException("Backs count must be greater than 0");
+		for (int i = 0; i < count; i++) {
+			if (stack[top].OnExit(this)) {
+				GL.Log("(ui) " + stack[top].getClass().getName() + " blocked exit!");
+				return;
+			}
+			if (top == 0) {
+				cycle = false;
+				pause = false;
+				Nmania.exit();
+				return;
+			}
+			GL.Log("(ui) Returning on screen stack from " + stack[top].getClass().getName() + " to "
+					+ stack[top - 1].getClass().getName() + " (" + top + ">" + (top - 1) + ")"); // ?dbg
+			top--;
+			if (stack[top] instanceof Alert) {
+				count += ((Alert) stack[top]).GetBacksCount();
+			}
 		}
-		if (top == 0) {
-			cycle = false;
-			pause = false;
-			Nmania.exit();
-			return;
-		}
-		GL.Log("(ui) Returning on screen stack from " + stack[top].getClass().getName() + " to "
-				+ stack[top - 1].getClass().getName() + " (" + top + ">" + (top - 1) + ")"); // ?dbg
-		stack[top + 1] = null;
-		top--;
+		backSourceOffset = count;
 		stack[top].OnResume(this);
 		trBrw = System.currentTimeMillis();
+	}
+
+	public void Back() {
+		Back(1);
 	}
 
 	public void Push(Screen s) {
