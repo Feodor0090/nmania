@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Nokia-MIDlet-Background-Event: pause
-MIDlet-Version: 2.6.2
+MIDlet-Version: 2.7.0
 MIDlet-Vendor: Feodor0090
 MIDlet-Info-URL: https://github.com/Feodor0090/nmania
 Nokia-UI-Enhancement: EnableMultiPointTouchEvents
