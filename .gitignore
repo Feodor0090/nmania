@@ -11,3 +11,5 @@ tests/RecGenerator/bin/Debug/net6.0
 tests/TestResultsProcessor/.idea/.idea.TestResultsProcessor/.idea
 tests/TestResultsProcessor/bin/Debug/net6.0
 tests/TestResultsProcessor/obj
+.idea/runConfigurations
+proguard-local.cfg
