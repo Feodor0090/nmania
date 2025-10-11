@@ -12,6 +12,8 @@ public abstract class Screen {
 
 	public abstract String GetOption();
 
+	public boolean IsConfirmation() { return false; }
+
 	public void OnOptionActivate(IDisplay d) {
 	}
 

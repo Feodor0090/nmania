@@ -483,7 +483,7 @@ public class NmaniaDisplay extends GameCanvas implements Runnable, IDisplay {
 		g.setColor(clri);
 		g.fillTriangle(w, h - keysH, w, h, w / 2 + keysW, h);
 		g.fillTriangle(w, h - keysH, w / 2 + keysW2, h - keysH2, w / 2 + keysW, h);
-		print(g, top == 0 ? "QUIT" : "BACK", w - 1, h - 1, clri, SoftkeysOutlineColor,
+		print(g, top == 0 ? "QUIT" : stack[top].IsConfirmation() ? "CANCEL" : "BACK", w - 1, h - 1, clri, SoftkeysOutlineColor,
 				Graphics.BOTTOM | Graphics.RIGHT);
 	}
 

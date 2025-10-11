@@ -46,7 +46,7 @@ public class AudioSettings extends ListScreen implements IListSelectHandler, INu
 			((SwitchItem) item).Toggle();
 			break;
 		case 4:
-			display.Push(new OffsetBox(0, this, Settings.gameplayOffset, true));
+			display.Push(new OffsetBox(0, this, Settings.gameplayOffset));
 			break;
 		case 5:
 			NumberBox nb = new NumberBox("Audio volume (%)", 1, this, Settings.volume, false);

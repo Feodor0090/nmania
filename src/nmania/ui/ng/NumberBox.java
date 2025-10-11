@@ -15,8 +15,8 @@ public class NumberBox extends Screen {
 	private String title;
 	private Font num = Font.getFont(0, 0, 8);
 	private boolean sign;
-	private final String[][] pad = new String[][] { new String[] { "1", "2", "3" }, new String[] { "4", "5", "6" },
-			new String[] { "7", "8", "9" }, new String[] { "-", "0", "<" } };
+	private final String[][] pad = new String[][]{new String[]{"1", "2", "3"}, new String[]{"4", "5", "6"},
+			new String[]{"7", "8", "9"}, new String[]{"-", "0", "<"}};
 
 	public NumberBox(String title, int UUID, INumberBoxHandler handler, int value, boolean allowNegative) {
 		this.title = title;
@@ -35,6 +35,10 @@ public class NumberBox extends Screen {
 
 	public boolean ShowLogo() {
 		return false;
+	}
+
+	public boolean IsConfirmation() {
+		return true;
 	}
 
 	public String GetOption() {

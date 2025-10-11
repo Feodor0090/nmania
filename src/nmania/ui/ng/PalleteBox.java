@@ -34,6 +34,10 @@ public class PalleteBox extends ListScreen {
 		return "CONFIRM";
 	}
 
+	public boolean IsConfirmation() {
+		return true;
+	}
+
 	public void OnOptionActivate(IDisplay d) {
 		ListItem[] l = GetAllItems();
 		for (int i = 0; i < l.length; i++)

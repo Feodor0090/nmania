@@ -11,8 +11,8 @@ import tube42.lib.imagelib.ColorUtils;
 
 public class OffsetBox extends NumberBox {
 
-	public OffsetBox(int UUID, INumberBoxHandler handler, int value, boolean allowNegative) {
-		super("Clock offset", UUID, handler, value, allowNegative);
+	public OffsetBox(int UUID, INumberBoxHandler handler, int value) {
+		super("Clock offset", UUID, handler, value, true);
 		showPlusMinus = true;
 		try {
 			wf = Image.createImage("/ui/exwf.png");
